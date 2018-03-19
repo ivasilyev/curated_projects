@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ndanilova-bwt-fp-job
+  labels:
+    pipeline: bwt-filtering
+    tier: job
+spec:
+  # Using 9 nodes - node 4 may crash
+  parallelism: 9
+  template:
+    metadata:
+      name: ndanilova-bwt-fp-queue
+      labels:
+        pipeline: bwt-filtering
+        tier: worker
+    spec:
+      containers:
+      - name: bwt-fp-worker
+        image: docker.io/ivasilyev/bwt_filtering_pipeline_worker:latest
+        imagePullPolicy: Always
+        command: ["python3", "/home/docker/scripts/queue_handler.py"]
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: data1
+          mountPath: /data1
+        - name: data2
+          mountPath: /data2
+      volumes:
+      - name: data
+        hostPath:
+          path: /data
+      - name: data1
+        hostPath:
+          path: /data1
+      - name: data2
+        hostPath:
+          path: /data2
+      restartPolicy: OnFailure
