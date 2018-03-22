@@ -12,7 +12,8 @@ spec:
       imagePullPolicy: Always
       # Paste the digested queue creation command line
       # command: ["python3", "/home/docker/scripts/sampledata2jsons_queue.py", "-s", "/data1/bio/projects/ndanilova/colitis_esc_colitis_rem_crohn_esc_crohn_rem_srr.sampledata", "-c", "/data/reference/IGC/index/igc_v2014.03.refdata", "-m", "no_hg19", "-o", "/data1/bio/projects/ndanilova/Metagenomes/IGC"]
-      command: ["python3", "/home/docker/scripts/sampledata2jsons_queue.py", "-s", "/data1/bio/projects/ndanilova/Metagenomes/IGC/2018-03-17-04-41-39.sampledata", "-c", "/data/reference/IGC/index/igc_v2014.03.refdata", "-m", "no_hg19", "-o", "/data1/bio/projects/ndanilova/Metagenomes/IGC"]
+      # command: ["python3", "/home/docker/scripts/sampledata2jsons_queue.py", "-s", "/data1/bio/projects/ndanilova/Metagenomes/IGC/2018-03-17-04-41-39.sampledata", "-c", "/data/reference/IGC/index/igc_v2014.03.refdata", "-m", "no_hg19", "-o", "/data1/bio/projects/ndanilova/Metagenomes/IGC"]
+      command: ["python3", "/home/docker/scripts/sampledata2jsons_queue.py", "-s", "/data1/bio/projects/ndanilova/Metagenomes/IGC/2018-03-22-00-49-47.sampledata", "-c", "/data/reference/IGC/index/igc_v2014.03.refdata", "-m", "no_hg19", "-o", "/data1/bio/projects/ndanilova/Metagenomes/IGC"]
       # Paste drives here
       volumeMounts:
         - mountPath: /data
