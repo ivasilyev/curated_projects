@@ -4,10 +4,15 @@ FROM debian:jessie
 
 RUN apt-get -y update && \
     apt-get -y install \
+            # Base packets
             ca-certificates \
             curl \
             python3 \
-            python3-pip && \
+            python3-pip \
+            # Required by lxml
+            libxml2-dev \
+            libxslt1-dev \
+    && \
     apt-get clean && \
     apt-get purge && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
