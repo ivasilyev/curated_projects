@@ -5,6 +5,7 @@ import requests
 import bs4
 import re
 import multiprocessing
+import os
 
 """
 # Pre-setup:
@@ -84,13 +85,51 @@ genesSequencesQueueList = process_genes_list()
 
 def filter_sequences_list():
     d = {}
-    for i in genesSequencesQueueList:
-        for j in i.split("\n\n"):
-            if len(j) > 0:
-                k = re.findall(">(.*) RETRIEVED", j)[0]
+    for i in ''.join(genesSequencesQueueList).split('>'):
+        if len(i) > 0:
+            i = ">" + re.sub("LB grop of viewer for database.*", "", i).strip() + "\n"
+            try:
+                k = re.findall(">(.*) RETRIEVED", i)[0]
                 if k not in d:
-                    d.update({k: j})
-    return [d[k].strip() for k in d]
+                    d.update({k: i})
+            except IndexError:
+                continue
+    return [d[k] for k in d]
 
 
 genesSequencesFilteredList = filter_sequences_list()
+
+
+def is_path_exists(path):
+    try:
+        os.makedirs(path)
+    except OSError:
+        pass
+
+
+outputDir = "/data1/bio/projects/tgrigoreva/25_ecoli_genes/"
+is_path_exists(outputDir)
+
+
+def list_to_file(header, list_to_write, file_to_write):
+    header += ''.join(str(i) for i in list_to_write if i is not None)
+    file = open(file_to_write, 'w')
+    file.write(header)
+    file.close()
+
+
+list_to_file("", genesSequencesFilteredList, outputDir + "25_ecoli_genes.fasta")
+
+"""
+# Reference processing:
+docker pull ivasilyev/bwt_filtering_pipeline_worker:latest && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker:latest \
+python3 /home/docker/scripts/cook_the_reference.py \
+-i /data1/bio/projects/tgrigoreva/25_ecoli_genes/25_ecoli_genes.fasta \
+-o /data1/bio/projects/tgrigoreva/25_ecoli_genes/index
+
+# TODO: 
+# Complete charts with reference: /data1/bio/projects/tgrigoreva/25_ecoli_genes/index/25_ecoli_genes.refdata
+
+"""
+
