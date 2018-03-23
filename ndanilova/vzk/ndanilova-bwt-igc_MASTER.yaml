@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: ndanilova-bwt-fp-queue
+  name: ndanilova-bwt-igc-queue
   labels:
     pipeline: bwt-filtering
     tier: queue
@@ -14,7 +14,7 @@ spec:
       # command: ["python3", "/home/docker/scripts/sampledata2jsons_queue.py", "-s", "/data1/bio/projects/ndanilova/colitis_esc_colitis_rem_crohn_esc_crohn_rem_srr.sampledata", "-c", "/data/reference/IGC/index/igc_v2014.03.refdata", "-m", "no_hg19", "-o", "/data1/bio/projects/ndanilova/Metagenomes/IGC"]
       # command: ["python3", "/home/docker/scripts/sampledata2jsons_queue.py", "-s", "/data1/bio/projects/ndanilova/Metagenomes/IGC/2018-03-17-04-41-39.sampledata", "-c", "/data/reference/IGC/index/igc_v2014.03.refdata", "-m", "no_hg19", "-o", "/data1/bio/projects/ndanilova/Metagenomes/IGC"]
       command: ["python3", "/home/docker/scripts/sampledata2jsons_queue.py", "-s", "/data1/bio/projects/ndanilova/Metagenomes/IGC/2018-03-22-00-49-47.sampledata", "-c", "/data/reference/IGC/index/igc_v2014.03.refdata", "-m", "no_hg19", "-o", "/data1/bio/projects/ndanilova/Metagenomes/IGC"]
-      # Paste drives here
+      # Persistent volumes (container side)
       volumeMounts:
         - mountPath: /data
           name: data
@@ -22,6 +22,7 @@ spec:
           name: data1
         - mountPath: /data2
           name: data2
+  # Persistent volumes (host side)
   volumes:
     - name: data
       hostPath:

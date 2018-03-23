@@ -6,9 +6,13 @@ import bs4
 import re
 import multiprocessing
 
+"""
 # Pre-setup:
-# docker pull debian:jessie && docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it debian:jessie bash
-# apt-get -y update && apt-get -y install ca-certificates curl python3 python3-pip
+docker pull debian:jessie && docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it debian:jessie bash
+apt-get -y update && apt-get -y install ca-certificates curl python3 python3-pip
+pip3 install bs4
+python3
+"""
 
 
 class NuccoreSequenceRetriever:

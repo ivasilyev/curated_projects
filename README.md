@@ -1,2 +1,2 @@
-# curated_projects
-The repository for special scripts for affiliated data analysis.
+# Curated Projects
+The repository containing special scripts for affiliated data analysis.

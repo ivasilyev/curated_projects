@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: ndanilova-bwt-fp-job
+  name: ndanilova-bwt-igc-job
   labels:
     pipeline: bwt-filtering
     tier: job
