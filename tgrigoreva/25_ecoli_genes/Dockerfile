@@ -13,6 +13,7 @@ RUN apt-get -y update && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN pip3 install bs4 \
+                 lxml \
                  requests
 
 CMD ["/bin/bash"]
