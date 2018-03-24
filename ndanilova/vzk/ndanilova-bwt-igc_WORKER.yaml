@@ -10,16 +10,17 @@ spec:
   parallelism: 5
   template:
     metadata:
-      name: ndanilova-bwt-fp-queue
+      name: ndanilova-bwt-igc-pull
       labels:
         pipeline: bwt-filtering
         tier: worker
     spec:
       containers:
-      - name: bwt-fp-worker
+      - name: ndanilova-bwt-igc-worker
         image: docker.io/ivasilyev/bwt_filtering_pipeline_worker:latest
         imagePullPolicy: Always
-        command: ["python3", "/home/docker/scripts/queue_handler.py"]
+        # Paste the digested queue consumption command line. Note the queue name.
+        command: ["python3", "/home/docker/scripts/queue_handler.py", "-q", "ndanilova-bwt-igc-queue"]
         # Persistent volumes (container side)
         volumeMounts:
         - name: data

@@ -87,7 +87,7 @@ def filter_sequences_list():
     d = {}
     for i in ''.join(genesSequencesQueueList).split('>'):
         if len(i) > 0:
-            i = ">" + re.sub("LB grop of viewer for database.*", "", i).strip() + "\n"
+            i = ">" + re.sub("LB grop of viewer for database.*", "", i).strip()
             try:
                 k = re.findall(">(.*) RETRIEVED", i)[0]
                 if k not in d:
@@ -112,7 +112,7 @@ is_path_exists(outputDir)
 
 
 def list_to_file(header, list_to_write, file_to_write):
-    header += ''.join(str(i) for i in list_to_write if i is not None)
+    header += "\n".join(str(i) for i in list_to_write if i is not None)
     file = open(file_to_write, 'w')
     file.write(header)
     file.close()
