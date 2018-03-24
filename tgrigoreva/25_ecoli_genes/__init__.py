@@ -121,15 +121,35 @@ def list_to_file(header, list_to_write, file_to_write):
 list_to_file("", genesSequencesFilteredList, outputDir + "25_ecoli_genes.fasta")
 
 """
-# Reference processing:
+# REFERENCE PREPARATION
 docker pull ivasilyev/bwt_filtering_pipeline_worker:latest && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker:latest \
 python3 /home/docker/scripts/cook_the_reference.py \
 -i /data1/bio/projects/tgrigoreva/25_ecoli_genes/25_ecoli_genes.fasta \
 -o /data1/bio/projects/tgrigoreva/25_ecoli_genes/index
 
-# TODO: 
-# Complete charts with reference: /data1/bio/projects/tgrigoreva/25_ecoli_genes/index/25_ecoli_genes.refdata
+# PIPELINE LAUNCH
+# Look for Redis pod & service:
+kubectl get pods --show-all
+
+# Deploy if not present:
+kubectl create -f https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/test_charts/redis-pod.yaml && \
+kubectl create -f https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/test_charts/redis-service.yaml
+
+# Deploy the MASTER chart to create queue
+kubectl create -f https://raw.githubusercontent.com/ivasilyev/curated_projects/master/tgrigoreva/25_ecoli_genes/tgrigoreva-bwt-25_MASTER.yaml
+
+# Wait until master finish and deploy the WORKER chart to create the pipeline job
+kubectl create -f https://raw.githubusercontent.com/ivasilyev/curated_projects/master/tgrigoreva/25_ecoli_genes/tgrigoreva-bwt-25_WORKER.yaml
+
+# Look for some pod
+kubectl describe pod <NAME>
+
+# Cleanup
+kubectl delete pod tgrigoreva-bwt-25-queue && \
+kubectl delete job tgrigoreva-bwt-25-job
+
+# Checkout
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker python3 /home/docker/scripts/verify_coverages.py -s /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata -a /data/reference/IGC/index/igc_v2014.03_annotation.txt -m no_hg19_igc_v2014.03 -o /data1/bio/projects/ndanilova/Metagenomes/IGC
 
 """
-
