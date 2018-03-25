@@ -22,7 +22,9 @@ RUN apt-get -y update && \
 
 RUN pip3 install bs4 \
                  lxml \
-                 requests
+                 requests \
+                 jinja2 \
+                 pyyaml
 
 CMD ["/bin/bash"]
 

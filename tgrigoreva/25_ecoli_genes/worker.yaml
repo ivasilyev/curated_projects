@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    pipeline: bwt-filtering
+    tier: job
+  name: tgrigoreva-bwt-25-job
+spec:
+  parallelism: 5
+  template:
+    metadata:
+      labels:
+        pipeline: bwt-filtering
+        tier: worker
+      name: tgrigoreva-bwt-25-job
+    spec:
+      containers:
+      - command:
+        - python3
+        - /home/docker/scripts/queue_handler.py
+        - -q
+        - tgrigoreva-bwt-25-queue
+        image: docker.io/ivasilyev/bwt_filtering_pipeline_worker:latest
+        imagePullPolicy: Always
+        name: tgrigoreva-bwt-25-worker
+        volumeMounts:
+        - mountPath: /data
+          name: data
+        - mountPath: /data1
+          name: data1
+        - mountPath: /data2
+          name: data2
+      restartPolicy: OnFailure
+      volumes:
+      - hostPath:
+          path: /data
+        name: data
+      - hostPath:
+          path: /data1
+        name: data1
+      - hostPath:
+          path: /data2
+        name: data2
