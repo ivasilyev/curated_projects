@@ -1,43 +1,44 @@
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
+  name: tgrigoreva-bwt-25-job
   labels:
     pipeline: bwt-filtering
     tier: job
-  name: tgrigoreva-bwt-25-job
 spec:
+  # Nodes number
   parallelism: 5
   template:
     metadata:
+      name: tgrigoreva-bwt-25-job
       labels:
         pipeline: bwt-filtering
         tier: worker
-      name: tgrigoreva-bwt-25-job
     spec:
       containers:
-      - command:
-        - python3
-        - /home/docker/scripts/queue_handler.py
-        - -q
-        - tgrigoreva-bwt-25-queue
+      - name: tgrigoreva-bwt-25-worker
         image: docker.io/ivasilyev/bwt_filtering_pipeline_worker:latest
         imagePullPolicy: Always
-        name: tgrigoreva-bwt-25-worker
+        # Paste the digested queue consumption command line. Note the queue name.
+        command: ["python3", "/home/docker/scripts/queue_handler.py", "-q", tgrigoreva-bwt-25-queue]
+        # Persistent volumes (container side)
         volumeMounts:
-        - mountPath: /data
-          name: data
-        - mountPath: /data1
-          name: data1
-        - mountPath: /data2
-          name: data2
-      restartPolicy: OnFailure
+        - name: data
+          mountPath: /data
+        - name: data1
+          mountPath: /data1
+        - name: data2
+          mountPath: /data2
+      # Persistent volumes (host side)
       volumes:
-      - hostPath:
+      - name: data
+        hostPath:
           path: /data
-        name: data
-      - hostPath:
+      - name: data1
+        hostPath:
           path: /data1
-        name: data1
-      - hostPath:
+      - name: data2
+        hostPath:
           path: /data2
-        name: data2
+      restartPolicy: OnFailure

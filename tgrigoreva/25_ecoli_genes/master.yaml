@@ -1,43 +1,35 @@
+---
 apiVersion: v1
 kind: Pod
 metadata:
+  name: tgrigoreva-bwt-25-queue
   labels:
     pipeline: bwt-filtering
     tier: queue
-  name: tgrigoreva-bwt-25-queue
 spec:
   containers:
-  - command:
-    - python3
-    - /home/docker/scripts/sampledata2jsons_queue.py
-    - -s
-    - tgrigoreva-bwt-25-queue
-    - -c
-    - /data1/bio/projects/tgrigoreva/25_ecoli_genes/index/25_ecoli_genes.refdata
-    - -m
-    - no_hg19
-    - -o
-    - /data2/bio/Metagenomes/custom/25_ecoli_genes
-    - -q
-    - tgrigoreva-bwt-25-queue
-    image: docker.io/ivasilyev/bwt_filtering_pipeline_master:latest
-    imagePullPolicy: Always
-    name: tgrigoreva-bwt-25-master
-    volumeMounts:
-    - mountPath: /data
-      name: data
-    - mountPath: /data1
-      name: data1
-    - mountPath: /data2
-      name: data2
-  restartPolicy: Never
+    - name: tgrigoreva-bwt-25-master
+      image: docker.io/ivasilyev/bwt_filtering_pipeline_master:latest
+      imagePullPolicy: Always
+      # Paste the digested queue creation command line. Note the queue name.
+      command: ["python3", "/home/docker/scripts/sampledata2jsons_queue.py", "-s", tgrigoreva-bwt-25-queue, "-c", /data1/bio/projects/tgrigoreva/25_ecoli_genes/index/25_ecoli_genes.refdata, "-m", no_hg19, "-o", /data2/bio/Metagenomes/custom/25_ecoli_genes, "-q", tgrigoreva-bwt-25-queue]
+      # Persistent volumes (container side)
+      volumeMounts:
+        - mountPath: /data
+          name: data
+        - mountPath: /data1
+          name: data1
+        - mountPath: /data2
+          name: data2
+  # Persistent volumes (host side)
   volumes:
-  - hostPath:
-      path: /data
-    name: data
-  - hostPath:
-      path: /data1
-    name: data1
-  - hostPath:
-      path: /data2
-    name: data2
+    - name: data
+      hostPath:
+        path: /data
+    - name: data1
+      hostPath:
+        path: /data1
+    - name: data2
+      hostPath:
+        path: /data2
+  restartPolicy: Never
