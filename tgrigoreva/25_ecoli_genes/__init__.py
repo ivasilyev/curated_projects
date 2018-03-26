@@ -203,6 +203,8 @@ external_route("curl", "-fsSL", "https://raw.githubusercontent.com/ivasilyev/bio
 external_route("python3", genFileName, "-c", cfgFileName, "-m", "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/master.yaml", "-w", "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/worker.yaml", "-o", chartsDir)
 
 """
+# Copy charts into '/master/bwt_filtering_pipeline/' dir and push updates
+
 # Pipeline launch
 # Look for Redis pod & service:
 kubectl get pods --show-all
