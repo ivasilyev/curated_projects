@@ -1,16 +1,42 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import requests
-import bs4
 import re
 import multiprocessing
 import os
+import requests
+import bs4
+import subprocess
+import jinja2
+import yaml
+
 
 """
 # Pre-setup:
-docker pull ivasilyev/env_25_ecoli_genes:latest && docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it ivasilyev/env_25_ecoli_genes:latest python3
+docker pull ivasilyev/env_25_ecoli_genes:latest && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it ivasilyev/env_25_ecoli_genes:latest python3
+
 """
+
+
+class FASTA:
+    """
+    This class is an attempt to apply NCBI standards to single FASTA.
+    Consumes one header followed by sequence.
+    """
+    def __init__(self, single_fasta):
+        self._body = re.sub("\n+", "\n", single_fasta.replace('\r', ''))
+        try:
+            self.header = ">" + re.findall(">(.+)", self._body)[0].strip()
+        except IndexError:
+            raise ValueError("Cannot parse the header!")
+        # Nucleotide sequence has only AT(U)GC letters. However, it may be also protein FASTA
+        self.sequence = "\n".join(self.chunk_string(re.sub("[^A-Za-z]", "", self._body.replace(self.header, "")), 70))
+    @staticmethod
+    def chunk_string(string, length):
+        return [string[0 + i:length + i] for i in range(0, len(string), length)]
+    def __str__(self):
+        return "\n".join([self.header, self.sequence])
 
 
 class NuccoreSequenceRetriever:
@@ -30,7 +56,7 @@ class NuccoreSequenceRetriever:
     @staticmethod
     def parse_table_row(row_soup):
         d = {"Name": row_soup.find_all("td", "gene-name-id")[0].find_all("a")[0].text,
-             "Gene ID": "".join(re.findall("ID: (\d+)",row_soup.find_all("td", "gene-name-id")[0].find_all("span", "gene-id")[0].text)),
+             "Gene ID": "".join(re.findall("ID: (\d+)", row_soup.find_all("td", "gene-name-id")[0].find_all("span", "gene-id")[0].text)),
              "Description": row_soup.find_all("td")[1].text,
              "Sequence ID": "".join(re.findall("(NC_\d+\.\d*)", row_soup.find_all("td")[2].text)),
              "Sequence Location": "".join(re.findall("\((\d+\.\.\d+)", row_soup.find_all("td")[2].text)),
@@ -41,13 +67,12 @@ class NuccoreSequenceRetriever:
             raise ValueError("Coordinates must be in a list")
         coordinates_list = [str(i) for i in coordinates_list]
         _soup = bs4.BeautifulSoup(requests.get("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=" + organism_id + "&rettype=fasta&retmode=text&seq_start=" + coordinates_list[0] + "&seq_stop=" + coordinates_list[-1], headers=self._headers).content, "lxml")
-        _fasta = re.sub("\n+", "\n", _soup.find_all("p")[0].text)
+        _fasta = FASTA(re.sub("\n+", "\n", _soup.find_all("p")[0].text))
         return _fasta
     def query2fasta(self):
         def _process_fasta_header(_fasta):
-            _fasta_sequence_list = _fasta.split('\n')[1:]
-            _fasta_header_string = _fasta.split('\n')[0] + " RETRIEVED BY " + self._gene + " WITH NANE " + _row_dict["Name"]
-            return "\n".join([_fasta_header_string] + _fasta_sequence_list)
+            _fasta_header_string = _fasta.header + " RETRIEVED BY " + self._gene + " WITH NANE " + _row_dict["Name"]
+            return "\n".join([_fasta_header_string, _fasta.sequence])
         out = []
         for _soup in self._row_soups_list:
             _row_dict = self.parse_table_row(_soup)
@@ -60,6 +85,7 @@ class NuccoreSequenceRetriever:
         return "\n".join(out)
 
 
+# Reference creation
 genesList = "Stx2, EhxA, STb, EspA, EspB, EspC, Cnf, Cfa, Iha, pap, papA, papC, papE, papF, Tir, Etp, KpsM, KpsT, FliC, IbeA, Tsh, IucD, TraT, IutA, espP, katP, ompA, ompT, iroN, iss, fyuA, uidA, uspA, cdtB, cvaC, ibeA".split(", ")
 
 
@@ -107,28 +133,77 @@ def is_path_exists(path):
         pass
 
 
-outputDir = "/data1/bio/projects/tgrigoreva/25_ecoli_genes/"
-is_path_exists(outputDir)
+referenceDir = "/data/reference/custom/25_ecoli_genes/"
+is_path_exists(referenceDir)
 
 
 def list_to_file(header, list_to_write, file_to_write):
-    header += "\n".join(str(i) for i in list_to_write if i is not None)
+    header += "\n".join(str(i) for i in list_to_write if i is not None) + "\n"
     file = open(file_to_write, 'w')
     file.write(header)
     file.close()
 
 
-list_to_file("", genesSequencesFilteredList, outputDir + "25_ecoli_genes.fasta")
+list_to_file("", genesSequencesFilteredList, referenceDir + "25_ecoli_genes.fasta")
 
 """
-# REFERENCE PREPARATION
+# Reference indexing
 docker pull ivasilyev/bwt_filtering_pipeline_worker:latest && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker:latest \
 python3 /home/docker/scripts/cook_the_reference.py \
--i /data1/bio/projects/tgrigoreva/25_ecoli_genes/25_ecoli_genes.fasta \
--o /data1/bio/projects/tgrigoreva/25_ecoli_genes/index
+-i /data/reference/custom/25_ecoli_genes/25_ecoli_genes.fasta \
+-o /data/reference/custom/25_ecoli_genes/index
 
-# PIPELINE LAUNCH
+"""
+
+
+def external_route(*args):
+    process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    (output, error) = process.communicate()
+    process.wait()
+    if error:
+        print(error)
+    return output.decode("utf-8")
+
+
+def read_file_or_url(path):
+    if os.path.isfile(path):
+        with open(path, 'r') as file:
+            return file.read()
+    else:
+        if path.startswith("http") or path.startswith("www."):
+            return external_route("curl", "-fsSL", path)
+        else:
+            raise ValueError("Cannot load  file or URL!")
+
+
+# Charts creation
+chartsDir = "/data1/bio/projects/tgrigoreva/25_ecoli_genes/charts/"
+is_path_exists(chartsDir)
+# cfgDict = yaml.load(read_file_or_url("https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/config.yaml"))
+cfgDict = {"queue_name": "tgrigoreva-bwt-25-queue",
+           "master_container_name": "tgrigoreva-bwt-25-master",
+           "job_name": "tgrigoreva-bwt-25-job",
+           "worker_container_name": "tgrigoreva-bwt-25-worker",
+           "sampledata": "/data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata",
+           "refdata": "/data1/bio/projects/tgrigoreva/25_ecoli_genes/index/25_ecoli_genes.refdata",
+           "mask": "no_hg19",
+           "output_dir": "/data2/bio/Metagenomes/custom/25_ecoli_genes"}
+
+# Dump config
+cfgFileName = chartsDir + "config.yaml"
+with open(cfgFileName, 'w') as file:
+    yaml.dump(cfgDict, file, default_flow_style=False, explicit_start=True)
+
+# Dump script
+genFileName = chartsDir + "generator.py"
+external_route("curl", "-fsSL", "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/generator.py", "-o", genFileName)
+
+# Create charts from templates
+external_route("python3", genFileName, "-c", cfgFileName, "-m", "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/master.yaml", "-w", "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/worker.yaml", "-o", chartsDir)
+
+"""
+# Pipeline launch
 # Look for Redis pod & service:
 kubectl get pods --show-all
 
@@ -137,10 +212,10 @@ kubectl create -f https://raw.githubusercontent.com/ivasilyev/biopipelines-docke
 kubectl create -f https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/test_charts/redis-service.yaml
 
 # Deploy the MASTER chart to create queue
-kubectl create -f https://raw.githubusercontent.com/ivasilyev/curated_projects/master/tgrigoreva/25_ecoli_genes/tgrigoreva-bwt-25_MASTER.yaml
+kubectl create -f https://raw.githubusercontent.com/ivasilyev/curated_projects/master/tgrigoreva/25_ecoli_genes/master.yaml
 
 # Wait until master finish and deploy the WORKER chart to create the pipeline job
-kubectl create -f https://raw.githubusercontent.com/ivasilyev/curated_projects/master/tgrigoreva/25_ecoli_genes/tgrigoreva-bwt-25_WORKER.yaml
+kubectl create -f https://raw.githubusercontent.com/ivasilyev/curated_projects/master/tgrigoreva/25_ecoli_genes/worker.yaml
 
 # Look for some pod
 kubectl describe pod <NAME>
@@ -150,6 +225,6 @@ kubectl delete pod tgrigoreva-bwt-25-queue && \
 kubectl delete job tgrigoreva-bwt-25-job
 
 # Checkout
-docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker python3 /home/docker/scripts/verify_coverages.py -s /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata -a /data/reference/IGC/index/igc_v2014.03_annotation.txt -m no_hg19_igc_v2014.03 -o /data1/bio/projects/ndanilova/Metagenomes/IGC
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker python3 /home/docker/scripts/verify_coverages.py -s /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata -a /data1/bio/projects/tgrigoreva/25_ecoli_genes/index/25_ecoli_genes_annotation.txt -m no_hg19_igc_v2014.03 -o /data1/bio/projects/tgrigoreva/25_ecoli_genes/map
 
 """
