@@ -5,5 +5,5 @@ master_container_name: tgrigoreva-bwt-25-master
 output_dir: /data2/bio/Metagenomes/custom/25_ecoli_genes
 queue_name: tgrigoreva-bwt-25-queue
 refdata: /data1/bio/projects/tgrigoreva/25_ecoli_genes/index/25_ecoli_genes.refdata
-sampledata: tgrigoreva-bwt-25-queue
+sampledata: /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata
 worker_container_name: tgrigoreva-bwt-25-worker
