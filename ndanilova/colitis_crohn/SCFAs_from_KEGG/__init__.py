@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-# Pre-setup:
+# Pre-setup (on WORKER node):
 docker pull python:latest && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it python:latest bash
 
@@ -41,7 +41,7 @@ def is_path_exists(path):
 
 
 # Manage output location
-outputDir = "/data1/bio/projects/ndanilova/"
+outputDir = "/data1/bio/projects/ndanilova/colitis_crohn/"
 is_path_exists(outputDir)
 # Move the Excel DB table into outputDir and parse it
 
@@ -88,21 +88,23 @@ class SampleDataArray:
     def add(self, dictionary):
         self.as_dict.update(dictionary)
     def export(self):
-        return "\n".join(["\t".join([i] + self.as_dict[i]) for i in self.as_dict]) + "\n"
+        return "\n".join(["\t".join([i] + self.as_dict[i]) for i in self.as_dict])
     @staticmethod
     def var_to_file(var_to_write, file_to_write):
         file = open(file_to_write, 'w')
-        file.write(var_to_write)
+        file.write(var_to_write + "\n")
         file.close()
     def dump(self, file):
         self.var_to_file(self.export(), file)
 
 
-# Export sample data
+# Export sample and group data
 wholeSampleDataArray = SampleDataArray.load_sampledata("/data2/bio/Metagenomes/SampleData/SAMPLEDATA_READS_SOLID_ILLUMINA_NO_HG19.txt")
 processedSampleDataArray = SampleDataArray({i: wholeSampleDataArray.get(i) for i in sorted(list(set(wholeSampleDataArray.as_dict).intersection(groupDataDF["sample_name"].values.tolist())))})
-sampleDataFileName = outputDir + "_".join(sorted(list(set(groupDataDF["group_id"].values.tolist())))) + ".sampledata"
+sampleDataFileSuffix = "_".join(sorted(list(set(groupDataDF["group_id"].values.tolist()))))
+sampleDataFileName = outputDir + sampleDataFileSuffix + ".sampledata"
 processedSampleDataArray.dump(sampleDataFileName)
+groupDataDF.to_csv(outputDir + sampleDataFileSuffix + ".groupdata", sep='\t', header=True, index=False)
 
 
 class FASTA:
@@ -306,85 +308,77 @@ is_path_exists(referenceDir)
 SampleDataArray.var_to_file("\n".join([i.to_str() for i in remove_empty_values([k for j in notOverlappingGenesFASTAsList for k in j])]),
                             referenceDir + "SCFAs_from_KEGG.fasta")
 
+"""
+# Reference indexing
+docker pull ivasilyev/bwt_filtering_pipeline_worker:latest && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker:latest \
+python3 /home/docker/scripts/cook_the_reference.py \
+-i /data/reference/custom/SCFAs_from_KEGG/SCFAs_from_KEGG.fasta \
+-o /data/reference/custom/SCFAs_from_KEGG/index
+
+"""
+
+# Create config chart
+chartsDir = outputDir + "SCFAs_from_KEGG/charts/"
+is_path_exists(chartsDir)
+cfgDict = {"QUEUE_NAME": "ndanilova-bwt-sk-queue",
+           "MASTER_CONTAINER_NAME": "ndanilova-bwt-sk-master",
+           "JOB_NAME": "ndanilova-bwt-sk-job",
+           "ACTIVE_NODES_NUMBER": 7,
+           "WORKER_CONTAINER_NAME": "ndanilova-bwt-sk-worker",
+           "SAMPLEDATA": sampleDataFileName,
+           "REFDATA": "/data1/bio/projects/tgrigoreva/25_ecoli_genes/index/25_ecoli_genes.refdata",
+           "OUTPUT_MASK": "no_hg19",
+           "OUTPUT_DIR": "/data2/bio/Metagenomes/custom/SCFAs_from_KEGG"}
+cfgFileName = chartsDir + "config.yaml"
+with open(cfgFileName, 'w') as cfgFile:
+    yaml.dump(cfgDict, cfgFile, default_flow_style=False, explicit_start=True)
 
 
-# DEBUG
-testKegg = KEGGCompoundSequencesRetriever("C00246")
-fff = testKegg.compound2fasta()
-testKegg.parse_compound_page()
-testKegg.parse_enzyme_page("1.3.1.31")
-testKegg.parse_ortholog_page("K10797")
-testKegg.parse_gene_page("dda:Dd703_1770")
-e_ids_list = remove_empty_values(testKegg.parse_compound_page())
-k_ids_list = sorted(remove_empty_values(list(set([k for j in multi_core_queue(testKegg.parse_enzyme_page, e_ids_list) for k in j]))))
-g_ids_list = sorted(remove_empty_values(list(set([k for j in multi_core_queue(testKegg.parse_ortholog_page, k_ids_list) for k in j]))))
-fasta_objs_list = remove_empty_values(multi_core_queue(testKegg.parse_gene_page, g_ids_list))
-[i.to_str() for i in fasta_objs_list]
-k_ids_list = sorted(list(set([k for j in remove_empty_values([remove_empty_values(testKegg.parse_enzyme_page(i)) for i in e_ids_list]) for k in j])))
-g_ids_list = sorted(list(set([k for j in remove_empty_values([remove_empty_values(testKegg.parse_ortholog_page(i)) for i in k_ids_list]) for k in j])))
-fasta_objs_list = [testKegg.parse_gene_page(i) for i in g_ids_list]
-filtered_fasta_objs_list = [i for i in fasta_objs_list if len(i.sequence) > 0]
+def external_route(*args):
+    process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    (output, error) = process.communicate()
+    process.wait()
+    if error:
+        print(error)
+    return output.decode("utf-8")
 
-g_id ="dda:Dd703_1770"
-_soup = KEGGCompoundSequencesRetriever.load_page("http://www.genome.jp/dbget-bin/www_bget?" + g_id)
-table_soup = _soup.find_all("td", "fr1")[0]
-# for row_soup in table_soup.find_all("tr"):
-# g_id
-row_soup = table_soup.find_all("tr")[5]
-# if row_soup.find_all("th", "th11")[0].text.strip() == "Organism":
-organism_name = " ".join([i.strip() for i in row_soup.find_all("td", "td11")[0].find_all("div")[0].text.split()[1:]])
-# ko
-row_soup = table_soup.find_all("tr")[3]
-# if row_soup.find_all("th", "th10")[0].text.strip() == "KO":
-k_id = row_soup.find_all("td", "td10")[0].find_all("div")[0].find_all("div")[0].find_all("a")[0].text.strip()
-enzyme_name = row_soup.find_all("td", "td10")[0].find_all("div")[0].find_all("div")[1].text.strip()
-# def
-row_soup = table_soup.find_all("tr")[2]
-# if row_soup.find_all("th", "th11")[0].text.strip() == "Definition":
-definition = row_soup.find_all("td", "td11")[0].text
-# seq
-row_soup = table_soup.find_all("tr")[-1]
-# if row_soup.find_all("th", "th11")[0].text.strip() == "NT seq":
-sequence = ''.join([i.strip().upper() for i in row_soup.find_all("td", "td11")[0].text.split('\n')[1:]])
 
-k_id = "K10797"
-_soup = KEGGCompoundSequencesRetriever.load_page("http://www.genome.jp/dbget-bin/www_bget?ko:" + k_id)
-table_soup = _soup.find_all("td", "fr4")[0]
-genes_list = []
-# for row_soup in table_soup.find_all("tr"):
-row_soup = table_soup.find_all("tr")[9]
-# if row_soup.find_all("th", "th40")[0].text == "Genes":
-# for gene_soup in row_soup.find_all("td", "td40")[0].find_all("table")[0].find_all("tr")
-gene_soup = row_soup.find_all("td", "td40")[0].find_all("table")[0].find_all("tr")[51]
-organism_id = gene_soup.find_all("nobr")[0].text.strip().lower()
-gene_ids_list = [i.text.strip() for i in gene_soup.find_all("a")]
-genes_list.extend([organism_id + i for i in gene_ids_list])
+# Dump script
+genFileName = chartsDir + "generator.py"
+external_route("curl", "-fsSL", "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/generator.py", "-o", genFileName)
 
-e_id = "1.3.1.31"
-_soup = KEGGCompoundSequencesRetriever.load_page("http://www.genome.jp/dbget-bin/www_bget?ec:" + e_id)
-table_soup = _soup.find_all("td", "fr2")[0]
-genes_list = []
-orthologs_list = []
-# for row_soup in table_soup.find_all("tr")
-row_soup = table_soup.find_all("tr")[16]
-# if row_soup.find_all("th", "th21")[0].text == "Orthology":
-orthologs_soup = row_soup.find_all("td", "td21")[0]
-orthologs_list.extend([i.text for i in orthologs_soup.find_all("a")])
-# if row_soup.find_all("th", "th20")[0].text == "Genes":
-# for genes_soup in row_soup.find_all("td", "td20")[0].find_all("table")[0].find_all("tr")
-genes_soup = row_soup.find_all("td", "td20")[0].find_all("table")[0].find_all("tr")[0]
-organism_id = genes_soup.find_all("nobr")[0].text.strip().lower()
-gene_id = genes_soup.find_all("a")[0].text.strip()
-genes_list.append(organism_id + ":" + gene_id)
+# Create charts from templates
+external_route("python3", genFileName, "-c", cfgFileName, "-m", "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/master.yaml", "-w", "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/worker.yaml", "-o", chartsDir)
 
-c = 0
-for row_soup in table_soup.find_all("tr"):
-    c += 1
-    try:
-        key_cell_soup = row_soup.find_all("th", "th40")[0]
-        if key_cell_soup.text == "Gene":
-            # print([i.text for i in row_soup.find_all("td", "td20")[0].find_all("a")])
-            print(c)
-            break
-    except IndexError:
-        continue
+"""
+# Copy charts into '/ndanilova/colitis_crohn/SCFAs_from_KEGG/' dir and push updates
+
+# Pipeline launch
+# Look for dependencies - Redis pod and service (from MASTER node)
+kubectl get pods --show-all
+
+# Deploy the MASTER chart to create queue
+kubectl create -f https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ndanilova/colitis_crohn/SCFAs_from_KEGG/master.yaml
+
+# Wait until master finish and deploy the WORKER chart to create the pipeline job
+kubectl create -f https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ndanilova/colitis_crohn/SCFAs_from_KEGG/worker.yaml
+
+# View progress (from WORKER node)
+echo && echo PROCESSED $(ls -d /data2/bio/Metagenomes/custom/SCFAs_from_KEGG/Statistics/*coverage.txt | wc -l) OF $(cat /data1/bio/projects/ndanilova/colitis_crohn/colitis_esc_colitis_rem_crohn_esc_crohn_rem_srr.sampledata | wc -l)
+
+# Look for some pod (from MASTER node)
+kubectl describe pod <NAME>
+
+# Cleanup
+kubectl delete pod ndanilova-bwt-sk-queue && \
+kubectl delete job ndanilova-bwt-sk-job
+
+# Checkout (from WORKER node)
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker python3 \
+/home/docker/scripts/verify_coverages.py 
+-s /data1/bio/projects/ndanilova/colitis_crohn/colitis_esc_colitis_rem_crohn_esc_crohn_rem_srr.sampledata \
+-r /data/reference/custom/SCFAs_from_KEGG/index/SCFAs_from_KEGG.refdata \
+-m no_hg19_SCFAs_from_KEGG -d -o /data2/bio/Metagenomes/custom/SCFAs_from_KEGG
+
+"""

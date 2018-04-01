@@ -31,7 +31,7 @@ class FASTA:
         except IndexError:
             raise ValueError("Cannot parse the header!")
         # Nucleotide sequence has only AT(U)GC letters. However, it may be also protein FASTA
-        self.sequence = "\n".join(self.chunk_string(re.sub("[^A-Za-z]", "", self._body.replace(self.header, "")), 70))
+        self.sequence = "\n".join(self.chunk_string(re.sub("[^A-Za-z]", "", self._body.replace(self.header, "")), 70)).upper()
     @staticmethod
     def chunk_string(string, length):
         return [string[0 + i:length + i] for i in range(0, len(string), length)]
@@ -181,14 +181,15 @@ def read_file_or_url(path):
 chartsDir = "/data1/bio/projects/tgrigoreva/25_ecoli_genes/charts/"
 is_path_exists(chartsDir)
 # cfgDict = yaml.load(read_file_or_url("https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/config.yaml"))
-cfgDict = {"queue_name": "tgrigoreva-bwt-25-queue",
-           "master_container_name": "tgrigoreva-bwt-25-master",
-           "job_name": "tgrigoreva-bwt-25-job",
-           "worker_container_name": "tgrigoreva-bwt-25-worker",
-           "sampledata": "/data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata",
-           "refdata": "/data1/bio/projects/tgrigoreva/25_ecoli_genes/index/25_ecoli_genes.refdata",
-           "mask": "no_hg19",
-           "output_dir": "/data2/bio/Metagenomes/custom/25_ecoli_genes"}
+cfgDict = {"QUEUE_NAME": "tgrigoreva-bwt-25-queue",
+           "MASTER_CONTAINER_NAME": "tgrigoreva-bwt-25-master",
+           "JOB_NAME": "tgrigoreva-bwt-25-job",
+           "ACTIVE_NODES_NUMBER": 9,
+           "WORKER_CONTAINER_NAME": "tgrigoreva-bwt-25-worker",
+           "SAMPLEDATA": "/data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata",
+           "REFDATA": "/data1/bio/projects/tgrigoreva/25_ecoli_genes/index/25_ecoli_genes.refdata",
+           "OUTPUT_MASK": "no_hg19",
+           "OUTPUT_DIR": "/data2/bio/Metagenomes/custom/25_ecoli_genes"}
 
 # Dump config
 cfgFileName = chartsDir + "config.yaml"
@@ -219,14 +220,21 @@ kubectl create -f https://raw.githubusercontent.com/ivasilyev/curated_projects/m
 # Wait until master finish and deploy the WORKER chart to create the pipeline job
 kubectl create -f https://raw.githubusercontent.com/ivasilyev/curated_projects/master/tgrigoreva/25_ecoli_genes/worker.yaml
 
-# Look for some pod
+# View progress (from WORKER node)
+echo && echo PROCESSED $(ls -d /data2/bio/Metagenomes/custom/25_ecoli_genes/Statistics/*coverage.txt | wc -l) OF $(cat /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata | wc -l)
+
+# Look for some pod (from MASTER node)
 kubectl describe pod <NAME>
 
 # Cleanup
 kubectl delete pod tgrigoreva-bwt-25-queue && \
 kubectl delete job tgrigoreva-bwt-25-job
 
-# Checkout
-docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker python3 /home/docker/scripts/verify_coverages.py -s /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata -a /data1/bio/projects/tgrigoreva/25_ecoli_genes/index/25_ecoli_genes_annotation.txt -m no_hg19_igc_v2014.03 -o /data1/bio/projects/tgrigoreva/25_ecoli_genes/map
+# Checkout (from WORKER node)
+docker pull ivasilyev/bwt_filtering_pipeline_worker:latest && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker python3 \
+/home/docker/scripts/verify_coverages.py -s /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata \
+-r /data/reference/custom/25_ecoli_genes/index/25_ecoli_genes.refdata \
+-m no_hg19_25_ecoli_genes -d -o /data2/bio/Metagenomes/custom/25_ecoli_genes
 
 """
