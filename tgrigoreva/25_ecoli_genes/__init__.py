@@ -186,7 +186,7 @@ cfgDict = {"QUEUE_NAME": "tgrigoreva-bwt-25-queue",
            "JOB_NAME": "tgrigoreva-bwt-25-job",
            "ACTIVE_NODES_NUMBER": 9,
            "WORKER_CONTAINER_NAME": "tgrigoreva-bwt-25-worker",
-           "SAMPLEDATA": "/data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata",
+           "SAMPLEDATA": "/data2/bio/Metagenomes/custom/25_ecoli_genes/2018-04-01-20-53-41.sampledata",
            "REFDATA": "/data1/bio/projects/tgrigoreva/25_ecoli_genes/index/25_ecoli_genes.refdata",
            "OUTPUT_MASK": "no_hg19",
            "OUTPUT_DIR": "/data2/bio/Metagenomes/custom/25_ecoli_genes"}
