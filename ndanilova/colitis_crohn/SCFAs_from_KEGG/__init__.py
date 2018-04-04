@@ -21,6 +21,7 @@ import requests
 import bs4
 import lxml  # Required by bs4
 import multiprocessing
+import json
 from collections import Counter
 import subprocess
 import yaml
@@ -297,6 +298,8 @@ for scfaCompoundName in scfaCompoundsIDsDict:
     foundGenesIDsList.extend(scfaJSONDict["genes_list"])
     scfaJSON.update({scfaCompoundName: scfaJSONDict})
 
+SampleDataArray.var_to_file(json.dumps({i: {j: scfaJSON[i][j] for j in scfaJSON[i] if j != "retriever"} for i in scfaJSON}), outputDir + "SCFAs_from_KEGG.json")
+
 # Compile all FASTA objects
 foundGenesIDsCounter = Counter(foundGenesIDsList)
 notOverlappingGenesIDsList = [i for i in foundGenesIDsCounter if foundGenesIDsCounter[i] == 1]
@@ -327,12 +330,12 @@ cfgDict = {"QUEUE_NAME": "ndanilova-bwt-sk-queue",
            "ACTIVE_NODES_NUMBER": 7,
            "WORKER_CONTAINER_NAME": "ndanilova-bwt-sk-worker",
            "SAMPLEDATA": sampleDataFileName,
-           "REFDATA": "/data1/bio/projects/tgrigoreva/25_ecoli_genes/index/25_ecoli_genes.refdata",
+           "REFDATA": "/data/reference/custom/SCFAs_from_KEGG/index/SCFAs_from_KEGG.refdata",
            "OUTPUT_MASK": "no_hg19",
            "OUTPUT_DIR": "/data2/bio/Metagenomes/custom/SCFAs_from_KEGG"}
 cfgFileName = chartsDir + "config.yaml"
 with open(cfgFileName, 'w') as cfgFile:
-    yaml.dump(cfgDict, cfgFile, default_flow_style=False, explicit_start=True)
+    yaml.dump(cfgDict, cfgFile, default_flow_style=False, explicit_start=False)
 
 
 def external_route(*args):
@@ -363,6 +366,9 @@ kubectl create -f https://raw.githubusercontent.com/ivasilyev/curated_projects/m
 
 # Wait until master finish and deploy the WORKER chart to create the pipeline job
 kubectl create -f https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ndanilova/colitis_crohn/SCFAs_from_KEGG/worker.yaml
+
+# View active nodes
+kubectl describe pod ndanilova-bwt-sk-job- | grep Node:
 
 # View progress (from WORKER node)
 echo && echo PROCESSED $(ls -d /data2/bio/Metagenomes/custom/SCFAs_from_KEGG/Statistics/*coverage.txt | wc -l) OF $(cat /data1/bio/projects/ndanilova/colitis_crohn/colitis_esc_colitis_rem_crohn_esc_crohn_rem_srr.sampledata | wc -l)
