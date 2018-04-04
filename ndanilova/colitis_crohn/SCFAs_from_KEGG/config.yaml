@@ -1,0 +1,9 @@
+ACTIVE_NODES_NUMBER: 7
+JOB_NAME: ndanilova-bwt-sk-job
+MASTER_CONTAINER_NAME: ndanilova-bwt-sk-master
+OUTPUT_DIR: /data2/bio/Metagenomes/custom/25_ecoli_genes
+OUTPUT_MASK: no_hg19
+QUEUE_NAME: ndanilova-bwt-sk-queue
+REFDATA: /data1/bio/projects/tgrigoreva/25_ecoli_genes/index/25_ecoli_genes.refdata
+SAMPLEDATA: /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata
+WORKER_CONTAINER_NAME: ndanilova-bwt-sk-worker

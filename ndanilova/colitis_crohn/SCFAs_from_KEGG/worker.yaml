@@ -1,26 +1,27 @@
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: ndanilova-bwt-igc-job
+  name: ndanilova-bwt-sk-job
   labels:
     pipeline: bwt-filtering
     tier: job
 spec:
   # Nodes number
-  parallelism: 5
+  parallelism: 7
   template:
     metadata:
-      name: ndanilova-bwt-igc-pull
+      name: ndanilova-bwt-sk-job
       labels:
         pipeline: bwt-filtering
         tier: worker
     spec:
       containers:
-      - name: ndanilova-bwt-igc-worker
+      - name: ndanilova-bwt-sk-worker
         image: docker.io/ivasilyev/bwt_filtering_pipeline_worker:latest
         imagePullPolicy: Always
         # Paste the digested queue consumption command line. Note the queue name.
-        command: ["python3", "/home/docker/scripts/queue_handler.py", "-q", "ndanilova-bwt-igc-queue"]
+        command: ["python3", "/home/docker/scripts/queue_handler.py", "-q", ndanilova-bwt-sk-queue]
         # Persistent volumes (container side)
         volumeMounts:
         - name: data
