@@ -298,7 +298,7 @@ for scfaCompoundName in scfaCompoundsIDsDict:
     foundGenesIDsList.extend(scfaJSONDict["genes_list"])
     scfaJSON.update({scfaCompoundName: scfaJSONDict})
 
-SampleDataArray.var_to_file(json.dumps({i: {j: scfaJSON[i][j] for j in scfaJSON[i] if j != "retriever"} for i in scfaJSON}), outputDir + "SCFAs_from_KEGG.json")
+SampleDataArray.var_to_file(json.dumps({i: {j: scfaJSON[i][j] for j in scfaJSON[i] if j != "retriever"} for i in scfaJSON}, sort_keys=True, indent=4), outputDir + "SCFAs_from_KEGG.json")
 
 # Compile all FASTA objects
 foundGenesIDsCounter = Counter(foundGenesIDsList)
