@@ -1,9 +1,9 @@
----
-job_name: tgrigoreva-bwt-25-job
-mask: no_hg19
-master_container_name: tgrigoreva-bwt-25-master
-output_dir: /data2/bio/Metagenomes/custom/25_ecoli_genes
-queue_name: tgrigoreva-bwt-25-queue
-refdata: /data/reference/custom/25_ecoli_genes/index/25_ecoli_genes.refdata
-sampledata: /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata
-worker_container_name: tgrigoreva-bwt-25-worker
+ACTIVE_NODES_NUMBER: 9
+JOB_NAME: tgrigoreva-bwt-25-job
+MASTER_CONTAINER_NAME: tgrigoreva-bwt-25-master
+OUTPUT_DIR: /data2/bio/Metagenomes/custom/25_ecoli_genes
+OUTPUT_MASK: no_hg19
+QUEUE_NAME: tgrigoreva-bwt-25-queue
+REFDATA: /data/reference/custom/25_ecoli_genes/index/25_ecoli_genes.refdata
+SAMPLEDATA: /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata
+WORKER_CONTAINER_NAME: tgrigoreva-bwt-25-worker
