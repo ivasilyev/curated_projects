@@ -1,22 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+# Pre-setup:
+export DOCKER_IMAGE_NAME=ivasilyev/curated_projects:latest && \
+docker pull ${DOCKER_IMAGE_NAME} && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it ${DOCKER_IMAGE_NAME} python3
+
+"""
+
 import re
 import multiprocessing
 import os
 import requests
 import bs4
 import subprocess
-import jinja2
+import pandas as pd
 import yaml
 
-
-"""
-# Pre-setup:
-docker pull ivasilyev/env_25_ecoli_genes:latest && \
-docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it ivasilyev/env_25_ecoli_genes:latest python3
-
-"""
+# Create reference sequences and metadata using gene name in initial HTML query
+genesNamesList = "Stx2, EhxA, STb, EspA, EspB, EspC, Cnf, Cfa, Iha, pap, papA, papC, papE, papF, Tir, Etp, KpsM, KpsT, FliC, IbeA, Tsh, IucD, TraT, IutA, espP, katP, ompA, ompT, iroN, iss, fyuA, uidA, uspA, cdtB, cvaC, ibeA".split(", ")
 
 
 class FASTA:
@@ -27,22 +30,32 @@ class FASTA:
     def __init__(self, single_fasta):
         self._body = re.sub("\n+", "\n", single_fasta.replace('\r', ''))
         try:
-            self.header = ">" + re.findall(">(.+)", self._body)[0].strip()
+            self.header = re.findall(">(.+)", self._body)[0].strip()
+            self.sequence = "\n".join(self.chunk_string(re.sub("[^A-Za-z]", "", self._body.replace(self.header, "")), 70)).upper()
         except IndexError:
             raise ValueError("Cannot parse the header!")
-        # Nucleotide sequence has only AT(U)GC letters. However, it may be also protein FASTA
-        self.sequence = "\n".join(self.chunk_string(re.sub("[^A-Za-z]", "", self._body.replace(self.header, "")), 70)).upper()
+        # Nucleotide sequence has only AT(U)GC letters. However, it may be also protein FASTA.
     @staticmethod
     def chunk_string(string, length):
         return [string[0 + i:length + i] for i in range(0, len(string), length)]
-    def __str__(self):
-        return "\n".join([self.header, self.sequence])
+    def __len__(self):
+        return len(self.sequence)
+    def to_dict(self):
+        return {self.header: self.sequence}
+    def to_str(self):
+        return "\n".join([">" + self.header, self.sequence])
+
+
+def dict2pd_series(dictionary):
+    output = pd.Series()
+    for key in dictionary:
+        output.at[key] = dictionary[key]
+    return output
 
 
 class NuccoreSequenceRetriever:
     """
     This class performs NCBI Gene DB search. Consumes organism name (space-delimited) and gene name.
-    May return raw pages or whole FASTA from valid pages
     """
     def __init__(self, species, gene):
         self._species = species.strip()
@@ -70,25 +83,19 @@ class NuccoreSequenceRetriever:
         _fasta = FASTA(re.sub("\n+", "\n", _soup.find_all("p")[0].text))
         return _fasta
     def query2fasta(self):
-        def _process_fasta_header(_fasta):
-            _fasta_header_string = _fasta.header + " RETRIEVED BY " + self._gene + " WITH NANE " + _row_dict["Name"]
-            return "\n".join([_fasta_header_string, _fasta.sequence])
-        out = []
+        output_dict = {"FASTAs_list": [], "annotations_series_list": []}
         for _soup in self._row_soups_list:
             _row_dict = self.parse_table_row(_soup)
             _locations_list = _row_dict["Sequence Location"].split("..")
             # Filtering expression
-            # if len(_locations_list) == 2:
             if (self._gene.lower() in _row_dict["Name"].lower() or self._gene.lower() in _row_dict["Description"].lower() or self._gene.lower() in _row_dict["Aliases"].lower()) and len(_locations_list) == 2:
                 fasta = self._get_fasta(_row_dict["Sequence ID"], _locations_list)
-                out.append(_process_fasta_header(fasta))
-        return "\n".join(out)
+                output_dict["FASTAs_list"].append(fasta)
+                output_dict["annotations_series_list"].append(pd.Series(dict2pd_series(_row_dict), name=fasta.header))
+        return output_dict
 
 
-# Reference creation
-genesList = "Stx2, EhxA, STb, EspA, EspB, EspC, Cnf, Cfa, Iha, pap, papA, papC, papE, papF, Tir, Etp, KpsM, KpsT, FliC, IbeA, Tsh, IucD, TraT, IutA, espP, katP, ompA, ompT, iroN, iss, fyuA, uidA, uspA, cdtB, cvaC, ibeA".split(", ")
-
-
+# Get sequences and metadata
 def multi_core_queue(function_to_parallelize, queue):
     pool = multiprocessing.Pool()
     output = pool.map(function_to_parallelize, queue)
@@ -97,46 +104,30 @@ def multi_core_queue(function_to_parallelize, queue):
     return output
 
 
-def get_fasta_by_gene(name):
+def mp_gene_search(name):
     obj = NuccoreSequenceRetriever("Escherichia coli", name)
     return obj.query2fasta()
 
 
-def process_genes_list():
-    return multi_core_queue(get_fasta_by_gene, genesList)
+foundGenesDictsList = multi_core_queue(mp_gene_search, genesNamesList)
 
 
-genesSequencesQueueList = process_genes_list()
+# Merge dictionaries
+def gene_search_wrapper():
+    output_dict = {i: [] for i in foundGenesDictsList[0]}
+    for input_dict in foundGenesDictsList:
+        if len(input_dict[list(input_dict)[0]]) > 0:
+            for key in input_dict:
+                output_dict[key].extend(input_dict[key])
+    df = pd.concat(output_dict["annotations_series_list"], axis=1).transpose()
+    df.index.names = ["former_id"]
+    return {"FASTAs_list": [i.to_str() for i in output_dict["FASTAs_list"]], "annotations_series_list": df}
 
 
-def filter_sequences_list():
-    d = {}
-    for i in ''.join(genesSequencesQueueList).split('>'):
-        if len(i) > 0:
-            i = ">" + re.sub("LB grop of viewer for database.*", "", i).strip()
-            try:
-                k = re.findall(">(.*) RETRIEVED", i)[0]
-                if k not in d:
-                    d.update({k: i})
-            except IndexError:
-                continue
-    return [d[k] for k in d]
+foundGenesDict = gene_search_wrapper()
 
 
-genesSequencesFilteredList = filter_sequences_list()
-
-
-def is_path_exists(path):
-    try:
-        os.makedirs(path)
-    except OSError:
-        pass
-
-
-referenceDir = "/data/reference/custom/25_ecoli_genes/"
-is_path_exists(referenceDir)
-
-
+# Dump reference
 def list_to_file(header, list_to_write, file_to_write):
     header += "\n".join(str(i) for i in list_to_write if i is not None) + "\n"
     file = open(file_to_write, 'w')
@@ -144,10 +135,13 @@ def list_to_file(header, list_to_write, file_to_write):
     file.close()
 
 
-list_to_file("", genesSequencesFilteredList, referenceDir + "25_ecoli_genes.fasta")
+referenceDir = "/data/reference/custom/25_ecoli_genes/"
+os.makedirs(referenceDir, exist_ok=True)
+list_to_file("", foundGenesDict["FASTAs_list"], referenceDir + "25_ecoli_genes.fasta")
 
 """
 # Reference indexing
+rm -rf /data/reference/custom/25_ecoli_genes/index
 docker pull ivasilyev/bwt_filtering_pipeline_worker:latest && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker:latest \
 python3 /home/docker/scripts/cook_the_reference.py \
@@ -157,6 +151,18 @@ python3 /home/docker/scripts/cook_the_reference.py \
 """
 
 
+# Add query metadata to annotation
+def update_annotation():
+    annotation_file_name = referenceDir + "index/25_ecoli_genes_annotation.txt"
+    df = pd.read_table(annotation_file_name, sep='\t', header=0, engine='python').set_index("former_id")
+    df = pd.concat([df, foundGenesDict["annotations_series_list"]], axis=1).reset_index().set_index("reference_id").sort_index(ascending=True)
+    df.to_csv(annotation_file_name, sep='\t', index=True, header=True)
+
+
+update_annotation()
+
+
+# Create charts
 def external_route(*args):
     process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     (output, error) = process.communicate()
@@ -166,35 +172,24 @@ def external_route(*args):
     return output.decode("utf-8")
 
 
-def read_file_or_url(path):
-    if os.path.isfile(path):
-        with open(path, 'r') as file:
-            return file.read()
-    else:
-        if path.startswith("http") or path.startswith("www."):
-            return external_route("curl", "-fsSL", path)
-        else:
-            raise ValueError("Cannot load  file or URL!")
-
-
-# Charts creation
-chartsDir = "/data1/bio/projects/tgrigoreva/25_ecoli_genes/charts/"
-is_path_exists(chartsDir)
-# cfgDict = yaml.load(read_file_or_url("https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/config.yaml"))
+outputDir = "/data1/bio/projects/tgrigoreva/25_ecoli_genes/"
+chartsDir = outputDir + "charts/"
+subprocess.getoutput("rm -rf " + chartsDir)
+os.makedirs(chartsDir, exist_ok=True)
 cfgDict = {"QUEUE_NAME": "tgrigoreva-bwt-25-queue",
            "MASTER_CONTAINER_NAME": "tgrigoreva-bwt-25-master",
            "JOB_NAME": "tgrigoreva-bwt-25-job",
            "ACTIVE_NODES_NUMBER": 9,
            "WORKER_CONTAINER_NAME": "tgrigoreva-bwt-25-worker",
-           "SAMPLEDATA": "/data2/bio/Metagenomes/custom/25_ecoli_genes/2018-04-03-10-29-06.sampledata",
-           "REFDATA": "/data1/bio/projects/tgrigoreva/25_ecoli_genes/index/25_ecoli_genes.refdata",
+           "SAMPLEDATA": "/data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata",
+           "REFDATA": "/data/reference/custom/25_ecoli_genes/index/25_ecoli_genes.refdata",
            "OUTPUT_MASK": "no_hg19",
            "OUTPUT_DIR": "/data2/bio/Metagenomes/custom/25_ecoli_genes"}
 
 # Dump config
 cfgFileName = chartsDir + "config.yaml"
 with open(cfgFileName, 'w') as file:
-    yaml.dump(cfgDict, file, default_flow_style=False, explicit_start=True)
+    yaml.dump(cfgDict, file, default_flow_style=False, explicit_start=False)
 
 # Dump script
 genFileName = chartsDir + "generator.py"
@@ -230,7 +225,7 @@ echo && echo PROCESSED $(ls -d /data2/bio/Metagenomes/custom/25_ecoli_genes/Stat
 kubectl describe pod <NAME>
 
 # Cleanup
-kubectl delete pod tgrigoreva-bwt-25-queue && \
+kubectl delete pod tgrigoreva-bwt-25-queue
 kubectl delete job tgrigoreva-bwt-25-job
 
 # Checkout (from WORKER node)

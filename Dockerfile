@@ -14,7 +14,9 @@ RUN apt-get -y update && \
             # Required by lxml
             libxml2-dev \
             libxslt1-dev \
-            zlib1g-dev
+            zlib1g-dev \
+            # Required by matplotlib
+            python3-tk
 
 # Install Tini - A tiny but valid init for containers
 RUN TINI_VERSION=`curl https://github.com/krallin/tini/releases/latest | grep -o "/v.*\"" | sed 's:^..\(.*\).$:\1:'` && \
@@ -54,4 +56,4 @@ WORKDIR /home/docker
 CMD ["/bin/bash"]
 
 # MANUAL BUILD COMMAND:
-# docker build -t env_25_ecoli_genes . && docker tag env_25_ecoli_genes ivasilyev/env_25_ecoli_genes:latest && docker push ivasilyev/env_25_ecoli_genes:latest
+# export DOCKER_IMAGE_NAME=curated_projects && docker build -t ${DOCKER_IMAGE_NAME} . && docker tag ${DOCKER_IMAGE_NAME} ivasilyev/${DOCKER_IMAGE_NAME}:latest && docker push ivasilyev/${DOCKER_IMAGE_NAME}:latest
