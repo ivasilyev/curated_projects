@@ -5,7 +5,7 @@
 # Pre-setup:
 export DOCKER_IMAGE_NAME=ivasilyev/curated_projects:latest && \
 docker pull ${DOCKER_IMAGE_NAME} && \
-docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it ${DOCKER_IMAGE_NAME} python3
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host --env="DISPLAY" -it ${DOCKER_IMAGE_NAME} python3
 
 """
 
@@ -30,7 +30,7 @@ class FASTA:
     def __init__(self, single_fasta):
         self._body = re.sub("\n+", "\n", single_fasta.replace('\r', ''))
         try:
-            self.header = re.findall(">(.+)", self._body)[0].strip()
+            self.header = re.findall("^>(.+)", self._body)[0].strip()
             self.sequence = "\n".join(self.chunk_string(re.sub("[^A-Za-z]", "", self._body.replace(self.header, "")), 70)).upper()
         except IndexError:
             raise ValueError("Cannot parse the header!")
@@ -66,14 +66,14 @@ class NuccoreSequenceRetriever:
         self._row_soups_list = self._search_soup.find_all("tr", "rprt")
     def get_soup(self):
         return self._search_soup
-    @staticmethod
-    def parse_table_row(row_soup):
+    def parse_table_row(self, row_soup):
         d = {"Name": row_soup.find_all("td", "gene-name-id")[0].find_all("a")[0].text,
              "Gene ID": "".join(re.findall("ID: (\d+)", row_soup.find_all("td", "gene-name-id")[0].find_all("span", "gene-id")[0].text)),
              "Description": row_soup.find_all("td")[1].text,
              "Sequence ID": "".join(re.findall("(NC_\d+\.\d*)", row_soup.find_all("td")[2].text)),
              "Sequence Location": "".join(re.findall("\((\d+\.\.\d+)", row_soup.find_all("td")[2].text)),
-             "Aliases": row_soup.find_all("td")[3].text}
+             "Aliases": row_soup.find_all("td")[3].text,
+             "Query": self._gene}
         return {k: d[k].strip() for k in d}
     def _get_fasta(self, organism_id, coordinates_list):
         if not isinstance(coordinates_list, list):
@@ -169,7 +169,7 @@ def external_route(*args):
     process.wait()
     if error:
         print(error)
-    return output.decode("utf-8")
+    print(output.decode("utf-8"))
 
 
 outputDir = "/data1/bio/projects/tgrigoreva/25_ecoli_genes/"
@@ -197,6 +197,7 @@ external_route("curl", "-fsSL", "https://raw.githubusercontent.com/ivasilyev/bio
 
 # Create charts from templates
 external_route("python3", genFileName, "-c", cfgFileName, "-m", "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/master.yaml", "-w", "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/worker.yaml", "-o", chartsDir)
+os.remove(genFileName)
 
 """
 # Copy charts into '/master/bwt_filtering_pipeline/' dir and push updates
@@ -231,8 +232,71 @@ kubectl delete job tgrigoreva-bwt-25-job
 # Checkout (from WORKER node)
 docker pull ivasilyev/bwt_filtering_pipeline_worker:latest && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker python3 \
-/home/docker/scripts/verify_coverages.py -s /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata \
+/home/docker/scripts/verify_coverages.py -s /data1/bio/projects/ndanilova/colitis_crohn/colitis_esc_colitis_rem_crohn_esc_crohn_rem_srr.sampledata \
 -r /data/reference/custom/25_ecoli_genes/index/25_ecoli_genes.refdata \
 -m no_hg19_25_ecoli_genes -d -o /data2/bio/Metagenomes/custom/25_ecoli_genes
 
 """
+
+# Using groupdata from "ndanilova/colitis_crohn" project
+groupDataDFsDict = {"free_for_all": pd.read_table("/data1/bio/projects/ndanilova/colitis_crohn/colitis_esc_colitis_rem_crohn_esc_crohn_rem_srr.groupdata", sep='\t', header=0, engine='python')}
+groupDataDFsDict["free_for_all"]["file_name"] = groupDataDFsDict["free_for_all"].loc[:, "sample_name"].apply(lambda x: "/data2/bio/Metagenomes/custom/25_ecoli_genes/Statistics/{}_no_hg19_25_ecoli_genes_coverage.txt".format(x))
+groupDataDFsDict["free_for_all"] = groupDataDFsDict["free_for_all"].loc[:, ["file_name", "group_id"]]
+# colitis_rem vs colitis_esc
+groupDataDFsDict["colitis"] = groupDataDFsDict["free_for_all"].copy()
+groupDataDFsDict["colitis"] = groupDataDFsDict["colitis"].loc[groupDataDFsDict["colitis"]["group_id"].str.contains("colitis")]
+# crohn_rem vs crohn_esc
+groupDataDFsDict["crohn"] = groupDataDFsDict["free_for_all"].copy()
+groupDataDFsDict["crohn"] = groupDataDFsDict["crohn"].loc[groupDataDFsDict["crohn"]["group_id"].str.contains("crohn")]
+# Disease vs control
+groupDataDFsDict["disease_vs_srr"] = groupDataDFsDict["free_for_all"].copy()
+groupDataDFsDict["disease_vs_srr"].loc[groupDataDFsDict["disease_vs_srr"]["group_id"] != "srr", "group_id"] = "disease"
+# Disease vs disease vs control
+groupDataDFsDict["colitis_vs_crohn_vs_srr"] = groupDataDFsDict["free_for_all"].copy()
+groupDataDFsDict["colitis_vs_crohn_vs_srr"].loc[groupDataDFsDict["colitis_vs_crohn_vs_srr"]["group_id"].str.contains("colitis"), "group_id"] = "colitis"
+groupDataDFsDict["colitis_vs_crohn_vs_srr"].loc[groupDataDFsDict["colitis_vs_crohn_vs_srr"]["group_id"].str.contains("crohn"), "group_id"] = "crohn"
+# Remission vs escalation vs control
+groupDataDFsDict["rem_vs_esc_vs_srr"] = groupDataDFsDict["free_for_all"].copy()
+groupDataDFsDict["rem_vs_esc_vs_srr"].loc[groupDataDFsDict["rem_vs_esc_vs_srr"]["group_id"].str.contains("rem"), "group_id"] = "rem"
+groupDataDFsDict["rem_vs_esc_vs_srr"].loc[groupDataDFsDict["rem_vs_esc_vs_srr"]["group_id"].str.contains("esc"), "group_id"] = "esc"
+
+groupDataDir = outputDir + "groupdata/"
+os.makedirs(groupDataDir, exist_ok=True)
+groupDataFilesDict = {}
+
+external_route("curl", "-fsSL", "https://raw.githubusercontent.com/ivasilyev/statistical_tools/master/groupdata2statistics.py", "-o", groupDataDir + "groupdata2statistics.py")
+
+reference_annotation_file_name = "/data/reference/custom/25_ecoli_genes/index/25_ecoli_genes_annotation.txt"
+indexColName = "reference_id"
+composeMethod = "u-test"
+adjustmentMethod = "fdr_bh"
+
+
+for groupDataDFsDictKey in groupDataDFsDict:
+    groupDataFileName = "{}{}.groupdata".format(groupDataDir, groupDataDFsDictKey)
+    groupDataDFsDict[groupDataDFsDictKey].to_csv(groupDataFileName, sep='\t', index=False)
+    groupDataFilesDict[groupDataDFsDictKey] = groupDataFileName
+
+    # class
+
+for groupDataDFsDictKey in groupDataFilesDict:
+    groupDataFileName = groupDataFilesDict[groupDataDFsDictKey]
+    external_route("python3", groupDataDir + "groupdata2statistics.py",
+                   "-g", groupDataFileName,
+                   "-i", indexColName,
+                   "-v", "id_mapped_relative_abundance",
+                   "-o", groupDataDir + groupDataDFsDictKey)
+    total_statistics_file_name = subprocess.getoutput("ls -d {}{}/*_total_dataframe.tsv".format(groupDataDir, groupDataDFsDictKey))
+    reference_annotation_df, total_statistics_df = [pd.read_table(i, sep='\t', header=0, engine='python').set_index(indexColName) for i in [reference_annotation_file_name, total_statistics_file_name]]
+    total_statistics_df = pd.concat([reference_annotation_df, total_statistics_df], axis=1)
+    total_statistics_df.index.names = [indexColName]
+    prevalents_dir = groupDataDir + groupDataDFsDictKey + "/prevalents/"
+    os.makedirs(prevalents_dir, exist_ok=True)
+    for comparison_column_name in [i for i in list(total_statistics_df) if "_is_rejected_by_{}_for_{}".format(adjustmentMethod, composeMethod) in i]:
+        try:
+            comparison_string = re.findall("(.+)_is_rejected_by_", comparison_column_name)[0]
+            prevalent_df = total_statistics_df.loc[total_statistics_df[comparison_column_name] == True, list(reference_annotation_df) + [comparison_string + "_prevalent"]]
+            if len(prevalent_df) > 0:
+                prevalent_df.to_csv("{}{}.tsv".format(prevalents_dir, comparison_string), sep='\t', index=True, header=True)
+        except IndexError:
+            continue

@@ -1,0 +1,9 @@
+ACTIVE_NODES_NUMBER: 7
+JOB_NAME: ndanilova-bwt-igc-job
+MASTER_CONTAINER_NAME: ndanilova-bwt-igc-master
+OUTPUT_DIR: /data2/bio/Metagenomes/IGC
+OUTPUT_MASK: no_hg19
+QUEUE_NAME: ndanilova-bwt-igc-queue
+REFDATA: /data/reference/IGC/index/igc_v2014.03.refdata
+SAMPLEDATA: /data1/bio/projects/ndanilova/colitis_crohn/colitis_esc_colitis_rem_crohn_esc_crohn_rem_srr.sampledata
+WORKER_CONTAINER_NAME: ndanilova-bwt-igc-worker

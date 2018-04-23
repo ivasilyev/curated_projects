@@ -2,14 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-# Pre-setup (on WORKER node):
-docker pull python:latest && \
-docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it python:latest bash
-
-docker pull ivasilyev/env_25_ecoli_genes:latest && \
-docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it ivasilyev/env_25_ecoli_genes:latest bash
-pip3 install pandas xlrd requests bs4 lxml jinja2 pyyaml
-python3
+# Pre-setup:
+export DOCKER_IMAGE_NAME=ivasilyev/curated_projects:latest && \
+docker pull ${DOCKER_IMAGE_NAME} && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it ${DOCKER_IMAGE_NAME} python3
 
 """
 
@@ -47,13 +43,15 @@ is_path_exists(outputDir)
 # Move the Excel DB table into outputDir and parse it
 
 
+def append_group_dataframe(dataframe, group_list, group_id):
+    return dataframe.append(pd.DataFrame({"sample_name": [re.sub('^0+', "", re.findall('(\d+)', re.sub('[ \r\n]', "", i))[0]) + re.findall('([A-Za-z]+)', re.sub('[ \r\n]', "", i))[0] for i in group_list], "group_id": [group_id,] * len(group_list)}), ignore_index=True)
+
+
 def parse_raw_database(xlsx):
     # Well, that was a something. Hope we'll get better data next time.
     col_names_list = ["sample_name", "group_id"]
     xl = pd.ExcelFile(xlsx)
     df = pd.DataFrame(columns=col_names_list)
-    def append_group_dataframe(dataframe, group_list, group_id):
-        return dataframe.append(pd.DataFrame({"sample_name": [re.sub('^0+', "", re.findall('(\d+)', re.sub('[ \r\n]', "", i))[0]) + re.findall('([A-Za-z]+)', re.sub('[ \r\n]', "", i))[0] for i in group_list], "group_id": [group_id,] * len(group_list)}), ignore_index=True)
     for sheet_id, col_name, group_id in zip(["ремиссия ЯК", "обострение ЯК", "обострение БК", "ремиссия БК"], ["# образца/Sample #", "# образца/Sample #", "# образца", "# образца"], ["colitis_rem", "colitis_esc", "crohn_esc", "crohn_rem"]):
         df1 = xl.parse(sheet_id)
         try:
@@ -68,6 +66,9 @@ def parse_raw_database(xlsx):
 groupDataDF = parse_raw_database(outputDir + "1 База на статистику самый точный вариант от 14.05.2017 (1).xlsx")
 # And add the control group
 groupDataDF = groupDataDF.append(pd.read_table("/data2/bio/Metagenomes/SampleData/GROUPDATA_SRR.tsv", sep='\t', header='infer', names=list(groupDataDF), engine='python'))
+# Parse if already dumped
+# groupDataDF = pd.read_table("/data1/bio/projects/ndanilova/colitis_crohn/colitis_esc_colitis_rem_crohn_esc_crohn_rem_srr.groupdata", sep='\t', header=0, engine='python')
+
 
 class SampleDataArray:
     def __init__(self, dictionary):
@@ -116,7 +117,7 @@ class FASTA:
     def __init__(self, single_fasta):
         self._body = re.sub("\n+", "\n", single_fasta.replace('\r', ''))
         try:
-            self.header = re.findall(">(.+)", self._body)[0].strip()
+            self.header = re.findall("^>(.+)", self._body)[0].strip()
             self.sequence = "\n".join(self.chunk_string(re.sub("[^A-Za-z]", "", self._body.replace(self.header, "")), 70)).upper()
         except IndexError:
             raise ValueError("Cannot parse the header!")
@@ -133,11 +134,16 @@ class FASTA:
 
 
 def remove_empty_values(input_list):
-    try:
-        return list(filter(lambda x: len(x) > 0, input_list))
-    except TypeError:
-        print(input_list)
-        return []
+    output_list = []
+    if input_list is not None:
+        for i in input_list:
+            if i is not None:
+                try:
+                    if len(i) > 0:
+                        output_list.append(i)
+                except TypeError:
+                    continue
+    return output_list
 
 
 def multi_core_queue(function_to_parallelize, queue):
@@ -148,12 +154,21 @@ def multi_core_queue(function_to_parallelize, queue):
     return output
 
 
+def dict2pd_series(dictionary):
+    output = pd.Series()
+    for key in dictionary:
+        output.at[key] = dictionary[key]
+    return output
+
+
 class KEGGCompoundSequencesRetriever:
     """
     This class processes KEGG web pages based on compound ID (CXXXXX)
+    Consumes dictionary {<compound name>: <compound id>}
     """
-    def __init__(self, compound_id):
-        self.c_id = compound_id
+    def __init__(self, compound_dict):
+        self.c_name = list(compound_dict)[0]
+        self.c_id = compound_dict[self.c_name]
     @staticmethod
     def load_page(url):
         return bs4.BeautifulSoup(requests.get(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36 OPR/32.0.1948.25'}).content, "lxml")
@@ -242,31 +257,42 @@ class KEGGCompoundSequencesRetriever:
             table_soup = _soup.find_all("td", "fr1")[0]
         except IndexError:
             return ""
-        out_dict = {"g_id": g_id}
+        out_dict = {"Compound ID": self.c_id, "Compound Name": self.c_name, "Gene": g_id}
         for row_soup in table_soup.find_all("tr"):
             try:
                 if row_soup.find_all("th", "th11")[0].text.strip() == "Definition":
-                    out_dict["definition"] = row_soup.find_all("td", "td11")[0].text
+                    out_dict["Definition"] = row_soup.find_all("td", "td11")[0].text
             except IndexError:
                 pass
             try:
                 if row_soup.find_all("th", "th10")[0].text.strip() == "KO":
-                    out_dict["k_id"] = row_soup.find_all("td", "td10")[0].find_all("div")[0].find_all("div")[0].find_all("a")[0].text.strip()
-                    out_dict["enzyme_name"] = row_soup.find_all("td", "td10")[0].find_all("div")[0].find_all("div")[1].text.strip()
+                    out_dict["KO"] = row_soup.find_all("td", "td10")[0].find_all("div")[0].find_all("div")[0].find_all("a")[0].text.strip()
+                    out_dict["Enzyme"] = row_soup.find_all("td", "td10")[0].find_all("div")[0].find_all("div")[1].text.strip()
             except IndexError:
                 pass
             try:
                 if row_soup.find_all("th", "th11")[0].text.strip() == "Organism":
-                    out_dict["organism_name"] = " ".join([i.strip() for i in row_soup.find_all("td", "td11")[0].find_all("div")[0].text.split()[1:]])
+                    out_dict["Organism"] = " ".join([i.strip() for i in row_soup.find_all("td", "td11")[0].find_all("div")[0].text.split()[1:]])
             except IndexError:
                 pass
             try:
                 if row_soup.find_all("th", "th11")[0].text.strip() == "NT seq":
-                    out_dict["sequence"] = "".join([i.strip().upper() for i in row_soup.find_all("td", "td11")[0].text.split('\n')[1:]])
+                    out_dict["Sequence"] = "".join([i.strip().upper() for i in row_soup.find_all("td", "td11")[0].text.split('\n')[1:]])
             except IndexError:
                 pass
-        out_dict = {i: out_dict.get(i) if out_dict.get(i) else "" for i in ["g_id", "organism_name", "k_id", "enzyme_name", "definition", "sequence"]}
-        return FASTA(">" + " ".join([out_dict.get(i).strip() for i in ["g_id", "organism_name", "k_id", "enzyme_name", "definition"]]) + "\n" + out_dict["sequence"])
+        out_dict = {i: out_dict.get(i) if out_dict.get(i) else "" for i in ["Gene", "Compound ID", "Compound Name", "Organism", "KO", "Enzyme", "Definition", "Sequence"]}
+        return {"FASTA": FASTA(">{}\n{}".format(out_dict["Gene"], out_dict["Sequence"])), "annotation": pd.Series(dict2pd_series({i: out_dict.get(i).strip() for i in out_dict if not any([i == j for j in ["Gene", "Sequence"]])}), name=out_dict["Gene"])}
+    def gene_parser_wrapper(self, genes_ids_list):
+        input_dicts_list = multi_core_queue(self.parse_gene_page, genes_ids_list)
+        if len(input_dicts_list) > 0:
+            output_dict = {i: [] for i in input_dicts_list[0]}
+            for d in input_dicts_list:
+                for k in d:
+                    output_dict[k].append(d[k])
+            output_dict = {i: remove_empty_values(output_dict[i]) for i in output_dict}
+            output_dict["annotation"] = pd.concat(output_dict["annotation"], axis=1).transpose()
+            output_dict["annotation"].index.names = ["Gene"]
+            return output_dict
     def compound2orthologs_list(self):
         e_ids_list = remove_empty_values(self.parse_compound_page())
         return sorted(remove_empty_values(list(set([k for j in multi_core_queue(self.parse_enzyme_page, e_ids_list) for k in j]))))
@@ -278,13 +304,13 @@ class KEGGCompoundSequencesRetriever:
         e_ids_list = remove_empty_values(self.parse_compound_page())
         k_ids_list = sorted(remove_empty_values(list(set([k for j in multi_core_queue(self.parse_enzyme_page, e_ids_list) for k in j]))))
         g_ids_list = sorted(remove_empty_values(list(set([k for j in multi_core_queue(self.parse_ortholog_page, k_ids_list) for k in j]))))
-        return remove_empty_values(multi_core_queue(self.parse_gene_page, g_ids_list))
+        return self.gene_parser_wrapper(g_ids_list)
     def genes_list2fasta(self, *args):
         # Just like the previous, but the 'g_ids_list' is given separately
         e_ids_list = remove_empty_values(self.parse_compound_page())
         k_ids_list = sorted(remove_empty_values(list(set([k for j in multi_core_queue(self.parse_enzyme_page, e_ids_list) for k in j]))))
         g_ids_list = sorted(remove_empty_values(list(set([k for j in multi_core_queue(self.parse_ortholog_page, k_ids_list) for k in j]).intersection(set(args)))))
-        return remove_empty_values(multi_core_queue(self.parse_gene_page, g_ids_list))
+        return self.gene_parser_wrapper(g_ids_list)
 
 
 # Create retrieving objects
@@ -303,16 +329,34 @@ SampleDataArray.var_to_file(json.dumps({i: {j: scfaJSON[i][j] for j in scfaJSON[
 # Compile all FASTA objects
 foundGenesIDsCounter = Counter(foundGenesIDsList)
 notOverlappingGenesIDsList = [i for i in foundGenesIDsCounter if foundGenesIDsCounter[i] == 1]
-notOverlappingGenesFASTAsList = [scfaJSON[i]["retriever"].genes_list2fasta(*notOverlappingGenesIDsList) for i in scfaJSON]
+notOverlappingGenesDictsList = remove_empty_values([scfaJSON[i]["retriever"].genes_list2fasta(*notOverlappingGenesIDsList) for i in scfaJSON])
+
+
+def export_retrievers():
+    if len(notOverlappingGenesDictsList) > 0:
+        output_dict = {i: [] for i in notOverlappingGenesDictsList[0]}
+        for d in notOverlappingGenesDictsList:
+            for k in d:
+                if k == "FASTA":
+                    output_dict[k].extend([i.to_str() for i in remove_empty_values(d[k])])
+                if k == "annotation":
+                    output_dict[k].append(d[k])
+        output_dict["FASTA"] = "\n".join(output_dict["FASTA"])
+        df = pd.concat(remove_empty_values(output_dict["annotation"]), axis=0)
+        df.index.names = ["reference_id"]
+        output_dict["annotation"] = df
+        return output_dict
+
 
 # Export FASTA
+notOverlappingGenesDict = export_retrievers()
 referenceDir = "/data/reference/custom/SCFAs_from_KEGG/"
 is_path_exists(referenceDir)
-SampleDataArray.var_to_file("\n".join([i.to_str() for i in remove_empty_values([k for j in notOverlappingGenesFASTAsList for k in j])]),
-                            referenceDir + "SCFAs_from_KEGG.fasta")
+SampleDataArray.var_to_file(notOverlappingGenesDict["FASTA"], referenceDir + "SCFAs_from_KEGG.fasta")
 
 """
 # Reference indexing
+rm -rf /data/reference/custom/SCFAs_from_KEGG/index
 docker pull ivasilyev/bwt_filtering_pipeline_worker:latest && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker:latest \
 python3 /home/docker/scripts/cook_the_reference.py \
@@ -320,6 +364,18 @@ python3 /home/docker/scripts/cook_the_reference.py \
 -o /data/reference/custom/SCFAs_from_KEGG/index
 
 """
+
+referenceAnnotationFileName = "{}index/SCFAs_from_KEGG_annotation.txt".format(referenceDir)
+
+
+def update_annotation():
+    df = pd.read_table(referenceAnnotationFileName, sep='\t', header=0, engine='python').set_index("former_id")
+    df = pd.concat([df, notOverlappingGenesDict["annotation"]], axis=1).reset_index().set_index("reference_id").sort_index(ascending=True)
+    df.to_csv(referenceAnnotationFileName, sep='\t', index=True, header=True)
+
+
+# Add KOs to annotation
+update_annotation()
 
 # Create config chart
 chartsDir = outputDir + "SCFAs_from_KEGG/charts/"
@@ -381,10 +437,18 @@ kubectl delete pod ndanilova-bwt-sk-queue && \
 kubectl delete job ndanilova-bwt-sk-job
 
 # Checkout (from WORKER node)
+docker pull ivasilyev/bwt_filtering_pipeline_worker:latest && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker python3 \
-/home/docker/scripts/verify_coverages.py 
+/home/docker/scripts/verify_coverages.py \
 -s /data1/bio/projects/ndanilova/colitis_crohn/colitis_esc_colitis_rem_crohn_esc_crohn_rem_srr.sampledata \
 -r /data/reference/custom/SCFAs_from_KEGG/index/SCFAs_from_KEGG.refdata \
 -m no_hg19_SCFAs_from_KEGG -d -o /data2/bio/Metagenomes/custom/SCFAs_from_KEGG
+
+# Launch 2 (manual):
+docker pull ivasilyev/bwt_filtering_pipeline_worker:latest && \
+docker run  --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker python3 \
+/home/docker/scripts/nBee.py -i /data2/bio/Metagenomes/custom/SCFAs_from_KEGG/2018-04-07-17-58-44.sampledata \
+-r /data/reference/custom/SCFAs_from_KEGG/index/SCFAs_from_KEGG.refdata \
+-m no_hg19_SCFAs_from_KEGG -o /data2/bio/Metagenomes/custom/SCFAs_from_KEGG
 
 """
