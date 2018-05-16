@@ -160,7 +160,7 @@ sudo nano /etc/exports
 sudo /etc/init.d/nfs-kernel-server restart
 ```
 ### WORKERS OPERATIONS
-#### Now logout from the master and login to ++each++ node and perform the manual configuration:
+#### Now logout from the master and login to _each_ node and perform the manual configuration:
 ```
 sudo apt-get -y update; sudo apt-get -y upgrade; sudo apt-get -y autoremove
 sudo apt-get -y install openssh-client openssh-server python sshpass apt-transport-https ca-certificates curl software-properties-common git python-pip python3-pip
@@ -434,7 +434,7 @@ nano ${AWB_DIR}/disable_swap.yml
     - name: Backup '/etc/fstab'
       shell: cp /etc/fstab /etc/fstab_with_swap.bak
     - name: Unmount swap
-      shell: sed -i 's|^/swap|# /swap|g' /etc/fstab
+      shell: sed -i '/swap/s/^/#/' /etc/fstab
 ```
 ```
 ansible-playbook -i ${AWB_HOSTS} --user ${AWB_UN} --ask-become-pass ${AWB_DIR}/append_fstab.yml
@@ -524,6 +524,9 @@ cd ~
 rm -rf kubespray
 git clone https://github.com/kubernetes-incubator/kubespray.git
 cd kubespray
+git reset --hard e23fd5c
+sudo pip install --upgrade pip
+sudo pip install -r requirements.txt
 cp -r inventory my_inventory
 ln -sfn ${AWB_HOSTS} my_inventory/local/inventory
 ```
@@ -550,12 +553,12 @@ nano roles/kubernetes/preinstall/tasks/verify-settings.yml
 ```
 - name: Stop if memory is too small for masters
   assert:
-    that: ansible_memtotal_mb >= 1500
+    that: ansible_memtotal_mb >= 500
   ignore_errors: "{{ ignore_assert_errors }}"
   when: inventory_hostname in groups['kube-master']
 - name: Stop if memory is too small for nodes
   assert:
-    that: ansible_memtotal_mb >= 1024
+    that: ansible_memtotal_mb >= 500
   ignore_errors: "{{ ignore_assert_errors }}"
   when: inventory_hostname in groups['kube-node']
 ```
@@ -578,13 +581,12 @@ nano ~/kubespray/cluster.yml
   roles:
     - { role: kubespray-defaults}
     - { role: kubernetes/preinstall, tags: preinstall }
-    - { role: docker, tags: docker }
+    - { role: docker, tags: docker, when: manage_docker|default(true) }
     - role: rkt
       tags: rkt
-      when: "'rkt' in [etcd_deployment_type, kubelet_deployment_type, vault_dep$
+      when: "'rkt' in [etcd_deployment_type, kubelet_deployment_type, vault_deployment_type]"
     - { role: download, tags: download, skip_downloads: false }
   environment: "{{proxy_env}}"
-
 ```
 #### Install python packages
 ```
