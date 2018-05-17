@@ -448,7 +448,7 @@ nano ${AWB_DIR}/usermod_docker.yml
 ```
 ```
 # ansible-playbook -i ${AWB_HOSTS} --user ${AWB_UN} --ask-become-pass ${AWB_DIR}/usermod_docker.yml
-- hosts: kube-node
+- hosts: k8s-cluster:children
   become: true
   become_method: sudo
   tasks:
