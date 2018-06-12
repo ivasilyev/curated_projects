@@ -6,4 +6,5 @@ OUTPUT_MASK: no_hg19
 QUEUE_NAME: dsafina-bwt-tadb-queue
 REFDATA: /data/reference/TADB/index/tadb_v2.0.refdata
 SAMPLEDATA: /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata
+THREADS_NUMBER: half
 WORKER_CONTAINER_NAME: dsafina-bwt-tadb-worker

@@ -342,12 +342,12 @@ if __name__ == '__main__':
 
     print("""
     # Reference indexing
-    rm -rf {referenceDir}/index
+    rm -rf {referenceDir}index
     docker pull ivasilyev/bwt_filtering_pipeline_worker:latest && \
     docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker:latest \
     python3 /home/docker/scripts/cook_the_reference.py \
     -i {referenceSequenceFile} \
-    -o {referenceDir}/index
+    -o {referenceDir}index
     """.format(referenceDir=referenceDir, referenceSequenceFile=referenceSequenceFile))
 
     """
@@ -368,6 +368,7 @@ if __name__ == '__main__':
                "MASTER_CONTAINER_NAME": "{}-master".format(deployName),
                "JOB_NAME": "{}-job".format(deployName),
                "ACTIVE_NODES_NUMBER": 9,
+               "THREADS_NUMBER": "half",
                "WORKER_CONTAINER_NAME": "{}-worker".format(deployName),
                "SAMPLEDATA": "/data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata",
                "REFDATA": "{referenceDir}index/{referenceDBName}.refdata".format(referenceDir=referenceDir, referenceDBName=referenceDBName),
@@ -435,7 +436,7 @@ if __name__ == '__main__':
 
     """
     # Copy the directory '/data1/bio/projects/dsafina/hp_checkpoints/TADB/charts/' into 'dsafina/hp_checkpoints/TADB' directory and push updates
-    
+
     # Look for Redis pod & service:
     kubectl get pods --show-all
     
@@ -464,5 +465,5 @@ if __name__ == '__main__':
     
     # Checkout (from WORKER node)
     docker pull ivasilyev/bwt_filtering_pipeline_worker:latest && docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker python3 /home/docker/scripts/verify_coverages.py -s /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata -r /data/reference/TADB/index/tadb_v2.0.refdata -m no_hg19_tadb_v2.0 -d -o /data2/bio/Metagenomes/Toxins/TADB
-    
+
     """
