@@ -12,7 +12,7 @@ spec:
       image: docker.io/ivasilyev/bwt_filtering_pipeline_master:latest
       imagePullPolicy: Always
       # Paste the digested queue creation command line. Note the queue name.
-      command: ["python3", "/home/docker/scripts/sampledata2jsons_queue.py", "-s", /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata, "-r", /data/reference/TADB/index/tadb_v2.0.refdata, "-m", no_hg19, "-t", half "-o", /data2/bio/Metagenomes/Toxins/TADB, "-q", dsafina-bwt-tadb-queue]
+      command: ["python3", "/home/docker/scripts/sampledata2jsons_queue.py", "-s", /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata, "-r", /data/reference/TADB/index/tadb_v2.0.refdata, "-m", no_hg19, "-t", half, "-o", /data2/bio/Metagenomes/Toxins/TADB, "-q", dsafina-bwt-tadb-queue]
       # Persistent volumes (container side)
       volumeMounts:
         - mountPath: /data
