@@ -30,11 +30,17 @@ RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install Python packages
+RUN pip3 install --upgrade pip
+RUN pip3 install setuptools
 RUN pip3 install \
                  # For 'tgrigoreva/25_ecoli_genes' project
-                 pandas matplotlib statsmodels scipy requests bs4 lxml jinja2 pyyaml \
+                 pandas statsmodels scipy requests bs4 lxml jinja2 pyyaml \
                  # For 'ndanilova/colitis_crohn/SCFAs_from_KEGG' project
-                 xlrd
+                 xlrd \
+                 # For visualization
+                 matplotlib seaborn \
+                 # For external access attempt
+                 pygit2 jupyter
 
 
 # Create user docker with password docker

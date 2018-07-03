@@ -10,7 +10,7 @@ for FILE in $(ls -d ${S_DIR}/*.csfasta); do NAME=$(echo ${FILE} | sed "s|${S_DIR
 zip -r ${D_DIR}.zip 201805
 ```
 
-## Get reads
+## [On master node] Get reads
 ```bash
 mkdir /data/samples
 cd /data/samples
@@ -44,8 +44,7 @@ cd ../
 rm -rf tmp
 ```
 
-## Reference indexing
-
+## [On worker node] Reference indexing
 ```bash
 rm -rf /data/reference/CARD/index
 export DOCKER_IMAGE_NAME=ivasilyev/bwt_filtering_pipeline_worker:latest && \
@@ -69,6 +68,7 @@ QUEUE_NAME: card-test-queue
 MASTER_CONTAINER_NAME: card-test-master
 JOB_NAME: card-test-job
 ACTIVE_NODES_NUMBER: 2
+THREADS_NUMBER: max
 WORKER_CONTAINER_NAME: card-test-worker
 SAMPLEDATA: /data/samples/201805.sampledata
 REFDATA: /data/reference/CARD/index/card_500.refdata
@@ -90,11 +90,11 @@ docker run --rm -v /data:/data --net=host -it ${DOCKER_IMAGE_NAME} python3 /data
 -o /data/charts
 ```
 
-# Job deployment
+# [On master node] Job deployment
 ## (If not present) Deploy Redis server imperatively
 ```bash
 # View existing pods
-kubectl get pods --show-all
+kubectl get pods
 
 # Deploy Redis server pod
 kubectl create -f https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/test_charts/redis-pod.yaml
@@ -111,7 +111,10 @@ cd /data/charts
 kubectl create -f master.yaml
 
 # Wait until MASTER ("card-test-queue") is completed
-kubectl get pods --show-all
+kubectl get pods
+
+# If error:
+kubectl logs card-test-queue
 
 # Deploy the WORKER chart to create the pipeline job
 kubectl create -f worker.yaml
@@ -129,4 +132,10 @@ export POD2_QUEUES_NUM=$(kubectl logs card-test-job-${POD2_NAME} | grep "Loaded 
 
 printf "\n\n\nTotal files: $(wc -l < /data/samples/201805.sampledata)\nQueue 1 size: ${POD1_QUEUES_NUM}\nQueue 2 size: ${POD2_QUEUES_NUM}\n" && \
 printf "Samples with non-zero coverage: $(ls -d /data/output/Statistics/*coverage.txt | wc -l)\n\n\n"
+```
+
+# Cleanup
+```bash
+kubectl delete pod card-test-queue
+kubectl delete job card-test-job
 ```

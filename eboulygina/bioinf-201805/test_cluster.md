@@ -18,40 +18,32 @@ To make SSH X11 forwarding work, in KiTTY go to *Connection - SSH - X11* and che
 ## Cluster creation
 ### HOST OPERATIONS
 #### Update cache on the host node
-```
+```bash
 sudo apt-get -y update; sudo apt-get -y upgrade; sudo apt-get -y autoremove
 ```
 #### Install packages
-```
+```bash
 sudo apt-get -y install openssh-client openssh-server python sshpass apt-transport-https ca-certificates curl software-properties-common git python-pip python3-pip
 ```
-##### (Optional) Install desktop environment
-```
-sudo apt-get -y install xubuntu-desktop gksu leafpad synaptic gnome-software terminator gedit geany
-```
-##### (Optional) For VMware VM with DE run:
-```
-sudo apt-get -y install open-vm-tools-desktop
-```
 #### Reboot
-```
+```bash
 sudo shutdown -r now
 ```
 #### View network interfaces
-```
+```bash
 ip addr show
 ```
 #### Scan LAN if required
-```
+```bash
 sudo apt-get -y install arp-scan
 sudo arp-scan --localnet
 ```
 #### Add nodes to system hosts
-```
+```bash
 sudo cp /etc/hosts /etc/hosts.bak
 sudo nano /etc/hosts
 ```
-```
+```text
 127.0.0.1 localhost localhost.localdomain
 # Not changing the default hostname to replicate it
 127.0.1.1 ubuntu
@@ -68,16 +60,16 @@ ff02::2 ip6-allrouters
 10.0.0.102 node2 node2.cluster
 ```
 #### Change host name if required
-```
+```bash
 sudo nano /etc/hostname
 ```
 #### Configure SSH daemon
-##### Host:
-```
+##### Master node:
+```bash
 sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
 sudo nano /etc/ssh/sshd_config
 ```
-```
+```text
 Port 2121
 Protocol 2
 ListenAddress 127.0.0.1
@@ -105,11 +97,11 @@ AcceptEnv LANG LC_*
 # Look for Subsystem correct path in /etc/ssh/sshd_config.bak
 Subsystem sftp /usr/lib/openssh/sftp-server
 ```
-##### Workers (on host):
-```
+##### Worker nodes (on master node):
+```bash
 sudo nano /etc/ssh/sshd_config_minions
 ```
-```
+```text
 Port 22
 Protocol 2
 # Add internal ListenAddress here to avoid access from external network
@@ -135,49 +127,49 @@ Subsystem sftp /usr/lib/openssh/sftp-server
 ```
 
 #### Apply changes
-```
+```bash
 sudo chmod a-w /etc/ssh/sshd_config.bak /etc/hosts.bak
 sudo service ssh restart
 ```
 ### NFS SERVER INITIALIZATION
-```
+```bash
 ip addr show | grep "inet "
 ```
 > ```
 > 10.0.0.100/24 ...
 > ```
 
-```
+```bash
 sudo apt-get -y install nfs-kernel-server nfs-common
 sudo mkdir /data
 sudo chmod -R 777 /data
 sudo nano /etc/exports
 ```
-```
+```text
 /data *(sec=sys,rw,async,no_root_squash)
 ```
-```
+```bash
 sudo /etc/init.d/nfs-kernel-server restart
 ```
 ### WORKERS OPERATIONS
-#### Now logout from the master and login to _each_ node and perform the manual configuration:
-```
+#### Now logout from the master node and login to _each_ worker node and perform the manual configuration:
+```bash
 sudo apt-get -y update; sudo apt-get -y upgrade; sudo apt-get -y autoremove
 sudo apt-get -y install openssh-client openssh-server python sshpass apt-transport-https ca-certificates curl software-properties-common git python-pip python3-pip
 sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
 sudo cp /etc/hosts /etc/hosts.bak
 sudo chmod a-w /etc/ssh/sshd_config.bak /etc/hosts.bak
 ```
-#### Use only host ip address during manual configuration files replication
-```
+#### Use only master node ip address during manual configuration files replication
+```bash
 export GET_CFG="scp -P 2121 user@10.0.0.100"
 sudo ${GET_CFG}:/etc/ssh/sshd_config_minions /etc/ssh/sshd_config
 sudo ${GET_CFG}:/etc/hosts /etc/hosts
 sudo service ssh restart
 ```
-### HOST OPERATIONS
+### MASTER NODE OPERATIONS
 #### Install Ansible
-```
+```bash
 sudo apt-add-repository universe
 sudo apt-add-repository ppa:ansible/ansible
 sudo apt-get -y update
@@ -185,7 +177,7 @@ sudo apt-get -y install ansible
 ansible --version | head -n 1
 ```
 #### Create Ansible variables
-```
+```bash
 # Create hosts variable
 echo "export AWB_HOSTS=${HOME}/.ansible/cfg/hosts" | tee -a ~/.bashrc
 export AWB_HOSTS=${HOME}/.ansible/cfg/hosts
@@ -198,12 +190,12 @@ export AWB_UN=$(whoami)
 ```
 #### Start using Ansible
 ##### Create inventory
-```
+```bash
 mkdir -p ~/.ansible/cfg
 mkdir ${AWB_DIR}
 nano ${AWB_HOSTS}
 ```
-```
+```text
 [all_hosts]
 node0 ip=10.0.0.100 ansible_connection=ssh ansible_user=user ansible_port=2121
 node1 ip=10.0.0.101
@@ -224,10 +216,10 @@ kube-node
 kube-master
 ```
 ##### Create main scripts to update SSH keys
-```
+```bash
 nano ${AWB_DIR}/setup_ssh_keys_1.sh
 ```
-```
+```text
 #!/usr/bin/env bash
 # setup_ssh_keys_1.sh
 echo "Disable login message"
@@ -246,10 +238,10 @@ ssh-add ~/.ssh/id_rsa
 echo "Launch SSH key exchange"
 printf "Host node0\n  HostName node0\n  Port 2121\n  User user\n\n"| tee -a ~/.ssh/config
 ```
-```
+```bash
 nano ${AWB_DIR}/setup_ssh_keys_2.sh
 ```
-```
+```text
 #!/usr/bin/env bash
 # setup_ssh_keys_2.sh
 # All nodes list, host is latest
@@ -275,10 +267,10 @@ chmod 640 ~/.ssh/authorized_keys ~/.ssh/known_hosts
 chmod 600 ~/.ssh/config
 ```
 ##### Create `setup_ssh_keys.sh` automation scripts
-```
+```bash
 nano ${AWB_DIR}/purge_ssh_environment.yml
 ```
-```
+```text
 # ansible-playbook -i ${AWB_HOSTS} --user ${AWB_UN} --ask-pass ${AWB_DIR}/purge_ssh_environment.yml
 - hosts: k8s-cluster:children
   tasks:
@@ -292,10 +284,10 @@ nano ${AWB_DIR}/purge_ssh_environment.yml
         - ~/authorized_keys
         - ~/known_hosts
 ```
-```
+```bash
 nano ${AWB_DIR}/setup_ssh_keys_1.yml
 ```
-```
+```text
 # ansible-playbook -i ${AWB_HOSTS} --user ${AWB_UN} --ask-pass ${AWB_DIR}/setup_ssh_keys_1.yml
 - hosts: k8s-cluster:children
   tasks:
@@ -310,10 +302,10 @@ nano ${AWB_DIR}/setup_ssh_keys_1.yml
         state: absent
         path: ~/setup_ssh_keys.sh
 ```
-```
+```bash
 nano ${AWB_DIR}/setup_ssh_keys_2.yml
 ```
-```
+```text
 # ansible-playbook -i ${AWB_HOSTS} --user ${AWB_UN} --ask-pass ${AWB_DIR}/setup_ssh_keys_2.yml
 - hosts: k8s-cluster:children
   tasks:
@@ -329,10 +321,10 @@ nano ${AWB_DIR}/setup_ssh_keys_2.yml
         path: ~/setup_ssh_keys.sh
 ```
 ##### Create reboot automation script
-```
+```bash
 nano ${AWB_DIR}/ansible-reboot-and-wait.yml
 ```
-```
+```text
 # ansible-playbook -i ${AWB_HOSTS} --user ${AWB_UN} --ask-become-pass ${AWB_DIR}/ansible-reboot-and-wait.yml
 - hosts: k8s-cluster:children
   become: true
@@ -357,10 +349,10 @@ nano ${AWB_DIR}/ansible-reboot-and-wait.yml
       shell: swapoff -a
 ```
 ##### Create `/etc/hosts` replication script
-```
+```bash
 nano ${AWB_DIR}/replicate_hosts.yml
 ```
-```
+```text
 # ansible-playbook -i ${AWB_HOSTS} --user ${AWB_UN} --ask-become-pass ${AWB_DIR}/replicate_hosts.yml
 - hosts: k8s-cluster:children
   become: true
@@ -374,7 +366,7 @@ nano ${AWB_DIR}/replicate_hosts.yml
       shell: echo {{ inventory_hostname }} > /etc/hostname
 ```
 ##### Launch SSH keys discovery
-```
+```bash
 # Replicate hostnames, SSH and root passwords are required
 ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${AWB_HOSTS} --user ${AWB_UN} --ask-pass --ask-become-pass ${AWB_DIR}/replicate_hosts.yml
 # Update SSH keys, only SSH password is required
@@ -389,18 +381,18 @@ ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${AWB_HOSTS} --user ${AWB_UN
 rm -f ${AWB_DIR}/setup_ssh_keys_1.sh ${AWB_DIR}/setup_ssh_keys_2.sh
 ```
 #### Mount NAS devices (node the blank lines flanking the command)
-```
+```bash
 nano ${AWB_DIR}/fstab
 ```
-```
+```text
 
 10.0.0.100:/data /data nfs rw,sec=sys,vers=4,addr=10.0.0.100,clientaddr=10.$ 0 0
 
 ```
-```
+```bash
 nano ${AWB_DIR}/append_fstab.yml
 ```
-```
+```text
 # ansible-playbook -i ${AWB_HOSTS} --user ${AWB_UN} --ask-become-pass ${AWB_DIR}/append_fstab.yml
 - hosts: kube-node
   become: true
@@ -418,10 +410,10 @@ nano ${AWB_DIR}/append_fstab.yml
         path: ~/fstab
 ```
 #### Create swap disabling script to run k8s
-```
+```bash
 nano ${AWB_DIR}/disable_swap.yml
 ```
-```
+```text
 # ansible-playbook -i ${AWB_HOSTS} --user ${AWB_UN} --ask-become-pass ${AWB_DIR}/disable_swap.yml
 - hosts: k8s-cluster:children
   become: true
@@ -436,17 +428,17 @@ nano ${AWB_DIR}/disable_swap.yml
     - name: Unmount swap
       shell: sed -i '/swap/s/^/#/' /etc/fstab
 ```
-```
+```bash
 ansible-playbook -i ${AWB_HOSTS} --user ${AWB_UN} --ask-become-pass ${AWB_DIR}/append_fstab.yml
 ansible-playbook -i ${AWB_HOSTS} --user ${AWB_UN} --ask-become-pass ${AWB_DIR}/disable_swap.yml
 ansible-playbook -i ${AWB_HOSTS} --user ${AWB_UN} --ask-become-pass ${AWB_DIR}/ansible-reboot-and-wait.yml
 ```
 ### Other Ansible charts
 #### Grant permissions for Docker (if already installed)
-```
+```bash
 nano ${AWB_DIR}/usermod_docker.yml
 ```
-```
+```text
 # ansible-playbook -i ${AWB_HOSTS} --user ${AWB_UN} --ask-become-pass ${AWB_DIR}/usermod_docker.yml
 - hosts: k8s-cluster:children
   become: true
@@ -456,10 +448,10 @@ nano ${AWB_DIR}/usermod_docker.yml
       shell: usermod -aG docker user
 ```
 #### Synchronize bash aliases
-```
+```bash
 nano ${AWB_DIR}/replicate_bash_aliases.yml
 ```
-```
+```text
 # ansible-playbook -i ${AWB_HOSTS} --user ${AWB_UN} ${AWB_DIR}/replicate_bash_aliases.yml
 - hosts: kube-node
   tasks:
@@ -469,10 +461,10 @@ nano ${AWB_DIR}/replicate_bash_aliases.yml
           dest: ~/.bash_aliases
 ```
 #### Install software packages
-```
+```bash
 nano ${AWB_DIR}/install_soft.yml
 ```
-```
+```text
 # ansible-playbook -i ${AWB_HOSTS} --user ${AWB_UN} --ask-become-pass ${AWB_DIR}/install_soft.yml
 - hosts: kube-node
   become: true
@@ -503,10 +495,10 @@ nano ${AWB_DIR}/install_soft.yml
 
 ```
 #### Create cdrom repository disabling script
-```
+```bash
 nano ${AWB_DIR}/disable_cdrom_repo.yml
 ```
-```
+```text
 # ansible-playbook -i ${AWB_HOSTS} --user ${AWB_UN} --ask-become-pass ${AWB_DIR}/disable_cdrom_repo.yml
 - hosts: k8s-cluster:children
   become: true
@@ -519,7 +511,7 @@ nano ${AWB_DIR}/disable_cdrom_repo.yml
 ```
 ## Install Kubernetes
 #### Clone Kubespray
-```
+```bash
 cd ~
 rm -rf kubespray
 git clone https://github.com/kubernetes-incubator/kubespray.git
@@ -531,26 +523,26 @@ cp -r inventory my_inventory
 ln -sfn ${AWB_HOSTS} my_inventory/local/inventory
 ```
 #### Edit `all.yml`
-```
+```bash
 nano my_inventory/local/group_vars/all.yml
 ```
-```
+```text
 bootstrap_os: ubuntu
 kubelet_load_modules: true
 ```
 #### Edit `k8s-cluster.yml`
-```
+```bash
 nano my_inventory/local/group_vars/k8s-cluster.yml
 ```
-```
+```text
 kube_version: v1.9.5
 kube_network_plugin: calico
 ```
 #### Edit `verify-settings.yml`
-```
+```bash
 nano roles/kubernetes/preinstall/tasks/verify-settings.yml
 ```
-```
+```text
 - name: Stop if memory is too small for masters
   assert:
     that: ansible_memtotal_mb >= 500
@@ -563,17 +555,17 @@ nano roles/kubernetes/preinstall/tasks/verify-settings.yml
   when: inventory_hostname in groups['kube-node']
 ```
 #### Edit `main.yml`
-```
+```bash
 nano roles/docker/defaults/main.yml
 ```
-```
+```text
 docker_version: '17.03'
 ```
 #### Edit main script
-```
+```bash
 nano ~/kubespray/cluster.yml
 ```
-```
+```text
 - hosts: k8s-cluster:etcd:calico-rr
   any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
   vars:
@@ -589,19 +581,19 @@ nano ~/kubespray/cluster.yml
   environment: "{{proxy_env}}"
 ```
 #### Install python packages
-```
+```bash
 sudo pip install ansible netaddr
 ```
 #### Manage `iptables`
-```
+```bash
 sudo nano /etc/network/if-up.d/00-iptables
 ```
-```
+```bash
 #!/bin/sh
 iptables-restore < /etc/firewall.conf
 ip6tables-restore < /etc/firewall6.conf
 ```
-```
+```bash
 sudo chmod +x /etc/network/if-up.d/00-iptables
 sudo iptables -A INPUT -p tcp --dport 2379 -j ACCEPT
 sudo iptables -A INPUT -p tcp --dport 2380 -j ACCEPT
@@ -609,7 +601,7 @@ sudo iptables-save | sudo tee /etc/firewall.conf
 sudo ip6tables-save | sudo tee /etc/firewall6.conf
 ```
 #### Reboot & make cleanup
-```
+```bash
 sudo rm -rf /tmp/*
 sudo rm -rf /var/lib/etcd
 sudo rm -rf /etc/systemd/system/etcd
@@ -618,12 +610,12 @@ sudo shutdown -r now
 sudo swapoff -a
 ```
 #### Deploy Kubespray
-```
+```bash
 cd ~/kubespray
 rm -f ~/kubespray.log
 ansible-playbook --flush-cache -i ~/kubespray/my_inventory/local/inventory --ask-become-pass ~/kubespray/cluster.yml -b -vvv | tee -a ~/kubespray.log
 ```
 #### Is Kubespray deployed?
-```
+```bash
 kubectl get all
 ```

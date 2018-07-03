@@ -32,4 +32,3 @@ class KubernetesJobChartsGenerator:
             s = self._template2yaml(self._exportDict[template_name])
             with open(file="{a}{b}.yaml".format(a=output_dir, b=template_name), mode="w", encoding="utf-8") as f:
                 f.write(s)
-
