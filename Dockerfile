@@ -9,6 +9,7 @@ RUN apt-get -y update && \
             # Base packets
             ca-certificates \
             curl \
+            git \
             python3 \
             python3-pip \
             # Required by lxml
@@ -40,7 +41,7 @@ RUN pip3 install \
                  # For visualization
                  matplotlib seaborn \
                  # For external access attempt
-                 pygit2 jupyter
+                 jupyter
 
 
 # Create user docker with password docker
