@@ -6,6 +6,7 @@ import subprocess
 import yaml
 from meta.scripts.RemoteScript import RemoteScript
 from meta.scripts.KubernetesJobChartsGenerator import KubernetesJobChartsGenerator
+from meta.scripts.utilities import ends_with_slash, filename_only
 
 
 class LaunchGuideLiner:
@@ -23,14 +24,14 @@ class LaunchGuideLiner:
                  threads,
                  nodes_number):
         self.reference_database_name = reference_database_name
-        self.reference_index_directory = self.ends_with_slash(reference_index_directory)
+        self.reference_index_directory = ends_with_slash(reference_index_directory)
         self.reference_nfasta_file = reference_nfasta_file
         self.project_owner = project_owner
         self.project_name = project_name
-        self.charts_directory = self.ends_with_slash(charts_directory)
+        self.charts_directory = ends_with_slash(charts_directory)
         self.deploy_prefix = deploy_prefix
-        self.output_directory = "{a}{b}".format(a=self.ends_with_slash(output_directory),
-                                                b=self.ends_with_slash(self.reference_database_name))
+        self.output_directory = "{a}{b}".format(a=ends_with_slash(output_directory),
+                                                b=ends_with_slash(self.reference_database_name))
         self.output_mask = output_mask
         self.sampledata_file = sampledata_file
         self.threads = threads
@@ -48,21 +49,19 @@ class LaunchGuideLiner:
                         "OUTPUT_DIR": self.output_directory}
         self.cfg_file = "{}config.yaml".format(self.charts_directory)
     @staticmethod
-    def ends_with_slash(string):
-        if string.endswith("/"):
-            return string
-        else:
-            return str(string + "/")
-    def get_index_guide(self):
+    def get_index_guide(index_directory, raw_nfasta_file):
         print("""
-              # Reference indexing (from worker node)
+              # Reference indexing (from worker node):
+              
               rm -rf {a}
               docker pull ivasilyev/bwt_filtering_pipeline_worker:latest && \
               docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker:latest \
               python3 /home/docker/scripts/cook_the_reference.py \
               -i {b} \
               -o {a}
-              """.format(a=self.reference_index_directory, b=self.reference_nfasta_file))
+              
+              Wait until REFDATA file creation
+              """.format(a=index_directory, b=raw_nfasta_file))
     def generate_config(self):
         os.makedirs(self.charts_directory, exist_ok=True)
         with open(file=self.cfg_file, mode="w", encoding="utf-8") as f:

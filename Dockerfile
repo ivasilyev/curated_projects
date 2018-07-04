@@ -60,6 +60,9 @@ ENV PATH=$PATH:/home/docker/bin
 ENV HOME=/home/docker
 WORKDIR /home/docker
 
+RUN git clone https://github.com/ivasilyev/curated_projects.git
+WORKDIR /home/docker/curated_projects
+
 CMD ["/bin/bash"]
 
 # MANUAL BUILD COMMAND:

@@ -360,7 +360,7 @@ if __name__ == '__main__':
 
     ownerName = "dsafina"
     projectName = "hp_checkpoints/TADB"
-    outputDir = "/data1/bio/projects/{ownerName}/{projectName}/".format(ownerName=ownerName, projectName=projectName)
+    outputDir = "/data1/bio/projects/{a}/{b}/".format(a=ownerName, b=projectName)
     chartsDir = "{}charts/".format(outputDir)
     deployName = "dsafina-bwt-tadb"
 
@@ -467,3 +467,70 @@ if __name__ == '__main__':
     docker pull ivasilyev/bwt_filtering_pipeline_worker:latest && docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker python3 /home/docker/scripts/verify_coverages.py -s /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata -r /data/reference/TADB/index/tadb_v2.0.refdata -m no_hg19_tadb_v2.0 -d -o /data2/bio/Metagenomes/Toxins/TADB
 
     """
+
+
+class GroupDataPreparer:
+    def __init__(self, raw_groupdata_file, processed_prefix, processed_suffix):
+        self._df = pd.read_table(filepath_or_buffer=raw_groupdata_file,
+                                 sep='\t',
+                                 header='infer',
+                                 names=["sample_name", "group_name"],
+                                 engine='python')
+        self._df["file_name"] = self._df.loc[:, "sample_name"].map(lambda x: processed_prefix + x + processed_suffix)
+        self._df["file_exists"] = self._df.loc[:, "file_name"].map(lambda x: os.path.isfile(x))
+        self._df = self._df.loc[self._df.loc[:, "file_exists"] == True]
+        if sum(self._df.loc[:, "file_exists"].values.tolist()) == 0:
+            raise ValueError("Cannot find files by the mask: '{a}<sample name>{b}'".format(a=processed_prefix, b=processed_suffix))
+    def get_groupdata(self):
+        return self._df.loc[:, ["file_name", "group_name"]]
+    def export_groupdata(self, output_file):
+        self.get_groupdata().to_csv(path_or_buf=output_file, sep='\t', header=False, index=False)
+
+
+class RemoteScript:
+    def __init__(self, url, output_dir):
+        self._url = url
+        if not output_dir:
+            output_dir = os.getcwd()
+        output_dir = (output_dir + "/", output_dir)[output_dir.endswith("/")]
+        script_name = url.split("/")[-1]
+        self.file = output_dir + script_name
+        subprocess.getoutput("curl -fsSL {a} -o {b}".format(a=self._url, b=self.file))
+
+
+class PivotTableAnnotator:
+    def __init__(self, pivot_file, annotation_file):
+        pivot_df = pd.read_table(pivot_file, sep='\t', header=0, engine='python')
+        annotation_df = pd.read_table(annotation_file, sep='\t', header=0, engine='python')
+        self.annotated_df = pd.merge(annotation_df, pivot_df, on="reference_id", how='outer')
+    def export_annotated_df(self, output_file):
+        self.annotated_df.to_csv(path_or_buf=output_file, sep='\t', header=True, index=False)
+
+
+
+def filename_only(string):
+    return str(".".join(string.rsplit("/", 1)[-1].split(".")[:-1]))
+
+
+groupdataFile = "/data1/bio/projects/dsafina/HP-checkpoints_SRR.groupdata"
+ownerName = "dsafina"
+projectName = "hp_checkpoints"
+referenceDBName = "TADB"
+projectsDir = "/data1/bio/projects/"
+outputDir = "{pdir}{o}/{pname}/{r}/".format(pdir=projectsDir, o=ownerName, pname=projectName, r=referenceDBName)
+os.makedirs(path=outputDir, exist_ok=True)
+preparer = GroupDataPreparer(raw_groupdata_file=groupdataFile,
+                             processed_prefix="/data2/bio/Metagenomes/Toxins/TADB/Statistics/",
+                             processed_suffix="_no_hg19_tadb_v2.0_coverage.tsv")
+processed_group_data = "{a}{b}.groupdata".format(a=outputDir, b=filename_only(groupdataFile))
+preparer.export_groupdata(processed_group_data)
+
+g2s_script = RemoteScript("https://raw.githubusercontent.com/ivasilyev/statistical_tools/master/groupdata2statistics.py", None)
+subprocess.getoutput("python3 {a} -g {g} -i {i} -v {v} -o {o}".format(a=g2s_script.file,
+                                                                      g=processed_group_data,
+                                                                      i="reference_id",
+                                                                      v="id_total_relative_abundance",
+                                                                      o=outputDir + filename_only(g2s_script.file)))
+
+annotator = PivotTableAnnotator(pivot_file="/data1/bio/projects/dsafina/hp_checkpoints/TADB/groupdata2statistics/C_I_II_III_IV_srr_total_dataframe.tsv", annotation_file="/data/reference/TADB/index/tadb_v2.0_annotation.tsv")
+annotator.export_annotated_df("/data1/bio/projects/dsafina/hp_checkpoints/TADB/groupdata2statistics/C_I_II_III_IV_srr_total_dataframe_annotated.tsv")
