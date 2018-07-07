@@ -31,14 +31,17 @@ class LaunchGuideLiner:
                         "OUTPUT_MASK": output_mask,
                         "OUTPUT_DIR": ends_with_slash(output_dir)}
         self.cfg_file = "{}config.yaml".format(self.charts_directory)
+        self.launching_template = "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/master_worker.yaml"
+        self.launching_chart = "{}master_worker.yaml".format(self.charts_directory)
     @staticmethod
     def get_index_guide(index_directory, raw_nfasta_file):
         print("""
 # Reference indexing (from worker node):
 
 rm -rf {a}
-docker pull ivasilyev/bwt_filtering_pipeline_worker:latest && \
-docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker:latest \
+export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \
+docker pull $IMG && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG \
 python3 /home/docker/scripts/cook_the_reference.py \
 -i {b} \
 -o {a}
@@ -49,21 +52,29 @@ Wait until REFDATA file creates
         os.makedirs(self.charts_directory, exist_ok=True)
         with open(file=self.cfg_file, mode="w", encoding="utf-8") as f:
             yaml.dump(self.cfgDict, f, default_flow_style=False, explicit_start=False)
-        gen = ChartGenerator(config=self.cfg_file,
-                             template="https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/master_worker.yaml")
-        gen.export_yaml("{}master_worker.yaml".format(self.charts_directory))
+            print("Created project configuration: '{}'".format(self.cfgDict))
+        gen = ChartGenerator(config=self.cfg_file, template=self.launching_template)
+        gen.export_yaml(self.launching_template)
+        print("Created launching chart: '{}'".format(self.launching_template))
     def get_deploy_guide(self):
         print("""
 # Charts directory: '{chartsDir}' 
 
 # Look for Redis pod & service:
-kubectl get pods --show-all
+kubectl get pods
 
-# Deploy if not present:
-https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/meta/charts/redis.yaml
-# Pipeline launch
+# (Optional) If required, flush all Redis queues:
+export IMG=ivasilyev/bwt_filtering_pipeline_master:latest && \
+docker pull $IMG && docker run --rm -it $IMG redis-cli -h redis flushall
+
+# (Optional) Or remove Redis server by itself:
+kubectl delete svc,pod redis
+
+# (Optional) Deploy if not present:
+kubectl create -f  https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/meta/charts/redis.yaml
+
 # Deploy the combined chart to create queue and start pipeline job
-kubectl create -f {chartsDir}master_worker.yaml
+kubectl create -f {launchingTemplate}
 
 # View active nodes
 kubectl describe pod {JOB_NAME}- | grep Node:
@@ -79,12 +90,14 @@ kubectl delete pod {QUEUE_NAME}
 kubectl delete job {JOB_NAME}
 
 # Checkout (from WORKER node)
-docker pull ivasilyev/bwt_filtering_pipeline_worker:latest && \
-docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker python3 \
+export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \
+docker pull $IMG && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG python3 \
 /home/docker/scripts/verify_coverages.py -s {sampleDataFileName} \
 -r {REFDATA} \
 -m {OUTPUT_MASK} -d -o {OUTPUT_DIR}
-        """.format(chartsDir=self.charts_directory,
+        """.format(launchingTemplate=self.launching_template,
+                   chartsDir=self.charts_directory,
                    JOB_NAME=self.cfgDict["JOB_NAME"],
                    OUTPUT_DIR=self.cfgDict["OUTPUT_DIR"],
                    QUEUE_NAME=self.cfgDict["QUEUE_NAME"],
