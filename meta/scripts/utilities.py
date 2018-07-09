@@ -53,4 +53,4 @@ def filename_only(string):
 def get_script_dir():
     import os
     import sys
-    return os.path.dirname(os.path.realpath(sys.argv[0]))
+    return ends_with_slash(os.path.dirname(os.path.realpath(sys.argv[0])))

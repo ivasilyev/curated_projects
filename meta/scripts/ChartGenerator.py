@@ -8,6 +8,9 @@ import jinja2
 
 
 class ChartGenerator:
+    """
+    The class loads config and template with Jinja2 syntax from URL or file
+    """
     def __init__(self, config, template):
         self._raw_config = self._read_file_or_url(config)
         self._raw_template = self._read_file_or_url(template)

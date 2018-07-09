@@ -7,7 +7,18 @@ from meta.scripts.ChartGenerator import ChartGenerator
 from meta.scripts.utilities import ends_with_slash
 
 
-class LaunchGuideLiner:
+class Chart(object):
+    def __init__(self, file, url):
+        self.file = file
+        self.url = url
+
+    def finalize(self, config_file):
+        g = ChartGenerator(config=config_file, template=self.url)
+        g.export_yaml(self.file)
+        print("Created chart: '{}'".format(self.file))
+
+
+class LaunchGuideLiner(object):
     def __init__(self,
                  charts_dir,
                  deploy_prefix,
@@ -19,7 +30,9 @@ class LaunchGuideLiner:
                  output_dir):
         self.charts_directory = ends_with_slash(charts_dir)
         self.deploy_prefix = deploy_prefix
-        # Latest config sample: https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/config.yaml
+        self.config_chart = Chart(file="{}config.yaml".format(self.charts_directory),
+                                  # URL is not implemented
+                                  url="https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/config.yaml")
         self.cfgDict = {"QUEUE_NAME": "{}-queue".format(deploy_prefix),
                         "MASTER_CONTAINER_NAME": "{}-master".format(deploy_prefix),
                         "JOB_NAME": "{}-job".format(deploy_prefix),
@@ -30,9 +43,11 @@ class LaunchGuideLiner:
                         "REFDATA": refdata_file,
                         "OUTPUT_MASK": output_mask,
                         "OUTPUT_DIR": ends_with_slash(output_dir)}
-        self.cfg_file = "{}config.yaml".format(self.charts_directory)
-        self.launching_template = "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/master_worker.yaml"
-        self.launching_chart = "{}master_worker.yaml".format(self.charts_directory)
+        self.master_chart = Chart(file="{}master.yaml".format(self.charts_directory),
+                                  url="https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/master.yaml")
+        self.worker_chart = Chart(file="{}worker.yaml".format(self.charts_directory),
+                                  url="https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/worker.yaml")
+
     @staticmethod
     def get_index_guide(index_directory, raw_nfasta_file):
         print("""
@@ -48,14 +63,16 @@ python3 /home/docker/scripts/cook_the_reference.py \
 
 Wait until REFDATA file creates
               """.format(a=index_directory, b=raw_nfasta_file))
+
     def generate_config(self):
         os.makedirs(self.charts_directory, exist_ok=True)
-        with open(file=self.cfg_file, mode="w", encoding="utf-8") as f:
+        cfg = self.config_chart.file
+        with open(file=cfg, mode="w", encoding="utf-8") as f:
             yaml.dump(self.cfgDict, f, default_flow_style=False, explicit_start=False)
             print("Created project configuration: '{}'".format(self.cfgDict))
-        gen = ChartGenerator(config=self.cfg_file, template=self.launching_template)
-        gen.export_yaml(self.launching_template)
-        print("Created launching chart: '{}'".format(self.launching_template))
+        self.master_chart.finalize(cfg)
+        self.worker_chart.finalize(cfg)
+
     def get_deploy_guide(self):
         print("""
 # Charts directory: '{chartsDir}' 
@@ -73,8 +90,11 @@ kubectl delete svc,pod redis
 # (Optional) Deploy if not present:
 kubectl create -f  https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/meta/charts/redis.yaml
 
-# Deploy the combined chart to create queue and start pipeline job
-kubectl create -f {launchingTemplate}
+# Deploy master chart
+kubectl create -f {MASTER}
+
+# Deploy worker chart only when master pod is complete
+kubectl create -f {WORKER}
 
 # View active nodes
 kubectl describe pod {JOB_NAME}- | grep Node:
@@ -96,7 +116,8 @@ docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG python
 /home/docker/scripts/verify_coverages.py -s {sampleDataFileName} \
 -r {REFDATA} \
 -m {OUTPUT_MASK} -d -o {OUTPUT_DIR}
-        """.format(launchingTemplate=self.launching_template,
+        """.format(MASTER=self.master_chart.file,
+                   WORKER=self.worker_chart.file,
                    chartsDir=self.charts_directory,
                    JOB_NAME=self.cfgDict["JOB_NAME"],
                    OUTPUT_DIR=self.cfgDict["OUTPUT_DIR"],
