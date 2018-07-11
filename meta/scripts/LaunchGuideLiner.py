@@ -67,7 +67,7 @@ Wait until REFDATA file creates
     def generate_config(self):
         os.makedirs(self.charts_directory, exist_ok=True)
         cfg = self.config_chart.file
-        with open(file=cfg, mode="w", encoding="utf-8") as f:
+        with open(cfg, mode="w", encoding="utf-8") as f:
             yaml.dump(self.cfgDict, f, default_flow_style=False, explicit_start=False)
             print("Created project configuration: '{}'".format(self.cfgDict))
         self.master_chart.finalize(cfg)
@@ -93,14 +93,14 @@ kubectl create -f  https://raw.githubusercontent.com/ivasilyev/biopipelines-dock
 # Deploy master chart
 kubectl create -f {MASTER}
 
-# Deploy worker chart only when master pod is complete
+# Deploy worker chart only when the master pod ('{QUEUE_NAME}') is complete
 kubectl create -f {WORKER}
 
 # View active nodes
 kubectl describe pod {JOB_NAME}- | grep Node:
 
 # View progress (from WORKER node)
-echo && echo PROCESSED $(ls -d {OUTPUT_DIR}/Statistics/*coverage.txt | wc -l) OF $(cat {sampleDataFileName} | wc -l)
+echo && echo PROCESSED $(ls -d {OUTPUT_DIR}Statistics/*coverage.txt | wc -l) OF $(cat {sampleDataFileName} | wc -l)
 
 # Look for some pod (from MASTER node)
 kubectl describe pod <NAME>

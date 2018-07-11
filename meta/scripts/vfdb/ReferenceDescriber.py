@@ -39,6 +39,11 @@ Database alias: {a}
 REFDATA linker: {b}
               """.format(a=self.alias, b=self.refdata))
 
+    def parse_refdata(self):
+        from meta.scripts.RefDataParser import RefDataParser
+        p = RefDataParser(self.refdata)
+        return p.get_parsed_list()
+
 
 class SequenceRetriever:
     def __init__(self):
@@ -55,6 +60,7 @@ class SequenceRetriever:
         describer.alias = self.alias
         describer.refdata = "{a}{b}.json".format(a=self.index_dir, b=self.alias)
         describer.export()
+
     # VFDB updates at every Friday
     @staticmethod
     def _get_last_friday():
@@ -65,12 +71,14 @@ class SequenceRetriever:
         while last_friday.weekday() != calendar.FRIDAY:
             last_friday -= oneday
         return "{:%Y.%m.%d}".format(last_friday)
+
     def _download(self):
         import subprocess
         url = "http://www.mgc.ac.cn/VFs/Down/VFDB_setB_nt.fas.gz"
         cmd = "curl -fsSL {a} | zcat > {b}".format(a=url, b=self.raw_nfasta)
         print(subprocess.getoutput(cmd))
         print("Got new raw reference: {}".format(self.raw_nfasta))
+
     def _get_index_guide(self):
         from meta.scripts.LaunchGuideLiner import LaunchGuideLiner
         LaunchGuideLiner.get_index_guide(index_directory=self.index_dir, raw_nfasta_file=self.raw_nfasta)

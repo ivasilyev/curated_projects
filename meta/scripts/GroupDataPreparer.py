@@ -15,6 +15,7 @@ class GroupDataPreparer:
         self._df["file_name"] = self._df.loc[:, "sample_name"].map(lambda x: processed_prefix + x + processed_suffix)
         self._df["file_exists"] = self._df.loc[:, "file_name"].map(lambda x: os.path.isfile(x))
         self._df = self._df.loc[self._df.loc[:, "file_exists"] == True]
+        self.groups_string = "_".join(sorted(list(set(self._df.loc[:, "group_name"].values.tolist()))))
         if sum(self._df.loc[:, "file_exists"].values.tolist()) == 0:
             raise ValueError("Cannot find files by the mask: '{a}<sample name>{b}'".format(a=processed_prefix, b=processed_suffix))
     def get_groupdata(self):
