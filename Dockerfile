@@ -44,6 +44,8 @@ RUN pip3 install \
                  ipython \
                  jupyter
 
+# Jupyter Notebook port forwarding
+EXPOSE 80 443 31512
 
 # Create user docker with password docker
 RUN groupadd fuse && \
