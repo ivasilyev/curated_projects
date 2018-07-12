@@ -51,6 +51,10 @@ def external_route(*args):
     print(output.decode("utf-8"))
 
 
+def filename_only(string):
+    return str(".".join(string.rsplit("/", 1)[-1].split(".")[:-1]))
+
+
 # Create config chart
 chartsSubDir = "charts/"
 chartsDir = outputDir + chartsSubDir
@@ -65,6 +69,7 @@ cfgDict = {"QUEUE_NAME": "{}-queue".format(subProjectAlias),
            "REFDATA": "/data/reference/IGC/index/igc_v2014.03.refdata",
            "OUTPUT_MASK": "no_hg19",
            "OUTPUT_DIR": "/data2/bio/Metagenomes/IGC"}
+referenceFASTAFileName = filename_only(subprocess.getoutput("cat {}".format(cfgDict["REFDATA"])).split("\n")[0].split("\t")[0])
 cfgFileName = chartsDir + "config.yaml"
 with open(cfgFileName, 'w') as cfgFile:
     yaml.dump(cfgDict, cfgFile, default_flow_style=False, explicit_start=False)
@@ -111,7 +116,7 @@ docker pull ivasilyev/bwt_filtering_pipeline_worker:latest && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker python3 \
 /home/docker/scripts/verify_coverages.py -s {sampleDataFileName} \
 -r {REFDATA} \
--m {OUTPUT_MASK}_{subProjectName} -d -o {OUTPUT_DIR}
+-m {OUTPUT_MASK}_{referenceFASTAFileName} -d -o {OUTPUT_DIR}
 
 """.format(chartsDir=chartsDir,
            chartsSubDir=chartsSubDir,
@@ -122,7 +127,7 @@ docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/b
            sampleDataFileName=sampleDataFileName,
            REFDATA=cfgDict["REFDATA"],
            OUTPUT_MASK=cfgDict["OUTPUT_MASK"],
-           subProjectName=subProjectName))
+           referenceFASTAFileName=referenceFASTAFileName))
 
 
 """
@@ -155,6 +160,6 @@ kubectl delete pod ndanilova-bwt-igc-queue
 kubectl delete job ndanilova-bwt-igc-job
 
 # Checkout (from WORKER node)
-docker pull ivasilyev/bwt_filtering_pipeline_worker:latest && docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker python3 /home/docker/scripts/verify_coverages.py -s /data1/bio/projects/ndanilova/colitis_crohn/colitis_esc_colitis_rem_crohn_esc_crohn_rem_srr.sampledata -r /data/reference/IGC/index/igc_v2014.03.refdata -m no_hg19_SCFAs_from_IGC_by_KEGG -d -o /data2/bio/Metagenomes/IGC
+docker pull ivasilyev/bwt_filtering_pipeline_worker:latest && docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ivasilyev/bwt_filtering_pipeline_worker python3 /home/docker/scripts/verify_coverages.py -s /data1/bio/projects/ndanilova/colitis_crohn/colitis_esc_colitis_rem_crohn_esc_crohn_rem_srr.sampledata -r /data/reference/IGC/index/igc_v2014.03.refdata -m no_hg19_igc_v2014.03 -d -o /data2/bio/Metagenomes/IGC
 
 """

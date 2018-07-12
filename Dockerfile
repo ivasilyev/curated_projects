@@ -41,6 +41,7 @@ RUN pip3 install \
                  # For visualization
                  matplotlib seaborn \
                  # For external access attempt
+                 ipython \
                  jupyter
 
 

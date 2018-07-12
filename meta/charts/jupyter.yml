@@ -9,10 +9,11 @@ spec:
   ports:
   - port: 80
     name: http
-    targetPort: 8888
+    targetPort: 31512
   selector:
     app: jupyter
   type: LoadBalancer
+
 ---
 apiVersion: v1
 kind: Pod
@@ -24,10 +25,12 @@ spec:
   containers:
     - name: jupyter
       image: ivasilyev/curated_projects:latest
+      imagePullPolicy: Always
       ports:
-      - containerPort: 8888
+      - containerPort: 31512
         protocol: TCP
         name: http
+      command: ["jupyter", "notebook", "--port=31512", "--no-browser", "--ip=0.0.0.0"]
       volumeMounts:
         - name: data
           mountPath: /data
