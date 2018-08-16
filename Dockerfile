@@ -33,16 +33,14 @@ RUN apt-get clean && \
 # Install Python packages
 RUN pip3 install --upgrade pip
 RUN pip3 install setuptools
-RUN pip3 install \
-                 # For 'tgrigoreva/25_ecoli_genes' project
-                 pandas statsmodels scipy requests bs4 lxml jinja2 pyyaml \
-                 # For 'ndanilova/colitis_crohn/SCFAs_from_KEGG' project
-                 xlrd \
-                 # For visualization
-                 matplotlib seaborn \
-                 # For external access attempt
-                 ipython \
-                 jupyter
+# For 'tgrigoreva/25_ecoli_genes' project
+RUN pip3 install pandas statsmodels scipy requests bs4 lxml jinja2 pyyaml
+# For 'ndanilova/colitis_crohn/SCFAs_from_KEGG' project
+RUN pip3 install xlrd
+# For visualization
+RUN pip3 install matplotlib seaborn
+# For external access attempt
+RUN pip3 install ipython jupyter jupyterlab
 
 # Jupyter Notebook port forwarding
 EXPOSE 80 443 31512
