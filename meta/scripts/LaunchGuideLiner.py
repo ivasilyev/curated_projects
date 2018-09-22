@@ -54,14 +54,14 @@ class LaunchGuideLiner(object):
 # Reference indexing (from worker node):
 
 rm -rf {a}
-export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \
-docker pull $IMG && \
-docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG \
-python3 /home/docker/scripts/cook_the_reference.py \
--i {b} \
+export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \\
+docker pull $IMG && \\
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG \\
+python3 /home/docker/scripts/cook_the_reference.py \\
+-i {b} \\
 -o {a}
 
-Wait until REFDATA file creates
+# Wait until REFDATA file creates
               """.format(a=index_directory, b=raw_nfasta_file))
 
     def generate_config(self):
@@ -81,7 +81,7 @@ Wait until REFDATA file creates
 kubectl get pods
 
 # (Optional) If required, flush all Redis queues:
-export IMG=ivasilyev/bwt_filtering_pipeline_master:latest && \
+export IMG=ivasilyev/bwt_filtering_pipeline_master:latest && \\
 docker pull $IMG && docker run --rm -it $IMG redis-cli -h redis flushall
 
 # (Optional) Or remove Redis server by itself:
@@ -110,11 +110,11 @@ kubectl delete pod {QUEUE_NAME}
 kubectl delete job {JOB_NAME}
 
 # Checkout (from WORKER node)
-export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \
-docker pull $IMG && \
-docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG python3 \
-/home/docker/scripts/verify_coverages.py -s {sampleDataFileName} \
--r {REFDATA} \
+export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \\
+docker pull $IMG && \\
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG python3 \\
+/home/docker/scripts/verify_coverages.py -s {sampleDataFileName} \\
+-r {REFDATA} \\
 -m {OUTPUT_MASK} -d -o {OUTPUT_DIR}
         """.format(MASTER=self.master_chart.file,
                    WORKER=self.worker_chart.file,

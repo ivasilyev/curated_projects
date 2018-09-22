@@ -3,6 +3,7 @@
 
 import os
 import subprocess
+import json
 import pandas as pd
 
 """
@@ -47,8 +48,8 @@ class ReferenceDescriber:
     description = "The Comprehensive Antibiotic Resistance Database"
     documentation = "https://card.mcmaster.ca/"
     # Change the following lines after reference update
-    alias = ""
-    refdata = ""
+    alias = "card_v2.0.3"
+    refdata = "/data/reference/CARD/card_v2.0.3/index/card_v2.0.3.json"
     def export(self):
         print("""
 Database alias: {a}
@@ -73,12 +74,13 @@ class SequenceRetriever:
             self._download_and_unpack(self._dl_dict[msg])
         self.raw_nfasta = "{}data/nucleotide_fasta_protein_homolog_model.fasta".format(self.reference_dir)
         self.processed_nfasta = "{a}{b}.fasta".format(a=self.reference_dir, b=self.alias)
-        print(subprocess.getoutput("ln -s {a} {b}").format(a=self.raw_nfasta, b=self.processed_nfasta))
+        print(subprocess.getoutput("ln -s {a} {b}".format(a=self.raw_nfasta, b=self.processed_nfasta)))
         self.index_dir = "{}index/".format(self.reference_dir)
         self._get_index_guide()
-        print("Please replace the following lines in control script:")
+        print("Please update the following lines in describer:")
         describer.alias = self.alias
-        describer.refdata = "{a}{b}.json".format(a=self.index_dir, b=self.alias)
+        describer.refdata = "{a}{b}_refdata.json".format(a=self.index_dir, b=self.alias)
+        self.annotation = "{a}{b}_annotation.tsv".format(a=self.index_dir, b=self.alias)
         describer.export()
     def _download_and_unpack(self, url):
         url = url.strip()
@@ -94,8 +96,13 @@ class SequenceRetriever:
         LaunchGuideLiner.get_index_guide(index_directory=self.index_dir, raw_nfasta_file=self.processed_nfasta)
 
 
+class Annotator:
+    pass
+
+
 if __name__ == '__main__':
     retriever = SequenceRetriever()
+    annotation = retriever.annotation
 
 
 # self_reference_dir = "/data/reference/CARD/test/"
