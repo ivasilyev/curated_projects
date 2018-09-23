@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from meta.scripts.utilities import remove_empty_values
+from meta.scripts.Utilities import Utilities
 
 
 class FASTA:
@@ -40,7 +40,7 @@ class FASTAParser:
     def __init__(self, fastas_string):
         self._fastas_string = fastas_string
         self._raw_fastas_list = [">{}".format(j) if not j.startswith(">") else j for j in [i.strip() for i in re.split("\n>", self._fastas_string)]]
-        self._parsed_fastas_list = remove_empty_values([FASTA(i) for i in self._raw_fastas_list])
+        self._parsed_fastas_list = Utilities.remove_empty_values([FASTA(i) for i in self._raw_fastas_list])
     def get_full_length(self):
         return sum([len(i) for i in self._parsed_fastas_list])
     def get_full_sequence(self):

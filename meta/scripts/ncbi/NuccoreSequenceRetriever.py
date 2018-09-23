@@ -6,7 +6,7 @@ import re
 import requests
 import bs4
 import pandas as pd
-from meta.scripts.utilities import dict2pd_series
+from meta.scripts.Utilities import Utilities
 from meta.scripts.FASTAParser import FASTA
 
 
@@ -49,5 +49,5 @@ class NuccoreSequenceRetriever:
             if (self._gene.lower() in _row_dict["Name"].lower() or self._gene.lower() in _row_dict["Description"].lower() or self._gene.lower() in _row_dict["Aliases"].lower()) and len(_locations_list) == 2:
                 fasta = self._get_fasta(_row_dict["Sequence ID"], _locations_list)
                 output_dict["FASTAs_list"].append(fasta)
-                output_dict["annotations_series_list"].append(pd.Series(dict2pd_series(_row_dict), name=fasta.header))
+                output_dict["annotations_series_list"].append(pd.Series(Utilities.dict2pd_series(_row_dict), name=fasta.header))
         return output_dict

@@ -19,7 +19,7 @@ class ReferenceDescriber:
     documentation = "https://card.mcmaster.ca/"
     # Change the following lines after reference update
     alias = "card_v2.0.3"
-    refdata = "/data/reference/CARD/card_v2.0.3/index/card_v2.0.3.json"
+    refdata = "/data/reference/CARD/card_v2.0.3/index/card_v2.0.3_refdata.json"
     def export(self):
         print("""
 Database alias: {a}

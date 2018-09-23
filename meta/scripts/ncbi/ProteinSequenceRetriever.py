@@ -10,7 +10,6 @@ import re
 import requests
 import bs4
 import pandas as pd
-from meta.scripts.utilities import dict2pd_series
 from meta.scripts.FASTAParser import FASTA
 
 

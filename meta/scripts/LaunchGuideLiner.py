@@ -4,7 +4,7 @@
 import os
 import yaml
 from meta.scripts.ChartGenerator import ChartGenerator
-from meta.scripts.utilities import ends_with_slash
+from meta.scripts.Utilities import Utilities
 
 
 class Chart(object):
@@ -28,7 +28,7 @@ class LaunchGuideLiner(object):
                  refdata_file,
                  output_mask,
                  output_dir):
-        self.charts_directory = ends_with_slash(charts_dir)
+        self.charts_directory = Utilities.ends_with_slash(charts_dir)
         self.deploy_prefix = deploy_prefix
         self.config_chart = Chart(file="{}config.yaml".format(self.charts_directory),
                                   # URL is not implemented
@@ -42,7 +42,7 @@ class LaunchGuideLiner(object):
                         "SAMPLEDATA": sampledata_file,
                         "REFDATA": refdata_file,
                         "OUTPUT_MASK": output_mask,
-                        "OUTPUT_DIR": ends_with_slash(output_dir)}
+                        "OUTPUT_DIR": Utilities.ends_with_slash(output_dir)}
         self.master_chart = Chart(file="{}master.yaml".format(self.charts_directory),
                                   url="https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/master.yaml")
         self.worker_chart = Chart(file="{}worker.yaml".format(self.charts_directory),
