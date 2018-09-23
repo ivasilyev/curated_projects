@@ -3,42 +3,12 @@
 
 import os
 import subprocess
-import re
 import pandas as pd
 
 """
 export IMG=ivasilyev/curated_projects:latest && \
 docker pull ${IMG} && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it ${IMG} python3
-
-"""
-
-"""
-Links:
-
-1. Sequence data for gene catalogs
-Integrated non-redundant gene catalog (IGC, nucleotide sequences, fasta)
-ftp://climb.genomics.cn/pub/10.5524/100001_101000/100064/1.GeneCatalogs/IGC.fa.gz
-
-Integrated non-redundant gene catalog (IGC, amino acid sequences, fasta)
-ftp://climb.genomics.cn/pub/10.5524/100001_101000/100064/1.GeneCatalogs/IGC.pep.gz
-
-2. Gene profile, genus profile, KO profile
-Gene abundance profile table for 1267 samples (9.9 million genes X 1267 samples)
-ftp://climb.genomics.cn/pub/10.5524/100001_101000/100064/2.ProfileTables/1267sample.gene.relativeAbun.table.gz
-
-Genus profile table for 1267 samples
-ftp://climb.genomics.cn/pub/10.5524/100001_101000/100064/2.ProfileTables/IGC.genus.normalization.ProfileTable.gz
-
-KO profile table for 1267 samples
-ftp://climb.genomics.cn/pub/10.5524/100001_101000/100064/2.ProfileTables/IGC.KO.normalization.ProfileTable.gz
-
-3. Gene annotation summary
-IGC annotation and occurrence frequency summary table
-ftp://climb.genomics.cn/pub/10.5524/100001_101000/100064/3.IGC.AnnotationInfo/IGC.annotation_OF.summary.gz
-
-MetaHIT 2010 KEGG annotation
-ftp://climb.genomics.cn/pub/10.5524/100001_101000/100064/6.PreviousGeneCatalog/PGC.gene.KO.list.gz
 
 """
 
