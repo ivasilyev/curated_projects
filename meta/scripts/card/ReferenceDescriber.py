@@ -3,7 +3,7 @@
 
 import os
 import subprocess
-import json
+import re
 import pandas as pd
 
 """
@@ -94,45 +94,23 @@ class SequenceRetriever:
     def _get_index_guide(self):
         from meta.scripts.LaunchGuideLiner import LaunchGuideLiner
         LaunchGuideLiner.get_index_guide(index_directory=self.index_dir, raw_nfasta_file=self.processed_nfasta)
-
-
-class Annotator:
-    pass
+    def annotate(self):
+        annotation_df = pd.read_table(self.annotation, sep='\t', header=0)
+        annotation_df["aro"] = annotation_df["former_id"].str.extract("\|ARO:([0-9]+)\|")
+        annotation_df["gb"] = annotation_df["former_id"].str.extract("^gb\|([^|]+)\|")
+        # reference_annotation_aro_categories_df = pd.read_table("/data/reference/CARD/card_v2.0.3/data/aro_categories.csv", sep='\t', header=0)
+        # reference_annotation_aro_categories_df["aro"] = reference_annotation_aro_categories_df["ARO Accession"].str.extract("ARO:([0-9]+)")
+        # annotation_df = annotation_df.merge(reference_annotation_aro_categories_df, how="left", on="aro")
+        # Empty merge result
+        reference_annotation_index_df = pd.read_table("{}data/aro_index.csv".format(self.reference_dir), sep='\t', header=0)
+        reference_annotation_index_df["aro"] = reference_annotation_index_df["ARO Accession"].str.extract("ARO:([0-9]+)")
+        annotation_df = annotation_df.merge(reference_annotation_index_df, how="left", on="aro")
+        #
+        reference_annotation_categories_index_df = pd.read_table("{}data/aro_categories_index.csv".format(self.reference_dir), sep='\t', header=0)
+        annotation_df = annotation_df.merge(reference_annotation_categories_index_df.loc[:, ["Protein Accession"] + [i for i in list(reference_annotation_categories_index_df) if i not in list(annotation_df)]], how="left", on="Protein Accession")
+        annotation_df.to_csv(self.annotation, sep='\t', header=True, index=False)
 
 
 if __name__ == '__main__':
     retriever = SequenceRetriever()
-    annotation = retriever.annotation
-
-
-# self_reference_dir = "/data/reference/CARD/test/"
-# os.makedirs(self_reference_dir, exist_ok=True)
-#
-# url = "https://card.mcmaster.ca/latest/data"
-# url = url.strip()
-# out_dir = url.strip().split("/")[-1]
-# if out_dir.count(".") > 1:
-#     out_dir = ".".join(out_dir.split(".")[:-1])
-#
-# out_dir = self_reference_dir + out_dir + "/"
-# os.makedirs(out_dir, exist_ok=True)
-# cmd = "curl -fsSL {a} | tar jxf - -C {b}".format(a=url, b=out_dir)
-# subprocess.getoutput(cmd)
-# self_raw_nfasta = "{}data/nucleotide_fasta_protein_homolog_model.fasta".format(self_reference_dir)
-# self_index_dir = "{}index/".format(self_reference_dir)
-
-
-"""
-# Reference indexing (from worker node):
-
-rm -rf /data/reference/IGC/igc_v2014.03/index
-export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && docker pull $IMG && docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG python3 /home/docker/scripts/cook_the_reference.py -i /data/reference/IGC/igc_v2014.03.fasta -n -o /data/reference/IGC/igc_v2014.03/index
-
-Wait until REFDATA file creates
-
-Please replace the following lines in control script:
-
-Database alias: igc_v2014.03
-REFDATA linker: /data/reference/IGC/igc_v2014.03/index/igc_v2014.03_refdata.json
-
-"""
+    retriever.annotate()
