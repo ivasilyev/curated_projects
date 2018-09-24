@@ -59,7 +59,62 @@ class Utilities:
         return Utilities.ends_with_slash(os.path.dirname(os.path.realpath(sys.argv[0])))
 
     @staticmethod
-    def compose_sampledatas_dict(dir_name: str):
+    def load_string(file: str):
+        with open(file=file, mode="r", encoding="utf-8") as f:
+            s = f.read()
+        return s
+
+    @staticmethod
+    def split_lines(string: str):
+        import re
+        return Utilities.remove_empty_values([i.strip() for i in re.sub("[\r\n]+", "\n", string).split("\n")])
+
+    @staticmethod
+    def load_list(file: str):
+        return Utilities.split_lines(Utilities.load_string(file))
+
+    @staticmethod
+    def string_to_2d_array(string: str):
+        return Utilities.remove_empty_values([[j.strip() for j in i.split("\t")] for i in Utilities.split_lines(string)])
+
+    @staticmethod
+    def _2d_array_to_dicts_list(arr: list, names: list):
+        if len(arr[0]) != len(names):
+            raise ValueError("Cannot parse dictionary: keys number is not equal!")
+        out = []
+        for row_list in arr:
+            counter = 0
+            while counter < len(row_list):
+                out.append({names[counter]: row_list[counter]})
+                counter += 1
+        return [[j for j in i] for i in arr]
+
+    @staticmethod
+    def load_2d_array(file: str):
+        return Utilities.string_to_2d_array(Utilities.load_string(file))
+
+    @staticmethod
+    def load_dicts_list(file: str, names: list):
+        arr = Utilities.load_2d_array(file)
+        if len(arr[0]) != len(names):
+            raise ValueError("Cannot parse dictionary: keys number is not equal!")
+
+    @staticmethod
+    def dump_string(string: str, file: str):
+        with open(file=file, mode="w", encoding="utf-8") as f:
+            f.write(string)
+
+    @staticmethod
+    def dump_list(lst: list, file: str):
+        Utilities.dump_string(string="\n".join([str(i) for i in lst]) + "\n", file=file)
+
+    @staticmethod
+    def dump_2d_array(array: list, file: str):
+        Utilities.dump_list(lst=["\t".join([str(j) for j in i]) for i in array], file=file)
+
+
+    @staticmethod
+    def _compose_sampledatas_dict(dir_name: str):
         import re
         dir_name = Utilities.ends_with_slash(dir_name)
         files_list = os.listdir(dir_name)
@@ -67,10 +122,17 @@ class Utilities:
         for file_name in files_list:
             if any([file_name.endswith(i) for i in ["csfasta", "fasta", "fa", "fastq", "fq", "gz"]]):
                 sample_name = file_name.split("_")[0].strip()
-                sample_files = [dir_name + i for i in files_list if sample_name in i]
+                sample_files = [dir_name + i for i in files_list if sample_name in i][:2]
                 sample_files.sort(key=len, reverse=True)
                 sample_name = re.sub("[^A-Za-z0-9]+", "_", sample_name)
                 sample_name = re.sub("_+", "_", sample_name)
                 output_dict[sample_name] = sample_files
         output_dict = dict(sorted(output_dict.items()))
         return output_dict
+
+    @staticmethod
+    def create_sampledata(dirs: list, file: str):
+        output_dict = {}
+        for dir_name in dirs:
+            output_dict.update(Utilities._compose_sampledatas_dict(dir_name))
+        Utilities.dump_2d_array(array=[[k] + output_dict[k] for k in output_dict], file=file)
