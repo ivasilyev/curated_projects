@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
 import yaml
 from meta.scripts.ChartGenerator import ChartGenerator
 from meta.scripts.Utilities import Utilities
@@ -18,7 +19,7 @@ class Chart(object):
         print("Created chart: '{}'".format(self.file))
 
 
-class LaunchGuideLiner(object):
+class LaunchGuideLiner:
     def __init__(self,
                  charts_dir,
                  deploy_prefix,
@@ -29,14 +30,14 @@ class LaunchGuideLiner(object):
                  output_mask,
                  output_dir):
         self.charts_directory = Utilities.ends_with_slash(charts_dir)
-        self.deploy_prefix = deploy_prefix
+        self.deploy_prefix = re.sub("[^A-Za-z0-9\-]+", "-", deploy_prefix)
         self.config_chart = Chart(file="{}config.yaml".format(self.charts_directory),
-                                  # URL is not implemented
+                                  # URL is not supported
                                   url="https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/config.yaml")
-        self.cfgDict = {"QUEUE_NAME": "{}-queue".format(deploy_prefix),
-                        "MASTER_CONTAINER_NAME": "{}-master".format(deploy_prefix),
-                        "JOB_NAME": "{}-job".format(deploy_prefix),
-                        "WORKER_CONTAINER_NAME": "{}-worker".format(deploy_prefix),
+        self.cfgDict = {"QUEUE_NAME": "{}-queue".format(self.deploy_prefix),
+                        "MASTER_CONTAINER_NAME": "{}-master".format(self.deploy_prefix),
+                        "JOB_NAME": "{}-job".format(self.deploy_prefix),
+                        "WORKER_CONTAINER_NAME": "{}-worker".format(self.deploy_prefix),
                         "ACTIVE_NODES_NUMBER": nodes_number,
                         "THREADS_NUMBER": threads_number,
                         "SAMPLEDATA": sampledata_file,

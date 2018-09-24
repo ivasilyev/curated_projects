@@ -5,7 +5,7 @@
 class ProjectDescriber:
     owner = "dsafina"
     name = "hp_checkpoints"
-    directory = "/data1/bio/projects/ndanilova/colitis_crohn/"
+    directory = "/data1/bio/projects/dsafina/hp_checkpoints/"
     # Look "SCFAs_from_KEGG" project for details
     groupdata = "/data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.groupdata"
     sampledata = "/data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata"
