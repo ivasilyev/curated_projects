@@ -113,10 +113,13 @@ kubectl delete job {JOB_NAME}
 # Checkout (from WORKER node)
 export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \\
 docker pull $IMG && \\
-docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG python3 \\
-/home/docker/scripts/verify_coverages.py -s {sampleDataFileName} \\
--r {REFDATA} \\
--m {OUTPUT_MASK} -d -o {OUTPUT_DIR}
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG \\ 
+python3 /home/docker/scripts/verify_coverages.py \\
+-i {sampleDataFileName} \\
+-p {OUTPUT_DIR}Statistics/
+-s _{OUTPUT_MASK}_coverage.tsv
+-g <GENOME> \\
+-d
         """.format(MASTER=self.master_chart.file,
                    WORKER=self.worker_chart.file,
                    chartsDir=self.charts_directory,
