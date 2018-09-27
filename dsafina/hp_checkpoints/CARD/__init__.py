@@ -138,8 +138,12 @@ kubectl delete job dsafina-card-v2-0-3-job
 # Checkout (from WORKER node)
 export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \
 docker pull $IMG && \
-docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG python3 \
-/home/docker/scripts/verify_coverages.py -s /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata \
--r /data/reference/CARD/card_v2.0.3/index/card_v2.0.3_refdata.json \
--m card_v2.0.3 -d -o /data2/bio/Metagenomes/CARD/
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG \
+python3 /home/docker/scripts/verify_coverages.py \
+-i /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata \
+-p /data2/bio/Metagenomes/CARD/Statistics/ \
+-s _card_v2.0.3_coverage.tsv \
+-g /data/reference/CARD/card_v2.0.3/index/card_v2.0.3_samtools.genome \
+-d
 """
+
