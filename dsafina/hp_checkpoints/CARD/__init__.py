@@ -147,3 +147,49 @@ python3 /home/docker/scripts/verify_coverages.py \
 -d
 """
 
+launchGuideLiner = LaunchGuideLiner(charts_dir="{}{}/charts/".format(Utilities.ends_with_slash(projectDescriber.directory), referenceDescriber.alias),
+                                    deploy_prefix="{a}-{b}-{c}".format(a=projectDescriber.owner, b=projectDescriber.name, c=referenceDescriber.alias),
+                                    nodes_number=7,
+                                    threads_number="half",
+                                    sampledata_file="/data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-09-27-11-51-43.sampledata",
+                                    refdata_file=referenceDescriber.refdata,
+                                    output_mask=referenceDescriber.alias,
+                                    output_dir="/data2/bio/Metagenomes/{}/".format(referenceDescriber.name))
+launchGuideLiner.generate_config()
+launchGuideLiner.get_deploy_guide()
+
+"""
+# Charts directory: '/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/charts/'
+
+# Look for Redis pod & service:
+kubectl get pods
+
+# (Optional) If required, flush all Redis queues:
+export IMG=ivasilyev/bwt_filtering_pipeline_master:latest && \
+docker pull $IMG && docker run --rm -it $IMG redis-cli -h redis flushall
+
+# (Optional) Or remove Redis server by itself:
+kubectl delete svc,pod redis
+
+# (Optional) Deploy if not present:
+kubectl create -f  https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/meta/charts/redis.yaml
+
+# Deploy master chart
+kubectl create -f /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/charts/master.yaml
+
+# Deploy worker chart only when the master pod ('dsafina-hp-checkpoints-card-v2-0-3-queue') is complete
+kubectl create -f /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/charts/worker.yaml
+
+# View active nodes
+kubectl describe pod dsafina-hp-checkpoints-card-v2-0-3-job- | grep Node:
+
+# View progress (from WORKER node)
+echo && echo PROCESSED $(ls -d /data2/bio/Metagenomes/CARD/Statistics/*coverage.txt | wc -l) OF $(cat /data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-09-27-11-51-43.sampledata | wc -l)
+
+# Look for some pod (from MASTER node)
+kubectl describe pod <NAME>
+
+# Cleanup
+kubectl delete pod dsafina-hp-checkpoints-card-v2-0-3-queue
+kubectl delete job dsafina-hp-checkpoints-card-v2-0-3-job
+"""
