@@ -67,14 +67,6 @@ kubectl describe pod <NAME>
 # Cleanup
 kubectl delete pod dsafina-hg19-queue
 kubectl delete job dsafina-hg19-job
-
-# Checkout (from WORKER node)
-export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \
-docker pull $IMG && \
-docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG python3 \
-/home/docker/scripts/verify_coverages.py -s /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints_no_hg19.sampledata \
--r /data/reference/homo_sapiens/hg/hg19/hg19.refdata \
--m hg19 -d -o /data2/bio/Metagenomes/HG19/
 """
 
 subprocess.getoutput("sed -i 's|/home/docker/scripts/master.py, |/home/docker/scripts/master.py, -n, |g' /data1/bio/projects/dsafina/hp_checkpoints/hg19/charts/master.yaml")
@@ -239,4 +231,37 @@ kubectl describe pod <NAME>
 kubectl delete pod dsafina-hp-checkpoints-card-v2-0-3-queue
 kubectl delete job dsafina-hp-checkpoints-card-v2-0-3-job
 
+"""
+
+launchGuideLiner = LaunchGuideLiner(charts_dir="{}{}/charts/".format(Utilities.ends_with_slash(projectDescriber.directory), referenceDescriber.alias),
+                                    deploy_prefix="{a}-{b}-{c}".format(a=projectDescriber.owner, b=projectDescriber.name, c=referenceDescriber.alias),
+                                    nodes_number=7,
+                                    threads_number="half",
+                                    sampledata_file="/data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-09-28-09-21-09.sampledata",
+                                    refdata_file=referenceDescriber.refdata,
+                                    output_mask=referenceDescriber.alias,
+                                    output_dir="/data2/bio/Metagenomes/{}/".format(referenceDescriber.name))
+launchGuideLiner.generate_config()
+launchGuideLiner.get_deploy_guide()
+
+# Rerun with charts from '2018-09-28-09-21-09.sampledata'
+# Again, regenerate charts & manual launch for '2018-09-28-11-12-45.sampledata':
+"""
+export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \
+docker pull $IMG && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG \
+python3 /home/docker/scripts/nBee.py \
+-i /data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-09-28-11-12-45.sampledata \
+-r /data/reference/CARD/card_v2.0.3/index/card_v2.0.3_refdata.json \
+-m card_v2.0.3 -t half -o /data2/bio/Metagenomes/CARD/
+"""
+
+"""
+export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \
+docker pull $IMG && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG \
+python3 /home/docker/scripts/nBee.py \
+-i /data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-09-29-02-42-19.sampledata \
+-r /data/reference/CARD/card_v2.0.3/index/card_v2.0.3_refdata.json \
+-m card_v2.0.3 -t half -o /data2/bio/Metagenomes/CARD/
 """
