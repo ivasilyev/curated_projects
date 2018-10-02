@@ -77,7 +77,7 @@ class SequenceRetriever:
         annotation_df = annotation_df.merge(reference_annotation_index_df, how="left", on="aro")
         #
         reference_annotation_categories_index_df = pd.read_table("{}data/aro_categories_index.csv".format(self.reference_dir), sep='\t', header=0)
-        annotation_df = annotation_df.merge(reference_annotation_categories_index_df.loc[:, ["Protein Accession"] + [i for i in list(reference_annotation_categories_index_df) if i not in list(annotation_df)]], how="left", on="Protein Accession")
+        annotation_df = annotation_df.merge(reference_annotation_categories_index_df.loc[:, ["Protein Accession"] + [i for i in list(reference_annotation_categories_index_df) if len(i) > 0 and i not in list(annotation_df)]], how="left", on="Protein Accession")
         annotation_df.to_csv(self.annotation, sep='\t', header=True, index=False)
 
 
