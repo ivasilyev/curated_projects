@@ -293,3 +293,15 @@ python3 groupdata2statistics.py -g /data1/bio/projects/dsafina/hp_checkpoints/sr
 -v id_mapped_reads_per_kbp_per_million_sample_mapped_reads \
 -o /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/pvals/RPKM/
 """
+
+import pandas as pd
+
+index_col_name = "reference_id"
+
+annotation_df = pd.read_table("/data/reference/CARD/card_v2.0.3/index/card_v2.0.3_annotation.tsv").set_index(index_col_name)
+for total_df_file in ["/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/pvals/RPM/1_2_3_C_srr_total_dataframe.tsv",
+                      "/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/pvals/RPKM/1_2_3_C_srr_total_dataframe.tsv"]:
+    total_df = pd.read_table(total_df_file).set_index(index_col_name)
+    annotated_total_df = pd.concat([annotation_df, total_df], axis=1)
+    annotated_total_df.index.name = index_col_name
+    annotated_total_df.to_csv(total_df_file.replace("_total_dataframe.tsv", "_total_dataframe_annotated.tsv"), sep='\t', header=True, index=True)
