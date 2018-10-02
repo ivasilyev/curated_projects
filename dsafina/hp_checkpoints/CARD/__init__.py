@@ -281,5 +281,15 @@ python3 groupdata2statistics.py -g /data1/bio/projects/dsafina/hp_checkpoints/sr
 -i reference_id \
 -v id_mapped_reads_per_million_sample_mapped_reads \
 -o /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/pvals/RPM/
+"""
 
+"""
+Combine data for RPM
+
+python3 groupdata2statistics.py -g /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints_new.groupdata \
+-p /data2/bio/Metagenomes/CARD/Statistics/ \
+-s _card_v2.0.3_coverage.tsv \
+-i reference_id \
+-v id_mapped_reads_per_kbp_per_million_sample_mapped_reads \
+-o /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/pvals/RPKM/
 """
