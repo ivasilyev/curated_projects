@@ -284,7 +284,7 @@ python3 groupdata2statistics.py -g /data1/bio/projects/dsafina/hp_checkpoints/sr
 """
 
 """
-Combine data for RPM
+Combine data for RPKM
 
 python3 groupdata2statistics.py -g /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints_new.groupdata \
 -p /data2/bio/Metagenomes/CARD/Statistics/ \
@@ -305,3 +305,32 @@ for total_df_file in ["/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/pv
     annotated_total_df = pd.concat([annotation_df, total_df], axis=1)
     annotated_total_df.index.name = index_col_name
     annotated_total_df.to_csv(total_df_file.replace("_total_dataframe.tsv", "_total_dataframe_annotated.tsv"), sep='\t', header=True, index=True)
+
+# TODO Iterate it
+annotated_total_df = pd.read_table("/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/pvals/RPM/1_2_3_C_srr_total_dataframe_annotated.tsv").set_index(index_col_name)
+
+
+class ReversedGroupComparator:
+    def __init__(self, name):
+        self.name = str(name)
+        self.columns = []
+        self.rows = []
+        self.comparisons = []
+
+group_names = ["1", "2", "3"]
+groupdata_comparators_dict = {}
+for first_group_name in group_names:
+    reversedGroupComparator = ReversedGroupComparator(first_group_name)
+    for annotated_total_df_column_name in list(annotated_total_df):
+        annotated_total_df_column_name_digest_list = annotated_total_df_column_name.split("_")
+        if annotated_total_df_column_name_digest_list[0].strip() == first_group_name and len(annotated_total_df_column_name_digest_list) > 0 and annotated_total_df_column_name_digest_list[1].strip().startswith("/"):
+            reversedGroupComparator.columns.append(annotated_total_df_column_name)
+    reversedGroupComparator.rows = annotated_total_df.loc[annotated_total_df["{}_non-zero_values".format(first_group_name)].astype(int) > 0, :].index.tolist()
+    for second_group_name in [i for i in group_names if i != first_group_name]:
+        comparison_name = "{}_vs_{}_is_rejected_by_fdr_bh_for_wilcoxon".format(first_group_name, second_group_name)
+        if comparison_name in list(annotated_total_df):
+            reversedGroupComparator.comparisons.append(comparison_name)
+    groupdata_comparators_dict[first_group_name] = reversedGroupComparator
+
+drug_classes = ["aminoglycoside", "fluoroquinolone", "glycopeptide antibiotic", "lincosamide", "macrolide", "nucleoside antibiotic", "penam", "peptide antibiotic", "phenicol", "sulfonamide", "tetracycline", "triclosan"]
+resistance_mechanism = ["efflux", "inactivation", "reduced permeability", "target alteration", "target protection", "target replacement"]
