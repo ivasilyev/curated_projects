@@ -267,7 +267,7 @@ python3 /home/docker/scripts/nBee.py \
 """
 
 """
-Combine data for RPM
+# Combine data for RPM
 
 export IMG=ivasilyev/curated_projects:latest && \
 docker pull ${IMG} && \
@@ -275,6 +275,7 @@ docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it 
 
 git clone https://github.com/ivasilyev/statistical_tools.git
 cd statistical_tools
+
 python3 groupdata2statistics.py -g /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints_new.groupdata \
 -p /data2/bio/Metagenomes/CARD/Statistics/ \
 -s _card_v2.0.3_coverage.tsv \
@@ -284,7 +285,14 @@ python3 groupdata2statistics.py -g /data1/bio/projects/dsafina/hp_checkpoints/sr
 """
 
 """
-Combine data for RPKM
+# Combine data for RPKM
+
+export IMG=ivasilyev/curated_projects:latest && \
+docker pull ${IMG} && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it ${IMG} bash
+
+git clone https://github.com/ivasilyev/statistical_tools.git
+cd statistical_tools
 
 python3 groupdata2statistics.py -g /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints_new.groupdata \
 -p /data2/bio/Metagenomes/CARD/Statistics/ \
@@ -317,7 +325,8 @@ class ReversedGroupComparator:
         self.rows = []
         self.comparisons = []
 
-group_names = ["1", "2", "3"]
+
+group_names = ["C", "1", "2", "3"]
 groupdata_comparators_dict = {}
 for first_group_name in group_names:
     reversedGroupComparator = ReversedGroupComparator(first_group_name)
@@ -334,3 +343,4 @@ for first_group_name in group_names:
 
 drug_classes = ["aminoglycoside", "fluoroquinolone", "glycopeptide antibiotic", "lincosamide", "macrolide", "nucleoside antibiotic", "penam", "peptide antibiotic", "phenicol", "sulfonamide", "tetracycline", "triclosan"]
 resistance_mechanism = ["efflux", "inactivation", "reduced permeability", "target alteration", "target protection", "target replacement"]
+
