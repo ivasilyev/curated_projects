@@ -60,16 +60,6 @@ launchGuideLiner.get_deploy_guide()
 # Look for Redis pod & service:
 kubectl get pods
 
-# (Optional) If required, flush all Redis queues:
-export IMG=ivasilyev/bwt_filtering_pipeline_master:latest && \
-docker pull $IMG && docker run --rm -it $IMG redis-cli -h redis flushall
-
-# (Optional) Or remove Redis server by itself:
-kubectl delete svc,pod redis
-
-# (Optional) Deploy if not present:
-kubectl create -f  https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/meta/charts/redis.yaml
-
 # Deploy master chart
 kubectl create -f /data1/bio/projects/dsafina/hp_checkpoints/hg19/charts/master.yaml
 
@@ -79,9 +69,6 @@ kubectl create -f /data1/bio/projects/dsafina/hp_checkpoints/hg19/charts/worker.
 # View active nodes
 kubectl describe pod dsafina-hg19-job- | grep Node:
 
-# View progress (from WORKER node)
-echo && echo PROCESSED $(ls -d /data2/bio/Metagenomes/HG19/Statistics/*coverage.txt | wc -l) OF $(cat /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints_no_hg19.sampledata | wc -l)
-
 # Look for some pod (from MASTER node)
 kubectl describe pod <NAME>
 
@@ -90,7 +77,8 @@ kubectl delete pod dsafina-hg19-queue
 kubectl delete job dsafina-hg19-job
 """
 
-subprocess.getoutput("sed -i 's|/home/docker/scripts/master.py, |/home/docker/scripts/master.py, -n, |g' /data1/bio/projects/dsafina/hp_checkpoints/hg19/charts/master.yaml")
+# Disable coverage extraction
+subprocess.getoutput("sed -i 's|/home/docker/scripts/master.py, -s, |/home/docker/scripts/master.py, -n, -s, |g' /data1/bio/projects/dsafina/hp_checkpoints/hg19/charts/master.yaml")
 
 # Deploy from MASTER
 
