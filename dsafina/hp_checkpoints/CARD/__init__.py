@@ -1,12 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import subprocess
-from meta.scripts.Utilities import Utilities
-from dsafina.hp_checkpoints.ProjectDescriber import ProjectDescriber
-from meta.scripts.card.ReferenceDescriber import ReferenceDescriber
-from meta.scripts.LaunchGuideLiner import LaunchGuideLiner
-
 """
 # Pre-setup:
 export IMG=ivasilyev/curated_projects:latest && \
@@ -14,14 +8,41 @@ docker pull ${IMG} && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it ${IMG} python3
 """
 
+import subprocess
+import os
+import re
+from meta.scripts.Utilities import Utilities
+from dsafina.hp_checkpoints.ProjectDescriber import ProjectDescriber
+from meta.scripts.card.ReferenceDescriber import ReferenceDescriber
+from meta.scripts.LaunchGuideLiner import LaunchGuideLiner
+
 # Prepare new raw reads for filtering to HG19 DB
 projectDescriber = ProjectDescriber()
 projectDescriber.sampledata = "/data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints_no_hg19.sampledata"
-raw_reads_dirs = ["/data1/bio/170922/", "/data1/bio/180419_NB501097_0017_AHL55TBGX5/HP/"]
+raw_reads_dirs = ["/data1/bio/170922/",
+                  "/data1/bio/180419_NB501097_0017_AHL55TBGX5/HP/",
+                  "/data1/bio/181017_NB501097_0024_AHL553BGX5/Conversion/"]
 
-Utilities.create_sampledata(raw_reads_dirs, projectDescriber.sampledata)
-subprocess.getoutput("sed -i '/fastq$/d' {}".format(projectDescriber.sampledata))  # The folders only contains .fastq.gz
+# Create sampledata from Illumina raw reads
+raw_reads_dict = {}
+for raw_reads_dir in raw_reads_dirs:
+    raw_reads_dir = Utilities.ends_with_slash(raw_reads_dir)
+    files_list = os.listdir(raw_reads_dir)
+    for file_name in files_list:
+        if any([file_name.endswith(i) for i in ["csfasta", "fasta", "fa", "fastq", "fq", "gz"]]):
+            sample_name = file_name.split("_")[0].strip()
+            if "HP" not in sample_name or os.path.isfile("/data2/bio/Metagenomes/HG19/Unmapped_reads/{}_no_hg19.1.gz".format(sample_name)):
+                continue
+            sample_extension = file_name.split(".")[-1]
+            sample_files = sorted(sorted([raw_reads_dir + i for i in files_list if len(re.findall("^{}".format(sample_name), i)) > 0 and i.endswith(sample_extension)], key=len, reverse=True)[:2])
+            sample_name = re.sub("[^A-Za-z0-9]+", "_", sample_name)
+            sample_name = re.sub("_+", "_", sample_name)
+            raw_reads_dict[sample_name] = sample_files
 
+raw_reads_dict = dict(sorted(raw_reads_dict.items()))
+Utilities.dump_2d_array([[k] + raw_reads_dict[k] for k in raw_reads_dict], file=projectDescriber.sampledata)
+
+# Prepare deploy charts
 launchGuideLiner = LaunchGuideLiner(charts_dir="{}{}/charts/".format(Utilities.ends_with_slash(projectDescriber.directory), "hg19"),
                                     deploy_prefix=projectDescriber.owner + "-hg19",
                                     nodes_number=7,
