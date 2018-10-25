@@ -23,23 +23,33 @@ raw_reads_dirs = ["/data1/bio/170922/",
                   "/data1/bio/180419_NB501097_0017_AHL55TBGX5/HP/",
                   "/data1/bio/181017_NB501097_0024_AHL553BGX5/Conversion/"]
 
-# Create sampledata from Illumina raw reads
-raw_reads_dict = {}
-for raw_reads_dir in raw_reads_dirs:
-    raw_reads_dir = Utilities.ends_with_slash(raw_reads_dir)
-    files_list = os.listdir(raw_reads_dir)
-    for file_name in files_list:
-        if any([file_name.endswith(i) for i in ["csfasta", "fasta", "fa", "fastq", "fq", "gz"]]):
-            sample_name = file_name.split("_")[0].strip()
-            if "HP" not in sample_name or os.path.isfile("/data2/bio/Metagenomes/HG19/Unmapped_reads/{}_no_hg19.1.gz".format(sample_name)):
-                continue
-            sample_extension = file_name.split(".")[-1]
-            sample_files = sorted(sorted([raw_reads_dir + i for i in files_list if len(re.findall("^{}".format(sample_name), i)) > 0 and i.endswith(sample_extension)], key=len, reverse=True)[:2])
-            sample_name = re.sub("[^A-Za-z0-9]+", "_", sample_name)
-            sample_name = re.sub("_+", "_", sample_name)
-            raw_reads_dict[sample_name] = sample_files
 
-raw_reads_dict = dict(sorted(raw_reads_dict.items()))
+def create_sampledata_dict(dirs: list):
+    output_dict = {}
+    for raw_reads_dir in dirs:
+        raw_reads_dir = Utilities.ends_with_slash(raw_reads_dir)
+        files_list = os.listdir(raw_reads_dir)
+        for file_name in files_list:
+            if any([file_name.endswith(i) for i in ["csfasta", "fasta", "fa", "fastq", "fq", "gz"]]):
+                sample_name = file_name.split("_")[0].strip()
+                file_extension = file_name.split(".")[-1]
+                sample_files = sorted(sorted([raw_reads_dir + i for i in files_list if len(re.findall("^{}".format(sample_name), i)) > 0 and i.endswith(file_extension)], key=len, reverse=True)[:2])
+                sample_name = re.sub("_+", "_", re.sub("[^A-Za-z0-9]+", "_", sample_name))
+                existing_files = output_dict.get(sample_name)
+                if not existing_files:
+                    output_dict[sample_name] = sample_files
+                else:
+                    if existing_files[0].endswith("csfasta") and file_extension != "csfasta":
+                        print("Replacing SOLID reads with Illumina reads for sample {a}: {b}, {c}".format(a=sample_name, b=existing_files, c=sample_files))
+                        output_dict[sample_name] = sample_files
+    output_dict = dict(sorted(output_dict.items()))
+    return output_dict
+
+
+# Create sampledata for Illumina raw reads
+raw_reads_dict = create_sampledata_dict(raw_reads_dirs)
+raw_reads_dict = {k: raw_reads_dict[k] for k in raw_reads_dict if "HP" in k and not os.path.isfile("/data2/bio/Metagenomes/HG19/Unmapped_reads/{}_no_hg19.1.gz".format(k))}
+
 Utilities.dump_2d_array([[k] + raw_reads_dict[k] for k in raw_reads_dict], file=projectDescriber.sampledata)
 
 # Prepare deploy charts
@@ -83,10 +93,33 @@ subprocess.getoutput("sed -i 's|/home/docker/scripts/master.py, -s, |/home/docke
 # Deploy from MASTER
 
 # Prepare sample data for CARD DB
-projectDescriber = ProjectDescriber()
-# projectDescriber.sampledata = "/data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints_new.sampledata"
-# raw_reads_dirs = ["/data2/bio/Metagenomes/HG19/Non-mapped_reads/", "/data2/bio/Metagenomes/HG19/Unmapped_reads/"]
-# Utilities.create_sampledata(raw_reads_dirs, projectDescriber.sampledata)
+filtered_reads_dirs = ["/data2/bio/Metagenomes/HG19/Non-mapped_reads/",
+                       "/data2/bio/Metagenomes/HG19/Unmapped_reads/"]
+
+filtered_reads_dict = create_sampledata_dict(filtered_reads_dirs)
+filtered_reads_dict = {k: filtered_reads_dict[k] for k in filtered_reads_dict if any(i in k for i in ["HP", "I", "SRR"])}
+Utilities.dump_2d_array([[k] + raw_reads_dict[k] for k in raw_reads_dict], file=projectDescriber.sampledata)
+
+"""
+# Remove already mapped sample data
+
+export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \
+docker pull $IMG && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG \
+python3 /home/docker/scripts/verify_coverages.py \
+-i /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints_no_hg19.sampledata \
+-p /data2/bio/Metagenomes/CARD/Statistics/ \
+-s _card_v2.0.3_coverage.tsv \
+-g /data/reference/CARD/card_v2.0.3/index/card_v2.0.3_samtools.genome \
+-d
+"""
+
+"""
+Done.
+Files to process: 17
+Dumped sample data: '/data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-10-25-21-01-57.sampledata'
+Dumped debug table: '/data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-10-25-21-01-57.sampledata_debug.tsv'
+"""
 
 referenceDescriber = ReferenceDescriber()
 
@@ -94,7 +127,7 @@ launchGuideLiner = LaunchGuideLiner(charts_dir="{}{}/charts/".format(Utilities.e
                                     deploy_prefix="{a}-{b}-{c}".format(a=projectDescriber.owner, b=projectDescriber.name, c=referenceDescriber.alias),
                                     nodes_number=7,
                                     threads_number="half",
-                                    sampledata_file=projectDescriber.sampledata,
+                                    sampledata_file="/data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-10-25-21-01-57.sampledata",
                                     refdata_file=referenceDescriber.refdata,
                                     output_mask=referenceDescriber.alias,
                                     output_dir="/data2/bio/Metagenomes/{}/".format(referenceDescriber.name))
@@ -120,140 +153,34 @@ kubectl create -f  https://raw.githubusercontent.com/ivasilyev/biopipelines-dock
 # Deploy master chart
 kubectl create -f /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/charts/master.yaml
 
-# Deploy worker chart only when the master pod ('dsafina-card-v2-0-3-queue') is complete
+# Deploy worker chart only when the master pod ('dsafina-hp-checkpoints-card-v2-0-3-queue') is complete
 kubectl create -f /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/charts/worker.yaml
 
 # View active nodes
-kubectl describe pod dsafina-card-v2-0-3-job- | grep Node:
+kubectl describe pod dsafina-hp-checkpoints-card-v2-0-3-job- | grep Node:
 
 # View progress (from WORKER node)
-echo && echo PROCESSED $(ls -d /data2/bio/Metagenomes/CARD/Statistics/*coverage.txt | wc -l) OF $(cat /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata | wc -l)
+echo && echo PROCESSED $(ls -d /data2/bio/Metagenomes/CARD/Statistics/*coverage.txt | wc -l) OF $(cat /data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-10-25-21-01-57.sampledata | wc -l)
 
 # Look for some pod (from MASTER node)
 kubectl describe pod <NAME>
 
 # Cleanup
-kubectl delete pod dsafina-card-v2-0-3-queue
-kubectl delete job dsafina-card-v2-0-3-job
+kubectl delete pod dsafina-hp-checkpoints-card-v2-0-3-queue
+kubectl delete job dsafina-hp-checkpoints-card-v2-0-3-job
 
 # Checkout (from WORKER node)
 export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \
 docker pull $IMG && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG \
 python3 /home/docker/scripts/verify_coverages.py \
--i /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints.sampledata \
--p /data2/bio/Metagenomes/CARD/Statistics/ \
--s _card_v2.0.3_coverage.tsv \
+-i /data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-10-25-21-01-57.sampledata \
+-p /data2/bio/Metagenomes/CARD/Statistics/
+-s _card_v2.0.3_coverage.tsv
 -g /data/reference/CARD/card_v2.0.3/index/card_v2.0.3_samtools.genome \
 -d
 """
 
-launchGuideLiner = LaunchGuideLiner(charts_dir="{}{}/charts/".format(Utilities.ends_with_slash(projectDescriber.directory), referenceDescriber.alias),
-                                    deploy_prefix="{a}-{b}-{c}".format(a=projectDescriber.owner, b=projectDescriber.name, c=referenceDescriber.alias),
-                                    nodes_number=7,
-                                    threads_number="half",
-                                    sampledata_file="/data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-09-27-11-51-43.sampledata",
-                                    refdata_file=referenceDescriber.refdata,
-                                    output_mask=referenceDescriber.alias,
-                                    output_dir="/data2/bio/Metagenomes/{}/".format(referenceDescriber.name))
-launchGuideLiner.generate_config()
-launchGuideLiner.get_deploy_guide()
-
-"""
-# Charts directory: '/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/charts/'
-
-# Look for Redis pod & service:
-kubectl get pods
-
-# (Optional) If required, flush all Redis queues:
-export IMG=ivasilyev/bwt_filtering_pipeline_master:latest && \
-docker pull $IMG && docker run --rm -it $IMG redis-cli -h redis flushall
-
-# (Optional) Or remove Redis server by itself:
-kubectl delete svc,pod redis
-
-# (Optional) Deploy if not present:
-kubectl create -f  https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/meta/charts/redis.yaml
-
-# Deploy master chart
-kubectl create -f /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/charts/master.yaml
-
-# Deploy worker chart only when the master pod ('dsafina-hp-checkpoints-card-v2-0-3-queue') is complete
-kubectl create -f /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/charts/worker.yaml
-
-# View active nodes
-kubectl describe pod dsafina-hp-checkpoints-card-v2-0-3-job- | grep Node:
-
-# View progress (from WORKER node)
-echo && echo PROCESSED $(ls -d /data2/bio/Metagenomes/CARD/Statistics/*coverage.txt | wc -l) OF $(cat /data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-09-27-11-51-43.sampledata | wc -l)
-
-# Look for some pod (from MASTER node)
-kubectl describe pod <NAME>
-
-# Cleanup
-kubectl delete pod dsafina-hp-checkpoints-card-v2-0-3-queue
-kubectl delete job dsafina-hp-checkpoints-card-v2-0-3-job
-"""
-launchGuideLiner = LaunchGuideLiner(charts_dir="{}{}/charts/".format(Utilities.ends_with_slash(projectDescriber.directory), referenceDescriber.alias),
-                                    deploy_prefix="{a}-{b}-{c}".format(a=projectDescriber.owner, b=projectDescriber.name, c=referenceDescriber.alias),
-                                    nodes_number=7,
-                                    threads_number="half",
-                                    sampledata_file="/data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-09-27-21-50-35.sampledata",
-                                    refdata_file=referenceDescriber.refdata,
-                                    output_mask=referenceDescriber.alias,
-                                    output_dir="/data2/bio/Metagenomes/{}/".format(referenceDescriber.name))
-launchGuideLiner.generate_config()
-launchGuideLiner.get_deploy_guide()
-
-"""
-# Charts directory: '/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/charts/'
-
-# Look for Redis pod & service:
-kubectl get pods
-
-# (Optional) If required, flush all Redis queues:
-export IMG=ivasilyev/bwt_filtering_pipeline_master:latest && \
-docker pull $IMG && docker run --rm -it $IMG redis-cli -h redis flushall
-
-# (Optional) Or remove Redis server by itself:
-kubectl delete svc,pod redis
-
-# (Optional) Deploy if not present:
-kubectl create -f  https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/meta/charts/redis.yaml
-
-# Deploy master chart
-kubectl create -f /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/charts/master.yaml
-
-# Deploy worker chart only when the master pod ('dsafina-hp-checkpoints-card-v2-0-3-queue') is complete
-kubectl create -f /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/charts/worker.yaml
-
-# View active nodes
-kubectl describe pod dsafina-hp-checkpoints-card-v2-0-3-job- | grep Node:
-
-# View progress (from WORKER node)
-echo && echo PROCESSED $(ls -d /data2/bio/Metagenomes/CARD/Statistics/*coverage.txt | wc -l) OF $(cat /data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-09-27-21-50-35.sampledata | wc -l)
-
-# Look for some pod (from MASTER node)
-kubectl describe pod <NAME>
-
-# Cleanup
-kubectl delete pod dsafina-hp-checkpoints-card-v2-0-3-queue
-kubectl delete job dsafina-hp-checkpoints-card-v2-0-3-job
-
-"""
-
-launchGuideLiner = LaunchGuideLiner(charts_dir="{}{}/charts/".format(Utilities.ends_with_slash(projectDescriber.directory), referenceDescriber.alias),
-                                    deploy_prefix="{a}-{b}-{c}".format(a=projectDescriber.owner, b=projectDescriber.name, c=referenceDescriber.alias),
-                                    nodes_number=7,
-                                    threads_number="half",
-                                    sampledata_file="/data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-09-28-09-21-09.sampledata",
-                                    refdata_file=referenceDescriber.refdata,
-                                    output_mask=referenceDescriber.alias,
-                                    output_dir="/data2/bio/Metagenomes/{}/".format(referenceDescriber.name))
-launchGuideLiner.generate_config()
-launchGuideLiner.get_deploy_guide()
-
-# Rerun with charts from '2018-09-28-09-21-09.sampledata'
 # Again, regenerate charts & manual launch for '2018-09-28-11-12-45.sampledata':
 """
 export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \
