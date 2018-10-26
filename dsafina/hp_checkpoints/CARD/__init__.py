@@ -341,3 +341,37 @@ for pivot_value_col_name in ("RPM", "RPKM"):
         reversed_groupdata_2d_array.append([isolated_value_file, group_name])
     #
     Utilities.dump_2d_array(array=reversed_groupdata_2d_array, file="/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/{a}/{a}.groupdata".format(a=pivot_value_col_name))
+
+"""
+# Combine digested data for RPM
+
+export IMG=ivasilyev/curated_projects:latest && \
+docker pull ${IMG} && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it ${IMG} bash
+
+git clone https://github.com/ivasilyev/statistical_tools.git
+cd statistical_tools
+
+python3 groupdata2statistics.py -g /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/RPM/RPM.groupdata \
+-i keywords \
+-v RPM \
+-o /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/pvals/RPM
+"""
+
+"""
+# Combine digested data for RPKM
+
+export IMG=ivasilyev/curated_projects:latest && \
+docker pull ${IMG} && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it ${IMG} bash
+
+git clone https://github.com/ivasilyev/statistical_tools.git
+cd statistical_tools
+
+python3 groupdata2statistics.py -g /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/RPKM/RPKM.groupdata \
+-i keywords \
+-v RPKM \
+-o /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/pvals/RPKM
+"""
+
+
