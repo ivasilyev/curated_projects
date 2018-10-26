@@ -175,19 +175,26 @@ docker pull $IMG && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG \
 python3 /home/docker/scripts/verify_coverages.py \
 -i /data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-10-25-21-01-57.sampledata \
--p /data2/bio/Metagenomes/CARD/Statistics/
--s _card_v2.0.3_coverage.tsv
+-p /data2/bio/Metagenomes/CARD/Statistics/ \
+-s _card_v2.0.3_coverage.tsv \
 -g /data/reference/CARD/card_v2.0.3/index/card_v2.0.3_samtools.genome \
 -d
 """
 
-# Again, regenerate charts & manual launch for '2018-09-28-11-12-45.sampledata':
+"""
+Done.
+Files to process: 3
+Dumped sample data: '/data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-10-26-06-41-34.sampledata'
+Dumped debug table: '/data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-10-26-06-41-34.sampledata_debug.tsv'
+"""
+
+# Again, manual launch for the small sample data:
 """
 export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \
 docker pull $IMG && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG \
 python3 /home/docker/scripts/nBee.py \
--i /data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-09-28-11-12-45.sampledata \
+-i /data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-10-26-06-41-34.sampledata \
 -r /data/reference/CARD/card_v2.0.3/index/card_v2.0.3_refdata.json \
 -m card_v2.0.3 -t half -o /data2/bio/Metagenomes/CARD/
 """
