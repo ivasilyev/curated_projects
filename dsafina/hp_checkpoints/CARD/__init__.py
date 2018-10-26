@@ -318,19 +318,20 @@ resistance_mechanisms_dict = {"efflux",
 values_columns_list = [j for i in [groupdata_comparators_dict[k].columns for k in groupdata_comparators_dict] for j in i]
 
 boxplot_dfs_dict = {}
-summarized_series_list = []
 for drug_class in drug_classes_dict:
     if len(drug_classes_dict[drug_class]) > 0:
         boxplot_dfs_dict[drug_class] = annotated_total_df.loc[annotated_total_df["Drug Class"].apply(lambda x: any(i in str(x) for i in drug_classes_dict[drug_class])) == True, values_columns_list]
     else:
         boxplot_dfs_dict[drug_class] = annotated_total_df.loc[annotated_total_df["Drug Class"].str.contains(drug_class) == True, values_columns_list]
-    summarized_series = boxplot_dfs_dict[drug_class].sum()
-    summarized_series.name = drug_class
-    summarized_series_list.append(summarized_series)
+
+for resistance_mechanism in resistance_mechanisms_dict:
+    boxplot_dfs_dict[resistance_mechanism] = annotated_total_df.loc[annotated_total_df["Resistance Mechanism"].str.contains(resistance_mechanism) == True, values_columns_list]
+
+summarized_series_list = [boxplot_dfs_dict[k].sum().rename(k) for k in boxplot_dfs_dict]
 
 summarized_df = pd.concat(summarized_series_list, axis=1)
 summarized_df.index.name = "coverage_file"
-summarized_df = summarized_df.transpose()
+summarized_df = summarized_df.transpose().fillna(0)
 summarized_df.index.name = "keywords"
 
 reversed_groupdata_2d_array = []
