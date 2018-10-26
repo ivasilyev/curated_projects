@@ -15,6 +15,7 @@ from meta.scripts.Utilities import Utilities
 from dsafina.hp_checkpoints.ProjectDescriber import ProjectDescriber
 from meta.scripts.card.ReferenceDescriber import ReferenceDescriber
 from meta.scripts.LaunchGuideLiner import LaunchGuideLiner
+import pandas as pd
 
 # Prepare new raw reads for filtering to HG19 DB
 projectDescriber = ProjectDescriber()
@@ -188,8 +189,9 @@ Dumped sample data: '/data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-10-2
 Dumped debug table: '/data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-10-26-06-41-34.sampledata_debug.tsv'
 """
 
-# Again, manual launch for the small sample data:
 """
+# Again, manual launch for the small sample data:
+
 export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \
 docker pull $IMG && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG \
@@ -197,16 +199,22 @@ python3 /home/docker/scripts/nBee.py \
 -i /data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-10-26-06-41-34.sampledata \
 -r /data/reference/CARD/card_v2.0.3/index/card_v2.0.3_refdata.json \
 -m card_v2.0.3 -t half -o /data2/bio/Metagenomes/CARD/
-"""
 
-"""
+# Checkout (from WORKER node)
 export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \
 docker pull $IMG && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG \
-python3 /home/docker/scripts/nBee.py \
--i /data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-09-29-02-42-19.sampledata \
--r /data/reference/CARD/card_v2.0.3/index/card_v2.0.3_refdata.json \
--m card_v2.0.3 -t half -o /data2/bio/Metagenomes/CARD/
+python3 /home/docker/scripts/verify_coverages.py \
+-i /data2/bio/Metagenomes/CARD/Statistics/sampledata/2018-10-26-06-41-34.sampledata \
+-p /data2/bio/Metagenomes/CARD/Statistics/ \
+-s _card_v2.0.3_coverage.tsv \
+-g /data/reference/CARD/card_v2.0.3/index/card_v2.0.3_samtools.genome \
+-d
+"""
+
+"""
+Done.
+Files to process: 0
 """
 
 """
@@ -245,8 +253,6 @@ python3 groupdata2statistics.py -g /data1/bio/projects/dsafina/hp_checkpoints/sr
 -o /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/pvals/RPKM/
 """
 
-import pandas as pd
-
 index_col_name = "reference_id"
 
 annotation_df = pd.read_table("/data/reference/CARD/card_v2.0.3/index/card_v2.0.3_annotation.tsv").set_index(index_col_name)
@@ -260,16 +266,19 @@ for total_df_file in ["/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/pv
 # TODO Iterate it
 annotated_total_df = pd.read_table("/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/pvals/RPM/1_2_3_C_srr_total_dataframe_annotated.tsv").set_index(index_col_name)
 
+pivot_value_col_name = "RPM"
+
 
 class ReversedGroupComparator:
     def __init__(self, name):
         self.name = str(name)
         self.columns = []
         self.rows = []
+        self.comparison_2d_array = []
         self.comparisons = []
 
 
-group_names = ["C", "1", "2", "3"]
+group_names = [str(i) for i in ["C", 1, 2, 3]]
 groupdata_comparators_dict = {}
 for first_group_name in group_names:
     reversedGroupComparator = ReversedGroupComparator(first_group_name)
@@ -279,11 +288,60 @@ for first_group_name in group_names:
             reversedGroupComparator.columns.append(annotated_total_df_column_name)
     reversedGroupComparator.rows = annotated_total_df.loc[annotated_total_df["{}_non-zero_values".format(first_group_name)].astype(int) > 0, :].index.tolist()
     for second_group_name in [i for i in group_names if i != first_group_name]:
-        comparison_name = "{}_vs_{}_is_rejected_by_fdr_bh_for_wilcoxon".format(first_group_name, second_group_name)
-        if comparison_name in list(annotated_total_df):
-            reversedGroupComparator.comparisons.append(comparison_name)
+        comparison_pairs = ((first_group_name, second_group_name), (second_group_name, first_group_name))
+        for comparison_pair in comparison_pairs:
+            comparison_name = "{a}_vs_{b}_is_rejected_by_fdr_bh_for_wilcoxon".format(a=comparison_pair[0], b=comparison_pair[1])
+            if comparison_name in list(annotated_total_df):
+                reversedGroupComparator.comparisons.append(comparison_name)
+                reversedGroupComparator.comparison_2d_array.append(comparison_pair)
     groupdata_comparators_dict[first_group_name] = reversedGroupComparator
 
-drug_classes = ["aminoglycoside", "fluoroquinolone", "glycopeptide antibiotic", "lincosamide", "macrolide", "nucleoside antibiotic", "penam", "peptide antibiotic", "phenicol", "sulfonamide", "tetracycline", "triclosan"]
-resistance_mechanism = ["efflux", "inactivation", "reduced permeability", "target alteration", "target protection", "target replacement"]
+drug_classes_dict = {"beta-lactam": ["cephalosporin", "penam", "penem"],
+                     "aminoglycoside": [],
+                     "fluoroquinolone": [],
+                     "glycopeptide antibiotic": [],
+                     "lincosamide": [],
+                     "macrolide": [],
+                     "nucleoside antibiotic": [],
+                     "peptide antibiotic": [],
+                     "phenicol": [],
+                     "sulfonamide": [],
+                     "tetracycline": [],
+                     "triclosan": []}
+resistance_mechanisms_dict = {"efflux",
+                              "inactivation",
+                              "reduced permeability",
+                              "target alteration",
+                              "target protection",
+                              "target replacement"}
 
+values_columns_list = [j for i in [groupdata_comparators_dict[k].columns for k in groupdata_comparators_dict] for j in i]
+
+boxplot_dfs_dict = {}
+summarized_series_list = []
+for drug_class in drug_classes_dict:
+    if len(drug_classes_dict[drug_class]) > 0:
+        boxplot_dfs_dict[drug_class] = annotated_total_df.loc[annotated_total_df["Drug Class"].apply(lambda x: any(i in str(x) for i in drug_classes_dict[drug_class])) == True, values_columns_list]
+    else:
+        boxplot_dfs_dict[drug_class] = annotated_total_df.loc[annotated_total_df["Drug Class"].str.contains(drug_class) == True, values_columns_list]
+    summarized_series = boxplot_dfs_dict[drug_class].sum()
+    summarized_series.name = drug_class
+    summarized_series_list.append(summarized_series)
+
+summarized_df = pd.concat(summarized_series_list, axis=1)
+summarized_df.index.name = "coverage_file"
+summarized_df = summarized_df.transpose()
+summarized_df.index.name = "keywords"
+
+reversed_groupdata_2d_array = []
+for col_name in list(summarized_df):
+    group_name = col_name.split("_")[0]
+    coverage_file = "_".join(col_name.split("_")[1:])
+    sample_name = re.sub("[\W]+", "_", coverage_file.replace("/data2/bio/Metagenomes/CARD/Statistics/", "").replace("_card_v2.0.3_coverage.tsv", ""))
+    isolated_value_dir = "/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/{a}/{b}/".format(a=pivot_value_col_name, b=group_name)
+    os.makedirs(isolated_value_dir, exist_ok=True)
+    isolated_value_file = "{}{}.tsv".format(isolated_value_dir, sample_name)
+    summarized_df[col_name].reset_index().rename(columns={col_name: pivot_value_col_name}).to_csv(isolated_value_file, sep='\t', header=True, index=False)
+    reversed_groupdata_2d_array.append([group_name, isolated_value_file])
+
+Utilities.dump_2d_array(array=reversed_groupdata_2d_array, file="/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/{a}/{a}.groupdata".format(a=pivot_value_col_name))

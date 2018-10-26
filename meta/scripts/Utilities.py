@@ -113,26 +113,5 @@ class Utilities:
         Utilities.dump_list(lst=["\t".join([str(j) for j in i]) for i in array], file=file)
 
     @staticmethod
-    def _compose_sampledatas_dict(dir_name: str):
-        import re
-        dir_name = Utilities.ends_with_slash(dir_name)
-        files_list = os.listdir(dir_name)
-        output_dict = {}
-        for file_name in files_list:
-            if any([file_name.endswith(i) for i in ["csfasta", "fasta", "fa", "fastq", "fq", "gz"]]):
-                sample_name = file_name.split("_")[0].strip()
-                sample_extension = sample_name.split(".")[-1]
-                sample_files = [dir_name + i for i in files_list if len(re.findall("^{}".format(sample_name), i)) > 0 and i.endswith(sample_extension)][:2]
-                sample_files.sort(key=len, reverse=True)
-                sample_name = re.sub("[^A-Za-z0-9]+", "_", sample_name)
-                sample_name = re.sub("_+", "_", sample_name)
-                output_dict[sample_name] = sample_files
-        output_dict = dict(sorted(output_dict.items()))
-        return output_dict
-
-    @staticmethod
-    def create_sampledata(dirs: list, file: str):
-        output_dict = {}
-        for dir_name in dirs:
-            output_dict.update(Utilities._compose_sampledatas_dict(dir_name))
-        Utilities.dump_2d_array(array=[[k] + output_dict[k] for k in output_dict], file=file)
+    def flatten_2d_array(array: list):
+        return [j for i in array for j in i]
