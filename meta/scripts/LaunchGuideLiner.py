@@ -116,8 +116,8 @@ docker pull $IMG && \\
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG \\ 
 python3 /home/docker/scripts/verify_coverages.py \\
 -i {sampleDataFileName} \\
--p {OUTPUT_DIR}Statistics/
--s _{OUTPUT_MASK}_coverage.tsv
+-p {OUTPUT_DIR}Statistics/ \\
+-s _{OUTPUT_MASK}_coverage.tsv \\
 -g <GENOME> \\
 -d
         """.format(MASTER=self.master_chart.file,
