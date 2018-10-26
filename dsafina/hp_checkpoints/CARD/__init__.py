@@ -254,19 +254,7 @@ python3 groupdata2statistics.py -g /data1/bio/projects/dsafina/hp_checkpoints/sr
 """
 
 index_col_name = "reference_id"
-
 annotation_df = pd.read_table("/data/reference/CARD/card_v2.0.3/index/card_v2.0.3_annotation.tsv").set_index(index_col_name)
-for total_df_file in ["/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/pvals/RPM/1_2_3_C_srr_total_dataframe.tsv",
-                      "/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/pvals/RPKM/1_2_3_C_srr_total_dataframe.tsv"]:
-    total_df = pd.read_table(total_df_file).set_index(index_col_name)
-    annotated_total_df = pd.concat([annotation_df, total_df], axis=1)
-    annotated_total_df.index.name = index_col_name
-    annotated_total_df.to_csv(total_df_file.replace("_total_dataframe.tsv", "_total_dataframe_annotated.tsv"), sep='\t', header=True, index=True)
-
-# TODO Iterate it
-annotated_total_df = pd.read_table("/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/pvals/RPM/1_2_3_C_srr_total_dataframe_annotated.tsv").set_index(index_col_name)
-
-pivot_value_col_name = "RPM"
 
 
 class ReversedGroupComparator:
@@ -278,71 +266,78 @@ class ReversedGroupComparator:
         self.comparisons = []
 
 
-group_names = [str(i) for i in ["C", 1, 2, 3]]
-groupdata_comparators_dict = {}
-for first_group_name in group_names:
-    reversedGroupComparator = ReversedGroupComparator(first_group_name)
-    for annotated_total_df_column_name in list(annotated_total_df):
-        annotated_total_df_column_name_digest_list = annotated_total_df_column_name.split("_")
-        if annotated_total_df_column_name_digest_list[0].strip() == first_group_name and len(annotated_total_df_column_name_digest_list) > 0 and annotated_total_df_column_name_digest_list[1].strip().startswith("/"):
-            reversedGroupComparator.columns.append(annotated_total_df_column_name)
-    reversedGroupComparator.rows = annotated_total_df.loc[annotated_total_df["{}_non-zero_values".format(first_group_name)].astype(int) > 0, :].index.tolist()
-    for second_group_name in [i for i in group_names if i != first_group_name]:
-        comparison_pairs = ((first_group_name, second_group_name), (second_group_name, first_group_name))
-        for comparison_pair in comparison_pairs:
-            comparison_name = "{a}_vs_{b}_is_rejected_by_fdr_bh_for_wilcoxon".format(a=comparison_pair[0], b=comparison_pair[1])
-            if comparison_name in list(annotated_total_df):
-                reversedGroupComparator.comparisons.append(comparison_name)
-                reversedGroupComparator.comparison_2d_array.append(comparison_pair)
-    groupdata_comparators_dict[first_group_name] = reversedGroupComparator
-
-drug_classes_dict = {"beta-lactam": ["cephalosporin", "penam", "penem"],
-                     "aminoglycoside": [],
-                     "fluoroquinolone": [],
-                     "glycopeptide antibiotic": [],
-                     "lincosamide": [],
-                     "macrolide": [],
-                     "nucleoside antibiotic": [],
-                     "peptide antibiotic": [],
-                     "phenicol": [],
-                     "sulfonamide": [],
-                     "tetracycline": [],
-                     "triclosan": []}
-resistance_mechanisms_dict = {"efflux",
-                              "inactivation",
-                              "reduced permeability",
-                              "target alteration",
-                              "target protection",
-                              "target replacement"}
-
-values_columns_list = [j for i in [groupdata_comparators_dict[k].columns for k in groupdata_comparators_dict] for j in i]
-
-boxplot_dfs_dict = {}
-for drug_class in drug_classes_dict:
-    if len(drug_classes_dict[drug_class]) > 0:
-        boxplot_dfs_dict[drug_class] = annotated_total_df.loc[annotated_total_df["Drug Class"].apply(lambda x: any(i in str(x) for i in drug_classes_dict[drug_class])) == True, values_columns_list]
-    else:
-        boxplot_dfs_dict[drug_class] = annotated_total_df.loc[annotated_total_df["Drug Class"].str.contains(drug_class) == True, values_columns_list]
-
-for resistance_mechanism in resistance_mechanisms_dict:
-    boxplot_dfs_dict[resistance_mechanism] = annotated_total_df.loc[annotated_total_df["Resistance Mechanism"].str.contains(resistance_mechanism) == True, values_columns_list]
-
-summarized_series_list = [boxplot_dfs_dict[k].sum().rename(k) for k in boxplot_dfs_dict]
-
-summarized_df = pd.concat(summarized_series_list, axis=1)
-summarized_df.index.name = "coverage_file"
-summarized_df = summarized_df.transpose().fillna(0)
-summarized_df.index.name = "keywords"
-
-reversed_groupdata_2d_array = []
-for col_name in list(summarized_df):
-    group_name = col_name.split("_")[0]
-    coverage_file = "_".join(col_name.split("_")[1:])
-    sample_name = re.sub("[\W]+", "_", coverage_file.replace("/data2/bio/Metagenomes/CARD/Statistics/", "").replace("_card_v2.0.3_coverage.tsv", ""))
-    isolated_value_dir = "/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/{a}/{b}/".format(a=pivot_value_col_name, b=group_name)
-    os.makedirs(isolated_value_dir, exist_ok=True)
-    isolated_value_file = "{}{}.tsv".format(isolated_value_dir, sample_name)
-    summarized_df[col_name].reset_index().rename(columns={col_name: pivot_value_col_name}).to_csv(isolated_value_file, sep='\t', header=True, index=False)
-    reversed_groupdata_2d_array.append([group_name, isolated_value_file])
-
-Utilities.dump_2d_array(array=reversed_groupdata_2d_array, file="/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/{a}/{a}.groupdata".format(a=pivot_value_col_name))
+for pivot_value_col_name in ("RPM", "RPKM"):
+    total_df_file = "/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/pvals/{}/1_2_3_C_srr_total_dataframe.tsv".format(pivot_value_col_name)
+    total_df = pd.read_table(total_df_file).set_index(index_col_name)
+    annotated_total_df = pd.concat([annotation_df, total_df], axis=1)
+    annotated_total_df.index.name = index_col_name
+    annotated_total_df.to_csv(total_df_file.replace("_total_dataframe.tsv", "_total_dataframe_annotated.tsv"), sep='\t', header=True, index=True)
+    #
+    group_names = [str(i) for i in ["C", 1, 2, 3]]
+    groupdata_comparators_dict = {}
+    for first_group_name in group_names:
+        reversedGroupComparator = ReversedGroupComparator(first_group_name)
+        for annotated_total_df_column_name in list(annotated_total_df):
+            annotated_total_df_column_name_digest_list = annotated_total_df_column_name.split("_")
+            if annotated_total_df_column_name_digest_list[0].strip() == first_group_name and len(annotated_total_df_column_name_digest_list) > 0 and annotated_total_df_column_name_digest_list[1].strip().startswith("/"):
+                reversedGroupComparator.columns.append(annotated_total_df_column_name)
+        reversedGroupComparator.rows = annotated_total_df.loc[annotated_total_df["{}_non-zero_values".format(first_group_name)].astype(int) > 0, :].index.tolist()
+        for second_group_name in [i for i in group_names if i != first_group_name]:
+            comparison_pairs = ((first_group_name, second_group_name), (second_group_name, first_group_name))
+            for comparison_pair in comparison_pairs:
+                comparison_name = "{a}_vs_{b}_is_rejected_by_fdr_bh_for_wilcoxon".format(a=comparison_pair[0], b=comparison_pair[1])
+                if comparison_name in list(annotated_total_df):
+                    reversedGroupComparator.comparisons.append(comparison_name)
+                    reversedGroupComparator.comparison_2d_array.append(comparison_pair)
+        groupdata_comparators_dict[first_group_name] = reversedGroupComparator
+    #
+    drug_classes_dict = {"beta-lactam": ["cephalosporin", "penam", "penem"],
+                         "aminoglycoside": [],
+                         "fluoroquinolone": [],
+                         "glycopeptide antibiotic": [],
+                         "lincosamide": [],
+                         "macrolide": [],
+                         "nucleoside antibiotic": [],
+                         "peptide antibiotic": [],
+                         "phenicol": [],
+                         "sulfonamide": [],
+                         "tetracycline": [],
+                         "triclosan": []}
+    resistance_mechanisms_dict = {"efflux",
+                                  "inactivation",
+                                  "reduced permeability",
+                                  "target alteration",
+                                  "target protection",
+                                  "target replacement"}
+    #
+    values_columns_list = [j for i in [groupdata_comparators_dict[k].columns for k in groupdata_comparators_dict] for j in i]
+    #
+    boxplot_dfs_dict = {}
+    for drug_class in drug_classes_dict:
+        if len(drug_classes_dict[drug_class]) > 0:
+            boxplot_dfs_dict[drug_class] = annotated_total_df.loc[annotated_total_df["Drug Class"].apply(lambda x: any(i in str(x) for i in drug_classes_dict[drug_class])) == True, values_columns_list]
+        else:
+            boxplot_dfs_dict[drug_class] = annotated_total_df.loc[annotated_total_df["Drug Class"].str.contains(drug_class) == True, values_columns_list]
+    #
+    for resistance_mechanism in resistance_mechanisms_dict:
+        boxplot_dfs_dict[resistance_mechanism] = annotated_total_df.loc[annotated_total_df["Resistance Mechanism"].str.contains(resistance_mechanism) == True, values_columns_list]
+    #
+    summarized_series_list = [boxplot_dfs_dict[k].sum().rename(k) for k in boxplot_dfs_dict]
+    #
+    summarized_df = pd.concat(summarized_series_list, axis=1)
+    summarized_df.index.name = "coverage_file"
+    summarized_df = summarized_df.transpose().fillna(0)
+    summarized_df.index.name = "keywords"
+    #
+    reversed_groupdata_2d_array = []
+    for col_name in list(summarized_df):
+        group_name = col_name.split("_")[0]
+        coverage_file = "_".join(col_name.split("_")[1:])
+        sample_name = re.sub("[\W]+", "_", coverage_file.replace("/data2/bio/Metagenomes/CARD/Statistics/", "").replace("_card_v2.0.3_coverage.tsv", ""))
+        isolated_value_dir = "/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/{a}/{b}/".format(a=pivot_value_col_name, b=group_name)
+        os.makedirs(isolated_value_dir, exist_ok=True)
+        isolated_value_file = "{}{}.tsv".format(isolated_value_dir, sample_name)
+        summarized_df[col_name].reset_index().rename(columns={col_name: pivot_value_col_name}).to_csv(isolated_value_file, sep='\t', header=True, index=False)
+        reversed_groupdata_2d_array.append([isolated_value_file, group_name])
+    #
+    Utilities.dump_2d_array(array=reversed_groupdata_2d_array, file="/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/{a}/{a}.groupdata".format(a=pivot_value_col_name))
