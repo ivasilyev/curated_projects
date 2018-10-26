@@ -266,6 +266,7 @@ class ReversedGroupComparator:
         self.comparisons = []
 
 
+summarized_dss_dict = {}
 for pivot_value_col_name in ("RPM", "RPKM"):
     total_df_file = "/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/pvals/{}/1_2_3_C_srr_total_dataframe.tsv".format(pivot_value_col_name)
     total_df = pd.read_table(total_df_file).set_index(index_col_name)
@@ -341,6 +342,12 @@ for pivot_value_col_name in ("RPM", "RPKM"):
         reversed_groupdata_2d_array.append([isolated_value_file, group_name])
     #
     Utilities.dump_2d_array(array=reversed_groupdata_2d_array, file="/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/{a}/{a}.groupdata".format(a=pivot_value_col_name))
+    #
+    summarized_ds = pd.melt(summarized_df.reset_index(), id_vars=["keywords"], var_name="coverage_file", value_name=pivot_value_col_name).set_index(["keywords", "coverage_file"])
+    summarized_dss_dict[pivot_value_col_name] = summarized_ds
+
+digest_values_ds = pd.concat([summarized_dss_dict[k] for k in summarized_dss_dict], axis=1).reset_index()
+digest_values_ds["group_name"] = digest_values_ds["coverage_file"].apply(lambda x: x.split("_")[0])
 
 """
 # Combine digested data for RPM
