@@ -296,18 +296,18 @@ for pivot_value_col_name in ("RPM", "RPKM"):
                     reversedGroupComparator.comparison_2d_array.append(comparison_pair)
         groupdata_comparators_dict[first_group_name] = reversedGroupComparator
     #
-    drug_classes_dict = {"beta-lactam": ["cephalosporin", "penam", "penem"],
-                         "aminoglycoside": [],
-                         "fluoroquinolone": [],
-                         "glycopeptide antibiotic": [],
-                         "lincosamide": [],
-                         "macrolide": [],
-                         "nucleoside antibiotic": [],
-                         "peptide antibiotic": [],
-                         "phenicol": [],
-                         "sulfonamide": [],
-                         "tetracycline": [],
-                         "triclosan": []}
+    drug_classes_dict = {"beta-lactam": ("cephalosporin", "penam", "penem"),
+                         "aminoglycoside": (),
+                         "fluoroquinolone": (),
+                         "glycopeptide antibiotic": (),
+                         "lincosamide": (),
+                         "macrolide": (),
+                         "nucleoside antibiotic": (),
+                         "peptide antibiotic": (),
+                         "phenicol": (),
+                         "sulfonamide": (),
+                         "tetracycline": (),
+                         "triclosan": ()}
     resistance_mechanisms_dict = {"efflux",
                                   "inactivation",
                                   "reduced permeability",
