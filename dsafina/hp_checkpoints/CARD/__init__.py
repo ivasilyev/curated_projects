@@ -16,6 +16,10 @@ from dsafina.hp_checkpoints.ProjectDescriber import ProjectDescriber
 from meta.scripts.card.ReferenceDescriber import ReferenceDescriber
 from meta.scripts.LaunchGuideLiner import LaunchGuideLiner
 import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import matplotlib as mpl
 
 # Prepare new raw reads for filtering to HG19 DB
 projectDescriber = ProjectDescriber()
@@ -348,6 +352,7 @@ for pivot_value_col_name in ("RPM", "RPKM"):
 
 digest_values_ds = pd.concat([summarized_dss_dict[k] for k in summarized_dss_dict], axis=1).reset_index()
 digest_values_ds["group_name"] = digest_values_ds["coverage_file"].apply(lambda x: x.split("_")[0])
+digest_values_ds["log2(RPM+1)"] = np.log2(digest_values_ds["RPM"] + 1)
 
 """
 # Combine digested data for RPM
@@ -381,4 +386,36 @@ python3 groupdata2statistics.py -g /data1/bio/projects/dsafina/hp_checkpoints/ca
 -o /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/pvals/RPKM
 """
 
+from matplotlib.ticker import MaxNLocator
 
+# Prepare boxplot data
+sns.set(style="whitegrid", font_scale=0.4)
+fig = plt.figure()
+fig.subplots_adjust(hspace=0.2, wspace=0.3)
+for idx, keyword in enumerate(set(digest_values_ds["keywords"].values)):
+    ax = fig.add_subplot(3, 6, idx + 1)
+    sns.boxplot(x="keywords", y="log2(RPM+1)", hue="group_name", data=digest_values_ds.loc[digest_values_ds["keywords"] == keyword], palette="Set3")
+    ax.legend_.remove()
+    ax.set_title(keyword.replace(" ", "\n"))
+    ax.title.set_position([.5, .95])
+    ax.axes.get_xaxis().set_visible(False)
+    ax.yaxis.label.set_visible(False)
+    plt.yticks(rotation=90)
+    ax.tick_params(axis='y', which='major', pad=-4)
+    ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+    # ax.tick_params(axis='y', direction='out', length=6, width=2, colors='red')
+    # plt.yticks([])
+    # ax.text(0.5, 0.5, str((2, 3, i)), fontsize=18, ha="center")
+
+# sns.catplot(x="sex", y="total_bill", hue="smoker", col="time", data=digest_values_ds, kind="box", height=4, aspect=.7)
+# ax = sns.catplot(x="keywords", y="log2(RPM+1)", hue="group_name", col="keywords", data=digest_values_ds, kind="box", height=4, aspect=.7)
+# ax = sns.boxplot(x="keywords", y="log2(RPM+1)", hue="group_name", data=digest_values_ds, palette="Set3")
+
+# g = sns.FacetGrid(digest_values_ds, col="keywords", col_wrap=6)
+# g = g.map(sns.boxplot, "total_bill")
+# plt.xticks(rotation=90)
+# mpl.rcParams.update({'font.size': 2})
+# fig = ax.get_figure()
+fig.savefig("/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/pvals/RPM/test.png", format="png", dpi=900)
+plt.clf()
+plt.close()
