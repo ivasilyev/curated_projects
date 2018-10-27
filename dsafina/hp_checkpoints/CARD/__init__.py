@@ -19,7 +19,7 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-import matplotlib as mpl
+from matplotlib.ticker import MaxNLocator
 
 # Prepare new raw reads for filtering to HG19 DB
 projectDescriber = ProjectDescriber()
@@ -386,36 +386,29 @@ python3 groupdata2statistics.py -g /data1/bio/projects/dsafina/hp_checkpoints/ca
 -o /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/pvals/RPKM
 """
 
-from matplotlib.ticker import MaxNLocator
 
-# Prepare boxplot data
-sns.set(style="whitegrid", font_scale=0.4)
-fig = plt.figure()
-fig.subplots_adjust(hspace=0.2, wspace=0.3)
-for idx, keyword in enumerate(set(digest_values_ds["keywords"].values)):
-    ax = fig.add_subplot(3, 6, idx + 1)
-    sns.boxplot(x="keywords", y="log2(RPM+1)", hue="group_name", data=digest_values_ds.loc[digest_values_ds["keywords"] == keyword], palette="Set3")
+# Visualize boxplot data
+sns.set(style="whitegrid", font_scale=0.5)
+
+fig, axes = plt.subplots(nrows=3, ncols=6, figsize=(10, 5), sharey=False)
+for ax, keyword in zip(axes.flatten(), set(digest_values_ds["keywords"].values)):
+    sns.boxplot(x="keywords", y="log2(RPM+1)", hue="group_name", data=digest_values_ds.loc[digest_values_ds["keywords"] == keyword], orient="v", fliersize=1, linewidth=1, palette="Set3", ax=ax)
+    handles, labels = ax.get_legend_handles_labels()
+    fig.legend(handles, labels, loc="right", bbox_to_anchor=(0.975, 0.5), title="Group ID", fancybox=True)
     ax.legend_.remove()
     ax.set_title(keyword.replace(" ", "\n"))
-    ax.title.set_position([.5, .95])
+    ax.title.set_position([0.5, 0.97])
     ax.axes.get_xaxis().set_visible(False)
     ax.yaxis.label.set_visible(False)
     plt.yticks(rotation=90)
-    ax.tick_params(axis='y', which='major', pad=-4)
+    ax.tick_params(axis="y", which="major", pad=-3)
     ax.yaxis.set_major_locator(MaxNLocator(integer=True))
-    # ax.tick_params(axis='y', direction='out', length=6, width=2, colors='red')
-    # plt.yticks([])
-    # ax.text(0.5, 0.5, str((2, 3, i)), fontsize=18, ha="center")
 
-# sns.catplot(x="sex", y="total_bill", hue="smoker", col="time", data=digest_values_ds, kind="box", height=4, aspect=.7)
-# ax = sns.catplot(x="keywords", y="log2(RPM+1)", hue="group_name", col="keywords", data=digest_values_ds, kind="box", height=4, aspect=.7)
-# ax = sns.boxplot(x="keywords", y="log2(RPM+1)", hue="group_name", data=digest_values_ds, palette="Set3")
-
-# g = sns.FacetGrid(digest_values_ds, col="keywords", col_wrap=6)
-# g = g.map(sns.boxplot, "total_bill")
-# plt.xticks(rotation=90)
-# mpl.rcParams.update({'font.size': 2})
-# fig = ax.get_figure()
+fig.subplots_adjust(hspace=0.3, wspace=0.3)
+ax0 = fig.add_axes([0, 0, 1, 1])
+plt.text(0.09, 0.5, "log2(RPM+1)", horizontalalignment="left", verticalalignment='center', rotation=90, transform=ax0.transAxes)
+ax0.set_axis_off()
 fig.savefig("/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/pvals/RPM/test.png", format="png", dpi=900)
 plt.clf()
 plt.close()
+
