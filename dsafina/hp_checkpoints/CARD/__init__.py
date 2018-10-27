@@ -353,6 +353,9 @@ for pivot_value_col_name in ("RPM", "RPKM"):
 digest_values_ds = pd.concat([summarized_dss_dict[k] for k in summarized_dss_dict], axis=1).reset_index()
 digest_values_ds["group_name"] = digest_values_ds["coverage_file"].apply(lambda x: x.split("_")[0])
 digest_values_ds["log2(RPM+1)"] = np.log2(digest_values_ds["RPM"] + 1)
+digest_values_ds["kRPKM"] = digest_values_ds["RPKM"].astype(float) / 1000.0
+
+digest_values_ds.to_csv("/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/digest_values_dataset.tsv", sep="\t", header=True, index=False)
 
 """
 # Combine digested data for RPM
@@ -386,29 +389,33 @@ python3 groupdata2statistics.py -g /data1/bio/projects/dsafina/hp_checkpoints/ca
 -o /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/pvals/RPKM
 """
 
-
 # Visualize boxplot data
-sns.set(style="whitegrid", font_scale=0.5)
-
-fig, axes = plt.subplots(nrows=3, ncols=6, figsize=(10, 5), sharey=False)
-for ax, keyword in zip(axes.flatten(), set(digest_values_ds["keywords"].values)):
-    sns.boxplot(x="keywords", y="log2(RPM+1)", hue="group_name", data=digest_values_ds.loc[digest_values_ds["keywords"] == keyword], orient="v", fliersize=1, linewidth=1, palette="Set3", ax=ax)
-    handles, labels = ax.get_legend_handles_labels()
-    fig.legend(handles, labels, loc="right", bbox_to_anchor=(0.975, 0.5), title="Group ID", fancybox=True)
-    ax.legend_.remove()
-    ax.set_title(keyword.replace(" ", "\n"))
-    ax.title.set_position([0.5, 0.97])
-    ax.axes.get_xaxis().set_visible(False)
-    ax.yaxis.label.set_visible(False)
-    plt.yticks(rotation=90)
-    ax.tick_params(axis="y", which="major", pad=-3)
-    ax.yaxis.set_major_locator(MaxNLocator(integer=True))
-
-fig.subplots_adjust(hspace=0.3, wspace=0.3)
-ax0 = fig.add_axes([0, 0, 1, 1])
-plt.text(0.09, 0.5, "log2(RPM+1)", horizontalalignment="left", verticalalignment='center', rotation=90, transform=ax0.transAxes)
-ax0.set_axis_off()
-fig.savefig("/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/pvals/RPM/test.png", format="png", dpi=900)
-plt.clf()
-plt.close()
-
+for boxplot_y_col_name in ("log2(RPM+1)", "kRPKM"):
+    sns.set(style="whitegrid", font_scale=0.5)
+    multiboxplot_alias = re.sub("[\W]+", "_", boxplot_y_col_name).strip("_")
+    multiboxplot_dir = "/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/multiboxplots/{}/".format(multiboxplot_alias)
+    os.makedirs(os.path.dirname(multiboxplot_dir), exist_ok=True)
+    #
+    fig, axes = plt.subplots(nrows=3, ncols=6, figsize=(10, 5), sharey=False)
+    for ax, keyword in zip(axes.flatten(), set(digest_values_ds["keywords"].values)):
+        multiboxplot_data = digest_values_ds.loc[digest_values_ds["keywords"] == keyword, ["keywords", boxplot_y_col_name, "group_name"]]
+        multiboxplot_data.to_csv("{a}dataset_{b}_{c}.tsv".format(a=multiboxplot_dir, b=multiboxplot_alias, c=keyword), sep="\t", header=True, index=False)
+        sns.boxplot(x="keywords", y=boxplot_y_col_name, hue="group_name", data=multiboxplot_data, orient="v", fliersize=1, linewidth=1, palette="Set3", ax=ax)
+        handles, labels = ax.get_legend_handles_labels()
+        fig.legend(handles, labels, loc="right", bbox_to_anchor=(0.975, 0.5), title="Group ID", fancybox=True)
+        ax.legend_.remove()
+        ax.set_title(keyword.replace(" ", "\n"))
+        ax.title.set_position([0.5, 0.97])
+        ax.axes.get_xaxis().set_visible(False)
+        ax.yaxis.label.set_visible(False)
+        ax.tick_params(axis="y", which="major", labelrotation=0, pad=-3)
+        ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+    #
+    fig.subplots_adjust(hspace=0.3, wspace=0.3)
+    ax0 = fig.add_axes([0, 0, 1, 1])
+    plt.text(0.09, 0.5, boxplot_y_col_name, horizontalalignment="left", verticalalignment='center', rotation=90, transform=ax0.transAxes)
+    ax0.set_axis_off()
+    multiboxplot_image = "{a}multiboxplot_{b}.png".format(a=multiboxplot_dir, b=multiboxplot_alias)
+    fig.savefig(multiboxplot_image, format="png", dpi=900)
+    plt.clf()
+    plt.close()
