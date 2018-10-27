@@ -270,6 +270,27 @@ class ReversedGroupComparator:
         self.comparisons = []
 
 
+drug_classes_dict = {"beta-lactam": ("cephalosporin", "penam", "penem"),
+                     "aminoglycoside": (),
+                     "fluoroquinolone": (),
+                     "glycopeptide antibiotic": (),
+                     "lincosamide": (),
+                     "macrolide": (),
+                     "nucleoside antibiotic": (),
+                     "peptide antibiotic": (),
+                     "phenicol": (),
+                     "sulfonamide": (),
+                     "tetracycline": (),
+                     "triclosan": ()}
+resistance_mechanisms_dict = {"efflux",
+                              "inactivation",
+                              "reduced permeability",
+                              "target alteration",
+                              "target protection",
+                              "target replacement"}
+
+keywords_list = sorted(list(drug_classes_dict)) + sorted(list(resistance_mechanisms_dict))
+
 summarized_dss_dict = {}
 for pivot_value_col_name in ("RPM", "RPKM"):
     total_df_file = "/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/pvals/{}/1_2_3_C_srr_total_dataframe.tsv".format(pivot_value_col_name)
@@ -295,25 +316,6 @@ for pivot_value_col_name in ("RPM", "RPKM"):
                     reversedGroupComparator.comparisons.append(comparison_name)
                     reversedGroupComparator.comparison_2d_array.append(comparison_pair)
         groupdata_comparators_dict[first_group_name] = reversedGroupComparator
-    #
-    drug_classes_dict = {"beta-lactam": ("cephalosporin", "penam", "penem"),
-                         "aminoglycoside": (),
-                         "fluoroquinolone": (),
-                         "glycopeptide antibiotic": (),
-                         "lincosamide": (),
-                         "macrolide": (),
-                         "nucleoside antibiotic": (),
-                         "peptide antibiotic": (),
-                         "phenicol": (),
-                         "sulfonamide": (),
-                         "tetracycline": (),
-                         "triclosan": ()}
-    resistance_mechanisms_dict = {"efflux",
-                                  "inactivation",
-                                  "reduced permeability",
-                                  "target alteration",
-                                  "target protection",
-                                  "target replacement"}
     #
     values_columns_list = [j for i in [groupdata_comparators_dict[k].columns for k in groupdata_comparators_dict] for j in i]
     #
@@ -351,6 +353,7 @@ for pivot_value_col_name in ("RPM", "RPKM"):
     summarized_dss_dict[pivot_value_col_name] = summarized_ds
 
 digest_values_ds = pd.concat([summarized_dss_dict[k] for k in summarized_dss_dict], axis=1).reset_index()
+
 digest_values_ds["group_name"] = digest_values_ds["coverage_file"].apply(lambda x: x.split("_")[0])
 digest_values_ds["log2(RPM+1)"] = np.log2(digest_values_ds["RPM"] + 1)
 digest_values_ds["kRPKM"] = digest_values_ds["RPKM"].astype(float) / 1000.0
@@ -397,7 +400,7 @@ for boxplot_y_col_name in ("log2(RPM+1)", "kRPKM"):
     os.makedirs(os.path.dirname(multiboxplot_dir), exist_ok=True)
     #
     fig, axes = plt.subplots(nrows=3, ncols=6, figsize=(10, 5), sharey=False)
-    for ax, keyword in zip(axes.flatten(), set(digest_values_ds["keywords"].values)):
+    for ax, keyword in zip(axes.flatten(), keywords_list):
         multiboxplot_data = digest_values_ds.loc[digest_values_ds["keywords"] == keyword, ["keywords", boxplot_y_col_name, "group_name"]]
         multiboxplot_data.to_csv("{a}dataset_{b}_{c}.tsv".format(a=multiboxplot_dir, b=multiboxplot_alias, c=keyword), sep="\t", header=True, index=False)
         sns.boxplot(x="keywords", y=boxplot_y_col_name, hue="group_name", data=multiboxplot_data, orient="v", fliersize=1, linewidth=1, palette="Set3", ax=ax)
@@ -413,7 +416,11 @@ for boxplot_y_col_name in ("log2(RPM+1)", "kRPKM"):
     #
     fig.subplots_adjust(hspace=0.3, wspace=0.3)
     ax0 = fig.add_axes([0, 0, 1, 1])
-    plt.text(0.09, 0.5, boxplot_y_col_name, horizontalalignment="left", verticalalignment='center', rotation=90, transform=ax0.transAxes)
+    plt.text(0.09, 0.5, boxplot_y_col_name, horizontalalignment="left", verticalalignment='center', rotation=90,
+             transform=ax0.transAxes)
+    plt.text(0.5, 0.95, "The abundance of ARGs based on time checkpoint groups after H.pylori eradication therapy",
+             horizontalalignment="center", verticalalignment='center', transform=ax0.transAxes,
+             fontsize="large", fontstyle="normal", fontweight="bold")
     ax0.set_axis_off()
     multiboxplot_image = "{a}multiboxplot_{b}.png".format(a=multiboxplot_dir, b=multiboxplot_alias)
     fig.savefig(multiboxplot_image, format="png", dpi=900)
