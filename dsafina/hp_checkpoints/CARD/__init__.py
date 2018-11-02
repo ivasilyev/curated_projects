@@ -304,7 +304,7 @@ resistance_mechanisms_dict = {"efflux",
                               "target replacement"}
 
 keywords_list = sorted(list(drug_classes_dict)) + sorted(list(resistance_mechanisms_dict))
-group_names = set(time_points_df["group_name"])
+group_names = sorted(set(time_points_df["group_name"]))
 
 summarized_dss_dict = {}
 for pivot_value_col_name in ("RPM", "RPKM"):
