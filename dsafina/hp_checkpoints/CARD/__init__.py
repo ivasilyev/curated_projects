@@ -20,6 +20,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
+import xlrd
 
 # Prepare new raw reads for filtering to HG19 DB
 projectDescriber = ProjectDescriber()
@@ -221,8 +222,21 @@ Done.
 Files to process: 0
 """
 
+# Create new group data for 3 paired checkpoints
+time_points_df = pd.read_excel("/data2/bio/Chocophlan/HP_samples.xlsx", sheet_name="3 time points", header=0)
+time_points_df.dropna(thresh=2, inplace=True)
+time_points_df.dropna(axis="columns", inplace=True)
+time_points_df = time_points_df[list(time_points_df)].astype(int)
+time_points_df = time_points_df.melt(var_name="group_name", value_name="sample_name")
+time_points_df["sample_name"] = time_points_df["sample_name"].astype(str) + "HP"
+
+time_points_df.loc[:, ["sample_name", "group_name"]].to_csv("/data1/bio/projects/dsafina/hp_checkpoints/3_paired_hp_checkpoints.groupdata", sep='\t', header=False, index=False)
+
+# os.rename("/data2/bio/Metagenomes/CARD/Statistics/216_1HP_card_v2.0.3_coverage.tsv", "/data2/bio/Metagenomes/CARD/Statistics/216HP_card_v2.0.3_coverage.tsv")
+
 """
 # Combine data for RPM
+rm -rf /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/pvals /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest
 
 export IMG=ivasilyev/curated_projects:latest && \
 docker pull ${IMG} && \
@@ -231,7 +245,7 @@ docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it 
 git clone https://github.com/ivasilyev/statistical_tools.git
 cd statistical_tools
 
-python3 groupdata2statistics.py -g /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints_new.groupdata \
+python3 groupdata2statistics.py -g /data1/bio/projects/dsafina/hp_checkpoints/3_paired_hp_checkpoints.groupdata \
 -p /data2/bio/Metagenomes/CARD/Statistics/ \
 -s _card_v2.0.3_coverage.tsv \
 -i reference_id \
@@ -249,7 +263,7 @@ docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it 
 git clone https://github.com/ivasilyev/statistical_tools.git
 cd statistical_tools
 
-python3 groupdata2statistics.py -g /data1/bio/projects/dsafina/hp_checkpoints/srr_hp_checkpoints_new.groupdata \
+python3 groupdata2statistics.py -g /data1/bio/projects/dsafina/hp_checkpoints/3_paired_hp_checkpoints.groupdata \
 -p /data2/bio/Metagenomes/CARD/Statistics/ \
 -s _card_v2.0.3_coverage.tsv \
 -i reference_id \
@@ -290,16 +304,16 @@ resistance_mechanisms_dict = {"efflux",
                               "target replacement"}
 
 keywords_list = sorted(list(drug_classes_dict)) + sorted(list(resistance_mechanisms_dict))
+group_names = set(time_points_df["group_name"])
 
 summarized_dss_dict = {}
 for pivot_value_col_name in ("RPM", "RPKM"):
-    total_df_file = "/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/pvals/{}/1_2_3_C_srr_total_dataframe.tsv".format(pivot_value_col_name)
+    total_df_file = "/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/pvals/{}/1st_2nd_3rd_total_dataframe.tsv".format(pivot_value_col_name)
     total_df = pd.read_table(total_df_file).set_index(index_col_name)
     annotated_total_df = pd.concat([annotation_df, total_df], axis=1)
     annotated_total_df.index.name = index_col_name
     annotated_total_df.to_csv(total_df_file.replace("_total_dataframe.tsv", "_total_dataframe_annotated.tsv"), sep='\t', header=True, index=True)
     #
-    group_names = [str(i) for i in ["C", 1, 2, 3]]
     groupdata_comparators_dict = {}
     for first_group_name in group_names:
         reversedGroupComparator = ReversedGroupComparator(first_group_name)
@@ -394,31 +408,6 @@ python3 groupdata2statistics.py -g /data1/bio/projects/dsafina/hp_checkpoints/ca
 -o /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/pvals/RPKM
 """
 
-
-
-# def stars(p):
-#    if p < 0.0001:
-#        return "****"
-#    elif (p < 0.001):
-#        return "***"
-#    elif (p < 0.01):
-#        return "**"
-#    elif (p < 0.05):
-#        return "*"
-#    else:
-#        return "-"
-#
-# p_value = 0.04
-#
-#
-# def label_diff(i,j,text,X,Y):
-#     x = (X[i]+X[j])/2
-#     y = 1.1*max(Y[i], Y[j])
-#     dx = abs(X[i]-X[j])
-#     props = {'connectionstyle':'bar','arrowstyle':'-', 'shrinkA':20,'shrinkB':20,'linewidth':2}
-#     ax.annotate(text, xy=(X[i],y+7), zorder=10)
-#     ax.annotate('', xy=(X[i],y), xytext=(X[j],y), arrowprops=props)
-
 # Visualize boxplot data
 for boxplot_y_col_name in ("log2(RPM+1)", "kRPKM"):
     sns.set(style="whitegrid", font_scale=0.5)
@@ -440,36 +429,6 @@ for boxplot_y_col_name in ("log2(RPM+1)", "kRPKM"):
         ax.yaxis.label.set_visible(False)
         ax.tick_params(axis="y", which="major", labelrotation=0, pad=-3)
         ax.yaxis.set_major_locator(MaxNLocator(integer=True))
-        # statistical annotation
-        # plt.ylim(multiboxplot_data[boxplot_y_col_name].min(), multiboxplot_data[boxplot_y_col_name].max() + multiboxplot_data[boxplot_y_col_name].min())
-        # x1, x2 = 1, 2  # columns 'Sat' and 'Sun' (first column: 0, see plt.xticks())
-        # print("AAAA")
-        # plt.xticks()
-        # y, h, col = multiboxplot_data[boxplot_y_col_name].max() + multiboxplot_data[boxplot_y_col_name].min(), multiboxplot_data[boxplot_y_col_name].min(), 'k'
-        # ax.plot([x1, x1, x2, x2], [y, y + h, y + h, y], linestyle="-", linewidth=1.5, color="black")
-        # ax.text((x1 + x2) * .5, y + h, "ns", ha='center', va='bottom', color="black")
-        #
-        # y_max = multiboxplot_data[boxplot_y_col_name].max()
-        # y_min = multiboxplot_data[boxplot_y_col_name].min()
-        # arrowprops = {'connectionstyle': 'bar',
-        #               'arrowstyle': '-',
-        #               "facecolor": 'black',
-        #               'shrinkA': 20,
-        #               'shrinkB': 20,
-        #               'linewidth': 10}
-        # arrowprops = {'connectionstyle': 'bar',
-        #               'arrowstyle': '-',
-        #               "ec": "k",
-        #               'shrinkA': 20,
-        #               'shrinkB': 20,
-        #               'linewidth': 1}
-        # ax.annotate("AAAAAAAAAAAAAAAAAAAAAAAAAAAAA", xy=(0.1, 0.1), xytext=(0.1, 0.1), xycoords='data', textcoords='data', arrowprops=arrowprops)
-        # ax.annotate("   ", xy=(1, y_min), xytext=(2, y_min), xycoords='axes fraction', textcoords='axes fraction', arrowprops=arrowprops)
-        # ax.annotate("", xy=(y_min, y_max), xytext=(y_min + 1, y_max), arrowprops=arrowprops)
-        # ax.annotate("AAAAAAAAAAAAAAAAAAA", xy=(0.1, 0.1), xycoords="axes fraction", arrowprops=arrowprops)
-        # ax.text(1.5, y_max, stars(p_value), horizontalalignment='center', verticalalignment='center')
-        # ax.text(1.5, y_max + abs(y_max - y_min)*0.1, stars(p_value), horizontalalignment='center', verticalalignment='center')
-    #
     fig.subplots_adjust(hspace=0.3, wspace=0.3)
     ax0 = fig.add_axes([0, 0, 1, 1])
     plt.text(0.09, 0.5, boxplot_y_col_name, horizontalalignment="left", verticalalignment='center', rotation=90,
