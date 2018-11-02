@@ -360,6 +360,8 @@ digest_values_ds["kRPKM"] = digest_values_ds["RPKM"].astype(float) / 1000.0
 
 digest_values_ds.to_csv("/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/digest_values_dataset.tsv", sep="\t", header=True, index=False)
 
+# digest_values_ds = pd.read_table("/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/digest_values_dataset.tsv", sep="\t", header=0, engine="python")
+
 """
 # Combine digested data for RPM
 
@@ -392,6 +394,31 @@ python3 groupdata2statistics.py -g /data1/bio/projects/dsafina/hp_checkpoints/ca
 -o /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/metadata_digest/pvals/RPKM
 """
 
+
+
+# def stars(p):
+#    if p < 0.0001:
+#        return "****"
+#    elif (p < 0.001):
+#        return "***"
+#    elif (p < 0.01):
+#        return "**"
+#    elif (p < 0.05):
+#        return "*"
+#    else:
+#        return "-"
+#
+# p_value = 0.04
+#
+#
+# def label_diff(i,j,text,X,Y):
+#     x = (X[i]+X[j])/2
+#     y = 1.1*max(Y[i], Y[j])
+#     dx = abs(X[i]-X[j])
+#     props = {'connectionstyle':'bar','arrowstyle':'-', 'shrinkA':20,'shrinkB':20,'linewidth':2}
+#     ax.annotate(text, xy=(X[i],y+7), zorder=10)
+#     ax.annotate('', xy=(X[i],y), xytext=(X[j],y), arrowprops=props)
+
 # Visualize boxplot data
 for boxplot_y_col_name in ("log2(RPM+1)", "kRPKM"):
     sns.set(style="whitegrid", font_scale=0.5)
@@ -413,6 +440,35 @@ for boxplot_y_col_name in ("log2(RPM+1)", "kRPKM"):
         ax.yaxis.label.set_visible(False)
         ax.tick_params(axis="y", which="major", labelrotation=0, pad=-3)
         ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+        # statistical annotation
+        # plt.ylim(multiboxplot_data[boxplot_y_col_name].min(), multiboxplot_data[boxplot_y_col_name].max() + multiboxplot_data[boxplot_y_col_name].min())
+        # x1, x2 = 1, 2  # columns 'Sat' and 'Sun' (first column: 0, see plt.xticks())
+        # print("AAAA")
+        # plt.xticks()
+        # y, h, col = multiboxplot_data[boxplot_y_col_name].max() + multiboxplot_data[boxplot_y_col_name].min(), multiboxplot_data[boxplot_y_col_name].min(), 'k'
+        # ax.plot([x1, x1, x2, x2], [y, y + h, y + h, y], linestyle="-", linewidth=1.5, color="black")
+        # ax.text((x1 + x2) * .5, y + h, "ns", ha='center', va='bottom', color="black")
+        #
+        # y_max = multiboxplot_data[boxplot_y_col_name].max()
+        # y_min = multiboxplot_data[boxplot_y_col_name].min()
+        # arrowprops = {'connectionstyle': 'bar',
+        #               'arrowstyle': '-',
+        #               "facecolor": 'black',
+        #               'shrinkA': 20,
+        #               'shrinkB': 20,
+        #               'linewidth': 10}
+        # arrowprops = {'connectionstyle': 'bar',
+        #               'arrowstyle': '-',
+        #               "ec": "k",
+        #               'shrinkA': 20,
+        #               'shrinkB': 20,
+        #               'linewidth': 1}
+        # ax.annotate("AAAAAAAAAAAAAAAAAAAAAAAAAAAAA", xy=(0.1, 0.1), xytext=(0.1, 0.1), xycoords='data', textcoords='data', arrowprops=arrowprops)
+        # ax.annotate("   ", xy=(1, y_min), xytext=(2, y_min), xycoords='axes fraction', textcoords='axes fraction', arrowprops=arrowprops)
+        # ax.annotate("", xy=(y_min, y_max), xytext=(y_min + 1, y_max), arrowprops=arrowprops)
+        # ax.annotate("AAAAAAAAAAAAAAAAAAA", xy=(0.1, 0.1), xycoords="axes fraction", arrowprops=arrowprops)
+        # ax.text(1.5, y_max, stars(p_value), horizontalalignment='center', verticalalignment='center')
+        # ax.text(1.5, y_max + abs(y_max - y_min)*0.1, stars(p_value), horizontalalignment='center', verticalalignment='center')
     #
     fig.subplots_adjust(hspace=0.3, wspace=0.3)
     ax0 = fig.add_axes([0, 0, 1, 1])
