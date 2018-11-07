@@ -62,7 +62,7 @@ python3 /home/docker/scripts/cook_the_reference.py \\
 -i {b} \\
 -o {a}
 
-# Wait until REFDATA file creates
+# Wait until REFDATA file creates and complete the describer class template
               """.format(a=index_directory, b=raw_nfasta_file))
 
     def generate_config(self):

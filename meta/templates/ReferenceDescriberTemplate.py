@@ -1,28 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from abc import ABC, ABCMeta, abstractmethod
 
-
-class ReferenceDescriberTemplate(ABC):
-    __metaclass__ = ABCMeta
-
-    def __init__(self, alias: str, name: str, description: str, documentation: str, refdata: str):
-        super().__init__()
+class ReferenceDescriberTemplate():
+    def __init__(self, alias: str, name: str, description: str, documentation: str):
         self.alias = alias
         self.name = name
         self.description = description
         self.documentation = documentation
-        self.refdata = refdata
-
-    @abstractmethod
     def export(self):
         print("""
-    Database alias: {a}
-    REFDATA linker: {b}
-                  """.format(a=self.alias, b=self.refdata))
-
-    @abstractmethod
-    def parse_refdata(self):
+class ReferenceDescriber:
+    alias = "{ALIAS}"
+    name = "{NAME}"
+    description = "{DESCRIPTION}"
+    documentation = "{DOCUMENTATION}"
+    refdata = "PASTE_HERE_AFTER_INDEXING"
+""".format(ALIAS=self.alias, NAME=self.name, DESCRIPTION=self.description, DOCUMENTATION=self.documentation))
+    @staticmethod
+    def parse_refdata(refdata):
         from meta.scripts.RefDataParser import RefDataParser
-        return RefDataParser(self.refdata).get_parsed_list()
+        refdata_parser = RefDataParser(refdata)
+        return refdata_parser.get_parsed_list()
