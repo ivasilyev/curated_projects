@@ -6,12 +6,12 @@ from abc import ABC, ABCMeta, abstractmethod
 
 class ProjectDescriberTemplate(ABC):
     __metaclass__ = ABCMeta
+    owner = ""
+    name = ""
+    directory = ""
+    groupdata = ""
+    sampledata = ""
+    mask = ""
 
-    def __init__(self, owner: str, name: str, directory: str, groupdata: str, sampledata: str, mask: str):
+    def __init__(self):
         super().__init__()
-        self.owner = owner
-        self.name = name
-        self.directory = directory
-        self.groupdata = groupdata
-        self.sampledata = sampledata
-        self.mask = mask
