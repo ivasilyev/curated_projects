@@ -11,9 +11,15 @@ docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -e D
 from ndanilova.colitis_crohn.ProjectDescriber import ProjectDescriber
 from meta.scripts.vfdb.ReferenceDescriber import ReferenceDescriber
 from meta.scripts.LaunchGuideLiner import LaunchGuideLiner
-from meta.scripts.GroupDataPreparer import GroupDataPreparer
+from meta.scripts.Utilities import Utilities
 import subprocess
 import os
+import re
+import pandas as pd
+import numpy as np
+from collections import Counter
+
+
 from meta.scripts.PivotTableAnnotator import PivotTableAnnotator
 
 
@@ -74,7 +80,97 @@ docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG \
 python3 /home/docker/scripts/verify_coverages.py \
 -i /data1/bio/projects/ndanilova/colitis_crohn/colitis_esc_colitis_rem_crohn_esc_crohn_rem_srr.sampledata \
 -p /data2/bio/Metagenomes/Toxins/VFDB/Statistics/ \
--s _no_hg19_coverage.tsv \
--g <GENOME> \
+-s _vfdb_v2018.11.09_coverage.tsv \
+-g /data/reference/VFDB/vfdb_v2018.11.09/index/vfdb_v2018.11.09_samtools.genome \
 -d
 """
+
+"""
+Files to process: 0
+Dumped sample data: /data2/bio/Metagenomes/Toxins/VFDB/Statistics/sampledata/2018-11-10-12-27-21.sampledata
+Dumped debug table: '/data2/bio/Metagenomes/Toxins/VFDB/Statistics/sampledata/2018-11-10-12-27-21.sampledata_debug.tsv'
+"""
+
+"""
+# Combine data for RPM
+rm -rf /data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals /data1/bio/projects/ndanilova/colitis_crohn/VFDB/metadata_digest
+
+export IMG=ivasilyev/curated_projects:latest && \
+docker pull ${IMG} && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it ${IMG} bash
+
+git clone https://github.com/ivasilyev/statistical_tools.git
+cd statistical_tools
+
+python3 groupdata2statistics.py \
+-g /data1/bio/projects/ndanilova/colitis_crohn/colitis_esc_colitis_rem_crohn_esc_crohn_rem_srr.groupdata \
+-p /data2/bio/Metagenomes/Toxins/VFDB/Statistics/ \
+-s _vfdb_v2018.11.09_coverage.tsv \
+-i reference_id \
+-v id_mapped_reads_per_million_sample_mapped_reads \
+-o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/RPM/
+"""
+
+
+class VfdbHeaderExtractor:
+    @staticmethod
+    def is_string_valid(s: str):
+        s = s.strip()
+        if len(s) > 0 and s != "-":
+            return s
+    @staticmethod
+    def process_regex(pattern: str, s: str):
+        out = re.findall(pattern, s)
+        if len(out) > 0:
+            out = VfdbHeaderExtractor.is_string_valid(out[0])
+            if out:
+                return out
+        return np.nan
+    @staticmethod
+    def get_genbank_id(s: str):
+        return VfdbHeaderExtractor.process_regex("^VFG[0-9]+\(([^\(\)]+)\)", s)
+    @staticmethod
+    def get_gene_name(s: str):
+        return VfdbHeaderExtractor.process_regex("^VFG[^ ]+ \(([^\(\)]+)\)", s)
+    @staticmethod
+    def get_gene_description(s: str):
+        return VfdbHeaderExtractor.process_regex("\)([^\[\]\(\)]+)\[", s)
+
+
+class CounterWrapper:
+    @staticmethod
+    def count_words_in_series(series: pd.Series):
+        lst = [i.lower() for i in re.sub(" +", " ", " ".join(series.fillna("").values.tolist())).split(" ") if len(i) > 3]
+        return Counter(lst)
+    @staticmethod
+    def dump_counters(counters: list, file: str):
+        Utilities.dump_2d_array([("keyword", "occurrences")] + counters, file=file)
+
+
+index_col_name = "reference_id"
+annotation_df = pd.read_table("/data/reference/VFDB/vfdb_v2018.11.09/index/vfdb_v2018.11.09_annotation.tsv").set_index(index_col_name).sort_index()
+annotation_df["host_strain"] = annotation_df["former_id"].apply(lambda x: re.findall("\[([^\[\]]+)\]$", x.strip())[0].strip())
+annotation_df["host_species"] = annotation_df["host_strain"].apply(lambda x: re.findall("([A-Z]{1}[a-z]+ [a-z]+)", x)[0].strip())
+annotation_df["host_genera"] = annotation_df["host_strain"].apply(lambda x: re.findall("([A-Z]{1}[a-z]+)", x)[0].strip())
+annotation_df["vfdb_id"] = annotation_df["former_id"].apply(lambda x: re.findall("(^VFG[0-9]+)", x)[0].strip())
+annotation_df["genbank_id"] = annotation_df["former_id"].apply(VfdbHeaderExtractor.get_genbank_id)
+annotation_df["gene_name"] = annotation_df["former_id"].apply(VfdbHeaderExtractor.get_gene_name)
+annotation_df["gene_description"] = annotation_df["former_id"].apply(VfdbHeaderExtractor.get_gene_description)
+annotation_df = annotation_df.loc[:, [i for i in list(annotation_df) if i != "id_bp"] + ["id_bp"]]
+
+# TODO Place the annotator into the corresponding ReferenceDescriber
+
+pivot_value_col_name = "RPM"
+group_digest = "colitis_esc_colitis_rem_crohn_esc_crohn_rem_srr"
+total_df_file = "/data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/{a}/{b}_total_dataframe.tsv".format(a=pivot_value_col_name, b=group_digest)
+total_df = pd.read_table(total_df_file).set_index(index_col_name).sort_index()
+annotated_total_df = pd.concat([annotation_df, total_df], axis=1, sort=True)
+annotated_total_df.index.name = index_col_name
+annotated_total_df.to_csv(total_df_file.replace("_total_dataframe.tsv", "_total_dataframe_annotated.tsv"), sep='\t',
+                          header=True, index=True)
+significant_pvals_df = annotated_total_df.loc[annotated_total_df["null_hypothesis_rejections_counter"].astype(int) > 0]
+
+annotation_counter_col_name = "gene_description"
+counters_list = CounterWrapper.count_words_in_series(significant_pvals_df[annotation_counter_col_name]).most_common()
+CounterWrapper.dump_counters(counters_list, file="/data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/{a}/{b}_significant_headers_counter.tsv".format(a=pivot_value_col_name, b=group_digest))
+
