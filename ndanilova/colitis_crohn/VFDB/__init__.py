@@ -174,3 +174,20 @@ annotation_counter_col_name = "gene_description"
 counters_list = CounterWrapper.count_words_in_series(significant_pvals_df[annotation_counter_col_name]).most_common()
 CounterWrapper.dump_counters(counters_list, file="/data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/{a}/{b}_significant_headers_counter.tsv".format(a=pivot_value_col_name, b=group_digest))
 
+re.sub("[^a-z0-9]+", " ", "".lower())
+
+gene_description_dict = {"adhesion": ("adhesin", "adhesion", "laminin"),
+                         "invasion": ("invasion", "invasin"),
+                         "iron metabolism": ("iron", "siderophore", "ferric", "ferrienterobactin", "ferrochelatase", "ferrichrome", "aerobactin", "enterochelin", "enterobactin", "yersiniabactin", "yersinabactin", "ferrienterobactin", "chrysobactin", "ornibactin", "precolibactin", "colibactin", "ferripyoverdine"),
+                         "pili-related": ("pilin", "pilus", "prepilin", "fimbrial", "fimbriae", "fimbrillin", "fimbrin"),
+                         "flagella-related": ("motor", "flagellin", "flagellar", "flagella", "flagellum"),
+                         "regulation": ("regulator", "regulatory", "regulation", "receptor", "effector"),
+                         "transport": ("transport", "transporter", "permease", "porin", "export"),
+                         "toxin": ("toxin", "enterotoxin", "cytotoxic", "necrotizing", "endotoxin", "leukotoxin", "exotoxin", "cytolethal", "o-antigen", "lipooligosaccharide", "lipopolysaccharide"),
+                         "chaperones": ("chaperone", "chaperonin"),
+                         "cytolysins": ("hemolysin", "cytolysin"),
+                         "cell wall related": ("cell wall"),
+                         "cell membrane related": ("membrane"),
+                         "capsule-related": ("capsular", "capsule"),
+                         "lipoglycans": ("o-antigen", "lipooligosaccharide", "lipopolysaccharide"),
+                         "secretion": ("secretion", "secreted", "secretory")}
