@@ -139,12 +139,15 @@ class VfdbHeaderExtractor:
 
 class CounterWrapper:
     @staticmethod
+    def prepare_string(s: str):
+        return re.sub(" +", " ", re.sub("[^a-z0-9]+", " ", s.lower()))
+    @staticmethod
     def count_words_in_series(series: pd.Series):
-        lst = [i.lower() for i in re.sub(" +", " ", " ".join(series.fillna("").values.tolist())).split(" ") if len(i) > 3]
+        lst = [i for i in CounterWrapper.prepare_string(" ".join(series.fillna("").values.tolist())).split(" ") if len(i) > 3]
         return Counter(lst)
     @staticmethod
-    def dump_counters(counters: list, file: str):
-        Utilities.dump_2d_array([("keyword", "occurrences")] + counters, file=file)
+    def dump_counter(counter: Counter, file: str):
+        Utilities.dump_2d_array([("keyword", "occurrences")] + counter.most_common(), file=file)
 
 
 index_col_name = "reference_id"
@@ -171,8 +174,8 @@ annotated_total_df.to_csv(total_df_file.replace("_total_dataframe.tsv", "_total_
 significant_pvals_df = annotated_total_df.loc[annotated_total_df["null_hypothesis_rejections_counter"].astype(int) > 0]
 
 annotation_counter_col_name = "gene_description"
-counters_list = CounterWrapper.count_words_in_series(significant_pvals_df[annotation_counter_col_name]).most_common()
-CounterWrapper.dump_counters(counters_list, file="/data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/{a}/{b}_significant_headers_counter.tsv".format(a=pivot_value_col_name, b=group_digest))
+gene_description_counters = CounterWrapper.count_words_in_series(significant_pvals_df[annotation_counter_col_name])
+CounterWrapper.dump_counter(gene_description_counters, file="/data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/{a}/{b}_significant_{c}_counter.tsv".format(a=pivot_value_col_name, b=group_digest, c=annotation_counter_col_name))
 
 re.sub("[^a-z0-9]+", " ", "".lower())
 
@@ -186,8 +189,17 @@ gene_description_dict = {"adhesion": ("adhesin", "adhesion", "laminin"),
                          "toxin": ("toxin", "enterotoxin", "cytotoxic", "necrotizing", "endotoxin", "leukotoxin", "exotoxin", "cytolethal", "o-antigen", "lipooligosaccharide", "lipopolysaccharide"),
                          "chaperones": ("chaperone", "chaperonin"),
                          "cytolysins": ("hemolysin", "cytolysin"),
-                         "cell wall related": ("cell wall"),
-                         "cell membrane related": ("membrane"),
+                         "cell wall related": ("cell wall", ),
+                         "cell membrane related": ("membrane", ),
                          "capsule-related": ("capsular", "capsule"),
                          "lipoglycans": ("o-antigen", "lipooligosaccharide", "lipopolysaccharide"),
-                         "secretion": ("secretion", "secreted", "secretory")}
+                         "secretion": ("secretion", "secreted", "secretory"),
+                         "efflux": ("efflux", )}
+
+annotation_counter_col_name = "host_genera"
+host_genera_counters = CounterWrapper.count_words_in_series(significant_pvals_df[annotation_counter_col_name])
+CounterWrapper.dump_counter(host_genera_counters, file="/data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/{a}/{b}_significant_{c}_counter.tsv".format(a=pivot_value_col_name, b=group_digest, c=annotation_counter_col_name))
+
+host_genera_dict = {i[0].capitalize(): (i[0],) for i in host_genera_counters.most_common(len(gene_description_dict))}
+
+
