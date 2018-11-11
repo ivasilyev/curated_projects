@@ -61,7 +61,9 @@ ENV PATH=$PATH:/home/docker/bin
 ENV HOME=/home/docker
 WORKDIR /home/docker
 
-RUN git clone https://github.com/ivasilyev/curated_projects.git
+RUN git clone https://github.com/ivasilyev/curated_projects.git && \
+    git clone https://github.com/ivasilyev/statistical_tools.git
+
 WORKDIR /home/docker/curated_projects
 
 CMD ["/bin/bash"]
