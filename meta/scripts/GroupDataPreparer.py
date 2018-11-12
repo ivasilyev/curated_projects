@@ -22,3 +22,22 @@ class GroupDataPreparer:
         return self._df.loc[:, ["file_name", "group_name"]]
     def export_groupdata(self, output_file):
         self.get_groupdata().to_csv(path_or_buf=output_file, sep='\t', header=False, index=False)
+
+
+class GroupDataAssemblyGuideLiner:
+    def __init__(self, groupdata, prefix, suffix, index_column, value_column, output_dir):
+        self.internal_launch_command = """python3 /home/docker/statistical_tools/groupdata2statistics.py \\
+-g {GROUPDATA} \\
+-p {PREFIX} \\
+-s {SUFFIX} \\
+-i {INDEX} \\
+-v {VALUE} \\
+-o {OUTPUT_DIR}""".format(GROUPDATA=groupdata, PREFIX=prefix, SUFFIX=suffix, INDEX=index_column, VALUE=value_column,
+                          OUTPUT_DIR=output_dir)
+        self.external_launch_command = """# Pre-setup to launch from different node for group data file \"{GROUPDATA}\" and value column \"{VALUE}\":
+
+export IMG=ivasilyev/curated_projects:latest && \\
+docker pull $IMG && \\
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it $IMG {CMD}
+
+""".format(a=groupdata, GROUPDATA=groupdata, VALUE=value_column, CMD=self.internal_launch_command)
