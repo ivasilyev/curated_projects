@@ -9,7 +9,10 @@ docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it 
 """
 
 import os
+import re
 import subprocess
+import pandas as pd
+import numpy as np
 from meta.templates.ReferenceDescriberTemplate import ReferenceDescriberTemplate
 
 
@@ -73,5 +76,53 @@ class SequenceRetriever:
         LaunchGuideLiner.get_index_guide(index_directory=self.index_dir, raw_nfasta_file=self.raw_nfasta)
 
 
+class Annotator:
+    def __init__(self, annotation: str):
+
+        self.annotation_file = annotation
+        self.annotation_df = pd.read_table(self.annotation_file, sep="\t", header=0).set_index("reference_id").sort_index()
+        self.annotation_df["host_strain"] = self.annotation_df["former_id"].apply(
+            lambda x: re.findall("\[([^\[\]]+)\]$", x.strip())[0].strip())
+        self.annotation_df["host_species"] = self.annotation_df["host_strain"].apply(
+            lambda x: re.findall("([A-Z]{1}[a-z]+ [a-z]+)", x)[0].strip())
+        self.annotation_df["host_genera"] = self.annotation_df["host_strain"].apply(
+            lambda x: re.findall("([A-Z]{1}[a-z]+)", x)[0].strip())
+        self.annotation_df["vfdb_id"] = self.annotation_df["former_id"].apply(
+            lambda x: re.findall("(^VFG[0-9]+)", x)[0].strip())
+        self.annotation_df["genbank_id"] = self.annotation_df["former_id"].apply(self.get_genbank_id)
+        self.annotation_df["gene_name"] = self.annotation_df["former_id"].apply(self.get_gene_name)
+        self.annotation_df["gene_description"] = self.annotation_df["former_id"].apply(self.get_gene_description)
+        self.annotation_df = self.annotation_df.loc[:, [i for i in list(self.annotation_df) if i != "id_bp"] + ["id_bp"]]
+    def update(self):
+        from shutil import copy2
+        copy2(self.annotation_file, "{}.bak".format(self.annotation_file))
+        self.annotation_df.to_csv(self.annotation_file, sep='\t', header=True, index=True)
+        print("Updated annotation: '{}'".format(self.annotation_file))
+    @staticmethod
+    def is_string_valid(s: str):
+        s = s.strip()
+        if len(s) > 0 and s != "-":
+            return s
+    @staticmethod
+    def process_regex(pattern: str, s: str):
+        out = re.findall(pattern, s)
+        if len(out) > 0:
+            out = Annotator.is_string_valid(out[0])
+            if out:
+                return out
+        return np.nan
+    @staticmethod
+    def get_genbank_id(s: str):
+        return Annotator.process_regex("^VFG[0-9]+\(([^\(\)]+)\)", s)
+    @staticmethod
+    def get_gene_name(s: str):
+        return Annotator.process_regex("^VFG[^ ]+ \(([^\(\)]+)\)", s)
+    @staticmethod
+    def get_gene_description(s: str):
+        return Annotator.process_regex("\)([^\[\]\(\)]+)\[", s)
+
+
 if __name__ == '__main__':
     sequenceRetriever = SequenceRetriever()
+    annotator = Annotator("/data/reference/VFDB/vfdb_v2018.11.09/index/vfdb_v2018.11.09_annotation.tsv")
+    annotator.update()
