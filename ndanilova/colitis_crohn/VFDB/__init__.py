@@ -95,11 +95,11 @@ Dumped debug table: '/data2/bio/Metagenomes/Toxins/VFDB/Statistics/sampledata/20
 """
 
 index_col_name = "reference_id"
-value_col_names_abbreviations_dict = {"id_mapped_reads_per_million_sample_mapped_reads": "RPM"}
+value_col_names_abbreviations_dict = {"id_mapped_reads_per_million_sample_mapped_reads": "RPM",
+                                      "id_mapped_reads_per_kbp_per_million_sample_mapped_reads": "RPKM"}
 prefix = "/data2/bio/Metagenomes/Toxins/VFDB/Statistics/"
 suffix = "_vfdb_v2018.11.09_coverage.tsv"
 
-# TODO: Add RPKM
 
 class DanilovaAwesomeGroupAnalysisHandler:
     def __init__(self, index_column, value_column, value_column_abbreviation):
@@ -264,9 +264,11 @@ class DanilovaAwesomeGroupAnalysisHandler:
 # First run
 handlers_dict = {}
 for pivot_value_col_name in value_col_names_abbreviations_dict:
+    print("## Launch guideline for value column name '{}'".format(pivot_value_col_name))
     for groupdata_file in ProjectDescriber.groupdata:
         handler = DanilovaAwesomeGroupAnalysisHandler("reference_id", "id_mapped_reads_per_million_sample_mapped_reads", "RPM")
         handler.set_groupdata_dict(groupdata_file)
+        print("### Launch guideline for group data '{}'".format(handler.groupdata_digest_name))
         handler.set_raw_pvals_dir(outputDir)
         handler.get_raw_guidelines(prefix, suffix)
         # Note the reversed keys order
@@ -276,6 +278,8 @@ for pivot_value_col_name in value_col_names_abbreviations_dict:
 
 # Data assembly for per-gene p-values count
 """
+## Launch guideline for value column name 'id_mapped_reads_per_million_sample_mapped_reads'
+### Launch guideline for group data 'all_groups'
 # Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/group_data_digest/all_groups.groupdata" and value column "id_mapped_reads_per_million_sample_mapped_reads":
 
 export IMG=ivasilyev/curated_projects:latest && \
@@ -289,6 +293,7 @@ docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it 
 -o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/RPM/all_groups/
 
 
+### Launch guideline for group data 'remission_vs_escalation'
 # Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/group_data_digest/remission_vs_escalation.groupdata" and value column "id_mapped_reads_per_million_sample_mapped_reads":
 
 export IMG=ivasilyev/curated_projects:latest && \
@@ -302,6 +307,50 @@ docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it 
 -o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/RPM/remission_vs_escalation/
 
 
+### Launch guideline for group data 'crohn_vs_colitis'
+# Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/group_data_digest/crohn_vs_colitis.groupdata" and value column "id_mapped_reads_per_million_sample_mapped_reads":
+
+export IMG=ivasilyev/curated_projects:latest && \
+docker pull $IMG && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it $IMG python3 /home/docker/statistical_tools/groupdata2statistics.py \
+-g /data1/bio/projects/ndanilova/colitis_crohn/group_data_digest/crohn_vs_colitis.groupdata \
+-p /data2/bio/Metagenomes/Toxins/VFDB/Statistics/ \
+-s _vfdb_v2018.11.09_coverage.tsv \
+-i reference_id \
+-v id_mapped_reads_per_million_sample_mapped_reads \
+-o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/RPM/crohn_vs_colitis/
+
+
+## Launch guideline for value column name 'id_mapped_reads_per_kbp_per_million_sample_mapped_reads'
+### Launch guideline for group data 'all_groups'
+# Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/group_data_digest/all_groups.groupdata" and value column "id_mapped_reads_per_million_sample_mapped_reads":
+
+export IMG=ivasilyev/curated_projects:latest && \
+docker pull $IMG && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it $IMG python3 /home/docker/statistical_tools/groupdata2statistics.py \
+-g /data1/bio/projects/ndanilova/colitis_crohn/group_data_digest/all_groups.groupdata \
+-p /data2/bio/Metagenomes/Toxins/VFDB/Statistics/ \
+-s _vfdb_v2018.11.09_coverage.tsv \
+-i reference_id \
+-v id_mapped_reads_per_million_sample_mapped_reads \
+-o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/RPM/all_groups/
+
+
+### Launch guideline for group data 'remission_vs_escalation'
+# Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/group_data_digest/remission_vs_escalation.groupdata" and value column "id_mapped_reads_per_million_sample_mapped_reads":
+
+export IMG=ivasilyev/curated_projects:latest && \
+docker pull $IMG && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it $IMG python3 /home/docker/statistical_tools/groupdata2statistics.py \
+-g /data1/bio/projects/ndanilova/colitis_crohn/group_data_digest/remission_vs_escalation.groupdata \
+-p /data2/bio/Metagenomes/Toxins/VFDB/Statistics/ \
+-s _vfdb_v2018.11.09_coverage.tsv \
+-i reference_id \
+-v id_mapped_reads_per_million_sample_mapped_reads \
+-o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/RPM/remission_vs_escalation/
+
+
+### Launch guideline for group data 'crohn_vs_colitis'
 # Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/group_data_digest/crohn_vs_colitis.groupdata" and value column "id_mapped_reads_per_million_sample_mapped_reads":
 
 export IMG=ivasilyev/curated_projects:latest && \
@@ -342,7 +391,7 @@ class DataSetsKeeper:
         # Set visualization names
         ds["group_name"] = ds["sample_path"].apply(lambda x: x.split("@")[0].strip())
         ds["log2(RPM+1)"] = np.log2(ds["RPM"] + 1)
-        # ds["kRPKM"] = ds["RPKM"].astype(float) / 1000.0
+        ds["kRPKM"] = ds["RPKM"].astype(float) / 1000.0
         return ds
     @staticmethod
     def dump_dataset(ds: pd.DataFrame, file: str):
@@ -423,7 +472,7 @@ for groupdata_digest in handlers_dict:
     datasets_keeper.finalize_datasets("{}datasets".format(outputDir))
     datasets_dict[groupdata_digest] = datasets_keeper
 
-visualization_col_names = ("log2(RPM+1)", )
+visualization_col_names = ("log2(RPM+1)", "kRPKM")
 # Prepare datasets for visualization
 for groupdata_digest in datasets_dict:
     datasets_keeper = datasets_dict[groupdata_digest]
