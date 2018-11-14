@@ -128,6 +128,9 @@ class DanilovaAwesomeGroupAnalysisHandler:
         self.digest_virulence_groupdata = ""
         self.digest_virulence_guidelines = ""
         # Genera:
+        self.digest_genera_associations_dict = {}
+        self.digest_genera_pvals_dir = ""
+        self.digest_genera_samples_dir = ""
         self.digest_genera_groupdata = ""
         self.digest_genera_guidelines = ""
         # Fields required for visualization
@@ -138,7 +141,7 @@ class DanilovaAwesomeGroupAnalysisHandler:
         self.groupdata_digest_name = Utilities.filename_only(self.groupdata_file).replace(".groupdata", "")
         groupdata_df = pd.read_table(self.groupdata_file, sep="\t", header="infer", names=["sample_name", "group_name"])
         self.groupdata_dict = {i: sorted(set(
-            groupdata_df.loc[groupdata_collection_df["group_name"] == i, ["sample_name"]])) for i in sorted(
+            groupdata_df.loc[groupdata_df["group_name"] == i, ["sample_name"]])) for i in sorted(
             set(groupdata_df["group_name"]))}
         self.raw_all_sample_names_list = sorted(set(groupdata_df["sample_name"]))
     def set_raw_pvals_dir(self, output_dir: str):
@@ -203,6 +206,41 @@ class DanilovaAwesomeGroupAnalysisHandler:
         Utilities.dump_2d_array(groupdata_2d_array, file=self.digest_virulence_groupdata)
         self.digest_virulence_pivot_df = pd.concat(digest_dfs_list, axis=1, sort=True)
         self.digest_virulence_pivot_df.index.names = digest_dfs_list[0].index.names
+    def digest_genera_pivots(self):
+        association = "genera"
+        # Create dynamic association dictionary
+        significant_pvals_df = self.raw_pvals_df.loc[
+            self.raw_pvals_df["null_hypothesis_rejections_counter"].astype(int) > 0]
+        # Count most common genera
+        annotation_counter_col_name = "host_genera"
+        host_genera_counters = CounterWrapper.count_words_in_series(significant_pvals_df[annotation_counter_col_name])
+        self.digest_genera_associations_dict = {i[0].capitalize(): (i[0],) for i in host_genera_counters.most_common(
+            len(DigestAssociationsKeeper.VIRULENCE_FACTORS))}
+        groupdata_2d_array = []
+        search_col_names = [annotation_counter_col_name, ]
+        digest_dfs_list = []
+        for group in self.raw_pivot_dfs_dict:
+            raw_df = self.raw_pivot_dfs_dict[group].loc[:,
+                     search_col_names + [i for i in list(self.raw_pivot_dfs_dict[group]) if i not in list(self.annotation_df)]]
+            digest_df = DigestAssociationsKeeper.digest_df(raw_df, self.digest_genera_associations_dict, search_col_names)
+            digest_dfs_list.append(digest_df.rename(columns={i: "{}@{}".format(group, i) for i in list(digest_df)}))
+            for sample_path in list(digest_df):
+                sample_name = sample_path.replace(self.raw_prefix, "").replace(self.raw_suffix, "")
+                self.digest_genera_samples_dir = "{a}{b}/samples/{c}/".format(a=self.digest_dir, b=association, c=group)
+                os.makedirs(self.digest_genera_samples_dir, exist_ok=True)
+                output_file = "{}{}.tsv".format(self.digest_genera_samples_dir, sample_name)
+                digest_df[sample_path].reset_index().rename(
+                    columns={sample_path: self.pivot_value_col_name}).to_csv(output_file, sep='\t', header=True, index=False)
+                groupdata_2d_array.append([group, output_file])
+        self.digest_genera_pvals_dir = "{}{}/pvals/".format(self.digest_dir, association)
+        os.makedirs(self.digest_genera_pvals_dir, exist_ok=True)
+        self.digest_genera_groupdata = "{}{}.groupdata".format(self.digest_genera_pvals_dir, "_".join(list(self.raw_pivot_dfs_dict)))
+        Utilities.dump_2d_array(groupdata_2d_array, file=self.digest_genera_groupdata)
+        self.digest_genera_pivot_df = pd.concat(digest_dfs_list, axis=1, sort=True)
+        self.digest_genera_pivot_df.index.names = digest_dfs_list[0].index.names
+        CounterWrapper.dump_counter(host_genera_counters,
+                                    file="{}{}_counter.tsv".format(self.digest_genera_pvals_dir,
+                                                                   "_".join(list(self.raw_pivot_dfs_dict))))
     def get_digest_virulence_guidelines(self):
         guideliner = GroupDataAssemblyGuideLiner(groupdata=self.digest_virulence_groupdata,
                                                  prefix=self.raw_prefix,
@@ -210,6 +248,15 @@ class DanilovaAwesomeGroupAnalysisHandler:
                                                  index_column=self.index_col_name,
                                                  value_column=self.pivot_value_col_name,
                                                  output_dir=self.digest_virulence_pvals_dir)
+        self.raw_pvals_guideline = guideliner.external_launch_command
+        print(self.raw_pvals_guideline)
+    def get_digest_genera_guidelines(self):
+        guideliner = GroupDataAssemblyGuideLiner(groupdata=self.digest_genera_groupdata,
+                                                 prefix=self.raw_prefix,
+                                                 suffix=self.raw_suffix,
+                                                 index_column=self.index_col_name,
+                                                 value_column=self.pivot_value_col_name,
+                                                 output_dir=self.digest_genera_pvals_dir)
         self.raw_pvals_guideline = guideliner.external_launch_command
         print(self.raw_pvals_guideline)
 
@@ -292,6 +339,7 @@ class DataSetsKeeper:
     @staticmethod
     def digest_ds_values(ds: pd.DataFrame):
         import numpy as np
+        # Set visualization names
         ds["group_name"] = ds["sample_path"].apply(lambda x: x.split("@")[0].strip())
         ds["log2(RPM+1)"] = np.log2(ds["RPM"] + 1)
         # ds["kRPKM"] = ds["RPKM"].astype(float) / 1000.0
@@ -302,19 +350,26 @@ class DataSetsKeeper:
     def finalize_datasets(self, output_dir):
         self.output_dir = Utilities.ends_with_slash(output_dir)
         self.virulence_dataset = self.digest_ds_values(self.concat_datasets(self.virulence_dss_list))
+        self.genera_dataset = self.digest_ds_values(self.concat_datasets(self.genera_dss_list))
         #
         association_name = "virulence"
         dataset_dir = "{a}{b}/{c}/".format(a=self.output_dir, b=self.groupdata_digest_name, c=association_name)
         dataset_file = "{a}{b}_{c}_dataset.tsv".format(a=dataset_dir, b=self.groupdata_digest_name, c=association_name)
         os.makedirs(dataset_dir, exist_ok=True)
         self.dump_dataset(self.virulence_dataset, file=dataset_file)
+        #
+        association_name = "genera"
+        dataset_dir = "{a}{b}/{c}/".format(a=self.output_dir, b=self.groupdata_digest_name, c=association_name)
+        dataset_file = "{a}{b}_{c}_dataset.tsv".format(a=dataset_dir, b=self.groupdata_digest_name, c=association_name)
+        os.makedirs(dataset_dir, exist_ok=True)
+        self.dump_dataset(self.genera_dataset, file=dataset_file)
     @staticmethod
     def create_multiboxplots(ds: pd.DataFrame, boxplot_y_col_name, output_dir, keywords_list: list, title_text):
         import seaborn as sns
         import matplotlib.pyplot as plt
         from matplotlib.ticker import MaxNLocator
         sns.set(style="whitegrid", font_scale=0.5)
-        sns.set_palette("colorblind")
+        sns.set_palette("cubehelix")
         multiboxplot_alias = re.sub("[\W]+", "_", boxplot_y_col_name).strip("_")
         multiboxplot_dir = "{}{}/".format(Utilities.ends_with_slash(output_dir), multiboxplot_alias)
         os.makedirs(os.path.dirname(multiboxplot_dir), exist_ok=True)
@@ -326,7 +381,7 @@ class DataSetsKeeper:
             sns.boxplot(x="keyword", y=boxplot_y_col_name, hue="group_name", data=multiboxplot_data, orient="v",
                         fliersize=1, linewidth=1, palette="Set3", ax=ax)
             handles, labels = ax.get_legend_handles_labels()
-            fig.legend(handles, labels, loc="right", bbox_to_anchor=(0.975, 0.5), title="Group ID", fancybox=True)
+            fig.legend(handles, labels, loc="right", bbox_to_anchor=(0.985, 0.5), title="Group ID", fancybox=True)
             ax.legend_.remove()
             ax.set_title(keyword.replace(" ", "\n"))
             ax.title.set_position([0.5, 0.97])
@@ -357,111 +412,43 @@ for groupdata_digest in handlers_dict:
         handler.set_assembled_raw_data_paths()
         handler.annotate_assembled_raw_data("/data/reference/VFDB/vfdb_v2018.11.09/index/vfdb_v2018.11.09_annotation.tsv")
         handler.digest_virulence_pivots()
+        handler.digest_genera_pivots()
+        value_col_name_abbreviation = value_col_names_abbreviations_dict[pivot_value_col_name]
         datasets_keeper.virulence_dss_list.append(DataSetsKeeper.melt_keyword_df(
             df=handler.digest_virulence_pivot_df, value_column=pivot_value_col_name,
-            value_column_abbreviation=value_col_names_abbreviations_dict[pivot_value_col_name]))
+            value_column_abbreviation=value_col_name_abbreviation))
+        datasets_keeper.genera_dss_list.append(DataSetsKeeper.melt_keyword_df(
+            df=handler.digest_genera_pivot_df, value_column=pivot_value_col_name,
+            value_column_abbreviation=value_col_name_abbreviation))
     datasets_keeper.finalize_datasets("{}datasets".format(outputDir))
     datasets_dict[groupdata_digest] = datasets_keeper
 
+visualization_col_names = ("log2(RPM+1)", )
 # Prepare datasets for visualization
 for groupdata_digest in datasets_dict:
     datasets_keeper = datasets_dict[groupdata_digest]
-    visualization_col_name = "log2(RPM+1)"
-    visualization_dataset = datasets_keeper.virulence_dataset
-    visualization_association = "virulence"
-    visualization_text = "The abundance of virulence genes"
-    visualization_keywords = sorted(DigestAssociationsKeeper.VIRULENCE_FACTORS)
-    DataSetsKeeper.create_multiboxplots(ds=visualization_dataset,
-                                        boxplot_y_col_name=visualization_col_name,
-                                        output_dir="{a}visualization/{b}/{c}/".format(a=outputDir,
-                                                                                      b=groupdata_digest,
-                                                                                      c=visualization_association),
-                                        keywords_list=visualization_keywords,
-                                        title_text=visualization_text)
-
-
-# Get guidelines for data assembly for all group data
-assembled_pvals_dirs_dict = {}
-for pivot_value_col_name in value_col_names_abbreviations_dict:
-    assembled_pvals_dirs_dict[pivot_value_col_name] = {}
-    for groupdata_file in ProjectDescriber.groupdata:
-        groupdata_digest_name = Utilities.filename_only(groupdata_file).replace(".groupdata", "")
-        assembled_pvals_dir = "{OUTPUT_DIR}pvals/{PIVOT_VALUE_COLUMN}/{GROUPS}/".format(OUTPUT_DIR=outputDir,
-                                                                                        PIVOT_VALUE_COLUMN=value_col_names_abbreviations_dict[pivot_value_col_name],
-                                                                                        GROUPS=groupdata_digest_name)
-        assembled_pvals_dirs_dict[pivot_value_col_name][groupdata_digest_name] = assembled_pvals_dir
-        guideLiner = GroupDataAssemblyGuideLiner(groupdata=groupdata_file,
-                                                 prefix=prefix,
-                                                 suffix=suffix,
-                                                 index_column=index_col_name,
-                                                 value_column=pivot_value_col_name,
-                                                 output_dir=assembled_pvals_dir)
-        print(guideLiner.external_launch_command)
-
-# Collect all group data
-groupdata_collection_df = pd.concat([pd.read_table(i, header="infer", names=["sample_name", "group_name"]) for i in ProjectDescriber.groupdata for i in ProjectDescriber.groupdata], axis=0, ignore_index=True)
-groupdata_digest_dict = {i: sorted(set(groupdata_collection_df.loc[groupdata_collection_df["group_name"] == "colitis", "sample_name"])) for i in sorted(set(groupdata_collection_df["group_name"]))}
-sample_names = sorted(set(groupdata_collection_df["sample_name"]))
-
-# Join and annotate it
-annotation_df = pd.read_table("/data/reference/VFDB/vfdb_v2018.11.09/index/vfdb_v2018.11.09_annotation.tsv").set_index(index_col_name).sort_index()
-
-assembled_pvals_dfs_dict = {}
-for pivot_value_col_name in assembled_pvals_dirs_dict:
-    assembled_pvals_dfs_dict[pivot_value_col_name] = {}
-    group_digests_dict = assembled_pvals_dirs_dict[pivot_value_col_name]
-    for group_digest in group_digests_dict:
-        assembled_pvals_dir = group_digests_dict[group_digest]
-        assembled_pvals_total_file = subprocess.getoutput("ls -d {}*_total_dataframe.tsv".format(assembled_pvals_dir))
-        assembled_pvals_total_df = pd.concat([annotation_df.copy(),
-                                              pd.read_table(assembled_pvals_total_file, sep="\t", header=0).set_index(
-                                                  index_col_name).sort_index()], axis=1, sort=True)
-        assembled_pvals_total_df.index.names = [index_col_name]
-        assembled_pvals_dfs_dict[pivot_value_col_name][group_digest] = assembled_pvals_total_df
-
-
-pivot_value_col_name = "RPM"
-group_digest = "colitis_esc_colitis_rem_crohn_esc_crohn_rem_srr"
-total_df_file = "/data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/{a}/{b}_total_dataframe.tsv".format(a=pivot_value_col_name, b=group_digest)
-total_df = pd.read_table(total_df_file).set_index(index_col_name).sort_index()
-annotated_total_df = pd.concat([annotation_df, total_df], axis=1, sort=True)
-annotated_total_df.index.name = index_col_name
-annotated_total_df.to_csv(total_df_file.replace("_total_dataframe.tsv", "_total_dataframe_annotated.tsv"), sep='\t',
-                          header=True, index=True)
-
-# Filter significant rows to get most common words
-significant_pvals_df = annotated_total_df.loc[annotated_total_df["null_hypothesis_rejections_counter"].astype(int) > 0]
-
-annotation_counter_col_name = "gene_description"
-
-# Counting most common words in gene description
-gene_description_counters = CounterWrapper.count_words_in_series(significant_pvals_df[annotation_counter_col_name])
-CounterWrapper.dump_counter(gene_description_counters, file="/data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/{a}/{b}_significant_{c}_counter.tsv".format(a=pivot_value_col_name, b=group_digest, c=annotation_counter_col_name))
-
-# Static associations dict
-gene_description_dict = {"adhesion": ("adhesin", "adhesion", "laminin"),
-                         "invasion": ("invasion", "invasin"),
-                         "iron metabolism": ("iron", "siderophore", "ferric", "ferrienterobactin", "ferrochelatase", "ferrichrome", "aerobactin", "enterochelin", "enterobactin", "yersiniabactin", "yersinabactin", "ferrienterobactin", "chrysobactin", "ornibactin", "precolibactin", "colibactin", "ferripyoverdine"),
-                         "pili-related": ("pilin", "pilus", "prepilin", "fimbrial", "fimbriae", "fimbrillin", "fimbrin"),
-                         "flagella-related": ("motor", "flagellin", "flagellar", "flagella", "flagellum"),
-                         "regulation": ("regulator", "regulatory", "regulation", "receptor", "effector"),
-                         "transport": ("transport", "transporter", "permease", "porin", "export"),
-                         "toxin": ("toxin", "enterotoxin", "cytotoxic", "necrotizing", "endotoxin", "leukotoxin", "exotoxin", "cytolethal", "o-antigen", "lipooligosaccharide", "lipopolysaccharide"),
-                         "chaperones": ("chaperone", "chaperonin"),
-                         "cytolysins": ("hemolysin", "cytolysin"),
-                         "cell wall related": ("cell wall", ),
-                         "cell membrane related": ("membrane", ),
-                         "capsule-related": ("capsular", "capsule"),
-                         "lipoglycans": ("o-antigen", "lipooligosaccharide", "lipopolysaccharide"),
-                         "secretion": ("secretion", "secreted", "secretory"),
-                         "efflux": ("efflux", )}
-
-# Counting most common genera
-annotation_counter_col_name = "host_genera"
-host_genera_counters = CounterWrapper.count_words_in_series(significant_pvals_df[annotation_counter_col_name])
-CounterWrapper.dump_counter(host_genera_counters, file="/data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/{a}/{b}_significant_{c}_counter.tsv".format(a=pivot_value_col_name, b=group_digest, c=annotation_counter_col_name))
-
-# Dynamic associations dict
-host_genera_dict = {i[0].capitalize(): (i[0],) for i in host_genera_counters.most_common(len(gene_description_dict))}
-
-group_data_df = ""
+    for pivot_value_col_name in handlers_dict[groupdata_digest]:
+        handler = handlers_dict[groupdata_digest][pivot_value_col_name]
+        for visualization_col_name in visualization_col_names:
+            visualization_dataset = datasets_keeper.virulence_dataset
+            visualization_association = "virulence"
+            visualization_text = "The abundance of virulence genes"
+            visualization_keywords = sorted(DigestAssociationsKeeper.VIRULENCE_FACTORS)
+            DataSetsKeeper.create_multiboxplots(ds=visualization_dataset,
+                                                boxplot_y_col_name=visualization_col_name,
+                                                output_dir="{a}visualization/{b}/{c}/".format(a=outputDir,
+                                                                                              b=groupdata_digest,
+                                                                                              c=visualization_association),
+                                                keywords_list=visualization_keywords,
+                                                title_text=visualization_text)
+            visualization_dataset = datasets_keeper.genera_dataset
+            visualization_association = "genera"
+            visualization_text = "The abundance of genes by host genera"
+            visualization_keywords = sorted(handler.digest_genera_associations_dict)
+            DataSetsKeeper.create_multiboxplots(ds=visualization_dataset,
+                                                boxplot_y_col_name=visualization_col_name,
+                                                output_dir="{a}visualization/{b}/{c}/".format(a=outputDir,
+                                                                                              b=groupdata_digest,
+                                                                                              c=visualization_association),
+                                                keywords_list=visualization_keywords,
+                                                title_text=visualization_text)
