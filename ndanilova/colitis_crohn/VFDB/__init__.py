@@ -485,6 +485,166 @@ for groupdata_digest in handlers_dict:
 
 
 """
+nano /data1/bio/projects/ndanilova/colitis_crohn/VFDB/count_digest_pvals.sh
+
+bash /data1/bio/projects/ndanilova/colitis_crohn/VFDB/count_digest_pvals.sh
+"""
+"""
+#!/usr/bin/sh
+# Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPM/all_groups/virulence/pvals/colitis_esc_colitis_rem_control_crohn_esc_crohn_rem.groupdata" and value column "id_mapped_reads_per_million_sample_mapped_reads":
+
+export IMG=ivasilyev/curated_projects:latest && \
+docker pull $IMG && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it $IMG python3 /home/docker/statistical_tools/groupdata2statistics.py \
+-g /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPM/all_groups/virulence/pvals/colitis_esc_colitis_rem_control_crohn_esc_crohn_rem.groupdata \
+-p '' \
+-s '' \
+-i keyword \
+-v id_mapped_reads_per_million_sample_mapped_reads \
+-o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPM/all_groups/virulence/pvals/
+
+
+# Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPM/all_groups/genera/pvals/colitis_esc_colitis_rem_control_crohn_esc_crohn_rem.groupdata" and value column "id_mapped_reads_per_million_sample_mapped_reads":
+
+export IMG=ivasilyev/curated_projects:latest && \
+docker pull $IMG && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it $IMG python3 /home/docker/statistical_tools/groupdata2statistics.py \
+-g /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPM/all_groups/genera/pvals/colitis_esc_colitis_rem_control_crohn_esc_crohn_rem.groupdata \
+-p '' \
+-s '' \
+-i keyword \
+-v id_mapped_reads_per_million_sample_mapped_reads \
+-o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPM/all_groups/genera/pvals/
+
+
+# Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPKM/all_groups/virulence/pvals/colitis_esc_colitis_rem_control_crohn_esc_crohn_rem.groupdata" and value column "id_mapped_reads_per_kbp_per_million_sample_mapped_reads":
+
+export IMG=ivasilyev/curated_projects:latest && \
+docker pull $IMG && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it $IMG python3 /home/docker/statistical_tools/groupdata2statistics.py \
+-g /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPKM/all_groups/virulence/pvals/colitis_esc_colitis_rem_control_crohn_esc_crohn_rem.groupdata \
+-p '' \
+-s '' \
+-i keyword \
+-v id_mapped_reads_per_kbp_per_million_sample_mapped_reads \
+-o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPKM/all_groups/virulence/pvals/
+
+
+# Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPKM/all_groups/genera/pvals/colitis_esc_colitis_rem_control_crohn_esc_crohn_rem.groupdata" and value column "id_mapped_reads_per_kbp_per_million_sample_mapped_reads":
+
+export IMG=ivasilyev/curated_projects:latest && \
+docker pull $IMG && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it $IMG python3 /home/docker/statistical_tools/groupdata2statistics.py \
+-g /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPKM/all_groups/genera/pvals/colitis_esc_colitis_rem_control_crohn_esc_crohn_rem.groupdata \
+-p '' \
+-s '' \
+-i keyword \
+-v id_mapped_reads_per_kbp_per_million_sample_mapped_reads \
+-o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPKM/all_groups/genera/pvals/
+
+
+# Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPM/remission_vs_escalation/virulence/pvals/control_escalation_remission.groupdata" and value column "id_mapped_reads_per_million_sample_mapped_reads":
+
+export IMG=ivasilyev/curated_projects:latest && \
+docker pull $IMG && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it $IMG python3 /home/docker/statistical_tools/groupdata2statistics.py \
+-g /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPM/remission_vs_escalation/virulence/pvals/control_escalation_remission.groupdata \
+-p '' \
+-s '' \
+-i keyword \
+-v id_mapped_reads_per_million_sample_mapped_reads \
+-o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPM/remission_vs_escalation/virulence/pvals/
+
+
+# Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPM/remission_vs_escalation/genera/pvals/control_escalation_remission.groupdata" and value column "id_mapped_reads_per_million_sample_mapped_reads":
+
+export IMG=ivasilyev/curated_projects:latest && \
+docker pull $IMG && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it $IMG python3 /home/docker/statistical_tools/groupdata2statistics.py \
+-g /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPM/remission_vs_escalation/genera/pvals/control_escalation_remission.groupdata \
+-p '' \
+-s '' \
+-i keyword \
+-v id_mapped_reads_per_million_sample_mapped_reads \
+-o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPM/remission_vs_escalation/genera/pvals/
+
+
+# Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPKM/remission_vs_escalation/virulence/pvals/control_escalation_remission.groupdata" and value column "id_mapped_reads_per_kbp_per_million_sample_mapped_reads":
+
+export IMG=ivasilyev/curated_projects:latest && \
+docker pull $IMG && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it $IMG python3 /home/docker/statistical_tools/groupdata2statistics.py \
+-g /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPKM/remission_vs_escalation/virulence/pvals/control_escalation_remission.groupdata \
+-p '' \
+-s '' \
+-i keyword \
+-v id_mapped_reads_per_kbp_per_million_sample_mapped_reads \
+-o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPKM/remission_vs_escalation/virulence/pvals/
+
+
+# Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPKM/remission_vs_escalation/genera/pvals/control_escalation_remission.groupdata" and value column "id_mapped_reads_per_kbp_per_million_sample_mapped_reads":
+
+export IMG=ivasilyev/curated_projects:latest && \
+docker pull $IMG && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it $IMG python3 /home/docker/statistical_tools/groupdata2statistics.py \
+-g /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPKM/remission_vs_escalation/genera/pvals/control_escalation_remission.groupdata \
+-p '' \
+-s '' \
+-i keyword \
+-v id_mapped_reads_per_kbp_per_million_sample_mapped_reads \
+-o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPKM/remission_vs_escalation/genera/pvals/
+
+
+# Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPM/crohn_vs_colitis/virulence/pvals/colitis_control_crohn.groupdata" and value column "id_mapped_reads_per_million_sample_mapped_reads":
+
+export IMG=ivasilyev/curated_projects:latest && \
+docker pull $IMG && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it $IMG python3 /home/docker/statistical_tools/groupdata2statistics.py \
+-g /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPM/crohn_vs_colitis/virulence/pvals/colitis_control_crohn.groupdata \
+-p '' \
+-s '' \
+-i keyword \
+-v id_mapped_reads_per_million_sample_mapped_reads \
+-o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPM/crohn_vs_colitis/virulence/pvals/
+
+
+# Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPM/crohn_vs_colitis/genera/pvals/colitis_control_crohn.groupdata" and value column "id_mapped_reads_per_million_sample_mapped_reads":
+
+export IMG=ivasilyev/curated_projects:latest && \
+docker pull $IMG && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it $IMG python3 /home/docker/statistical_tools/groupdata2statistics.py \
+-g /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPM/crohn_vs_colitis/genera/pvals/colitis_control_crohn.groupdata \
+-p '' \
+-s '' \
+-i keyword \
+-v id_mapped_reads_per_million_sample_mapped_reads \
+-o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPM/crohn_vs_colitis/genera/pvals/
+
+
+# Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPKM/crohn_vs_colitis/virulence/pvals/colitis_control_crohn.groupdata" and value column "id_mapped_reads_per_kbp_per_million_sample_mapped_reads":
+
+export IMG=ivasilyev/curated_projects:latest && \
+docker pull $IMG && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it $IMG python3 /home/docker/statistical_tools/groupdata2statistics.py \
+-g /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPKM/crohn_vs_colitis/virulence/pvals/colitis_control_crohn.groupdata \
+-p '' \
+-s '' \
+-i keyword \
+-v id_mapped_reads_per_kbp_per_million_sample_mapped_reads \
+-o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPKM/crohn_vs_colitis/virulence/pvals/
+
+
+# Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPKM/crohn_vs_colitis/genera/pvals/colitis_control_crohn.groupdata" and value column "id_mapped_reads_per_kbp_per_million_sample_mapped_reads":
+
+export IMG=ivasilyev/curated_projects:latest && \
+docker pull $IMG && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it $IMG python3 /home/docker/statistical_tools/groupdata2statistics.py \
+-g /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPKM/crohn_vs_colitis/genera/pvals/colitis_control_crohn.groupdata \
+-p '' \
+-s '' \
+-i keyword \
+-v id_mapped_reads_per_kbp_per_million_sample_mapped_reads \
+-o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/digest/RPKM/crohn_vs_colitis/genera/pvals/
 """
 
 visualization_col_names = ("log2(RPM+1)", "kRPKM")
@@ -496,7 +656,7 @@ for groupdata_digest in datasets_dict:
         for visualization_col_name in visualization_col_names:
             visualization_dataset = datasets_keeper.virulence_dataset
             visualization_association = "virulence"
-            visualization_text = "The abundance of virulence genes"
+            visualization_text = "The abundance of virulence genes by protein description"
             visualization_keywords = sorted(DigestAssociationsKeeper.VIRULENCE_FACTORS)
             DataSetsKeeper.create_multiboxplots(ds=visualization_dataset,
                                                 boxplot_y_col_name=visualization_col_name,
@@ -507,7 +667,7 @@ for groupdata_digest in datasets_dict:
                                                 title_text=visualization_text)
             visualization_dataset = datasets_keeper.genera_dataset
             visualization_association = "genera"
-            visualization_text = "The abundance of genes by host genera"
+            visualization_text = "The abundance of virulence genes by host genera"
             visualization_keywords = sorted(handler.digest_genera_associations_dict)
             DataSetsKeeper.create_multiboxplots(ds=visualization_dataset,
                                                 boxplot_y_col_name=visualization_col_name,
