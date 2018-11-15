@@ -183,11 +183,12 @@ class DanilovaAwesomeGroupAnalysisHandler:
             df.index.names = [self.index_col_name]
             self.raw_pivot_dfs_dict[group] = df
     def digest_virulence_pivots(self):
-        groupdata_2d_array = []
+        groupdata_dict = {}
         self.digest_virulence_samples_dir = "{}virulence/samples/".format(self.digest_dir)
         search_col_names = ["gene_description", ]
         digest_dfs_list = []
         for group in self.raw_pivot_dfs_dict:
+            groupdata_dict[group] = []
             raw_df = self.raw_pivot_dfs_dict[group].loc[:,
                      search_col_names + [i for i in list(self.raw_pivot_dfs_dict[group]) if i not in list(self.annotation_df)]]
             digest_df = DigestAssociationsKeeper.digest_df(raw_df, DigestAssociationsKeeper.VIRULENCE_FACTORS, search_col_names)
@@ -199,11 +200,11 @@ class DanilovaAwesomeGroupAnalysisHandler:
                 output_file = "{}{}.tsv".format(self.digest_virulence_samples_dir, sample_name)
                 digest_df[sample_path].reset_index().rename(
                     columns={sample_path: self.pivot_value_col_name}).to_csv(output_file, sep='\t', header=True, index=False)
-                groupdata_2d_array.append([group, output_file])
+                groupdata_dict[group].append(output_file)
         self.digest_virulence_pvals_dir = "{}virulence/pvals/".format(self.digest_dir)
         os.makedirs(self.digest_virulence_pvals_dir, exist_ok=True)
         self.digest_virulence_groupdata = "{}{}.groupdata".format(self.digest_virulence_pvals_dir, "_".join(list(self.raw_pivot_dfs_dict)))
-        Utilities.dump_2d_array(groupdata_2d_array, file=self.digest_virulence_groupdata)
+        self.dump_groupdata_dict(groupdata_dict, file=self.digest_virulence_groupdata)
         self.digest_virulence_pivot_df = pd.concat(digest_dfs_list, axis=1, sort=True)
         self.digest_virulence_pivot_df.index.names = digest_dfs_list[0].index.names
     def digest_genera_pivots(self):
@@ -216,10 +217,11 @@ class DanilovaAwesomeGroupAnalysisHandler:
         host_genera_counters = CounterWrapper.count_words_in_series(significant_pvals_df[annotation_counter_col_name])
         self.digest_genera_associations_dict = {i[0].capitalize(): (i[0],) for i in host_genera_counters.most_common(
             len(DigestAssociationsKeeper.VIRULENCE_FACTORS))}
-        groupdata_2d_array = []
+        groupdata_dict = {}
         search_col_names = [annotation_counter_col_name, ]
         digest_dfs_list = []
         for group in self.raw_pivot_dfs_dict:
+            groupdata_dict[group] = []
             raw_df = self.raw_pivot_dfs_dict[group].loc[:,
                      search_col_names + [i for i in list(self.raw_pivot_dfs_dict[group]) if i not in list(self.annotation_df)]]
             digest_df = DigestAssociationsKeeper.digest_df(raw_df, self.digest_genera_associations_dict, search_col_names)
@@ -231,30 +233,34 @@ class DanilovaAwesomeGroupAnalysisHandler:
                 output_file = "{}{}.tsv".format(self.digest_genera_samples_dir, sample_name)
                 digest_df[sample_path].reset_index().rename(
                     columns={sample_path: self.pivot_value_col_name}).to_csv(output_file, sep='\t', header=True, index=False)
-                groupdata_2d_array.append([group, output_file])
+                groupdata_dict[group].append(output_file)
         self.digest_genera_pvals_dir = "{}{}/pvals/".format(self.digest_dir, association)
         os.makedirs(self.digest_genera_pvals_dir, exist_ok=True)
         self.digest_genera_groupdata = "{}{}.groupdata".format(self.digest_genera_pvals_dir, "_".join(list(self.raw_pivot_dfs_dict)))
-        Utilities.dump_2d_array(groupdata_2d_array, file=self.digest_genera_groupdata)
+        self.dump_groupdata_dict(groupdata_dict, file=self.digest_genera_groupdata)
         self.digest_genera_pivot_df = pd.concat(digest_dfs_list, axis=1, sort=True)
         self.digest_genera_pivot_df.index.names = digest_dfs_list[0].index.names
         CounterWrapper.dump_counter(host_genera_counters,
                                     file="{}{}_counter.tsv".format(self.digest_genera_pvals_dir,
                                                                    "_".join(list(self.raw_pivot_dfs_dict))))
+    @staticmethod
+    def dump_groupdata_dict(groupdata: dict, file: str):
+        array = [[j, k] for k in groupdata for j in groupdata[k] if len(groupdata[k]) > 0]
+        Utilities.dump_2d_array(array=array, file=file)
     def get_digest_virulence_guidelines(self):
         guideliner = GroupDataAssemblyGuideLiner(groupdata=self.digest_virulence_groupdata,
-                                                 prefix=self.raw_prefix,
-                                                 suffix=self.raw_suffix,
-                                                 index_column=self.index_col_name,
+                                                 prefix="''",
+                                                 suffix="''",
+                                                 index_column="keyword",
                                                  value_column=self.pivot_value_col_name,
                                                  output_dir=self.digest_virulence_pvals_dir)
         self.raw_pvals_guideline = guideliner.external_launch_command
         print(self.raw_pvals_guideline)
     def get_digest_genera_guidelines(self):
         guideliner = GroupDataAssemblyGuideLiner(groupdata=self.digest_genera_groupdata,
-                                                 prefix=self.raw_prefix,
-                                                 suffix=self.raw_suffix,
-                                                 index_column=self.index_col_name,
+                                                 prefix="''",
+                                                 suffix="''",
+                                                 index_column="keyword",
                                                  value_column=self.pivot_value_col_name,
                                                  output_dir=self.digest_genera_pvals_dir)
         self.raw_pvals_guideline = guideliner.external_launch_command
@@ -264,9 +270,12 @@ class DanilovaAwesomeGroupAnalysisHandler:
 # First run
 handlers_dict = {}
 for pivot_value_col_name in value_col_names_abbreviations_dict:
-    print("## Launch guideline for value column name '{}'".format(pivot_value_col_name))
+    value_col_names_abbreviation = value_col_names_abbreviations_dict[pivot_value_col_name]
+    print("## Launch guideline for value column name '{}'".format(value_col_names_abbreviation))
     for groupdata_file in ProjectDescriber.groupdata:
-        handler = DanilovaAwesomeGroupAnalysisHandler("reference_id", "id_mapped_reads_per_million_sample_mapped_reads", "RPM")
+        handler = DanilovaAwesomeGroupAnalysisHandler(index_column="reference_id",
+                                                      value_column=pivot_value_col_name,
+                                                      value_column_abbreviation=value_col_names_abbreviation)
         handler.set_groupdata_dict(groupdata_file)
         print("### Launch guideline for group data '{}'".format(handler.groupdata_digest_name))
         handler.set_raw_pvals_dir(outputDir)
@@ -278,7 +287,7 @@ for pivot_value_col_name in value_col_names_abbreviations_dict:
 
 # Data assembly for per-gene p-values count
 """
-## Launch guideline for value column name 'id_mapped_reads_per_million_sample_mapped_reads'
+## Launch guideline for value column name 'RPM'
 ### Launch guideline for group data 'all_groups'
 # Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/group_data_digest/all_groups.groupdata" and value column "id_mapped_reads_per_million_sample_mapped_reads":
 
@@ -321,9 +330,9 @@ docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it 
 -o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/RPM/crohn_vs_colitis/
 
 
-## Launch guideline for value column name 'id_mapped_reads_per_kbp_per_million_sample_mapped_reads'
+## Launch guideline for value column name 'RPKM'
 ### Launch guideline for group data 'all_groups'
-# Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/group_data_digest/all_groups.groupdata" and value column "id_mapped_reads_per_million_sample_mapped_reads":
+# Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/group_data_digest/all_groups.groupdata" and value column "id_mapped_reads_per_kbp_per_million_sample_mapped_reads":
 
 export IMG=ivasilyev/curated_projects:latest && \
 docker pull $IMG && \
@@ -332,12 +341,12 @@ docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it 
 -p /data2/bio/Metagenomes/Toxins/VFDB/Statistics/ \
 -s _vfdb_v2018.11.09_coverage.tsv \
 -i reference_id \
--v id_mapped_reads_per_million_sample_mapped_reads \
--o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/RPM/all_groups/
+-v id_mapped_reads_per_kbp_per_million_sample_mapped_reads \
+-o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/RPKM/all_groups/
 
 
 ### Launch guideline for group data 'remission_vs_escalation'
-# Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/group_data_digest/remission_vs_escalation.groupdata" and value column "id_mapped_reads_per_million_sample_mapped_reads":
+# Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/group_data_digest/remission_vs_escalation.groupdata" and value column "id_mapped_reads_per_kbp_per_million_sample_mapped_reads":
 
 export IMG=ivasilyev/curated_projects:latest && \
 docker pull $IMG && \
@@ -346,12 +355,12 @@ docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it 
 -p /data2/bio/Metagenomes/Toxins/VFDB/Statistics/ \
 -s _vfdb_v2018.11.09_coverage.tsv \
 -i reference_id \
--v id_mapped_reads_per_million_sample_mapped_reads \
--o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/RPM/remission_vs_escalation/
+-v id_mapped_reads_per_kbp_per_million_sample_mapped_reads \
+-o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/RPKM/remission_vs_escalation/
 
 
 ### Launch guideline for group data 'crohn_vs_colitis'
-# Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/group_data_digest/crohn_vs_colitis.groupdata" and value column "id_mapped_reads_per_million_sample_mapped_reads":
+# Pre-setup to launch from different node for group data file "/data1/bio/projects/ndanilova/colitis_crohn/group_data_digest/crohn_vs_colitis.groupdata" and value column "id_mapped_reads_per_kbp_per_million_sample_mapped_reads":
 
 export IMG=ivasilyev/curated_projects:latest && \
 docker pull $IMG && \
@@ -360,8 +369,8 @@ docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it 
 -p /data2/bio/Metagenomes/Toxins/VFDB/Statistics/ \
 -s _vfdb_v2018.11.09_coverage.tsv \
 -i reference_id \
--v id_mapped_reads_per_million_sample_mapped_reads \
--o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/RPM/crohn_vs_colitis/
+-v id_mapped_reads_per_kbp_per_million_sample_mapped_reads \
+-o /data1/bio/projects/ndanilova/colitis_crohn/VFDB/pvals/RPKM/crohn_vs_colitis/
 """
 
 
@@ -419,7 +428,7 @@ class DataSetsKeeper:
         from matplotlib.ticker import MaxNLocator
         sns.set(style="whitegrid", font_scale=0.5)
         sns.set_palette("cubehelix")
-        multiboxplot_alias = re.sub("[\W]+", "_", boxplot_y_col_name).strip("_")
+        multiboxplot_alias = re.sub("[\W\-]+", "_", boxplot_y_col_name).strip("_")
         multiboxplot_dir = "{}{}/".format(Utilities.ends_with_slash(output_dir), multiboxplot_alias)
         os.makedirs(os.path.dirname(multiboxplot_dir), exist_ok=True)
         #
@@ -469,8 +478,14 @@ for groupdata_digest in handlers_dict:
         datasets_keeper.genera_dss_list.append(DataSetsKeeper.melt_keyword_df(
             df=handler.digest_genera_pivot_df, value_column=pivot_value_col_name,
             value_column_abbreviation=value_col_name_abbreviation))
+        handler.get_digest_virulence_guidelines()
+        handler.get_digest_genera_guidelines()
     datasets_keeper.finalize_datasets("{}datasets".format(outputDir))
     datasets_dict[groupdata_digest] = datasets_keeper
+
+
+"""
+"""
 
 visualization_col_names = ("log2(RPM+1)", "kRPKM")
 # Prepare datasets for visualization
