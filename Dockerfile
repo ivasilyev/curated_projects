@@ -41,9 +41,11 @@ RUN pip3 install xlrd
 RUN pip3 install matplotlib seaborn
 # For external access attempt
 RUN pip3 install ipython jupyter jupyterlab
+# For ML-related purposes
+RUN pip3 install scikit-learn tensorflow
 
-# Jupyter Notebook port forwarding
-EXPOSE 80 443 31512
+# Web port forwarding
+EXPOSE 80 443
 
 # Create user docker with password docker
 RUN groupadd fuse && \
