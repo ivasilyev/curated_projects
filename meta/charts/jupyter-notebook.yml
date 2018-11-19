@@ -1,0 +1,71 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jupyter-notebook
+  labels:
+    app: jupyter-notebook
+spec:
+  ports:
+  - name: http
+    nodePort: 31511
+    protocol: TCP
+    port: 31512
+    targetPort: 31512
+  selector:
+    app: jupyter-notebook
+  type: LoadBalancer
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: jupyter-notebook
+  labels:
+    app: jupyter-notebook
+spec:
+  containers:
+    - name: jupyter-notebook
+      image: ivasilyev/curated_projects:latest
+      imagePullPolicy: Always
+      ports:
+      - name: http
+        protocol: TCP
+        containerPort: 31512
+      # CLI: export IMG=ivasilyev/curated_projects:latest && docker pull ${IMG} && docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -p 8080:80 -it ${IMG} jupyter notebook --ip=0.0.0.0 --port=80 --no-browser --allow-root
+      command: ["jupyter", "notebook", "--ip=0.0.0.0", "--port=31512", "--no-browser"]
+      volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: data1
+          mountPath: /data1
+        - name: data2
+          mountPath: /data2
+  volumes:
+  - name: data
+    hostPath:
+      path: /data
+  - name: data1
+    hostPath:
+      path: /data1
+  - name: data2
+    hostPath:
+      path: /data2
+  restartPolicy: OnFailure
+
+# Deploy from master node:
+# kubectl create -f https://raw.githubusercontent.com/ivasilyev/curated_projects/master/meta/charts/jupyter-notebook.yml
+
+# Get pods info:
+# kubectl get pods
+
+# Get node info:
+# kubectl describe pod jupyter-notebook | grep Node:
+
+# Get token:
+# kubectl logs jupyter-notebook | grep token
+
+# Connect to <node ip>:31511 and enter the token
+
+# Cleanup:
+# kubectl delete svc,pod jupyter-notebook
