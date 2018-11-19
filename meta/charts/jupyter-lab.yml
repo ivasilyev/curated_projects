@@ -35,7 +35,7 @@ spec:
         protocol: TCP
         containerPort: 31522
       # CLI: export IMG=ivasilyev/curated_projects:latest && docker pull ${IMG} && docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -p 8080:80 -it ${IMG} jupyter lab --ip=0.0.0.0 --port=80 --no-browser --allow-root
-      command: ["jupyter", "lab", "--ip=0.0.0.0", "--port=31522", "--no-browser", "--NotebookApp.token='aJbR9v'"]
+      command: ["bash", "/home/docker/curated_projects/meta/charts/jupyter-lab.sh"]
       volumeMounts:
         - name: data
           mountPath: /data
@@ -43,6 +43,16 @@ spec:
           mountPath: /data1
         - name: data2
           mountPath: /data2
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 1
+          preference:
+            matchExpressions:
+              - key: ram
+                operator: In
+                values:
+                - 128
   volumes:
   - name: data
     hostPath:
@@ -57,6 +67,9 @@ spec:
 
 # Deploy from master node:
 # kubectl create -f https://raw.githubusercontent.com/ivasilyev/curated_projects/master/meta/charts/jupyter-lab.yml
+
+# Update pod from master node:
+# kubectl apply -f https://raw.githubusercontent.com/ivasilyev/curated_projects/master/meta/charts/jupyter-lab.yml
 
 # Get pods info:
 # kubectl get pods
