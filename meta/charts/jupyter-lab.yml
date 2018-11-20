@@ -52,7 +52,7 @@ spec:
               - key: ram
                 operator: In
                 values:
-                - 128
+                - "128"
   volumes:
   - name: data
     hostPath:
