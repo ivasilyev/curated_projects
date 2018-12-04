@@ -24,14 +24,14 @@ class ProjectEvaluator:
         import os
         import subprocess
         import pandas as pd
-        from meta.scripts.utilities import filename_only
+        from meta.scripts.Utilities import Utilities
         import re
         #
         df = pd.DataFrame(columns=["sample_name", "sample_path"])
         for dir_mask in ["/data2/bio/ecoli_komfi/raw_reads/*", "/data2/bio/ecoli_komfi/raw_reads2/*"]:
             data_1 = [i.strip() for i in subprocess.getoutput("ls -d {}R1*.fastq* | sort".format(dir_mask)).split("\n")]
             data_12 = ["{a}\t{b}".format(a=i, b=i.replace("R1", "R2")) if os.path.isfile(i.replace("R1", "R2")) else "" for i in data_1]
-            sample_names_list = [re.sub("_S.*$", "", filename_only(i)) for i in data_1]
+            sample_names_list = [re.sub("_S.*$", "", Utilities.filename_only(i)) for i in data_1]
             df = pd.concat([df, pd.DataFrame.from_dict({"sample_name": sample_names_list, "sample_path": data_12})], axis=0, ignore_index=True)
         #
         df["group_id"] = "group_id"
