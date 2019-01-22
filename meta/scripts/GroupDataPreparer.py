@@ -26,7 +26,7 @@ class GroupDataPreparer:
 
 class GroupDataAssemblyGuideLiner:
     def __init__(self, groupdata, prefix, suffix, index_column, value_column, output_dir):
-        self.internal_launch_command = """python3 /home/docker/statistical_tools/groupdata2statistics.py \\
+        self.internal_launch_command = """python3 /home/docker/scripts/statistical_tools/groupdata2statistics.py \\
 -g {GROUPDATA} \\
 -p {PREFIX} \\
 -s {SUFFIX} \\
