@@ -28,7 +28,25 @@ class DigestAssociationsKeeper:
                          "capsule-related": ("capsular", "capsule"),
                          "lipoglycans": ("o-antigen", "lipooligosaccharide", "lipopolysaccharide"),
                          "secretion": ("secretion", "secreted", "secretory"),
-                         "efflux": ("efflux",)}
+                         "efflux": ()}
+    DRUG_CLASSES = {"beta-lactam": ("cephalosporin", "penam", "penem"),
+                    "aminoglycoside": (),
+                    "fluoroquinolone": (),
+                    "glycopeptide antibiotic": (),
+                    "lincosamide": (),
+                    "macrolide": (),
+                    "nucleoside antibiotic": (),
+                    "peptide antibiotic": (),
+                    "phenicol": (),
+                    "sulfonamide": (),
+                    "tetracycline": (),
+                    "triclosan": ()}
+    RESISTANCE_MECHANISMS = {"efflux": (),
+                             "inactivation": (),
+                             "reduced permeability": (),
+                             "target alteration": (),
+                             "target protection": (),
+                             "target replacement": ()}
     @staticmethod
     def digest_df(df: pd.DataFrame, associations: dict, columns_with_keywords: list):
         df_columns = list(df)
