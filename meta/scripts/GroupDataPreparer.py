@@ -25,14 +25,14 @@ class GroupDataPreparer:
 
 
 class GroupDataAssemblyGuideLiner:
-    def __init__(self, groupdata, prefix, suffix, index_column, value_column, output_dir):
+    def __init__(self, groupdata, index_column, value_column, output_dir, prefix="", suffix=""):
         self.internal_launch_command = """python3 /home/docker/scripts/statistical_tools/groupdata2statistics.py \\
--g {GROUPDATA} \\
--p {PREFIX} \\
--s {SUFFIX} \\
--i {INDEX} \\
--v {VALUE} \\
--o {OUTPUT_DIR}""".format(GROUPDATA=groupdata, PREFIX=prefix, SUFFIX=suffix, INDEX=index_column, VALUE=value_column,
+-g \"{GROUPDATA}\" \\
+-p \"{PREFIX}\" \\
+-s \"{SUFFIX}\" \\
+-i \"{INDEX}\" \\
+-v \"{VALUE}\" \\
+-o \"{OUTPUT_DIR}\"""".format(GROUPDATA=groupdata, PREFIX=prefix, SUFFIX=suffix, INDEX=index_column, VALUE=value_column,
                           OUTPUT_DIR=output_dir)
         self.external_launch_command = """# Pre-setup to launch from different node for group data file \"{GROUPDATA}\" and value column \"{VALUE}\":
 
