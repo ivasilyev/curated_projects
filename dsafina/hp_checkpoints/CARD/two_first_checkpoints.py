@@ -59,7 +59,11 @@ requestedSamplePairs = """
 97-98
 """
 
+requestedContolGroupSamples = [12, 14, 154, 166, 17, 20, 30, 36, 37, 44, 45, 46] + list(range(141, 152)) + list(range(174, 184)) + list(range(203, 212))
+requestedContolGroupDF = pd.DataFrame([{"sample": "{}HP".format(i), "group": "control"} for i in requestedContolGroupSamples]).loc[:, ["sample", "group"]]
+
 requestedGroupDataDF = pd.DataFrame([{"1st": l[0], "2nd": l[1]} for l in [["{}HP".format(k) for k in j.split("-")] for j in [i.strip() for i in re.sub("\r\n+", "\n", requestedSamplePairs).split("\n") if len(i.strip()) > 0]]]).melt().rename(columns={"value": "sample", "variable": "group"}).loc[:, ["sample", "group"]]
+requestedGroupDataDF = pd.concat([requestedGroupDataDF, requestedContolGroupDF], axis=0, ignore_index=True)
 group_names = sorted(set(requestedGroupDataDF["group"]))
 
 projectDescriber.groupdata = "/data1/bio/projects/dsafina/hp_checkpoints/two_first_checkpoints.groupdata"
@@ -84,7 +88,7 @@ for value_col_name in value_col_names:
                                              value_column=value_col_name)
     print("{}\n".format(guideliner.external_launch_command))
 
-# subprocess.getoutput("rm -rf {}".format(outputDir))
+subprocess.getoutput("rm -rf {}".format(outputDir))
 
 """
 # Pre-setup to launch from different node for group data file "/data1/bio/projects/dsafina/hp_checkpoints/two_first_checkpoints.groupdata" and value column "id_mapped_reads_per_million_sample_mapped_reads":
@@ -92,12 +96,12 @@ for value_col_name in value_col_names:
 export IMG=ivasilyev/curated_projects:latest && \
 docker pull $IMG && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it $IMG python3 /home/docker/scripts/statistical_tools/groupdata2statistics.py \
--g /data1/bio/projects/dsafina/hp_checkpoints/two_first_checkpoints.groupdata \
--p /data2/bio/Metagenomes/CARD/Statistics/ \
--s _card_v2.0.3_coverage.tsv \
--i reference_id \
--v id_mapped_reads_per_million_sample_mapped_reads \
--o /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/two_first_checkpoints/single_genes/id_mapped_reads_per_million_sample_mapped_reads/
+-g "/data1/bio/projects/dsafina/hp_checkpoints/two_first_checkpoints.groupdata" \
+-p "/data2/bio/Metagenomes/CARD/Statistics/" \
+-s "_card_v2.0.3_coverage.tsv" \
+-i "reference_id" \
+-v "id_mapped_reads_per_million_sample_mapped_reads" \
+-o "/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/two_first_checkpoints/single_genes/id_mapped_reads_per_million_sample_mapped_reads/"
 
 
 
@@ -106,12 +110,12 @@ docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it 
 export IMG=ivasilyev/curated_projects:latest && \
 docker pull $IMG && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it $IMG python3 /home/docker/scripts/statistical_tools/groupdata2statistics.py \
--g /data1/bio/projects/dsafina/hp_checkpoints/two_first_checkpoints.groupdata \
--p /data2/bio/Metagenomes/CARD/Statistics/ \
--s _card_v2.0.3_coverage.tsv \
--i reference_id \
--v id_mapped_reads_per_kbp_per_million_sample_mapped_reads \
--o /data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/two_first_checkpoints/single_genes/id_mapped_reads_per_kbp_per_million_sample_mapped_reads/
+-g "/data1/bio/projects/dsafina/hp_checkpoints/two_first_checkpoints.groupdata" \
+-p "/data2/bio/Metagenomes/CARD/Statistics/" \
+-s "_card_v2.0.3_coverage.tsv" \
+-i "reference_id" \
+-v "id_mapped_reads_per_kbp_per_million_sample_mapped_reads" \
+-o "/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/two_first_checkpoints/single_genes/id_mapped_reads_per_kbp_per_million_sample_mapped_reads/"
 """
 
 annotation_df = pd.read_table("/data/reference/CARD/card_v2.0.3/index/card_v2.0.3_annotation.tsv").set_index(index_col_name)
@@ -187,12 +191,12 @@ for digest_value_col_name in digest_value_col_names:
     print("{}\n".format(guideliner.external_launch_command))
 
 """
-# Pre-setup to launch from different node for group data file "/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/two_first_checkpoints/gene_groups/log2(RPM+1)/1st_2nd.groupdata" and value column "log2(RPM+1)":
+# Pre-setup to launch from different node for group data file "/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/two_first_checkpoints/gene_groups/log2(RPM+1)/1st_2nd_control.groupdata" and value column "log2(RPM+1)":
 
 export IMG=ivasilyev/curated_projects:latest && \
 docker pull $IMG && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it $IMG python3 /home/docker/scripts/statistical_tools/groupdata2statistics.py \
--g "/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/two_first_checkpoints/gene_groups/log2(RPM+1)/1st_2nd.groupdata" \
+-g "/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/two_first_checkpoints/gene_groups/log2(RPM+1)/1st_2nd_control.groupdata" \
 -p "" \
 -s "" \
 -i "keyword" \
@@ -201,12 +205,12 @@ docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it 
 
 
 
-# Pre-setup to launch from different node for group data file "/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/two_first_checkpoints/gene_groups/kRPKM/1st_2nd.groupdata" and value column "kRPKM":
+# Pre-setup to launch from different node for group data file "/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/two_first_checkpoints/gene_groups/kRPKM/1st_2nd_control.groupdata" and value column "kRPKM":
 
 export IMG=ivasilyev/curated_projects:latest && \
 docker pull $IMG && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it $IMG python3 /home/docker/scripts/statistical_tools/groupdata2statistics.py \
--g "/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/two_first_checkpoints/gene_groups/kRPKM/1st_2nd.groupdata" \
+-g "/data1/bio/projects/dsafina/hp_checkpoints/card_v2.0.3/two_first_checkpoints/gene_groups/kRPKM/1st_2nd_control.groupdata" \
 -p "" \
 -s "" \
 -i "keyword" \
