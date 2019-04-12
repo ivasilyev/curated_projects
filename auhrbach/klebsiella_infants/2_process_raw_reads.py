@@ -69,7 +69,7 @@ def sampledata_dict_to_spades(d: dict):
     log = subprocess.getoutput(cmd)
     with open(log_file, mode="w", encoding="utf-8") as f:
         f.write(log)
-    return os.path.join(spades_dir, "contigs.fasta")
+    return {"sample_name": d.get("sample_name"), "assembly": os.path.join(spades_dir, "contigs.fasta")}
 
 
 raw_sampledata_file = "/data1/bio/projects/auhrbach/klebsiella_infants/raw.sampledata"
@@ -84,3 +84,11 @@ with open(trimmed_sampledata_file, mode="w", encoding="utf-8") as file:
                 trimmed_sampledatas_list])))
 
 assembled_genomes_list = single_core_queue(sampledata_dict_to_spades, trimmed_sampledatas_list)
+assembled_genomes_sampledata_file = os.path.join(os.path.dirname(raw_sampledata_file), "assemblies.sampledata")
+with open(assembled_genomes_sampledata_file, mode="w", encoding="utf-8") as file:
+    file.write(
+        "".join(sorted(["{}\t{}\n".format(i.get("sample_name"), i.get("assembly")) for i in assembled_genomes_list])))
+
+print(trimmed_sampledata_file)  # /data1/bio/projects/auhrbach/klebsiella_infants/trimmed.sampledata
+print(assembled_genomes_sampledata_file)  # /data1/bio/projects/auhrbach/klebsiella_infants/assemblies.sampledata
+
