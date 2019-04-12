@@ -62,8 +62,10 @@ def sampledata_dict_to_spades(d: dict):
     subprocess.getoutput("rm -rf {}".format(spades_dir))
     os.makedirs(spades_dir)
     log_file = os.path.join(spades_dir, "{}_spades.log".format(d.get("sample_name")))
-    cmd = "spades --careful -o {out} -1 {t1} -2 {t2}".format(out=spades_dir, t1=d.get("trimmed_file_1"),
-                                                                t2=d.get("trimmed_file_2"), log=log_file)
+    cmd = "python3 /opt/spades/bin/spades.py --careful -o {out} -1 {t1} -2 {t2}".format(out=spades_dir,
+                                                                                        t1=d.get("trimmed_file_1"),
+                                                                                        t2=d.get("trimmed_file_2"),
+                                                                                        log=log_file)
     log = subprocess.getoutput(cmd)
     with open(log_file, mode="w", encoding="utf-8") as f:
         f.write(log)
@@ -75,4 +77,10 @@ with open(raw_sampledata_file, mode="r", encoding="utf-8") as file:
     raw_sampledata_list = [i.strip() for i in file.read().split("\n") if len(i.strip()) > 0]
 
 trimmed_sampledatas_list = multi_core_queue(sampledata_line_to_cutadapt, raw_sampledata_list)
+trimmed_sampledata_file = os.path.join(os.path.dirname(raw_sampledata_file), "trimmed.sampledata")
+with open(trimmed_sampledata_file, mode="w", encoding="utf-8") as file:
+    file.write("".join(
+        sorted(["{}\t{}\t{}\n".format(i.get("sample_name"), i.get("trimmed_file_1"), i.get("trimmed_file_2")) for i in
+                trimmed_sampledatas_list])))
+
 assembled_genomes_list = single_core_queue(sampledata_dict_to_spades, trimmed_sampledatas_list)
