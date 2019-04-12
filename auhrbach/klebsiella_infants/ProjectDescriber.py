@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from meta.templates.ProjectDescriberTemplate import ProjectDescriberTemplate
+import os
 
 
 class ProjectDescriber(ProjectDescriberTemplate):
     owner = "auhrbach"
     name = "klebsiella_infants"
-    directory = "/data1/bio/projects/{}/{}/".format(owner, name)
+    directory = os.path.join("/data1/bio/projects", owner, name)
     groupdata = ()
-    sampledata = "{}/main.sampledata".format(directory)
-    mask = ""
+    sampledata = os.path.join(directory, "main.sampledata")
