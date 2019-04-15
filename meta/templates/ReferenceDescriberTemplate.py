@@ -10,6 +10,7 @@ class ReferenceDescriberTemplate(ABC):
     name = ""
     description = ""
     documentation = ""
+    url = ""
     refdata = ""
     def __init__(self):
         super().__init__()
