@@ -12,18 +12,24 @@ class ReferenceDescriberTemplate(ABC):
     documentation = ""
     url = ""
     refdata = ""
+
     def __init__(self):
         super().__init__()
+
     def export(self):
-        print("""
+        print("""Please update the following script lines: 
+
 class ReferenceDescriber(ReferenceDescriberTemplate):
     alias = "{ALIAS}"
     name = "{NAME}"
     description = "{DESCRIPTION}"
     documentation = "{DOCUMENTATION}"
+    url = "{URL}"
     refdata = "{REFDATA}"
+
 """.format(ALIAS=self.alias, NAME=self.name, DESCRIPTION=self.description, DOCUMENTATION=self.documentation,
-           REFDATA=self.refdata))
+           URL=self.url, REFDATA=self.refdata))
+
     @staticmethod
     def parse_refdata(refdata):
         from meta.scripts.RefDataParser import RefDataParser
