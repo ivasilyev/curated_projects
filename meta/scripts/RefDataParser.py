@@ -27,7 +27,7 @@ class RefDataParser:
     ...}
     """
     def __init__(self, reference_data_file_name):
-        self._file_wrapper = open(reference_data_file_name, "r", encoding="utf-8")
+        self._file_wrapper = open(reference_data_file_name, mode="r", encoding="utf-8")
         self._refdata_keys_list = self.get_refdata_keys_list()
         if reference_data_file_name.endswith(".json"):
             self._body_dict = self._parse_json_refdata()
@@ -38,6 +38,7 @@ class RefDataParser:
         except ValueError:
             print("Bad reference data file: {}".format(reference_data_file_name))
             raise
+        self.refdata_lines_dict = {k: RefDataLine(self._body_dict[k]) for k in self._body_dict}
 
     @staticmethod
     def get_refdata_keys_list():
@@ -55,7 +56,7 @@ class RefDataParser:
                 d["sequence_{}".format(counter)] = {k: v for k, v in zip(self._refdata_keys_list, [i.strip() for i in line.split("\t")])}
         return d
 
-    def _verify_json_refdata(self, d):
+    def _verify_json_refdata(self, d: dict):
         import os
         if len(d) == 0:
             raise ValueError("Empty sample data!")
@@ -64,14 +65,17 @@ class RefDataParser:
                 raise ValueError("Repeating key: {}".format(k1))
             for k_r in [i for i in self._refdata_keys_list if i != "reference_nfasta"]:
                 if k_r not in list(d[k1]):
-                    raise ValueError("Missing value for the key: {}".format(k_r))
+                    print("Warning! Missing value for the key: '{}'".format(k_r))
             for k2 in d[k1]:
                 f = d[k1][k2]
                 if k2 not in ["reference_nfasta", "ebwt_mask", "bt2_mask"] and not os.path.isfile(f):
-                    raise ValueError("Not found file: '{}', keys: '{}', '{}'".format(f, k1, k2))
+                    print("Warning! Not found file: '{}', keys: '{}', '{}'".format(f, k1, k2))
 
     def get_parsed_list(self):
-        return [RefDataLine(self._body_dict[k]) for k in self._body_dict]
+        return [self.refdata_lines_dict[k] for k in self.refdata_lines_dict]
 
-    def get_refdata_line_by_index(self, idx):
+    def get_refdata_line_by_index(self, idx: int):
         return self.get_parsed_list()[idx]
+
+    def get_refdata_line_by_key(self, key: str):
+        return self.refdata_lines_dict.get(key)

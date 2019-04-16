@@ -15,6 +15,8 @@ class ReferenceDescriberTemplate(ABC):
 
     def __init__(self):
         super().__init__()
+        self._refdata_parser = ""
+        self._refdata_dict = {}
 
     def export(self):
         print("""Please update the following script lines: 
@@ -37,8 +39,10 @@ class ReferenceDescriber(ReferenceDescriberTemplate):
             index_directory=os.path.join(os.path.dirname(raw_nfasta_file), "index", self.alias),
             raw_nfasta_file=raw_nfasta_file)
 
-    @staticmethod
-    def parse_refdata(refdata):
+    def parse_refdata(self):
         from meta.scripts.RefDataParser import RefDataParser
-        refdata_parser = RefDataParser(refdata)
-        return refdata_parser.get_parsed_list()
+        self._refdata_parser = RefDataParser(self.refdata)
+        self._refdata_dict = self._refdata_parser.refdata_lines_dict()
+
+    def get_refdata_dict(self):
+        return self._refdata_dict
