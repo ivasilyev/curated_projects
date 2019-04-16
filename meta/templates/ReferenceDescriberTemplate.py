@@ -30,6 +30,13 @@ class ReferenceDescriber(ReferenceDescriberTemplate):
 """.format(ALIAS=self.alias, NAME=self.name, DESCRIPTION=self.description, DOCUMENTATION=self.documentation,
            URL=self.url, REFDATA=self.refdata))
 
+    def get_index_guide(self, raw_nfasta_file):
+        import os
+        from meta.scripts.LaunchGuideLiner import LaunchGuideLiner
+        LaunchGuideLiner.get_index_guide(
+            index_directory=os.path.join(os.path.dirname(raw_nfasta_file), "index", self.alias),
+            raw_nfasta_file=raw_nfasta_file)
+
     @staticmethod
     def parse_refdata(refdata):
         from meta.scripts.RefDataParser import RefDataParser
