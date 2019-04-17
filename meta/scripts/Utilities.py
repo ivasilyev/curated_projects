@@ -37,6 +37,12 @@ class Utilities:
         return output
 
     @staticmethod
+    def merge_pd_series_list(lst: list):
+        import pandas as pd
+        out = pd.concat(lst, axis=1, sort=False).transpose()
+        return out
+
+    @staticmethod
     def multi_core_queue(func, queue):
         import multiprocessing
         pool = multiprocessing.Pool()
@@ -115,3 +121,12 @@ class Utilities:
     @staticmethod
     def flatten_2d_array(array: list):
         return [j for i in array for j in i]
+
+    @staticmethod
+    def safe_findall(pattern, string, idx: int = 0):
+        import re
+        try:
+            return re.findall(pattern, string)[idx]
+        except IndexError:
+            print("Warning! Can't find the regex pattern '{}' within the string: '{}'".format(pattern, string))
+            return ""
