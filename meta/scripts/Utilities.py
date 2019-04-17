@@ -37,10 +37,11 @@ class Utilities:
         return output
 
     @staticmethod
-    def merge_pd_series_list(lst: list):
+    def pd_series_list2df(series: list, index_col_name: str):
         import pandas as pd
-        out = pd.concat(lst, axis=1, sort=False).transpose()
-        return out
+        out = pd.concat(series, axis=1, sort=False).transpose()
+        out.index.names = [index_col_name]
+        return out.sort_index()
 
     @staticmethod
     def multi_core_queue(func, queue):
