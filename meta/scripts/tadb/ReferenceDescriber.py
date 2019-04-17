@@ -28,9 +28,12 @@ class Annotator:
     def __init__(self):
         self._describer = ReferenceDescriber()
         self._annotation_file = self._describer.get_refdata_dict().get("sequence_1").annotation_file
+        self._raw_nfasta_df = None
+        self._processed_nfasta_df = None
         self.nfasta_df = None
         self.pfasta_df = None
-    def _mp_parse_nfasta_header(self, header):
+    @staticmethod
+    def _mp_parse_nfasta_header(header):
         output_dict = {"former_id": header}
         for tag in re.findall("\[(.+)\]", header):
             header = header.replace("[{}]".format(tag), "[{}]".format(tag.strip()))
@@ -53,13 +56,16 @@ class Annotator:
         output_dict["gene_name"] = Utilities.safe_findall("\[(.+)\]$", header_chunks[-1])
         return Utilities.dict2pd_series(output_dict)
     def annotate(self):
-        self.nfasta_df = pd.read_table(self._annotation_file, sep="\t", header=0).set_index("former_id")
-        mp_queue = self.nfasta_df.index.values.tolist()
+        index_col_name = "former_id"
+        self._raw_nfasta_df = pd.read_table(self._annotation_file, sep="\t", header=0).set_index(index_col_name)
+        mp_queue = self._raw_nfasta_df.index.values.tolist()
         mp_result = Utilities.multi_core_queue(self._mp_parse_nfasta_header, mp_queue)
-        mp_df = Utilities.merge_pd_series_list(mp_result).set_index("former_id").sort_index()
+        self._processed_nfasta_df = Utilities.merge_pd_series_list(mp_result).set_index(index_col_name).sort_index()
         shutil.copy2(self._annotation_file, "{}.bak".format(self._annotation_file))
-        self.nfasta_df = pd.concat([self.nfasta_df, mp_df], axis=1, sort=False)
-
+        self.nfasta_df = pd.concat([self._raw_nfasta_df, self._processed_nfasta_df], axis=1, sort=False)
+        self.nfasta_df.index.names = [index_col_name]
+        self.nfasta_df = self.nfasta_df.reset_index().set_index(["reference_id"]).sort_index().reset_index()
+        self.nfasta_df.to_csv(self._annotation_file, sep='\t', index=False, header=True)
 
 if __name__ == '__main__':
     # TODO if db becomes rapidly updating: auto crawl download page: http://202.120.12.135/TADB2/download.html
@@ -96,6 +102,7 @@ if __name__ == '__main__':
     describer.get_index_guide("/data/reference/TADB/tadb_v2.0.fasta")
     annotator = Annotator()
     annotator.annotate()
+    annotator.nfasta_df
 
 """
 # Reference indexing (from worker node):
