@@ -34,7 +34,7 @@ class SequenceRetriever:
         self.describer.update_alias()
         self.reference_dir = os.path.join("/data/reference", self.describer.NAME, self.describer.ALIAS)
         self.nfasta = os.path.join(self.reference_dir, "{}.fasta".format(self.describer.ALIAS))
-        self.index_dir, self.annotation_file, self.nfasta_df = (None, ) * 3
+        self.index_dir, self.annotation_file, self._raw_nfasta_df, self._processed_nfasta_df, self.nfasta_df = (None, ) * 5
     def _download_and_unpack(self, url):
         # CARD provides data in "*.tar.bz2" archives
         url = url.strip()
@@ -71,13 +71,12 @@ class SequenceRetriever:
     def set_refdata(self, refdata_file: str):
         self.describer.REFDATA = refdata_file
     def annotate(self):
-        _INDEX_COL_NAME = "former_id"
         self.annotation_file = self.describer.get_refdata_dict().get("sequence_1").annotation_file
-        _raw_nfasta_df = pd.read_table(self.annotation_file, sep='\t', header=0)
+        self._raw_nfasta_df = pd.read_table(self.annotation_file, sep='\t', header=0)
         mp_result = Utilities.multi_core_queue(self._mp_parse_nfasta_header,
-                                               _raw_nfasta_df[_INDEX_COL_NAME].values.tolist())
-        _processed_nfasta_df = Utilities.merge_pd_series_list(mp_result).sort_values(_INDEX_COL_NAME)
-        self.nfasta_df = Utilities.left_merge(_raw_nfasta_df, _processed_nfasta_df, _INDEX_COL_NAME)
+                                               self._raw_nfasta_df["former_id"].values.tolist())
+        self._processed_nfasta_df = Utilities.merge_pd_series_list(mp_result).sort_values("former_id")
+        self.nfasta_df = Utilities.left_merge(self._raw_nfasta_df, self._processed_nfasta_df, "former_id")
         # Join 'aro_index.csv'
         aro_index_df = pd.read_table(os.path.join(self.reference_dir, "data", "aro_index.csv"), sep='\t', header=0)
         aro_index_df["aro_id"] = aro_index_df["ARO Accession"].str.extract("ARO:(\d+)")
@@ -92,6 +91,7 @@ class SequenceRetriever:
         aro_df = pd.read_table(os.path.join(self.reference_dir, "ontology", "aro.csv"), sep='\t', header=0)
         aro_df.rename(columns={"Accession": "ARO Accession", "Name": "ARO Name"}, inplace=True)
         self.nfasta_df = Utilities.left_merge(self.nfasta_df, aro_df, "ARO Accession")
+        self.nfasta_df = Utilities.combine_duplicate_rows(self.nfasta_df, "reference_id")
     def export_annotation(self):
         import shutil
         shutil.copy2(self.annotation_file, "{}.bak".format(self.annotation_file))
@@ -102,6 +102,19 @@ if __name__ == '__main__':
     # Paste updated version here
     retriever = SequenceRetriever("3.0.1")
     retriever.retrieve()
+    """
+    # Reference indexing (from worker node):
+    
+    rm -rf /data/reference/CARD/card_v3.0.1/index
+    export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \
+    docker pull $IMG && \
+    docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG \
+    python3 /home/docker/scripts/cook_the_reference.py \
+    -i /data/reference/CARD/card_v3.0.1/card_v3.0.1.fasta \
+    -o /data/reference/CARD/card_v3.0.1/index
+    
+    # Wait until REFDATA file creates and complete the describer class template
+    """
     retriever.set_refdata("/data/reference/CARD/card_v3.0.1/index/card_v3.0.1_refdata.json")
     retriever.annotate()
     retriever.export_annotation()
