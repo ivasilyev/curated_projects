@@ -42,9 +42,11 @@ class ReferenceDescriber(ReferenceDescriberTemplate):
     def get_index_guide(raw_nfasta_file):
         import os
         from meta.scripts.LaunchGuideLiner import LaunchGuideLiner
+        index_directory = os.path.join(os.path.dirname(raw_nfasta_file), "index")
         LaunchGuideLiner.get_index_guide(
-            index_directory=os.path.join(os.path.dirname(raw_nfasta_file), "index"),
+            index_directory=index_directory,
             raw_nfasta_file=raw_nfasta_file)
+        return index_directory
 
     @staticmethod
     def find_refdata(index_dir):
