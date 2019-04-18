@@ -68,7 +68,7 @@ class RefDataParser:
                     print("Warning! Missing value for the key: '{}'".format(k_r))
             for k2 in d[k1]:
                 f = d[k1][k2]
-                if k2 not in ["reference_nfasta", "ebwt_mask", "bt2_mask"] and not os.path.isfile(f):
+                if k2 not in ["alias", "reference_nfasta", "ebwt_mask", "bt2_mask"] and not os.path.isfile(f):
                     print("Warning! Not found file: '{}', keys: '{}', '{}'".format(f, k1, k2))
 
     def get_parsed_list(self):

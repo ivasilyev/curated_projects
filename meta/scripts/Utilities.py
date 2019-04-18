@@ -29,28 +29,6 @@ class Utilities:
         return output_list
 
     @staticmethod
-    def dict2pd_series(dictionary):
-        import pandas as pd
-        output = pd.Series()
-        for key in dictionary:
-            output.at[key] = dictionary[key]
-        return output
-
-    @staticmethod
-    def merge_pd_series_list(series: list):
-        import pandas as pd
-        return pd.concat(series, axis=1, sort=False).transpose()
-
-    @staticmethod
-    def left_merge(df0, df1, merging_col_name: str):
-        import pandas as pd
-        assert isinstance(df0, pd.DataFrame) and isinstance(df1, pd.DataFrame)
-        df0.rename(columns={i: i.strip() for i in list(df0)}, inplace=True)
-        return df0.merge(df1.loc[:, [merging_col_name] + [i.strip() for i in list(df1) if
-                                                          len(i.strip()) > 0 and i.strip() not in list(df0)]],
-                         on=merging_col_name, how="left")
-
-    @staticmethod
     def multi_core_queue(func, queue):
         import multiprocessing
         pool = multiprocessing.Pool()
@@ -138,3 +116,43 @@ class Utilities:
         except IndexError:
             print("Warning! Can't find the regex pattern '{}' within the string: '{}'".format(pattern, string))
             return ""
+
+    @staticmethod
+    def dict2pd_series(dictionary):
+        import pandas as pd
+        output = pd.Series()
+        for key in dictionary:
+            output.at[key] = dictionary[key]
+        return output
+
+    @staticmethod
+    def merge_pd_series_list(series: list):
+        import pandas as pd
+        return pd.concat(series, axis=1, sort=False).transpose()
+
+    @staticmethod
+    def left_merge(df0, df1, merging_col_name: str):
+        import pandas as pd
+        assert isinstance(df0, pd.DataFrame) and isinstance(df1, pd.DataFrame)
+        df0.rename(columns={i: i.strip() for i in list(df0)}, inplace=True)
+        return df0.merge(df1.loc[:, [merging_col_name] + [i.strip() for i in list(df1) if
+                                                          len(i.strip()) > 0 and i.strip() not in list(df0)]],
+                         on=merging_col_name, how="left")
+
+    @staticmethod
+    def combine_duplicate_rows(df, index_col_name):
+        import pandas as pd
+        for dupe_id in df[df[index_col_name].duplicated()][index_col_name].values.tolist():
+            subdf = df.loc[df[index_col_name] == dupe_id, :].copy()
+            df = df.loc[df[index_col_name] != dupe_id, :]
+            accumulator = pd.Series()
+            for idx in range(0, len(subdf.index.values.tolist())):
+                row = subdf.iloc[idx].fillna("")
+                if len(accumulator) == 0:
+                    accumulator = row
+                else:
+                    accumulator = accumulator.combine(row, lambda x1, x2: "{};{}".format(x1, x2) if str(x1) != str(
+                        x2) else x1)
+            df = pd.concat([df, pd.DataFrame(accumulator).transpose()], axis=0, ignore_index=True)
+        df.sort_values(index_col_name, inplace=True)
+        return df
