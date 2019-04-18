@@ -35,7 +35,7 @@ class ReferenceDescriber(ReferenceDescriberTemplate):
         import os
         from meta.scripts.LaunchGuideLiner import LaunchGuideLiner
         LaunchGuideLiner.get_index_guide(
-            index_directory=os.path.join(os.path.dirname(raw_nfasta_file), "index", self.alias),
+            index_directory=os.path.join(os.path.dirname(raw_nfasta_file), "index"),
             raw_nfasta_file=raw_nfasta_file)
 
     def get_refdata_dict(self):
