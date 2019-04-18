@@ -20,9 +20,9 @@ class ReferenceDescriberTemplate(ABC):
 
     def update_alias(self):
         self.ALIAS = "{}_v{}".format(self.NAME.lower(), self.VERSION.lower())
-        return self.ALIAS
 
     def export(self):
+        self.update_alias()
         fields = """
     NAME = ""
     VERSION = ""
@@ -31,7 +31,7 @@ class ReferenceDescriberTemplate(ABC):
     DOCUMENTATION = ""
     WEBSITE = ""
     REFDATA = ""
-""".replace('""', '"{}"').format(self.NAME, self.VERSION, self.update_alias(), self.DESCRIPTION, self.DOCUMENTATION,
+""".replace('""', '"{}"').format(self.NAME, self.VERSION, self.ALIAS, self.DESCRIPTION, self.DOCUMENTATION,
                                  self.WEBSITE, self.REFDATA)
         print("""Please update the following script lines: 
 
