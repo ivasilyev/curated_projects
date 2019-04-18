@@ -1,86 +1,107 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os
-import subprocess
-import pandas as pd
-
 """
 export IMG=ivasilyev/curated_projects:latest && \
 docker pull ${IMG} && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it ${IMG} python3
-
 """
 
+import os
+import subprocess
+import pandas as pd
+from meta.templates.ReferenceDescriberTemplate import ReferenceDescriberTemplate
+from meta.scripts.Utilities import Utilities
 
-class ReferenceDescriber:
-    name = "CARD"
-    description = "The Comprehensive Antibiotic Resistance Database"
-    documentation = "https://card.mcmaster.ca/"
-    # Change the following lines after reference update
-    alias = "card_v2.0.3"
-    refdata = "/data/reference/CARD/card_v2.0.3/index/card_v2.0.3_refdata.json"
-    def export(self):
-        print("""
-Database alias: {a}
-REFDATA linker: {b}
-              """.format(a=self.alias, b=self.refdata))
-    def parse_refdata(self):
-        from meta.scripts.RefDataParser import RefDataParser
-        return RefDataParser(self.refdata).get_parsed_list()
+
+class ReferenceDescriber(ReferenceDescriberTemplate):
+    NAME = "CARD"
+    VERSION = "2.0.3"
+    ALIAS = "card_v2.0.3"
+    DESCRIPTION = "The Comprehensive Antibiotic Resistance Database"
+    DOCUMENTATION = "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3697360/"
+    WEBSITE = "https://card.mcmaster.ca/"
+    REFDATA = "/data/reference/CARD/card_v2.0.3/index/card_v2.0.3_refdata.json"
 
 
 class SequenceRetriever:
-    def __init__(self):
-        describer = ReferenceDescriber()
-        self.alias = "card_v2.0.3"
-        self.reference_dir = "/data/reference/{a}/{b}/".format(a=describer.name, b=self.alias)
-        os.makedirs(self.reference_dir, exist_ok=True)
-        self._dl_dict = {"Ontology Files": "https://card.mcmaster.ca/latest/ontology",
-                         "Data": "https://card.mcmaster.ca/latest/data",
-                         "Prevalence, Resistomes, & Variants data": "https://card.mcmaster.ca/latest/variants"}
-        for msg in self._dl_dict:
-            print("Download CARD {}".format(msg))
-            self._download_and_unpack(self._dl_dict[msg])
-        self.raw_nfasta = "{}data/nucleotide_fasta_protein_homolog_model.fasta".format(self.reference_dir)
-        self.processed_nfasta = "{a}{b}.fasta".format(a=self.reference_dir, b=self.alias)
-        print(subprocess.getoutput("ln -s {a} {b}".format(a=self.raw_nfasta, b=self.processed_nfasta)))
-        self.index_dir = "{}index/".format(self.reference_dir)
-        self._get_index_guide()
-        print("Please update the following lines in describer:")
-        describer.alias = self.alias
-        describer.refdata = "{a}{b}_refdata.json".format(a=self.index_dir, b=self.alias)
-        self.annotation = "{a}{b}_annotation.tsv".format(a=self.index_dir, b=self.alias)
-        describer.export()
+    _LINKS_DICT = {"Ontology Files": "https://card.mcmaster.ca/latest/ontology",
+                   "Data": "https://card.mcmaster.ca/latest/data",
+                   "Prevalence, Resistomes, & Variants data": "https://card.mcmaster.ca/latest/variants"}
+    def __init__(self, version: str):
+        self.describer = ReferenceDescriber()
+        self.describer.VERSION = version
+        self.describer.update_alias()
+        self.reference_dir = os.path.join("/data/reference", self.describer.NAME, self.describer.ALIAS)
+        self.nfasta = os.path.join(self.reference_dir, "{}.fasta".format(self.describer.ALIAS))
+        self.index_dir, self.annotation_file, self.nfasta_df = (None, ) * 3
     def _download_and_unpack(self, url):
+        # CARD provides data in "*.tar.bz2" archives
         url = url.strip()
-        out_dir = url.split("/")[-1]
+        out_dir = url.strip("/").split("/")[-1].strip()
         if out_dir.count(".") > 1:
             out_dir = ".".join(out_dir.split(".")[:-1])
-        out_dir = self.reference_dir + out_dir + "/"
+        out_dir = os.path.normpath(os.path.join(self.reference_dir, out_dir))
         os.makedirs(out_dir, exist_ok=True)
-        cmd = "curl -fsSL {a} | tar jxf - -C {b}".format(a=url, b=out_dir)
+        cmd = "curl -fsSL {a} | tar jxf - -C {b}/".format(a=url, b=out_dir)
         print(subprocess.getoutput(cmd))
-    def _get_index_guide(self):
-        from meta.scripts.LaunchGuideLiner import LaunchGuideLiner
-        LaunchGuideLiner.get_index_guide(index_directory=self.index_dir, raw_nfasta_file=self.processed_nfasta)
+    def retrieve(self):
+        if os.path.exists(self.reference_dir):
+            print("Warning! The reference path exists: '{}'".format(self.reference_dir))
+        os.makedirs(self.reference_dir, exist_ok=True)
+        for msg in self._LINKS_DICT:
+            print("Download CARD {}".format(msg))
+            self._download_and_unpack(self._LINKS_DICT[msg])
+        raw_nfasta = os.path.join(self.reference_dir, "data", "nucleotide_fasta_protein_homolog_model.fasta")
+        if not os.path.isfile(raw_nfasta):
+            raise ValueError("Not found the raw FASTA file: '{}'".format(raw_nfasta))
+        print(subprocess.getoutput("ln -s {a} {b}".format(a=raw_nfasta, b=self.nfasta)))
+        self.index_dir = self.describer.get_index_guide(self.nfasta)
+    @staticmethod
+    def _mp_parse_nfasta_header(header):
+        output_dict = {"former_id": header}
+        output_dict["genbank_id"] = Utilities.safe_findall("^gb\|([^|]+)", header)
+        output_dict["is_antisense_strand"] = header.split("|")[2].startswith("-")
+        output_dict["locus"] = Utilities.safe_findall("\|(\d+\-\d+)", header)
+        output_dict["aro_id"] = Utilities.safe_findall("\|ARO:(\d+)", header)
+        gene_chunk = header.split("|")[-1]
+        output_dict["host"] = Utilities.safe_findall("\[(.+)\]", gene_chunk)
+        output_dict["gene"] = gene_chunk.replace("[{}]".format(output_dict["host"]), "").strip()
+        return Utilities.dict2pd_series(output_dict)
+    def set_refdata(self, refdata_file: str):
+        self.describer.REFDATA = refdata_file
     def annotate(self):
-        annotation_df = pd.read_table(self.annotation, sep='\t', header=0)
-        annotation_df["aro"] = annotation_df["former_id"].str.extract("\|ARO:([0-9]+)\|")
-        annotation_df["gb"] = annotation_df["former_id"].str.extract("^gb\|([^|]+)\|")
-        # reference_annotation_aro_categories_df = pd.read_table("/data/reference/CARD/card_v2.0.3/data/aro_categories.csv", sep='\t', header=0)
-        # reference_annotation_aro_categories_df["aro"] = reference_annotation_aro_categories_df["ARO Accession"].str.extract("ARO:([0-9]+)")
-        # annotation_df = annotation_df.merge(reference_annotation_aro_categories_df, how="left", on="aro")
-        # Empty merge result
-        reference_annotation_index_df = pd.read_table("{}data/aro_index.csv".format(self.reference_dir), sep='\t', header=0)
-        reference_annotation_index_df["aro"] = reference_annotation_index_df["ARO Accession"].str.extract("ARO:([0-9]+)")
-        annotation_df = annotation_df.merge(reference_annotation_index_df, how="left", on="aro")
-        #
-        reference_annotation_categories_index_df = pd.read_table("{}data/aro_categories_index.csv".format(self.reference_dir), sep='\t', header=0)
-        annotation_df = annotation_df.merge(reference_annotation_categories_index_df.loc[:, ["Protein Accession"] + [i for i in list(reference_annotation_categories_index_df) if len(i) > 0 and i not in list(annotation_df)]], how="left", on="Protein Accession")
-        annotation_df.to_csv(self.annotation, sep='\t', header=True, index=False)
+        _INDEX_COL_NAME = "former_id"
+        self.annotation_file = self.describer.get_refdata_dict().get("sequence_1").annotation_file
+        _raw_nfasta_df = pd.read_table(self.annotation_file, sep='\t', header=0)
+        mp_result = Utilities.multi_core_queue(self._mp_parse_nfasta_header,
+                                               _raw_nfasta_df[_INDEX_COL_NAME].values.tolist())
+        _processed_nfasta_df = Utilities.merge_pd_series_list(mp_result).sort_values(_INDEX_COL_NAME)
+        self.nfasta_df = Utilities.left_merge(_raw_nfasta_df, _processed_nfasta_df, _INDEX_COL_NAME)
+        # Join 'aro_index.csv'
+        aro_index_df = pd.read_table(os.path.join(self.reference_dir, "data", "aro_index.csv"), sep='\t', header=0)
+        aro_index_df["aro_id"] = aro_index_df["ARO Accession"].str.extract("ARO:(\d+)")
+        # 'aro_index.csv' has more entries than 'nucleotide_fasta_protein_homolog_model.fasta' provides
+        self.nfasta_df = Utilities.left_merge(self.nfasta_df, aro_index_df, "aro_id")
+        # Join 'aro_categories_index.csv'
+        aro_categories_index_df = pd.read_table(os.path.join(self.reference_dir, "data", "aro_categories_index.csv"),
+                                                sep='\t', header=0)
+        self.nfasta_df = Utilities.left_merge(self.nfasta_df, aro_categories_index_df, "Protein Accession")
+        # Joining 'aro_categories.csv' is useless: 'ARO Category' is filled by NaN
+        # Join 'aro.csv'
+        aro_df = pd.read_table(os.path.join(self.reference_dir, "ontology", "aro.csv"), sep='\t', header=0)
+        aro_df.rename(columns={"Accession": "ARO Accession", "Name": "ARO Name"}, inplace=True)
+        self.nfasta_df = Utilities.left_merge(self.nfasta_df, aro_df, "ARO Accession")
+    def export_annotation(self):
+        import shutil
+        shutil.copy2(self.annotation_file, "{}.bak".format(self.annotation_file))
+        self.nfasta_df.to_csv(self.annotation_file, sep="\t", header=True, index=False)
 
 
 if __name__ == '__main__':
-    retriever = SequenceRetriever()
+    # Paste updated version here
+    retriever = SequenceRetriever("3.0.1")
+    retriever.retrieve()
+    retriever.set_refdata("/data/reference/CARD/card_v3.0.1/index/card_v3.0.1_refdata.json")
     retriever.annotate()
+    retriever.export_annotation()
