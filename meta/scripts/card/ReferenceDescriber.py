@@ -16,12 +16,12 @@ from meta.scripts.Utilities import Utilities
 
 class ReferenceDescriber(ReferenceDescriberTemplate):
     NAME = "CARD"
-    VERSION = "2.0.3"
-    ALIAS = "card_v2.0.3"
+    VERSION = "3.0.1"
+    ALIAS = "card_v3.0.1"
     DESCRIPTION = "The Comprehensive Antibiotic Resistance Database"
     DOCUMENTATION = "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3697360/"
     WEBSITE = "https://card.mcmaster.ca/"
-    REFDATA = "/data/reference/CARD/card_v2.0.3/index/card_v2.0.3_refdata.json"
+    REFDATA = "/data/reference/CARD/card_v3.0.1/index/card_v3.0.1_refdata.json"
 
 
 class SequenceRetriever:
@@ -116,5 +116,15 @@ if __name__ == '__main__':
     # Wait until REFDATA file creates and complete the describer class template
     """
     retriever.set_refdata("/data/reference/CARD/card_v3.0.1/index/card_v3.0.1_refdata.json")
+    """
+    class ReferenceDescriber(ReferenceDescriberTemplate):
+        NAME = "CARD"
+        VERSION = "3.0.1"
+        ALIAS = "card_v3.0.1"
+        DESCRIPTION = "The Comprehensive Antibiotic Resistance Database"
+        DOCUMENTATION = "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3697360/"
+        WEBSITE = "https://card.mcmaster.ca/"
+        REFDATA = "/data/reference/CARD/card_v3.0.1/index/card_v3.0.1_refdata.json"
+    """
     retriever.annotate()
     retriever.export_annotation()

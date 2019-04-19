@@ -25,6 +25,7 @@ class ReferenceDescriberTemplate(ABC):
     def export(self):
         self.update_alias()
         fields = """
+class ReferenceDescriber(ReferenceDescriberTemplate): 
     NAME = ""
     VERSION = ""
     ALIAS = ""
@@ -34,10 +35,7 @@ class ReferenceDescriberTemplate(ABC):
     REFDATA = ""
 """.replace('""', '"{}"').format(self.NAME, self.VERSION, self.ALIAS, self.DESCRIPTION, self.DOCUMENTATION,
                                  self.WEBSITE, self.REFDATA)
-        print("""Please update the following script lines: 
-
-class ReferenceDescriber(ReferenceDescriberTemplate): 
-{}""".format(fields))
+        print("""Please update the following script lines: {}""".format(fields))
 
     @staticmethod
     def get_index_guide(raw_nfasta_file):
