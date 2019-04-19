@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
 from abc import ABC, ABCMeta, abstractmethod
 
 
@@ -40,7 +41,6 @@ class ReferenceDescriber(ReferenceDescriberTemplate):
 
     @staticmethod
     def get_index_guide(raw_nfasta_file):
-        import os
         from meta.scripts.LaunchGuideLiner import LaunchGuideLiner
         index_directory = os.path.join(os.path.dirname(raw_nfasta_file), "index")
         LaunchGuideLiner.get_index_guide(
@@ -49,8 +49,7 @@ class ReferenceDescriber(ReferenceDescriberTemplate):
         return index_directory
 
     @staticmethod
-    def find_refdata(index_dir):
-        import os
+    def find_refdata(index_dir: str):
         import subprocess
         cmd = 'ls -d {}/* | grep "_refdata.json"'.format(os.path.normpath(index_dir))
         out = subprocess.getoutput(cmd).strip()
@@ -58,6 +57,12 @@ class ReferenceDescriber(ReferenceDescriberTemplate):
             raise ValueError(
                 "Cannot find single reference data file! \nPlease check out the shell command: `{}`".format(cmd))
         return out
+
+    def set_refdata(self, refdata_file: str):
+        if not os.path.isfile(refdata_file):
+            raise ValueError("The reference data file not found: '{}'".format(refdata_file))
+        self.REFDATA = refdata_file
+        self.export()
 
     def get_refdata_dict(self):
         from meta.scripts.RefDataParser import RefDataParser

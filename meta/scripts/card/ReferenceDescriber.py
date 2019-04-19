@@ -69,7 +69,7 @@ class SequenceRetriever:
         output_dict["gene"] = gene_chunk.replace("[{}]".format(output_dict["host"]), "").strip()
         return Utilities.dict2pd_series(output_dict)
     def set_refdata(self, refdata_file: str):
-        self.describer.REFDATA = refdata_file
+        self.describer.set_refdata(refdata_file)
     def annotate(self):
         self.annotation_file = self.describer.get_refdata_dict().get("sequence_1").annotation_file
         self._raw_nfasta_df = pd.read_table(self.annotation_file, sep='\t', header=0)
