@@ -139,6 +139,9 @@ class Utilities:
 
     @staticmethod
     def combine_duplicate_rows(df, index_col_name):
+        def _combine(*args):
+            strings = [j for j in [i.strip() for i in args] if len(j) > 0]
+            return ";".join(strings)
         import pandas as pd
         for dupe_id in df[df[index_col_name].duplicated()][index_col_name].values.tolist():
             subdf = df.loc[df[index_col_name] == dupe_id, :].copy()
@@ -149,8 +152,7 @@ class Utilities:
                 if len(accumulator) == 0:
                     accumulator = row
                 else:
-                    accumulator = accumulator.combine(row, lambda x1, x2: "{};{}".format(x1, x2) if str(x1) != str(
-                        x2) else x1)
+                    accumulator = accumulator.combine(row, _combine)
             df = pd.concat([df, pd.DataFrame(accumulator).transpose()], axis=0, ignore_index=True)
         df.sort_values(index_col_name, inplace=True)
         return df

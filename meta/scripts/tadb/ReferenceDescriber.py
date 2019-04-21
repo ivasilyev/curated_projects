@@ -175,13 +175,12 @@ class Annotator:
         self.pfasta_df = Utilities.merge_pd_series_list(processed_pfasta_headers).sort_values("former_id")
         self.pfasta_df.rename(columns={"geninfo_id": "protein_geninfo_id", "refseq_id": "genpept_id",
                                        "description": "protein_description", "host": "protein_host"}, inplace=True)
-        self.merged_df = Utilities.left_merge(self.nfasta_df, self.pfasta_df, "tadb_id", "category",
-                                              "gene_symbol")
+        self.merged_df = Utilities.left_merge(self.nfasta_df, self.pfasta_df, "tadb_id", "category", "gene_symbol")
         self.merged_df = Utilities.combine_duplicate_rows(self.merged_df, "reference_id")
     def export(self):
         import shutil
         shutil.copy2(self.annotation_file, "{}.bak".format(self.annotation_file))
-        self.nfasta_df.to_csv(self.annotation_file, sep='\t', index=False, header=True)
+        self.merged_df.to_csv(self.annotation_file, sep='\t', index=False, header=True)
 
 
 if __name__ == '__main__':
