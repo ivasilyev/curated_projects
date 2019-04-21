@@ -131,13 +131,11 @@ class Utilities:
         return pd.concat(series, axis=1, sort=False).transpose()
 
     @staticmethod
-    def left_merge(df0, df1, merging_col_name: str):
+    def left_merge(df0, df1, *args):
         import pandas as pd
         assert isinstance(df0, pd.DataFrame) and isinstance(df1, pd.DataFrame)
-        df0.rename(columns={i: i.strip() for i in list(df0)}, inplace=True)
-        return df0.merge(df1.loc[:, [merging_col_name] + [i.strip() for i in list(df1) if
-                                                          len(i.strip()) > 0 and i.strip() not in list(df0)]],
-                         on=merging_col_name, how="left")
+        df1_uniq = [i for i in list(df1) if i not in list(df0)]
+        return df0.merge(df1.loc[:, list(args) + df1_uniq], on=args, how="left")
 
     @staticmethod
     def combine_duplicate_rows(df, index_col_name):
