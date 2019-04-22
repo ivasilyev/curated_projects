@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -91,4 +92,3 @@ with open(assembled_genomes_sampledata_file, mode="w", encoding="utf-8") as file
 
 print(trimmed_sampledata_file)  # /data1/bio/projects/auhrbach/klebsiella_infants/trimmed.sampledata
 print(assembled_genomes_sampledata_file)  # /data1/bio/projects/auhrbach/klebsiella_infants/assemblies.sampledata
-

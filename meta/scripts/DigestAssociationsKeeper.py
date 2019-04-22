@@ -41,16 +41,17 @@ class DigestAssociationsKeeper:
                     "sulfonamide": (),
                     "tetracycline": (),
                     "triclosan": ()}
-    RESISTANCE_MECHANISMS = {"efflux": (),
-                             "inactivation": (),
-                             "reduced permeability": (),
-                             "target alteration": (),
-                             "target protection": (),
-                             "target replacement": ()}
+    RESISTANCE_MECHANISMS = {"efflux": ("efflux", "efflux pump"),
+                             "inactivation": ("inactivation", "inhibition", "destruction"),
+                             "reduced permeability": (
+                                 "reduced permeability", "membrane modulation", "viscosity regulator"),
+                             "target alteration": ("target alteration", "target methylation", "target glycosylation"),
+                             "target protection": ("target protection", "target enhancement", "target binding"),
+                             "target replacement": ("target replacement", )}
     @staticmethod
-    def digest_df(df: pd.DataFrame, associations: dict, columns_with_keywords: list):
+    def digest_df(df: pd.DataFrame, associations: dict, *columns_with_keywords):
         df_columns = list(df)
-        columns_with_keywords = [i for i in columns_with_keywords if len(columns_with_keywords) > 0]
+        columns_with_keywords = [i for i in columns_with_keywords if len(i) > 0]
         if len(columns_with_keywords) == 0:
             raise ValueError("No column for keyword search specified")
         try:
@@ -66,7 +67,7 @@ class DigestAssociationsKeeper:
             sub_df = df.loc[df["lookup_column"].apply(lambda x: any(i.lower() in str(x) for i in key_words)) == True,
                             [i for i in df_columns if i not in columns_with_keywords]]
             keywords_series.append(sub_df.sum().rename(main_word))
-        out_df = pd.concat(keywords_series, axis=1)
+        out_df = pd.concat(keywords_series, axis=1, sort=False)
         out_df.index.name = "sample_path"
         out_df = out_df.transpose().fillna(0)
         out_df.index.name = "keyword"
