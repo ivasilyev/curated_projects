@@ -10,12 +10,6 @@ class Utilities:
         return (string + "/", string)[string.endswith("/")]
 
     @staticmethod
-    def get_page(url):
-        import requests
-        header = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.19 (KHTML, like Gecko) Chrome/1.0.154.53 Safari/525.19"
-        return requests.get(url, headers={'User-Agent': header}).content
-
-    @staticmethod
     def remove_empty_values(input_list):
         output_list = []
         if input_list is not None:
@@ -29,19 +23,6 @@ class Utilities:
         return output_list
 
     @staticmethod
-    def multi_core_queue(func, queue):
-        import multiprocessing
-        pool = multiprocessing.Pool()
-        output = pool.map(func, queue)
-        pool.close()
-        pool.join()
-        return output
-
-    @staticmethod
-    def single_core_queue(func, queue):
-        return [func(i) for i in queue]
-
-    @staticmethod
     def filename_only(string):
         return str(".".join(string.rsplit("/", 1)[-1].split(".")[:-1]))
 
@@ -49,12 +30,6 @@ class Utilities:
     def get_script_dir():
         import sys
         return Utilities.ends_with_slash(os.path.dirname(os.path.realpath(sys.argv[0])))
-
-    @staticmethod
-    def load_string(file: str):
-        with open(file=file, mode="r", encoding="utf-8") as f:
-            s = f.read()
-        return s
 
     @staticmethod
     def split_lines(string: str):
@@ -92,11 +67,6 @@ class Utilities:
             raise ValueError("Cannot parse dictionary: keys number is not equal!")
 
     @staticmethod
-    def dump_string(string: str, file: str):
-        with open(file=file, mode="w", encoding="utf-8") as f:
-            f.write(string)
-
-    @staticmethod
     def dump_list(lst: list, file: str):
         Utilities.dump_string(string="\n".join([str(i) for i in lst]) + "\n", file=file)
 
@@ -116,6 +86,47 @@ class Utilities:
         except IndexError:
             print("Warning! Can't find the regex pattern '{}' within the string: '{}'".format(pattern, string))
             return ""
+
+    # File processing methods
+
+    @staticmethod
+    def load_string(file: str):
+        with open(file=file, mode="r", encoding="utf-8") as f:
+            s = f.read()
+        return s
+
+    @staticmethod
+    def dump_string(string: str, file: str):
+        with open(file=file, mode="w", encoding="utf-8") as f:
+            f.write(string)
+
+    @staticmethod
+    def ls(dir_name: str):
+        out = []
+        for root, dirs, files in os.walk(dir_name):
+            for file in files:
+                out.append(os.path.join(root, file))
+        return out
+
+    @staticmethod
+    def cat(*args):
+        """
+        :param args: concatenating files and tailing target file
+        :return: None
+        """
+        if len(args) < 2:
+            raise ValueError("Not enough files: '{}'".format(args))
+        sources = sorted(args[:-1])
+        with open(args[-1], mode="w", encoding="utf-8") as target:
+            for source_file in sources:
+                with open(source_file, mode="r", encoding="utf-8") as source:
+                    for line in source:
+                        target.write(line)
+                    target.write("\n")
+                    source.close()
+            target.close()
+
+    # Pandas methods
 
     @staticmethod
     def dict2pd_series(dictionary):
@@ -140,7 +151,7 @@ class Utilities:
     @staticmethod
     def combine_duplicate_rows(df, index_col_name):
         def _combine(*args):
-            strings = [j for j in [i.strip() for i in args] if len(j) > 0]
+            strings = set([j for j in [str(i).strip() for i in args] if len(j) > 0])
             return ";".join(strings)
         import pandas as pd
         for dupe_id in df[df[index_col_name].duplicated()][index_col_name].values.tolist():
@@ -156,3 +167,57 @@ class Utilities:
             df = pd.concat([df, pd.DataFrame(accumulator).transpose()], axis=0, ignore_index=True)
         df.sort_values(index_col_name, inplace=True)
         return df
+
+    # Queue processing methods
+
+    @staticmethod
+    def multi_core_queue(func, queue):
+        import multiprocessing
+        pool = multiprocessing.Pool()
+        output = pool.map(func, queue)
+        pool.close()
+        pool.join()
+        return output
+
+    @staticmethod
+    def single_core_queue(func, queue):
+        return [func(i) for i in queue]
+
+    # Web methods
+
+    @staticmethod
+    def get_page(url):
+        import requests
+        header = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.19 (KHTML, like Gecko) Chrome/1.0.154.53 Safari/525.19"
+        return requests.get(url, headers={'User-Agent': header}).content
+
+    @staticmethod
+    def scrap_links_from_web_page(url: str) -> list:
+        import bs4
+        import lxml
+        soup = bs4.BeautifulSoup(Utilities.get_page(url), "lxml")
+        root = "/".join(url.split("/")[:-1])
+        # Scrap the web page roughly and get all required links
+        raw_links = [a["href"].strip() for a in soup.find_all("a", href=True)]
+        return [i if "://" in i else "{}/{}".format(root, i) for i in raw_links]
+
+    @staticmethod
+    def download_file(url, out_dir):
+        import subprocess
+        from time import sleep
+        _RETRIES_LEFT = 5
+        _SLEEP_SECONDS = 3
+        url = url.strip()
+        out_dir = os.path.normpath(out_dir.strip())
+        assert len(url) > 0 and len(out_dir) > 0
+        os.makedirs(out_dir, exist_ok=True)
+        while _RETRIES_LEFT > 0:
+            out_file = os.path.join(out_dir, url.split("/")[-1])
+            print(subprocess.getoutput("curl -fsSL {} -o {}".format(url, out_file)))
+            sleep(_SLEEP_SECONDS)
+            if os.path.isfile(out_file):
+                print("Download finished: '{}'".format(out_file))
+                return out_file
+            _RETRIES_LEFT -= 1
+            print("Warning! Failed download: '{}'. Retries left: {}".format(url, _RETRIES_LEFT))
+        return ""
