@@ -58,6 +58,10 @@ def join_and_annotate(table_files: list, _value_col_name, annotation_file: str):
     return pd.concat([annotation_df, values_df], axis=1, sort=False)
 
 
+def generate_keywords_dict(keywords: list):
+    return {j: () for j in sorted([i for i in set(keywords) if isinstance(i, str)])}
+
+
 card_coverage_files = [i for i in Utilities.ls(MAPPED_STAT_DIR) if all(j in i for j in ["card", "coverage.tsv"])]
 
 for value_col_name in VALUE_COL_NAMES:
@@ -88,7 +92,7 @@ for value_col_name in VALUE_COL_NAMES:
         export_df.index.name = "sample_name"
         ax = export_df.plot(kind='bar', stacked='True', figsize=(20, 10))
         ax.set_ylabel(value_col_name)
-        legend = ax.legend(loc="right", shadow=True, fontsize="x-small", bbox_to_anchor=(1.04, 0.5))
+        legend = ax.legend(loc="center left", shadow=True, fontsize="x-small", bbox_to_anchor=(1.04, 0.5), borderaxespad=0)
         image_file_name = os.path.join(card_digest_dir, "digest_card_{}_{}.png".format(value_col_name, annotation_col_name))
         ax.set_title(os.path.basename(image_file_name), fontsize="large")
         plt.savefig(image_file_name, dpi=300, bbox_inches="tight")
@@ -106,3 +110,37 @@ python3 /home/docker/scripts/nBee.py \
 -r /data/reference/TADB/tadb_v2.0/index/tadb_v2.0_refdata.json \
 -o /data1/bio/projects/auhrbach/klebsiella_infants/map_data
 """
+
+tadb_coverage_files = [i for i in Utilities.ls(MAPPED_STAT_DIR) if all(j in i for j in ["tadb", "coverage.tsv"])]
+
+for value_col_name in VALUE_COL_NAMES:
+    tadb_annotated_df = join_and_annotate(tadb_coverage_files, value_col_name,
+                                          "/data/reference/TADB/tadb_v2.0/index/tadb_v2.0_annotation.tsv")
+    tadb_raw_dir = os.path.join(RAW_DIR, "tadb")
+    os.makedirs(tadb_raw_dir, exist_ok=True)
+    tadb_annotated_df.reset_index().to_csv(
+        os.path.join(tadb_raw_dir, "tadb_annotated_pivot_by_{}.tsv".format(value_col_name)), sep="\t", index=False,
+        header=True)
+    genera_names_dict = generate_keywords_dict(tadb_annotated_df["host"].str.extract("([A-Z][a-z]+)")[0].values.tolist())
+    for annotation_col_name, keywords_dict in zip(["protein_description", "host"],
+                                                  [keeper.VIRULENCE_FACTORS, genera_names_dict]):
+        association_digest = keeper.digest_df(tadb_annotated_df.loc[:, tadb_coverage_files + [annotation_col_name]],
+                                              keywords_dict, annotation_col_name)
+        tadb_digest_dir = os.path.join(DIGEST_DIR, "tadb", value_col_name, annotation_col_name)
+        os.makedirs(tadb_digest_dir, exist_ok=True)
+        association_digest.reset_index().to_csv(os.path.join(tadb_digest_dir, "digest_tadb_{}_{}.tsv".format(value_col_name, annotation_col_name)), sep="\t", index=False, header=True)
+        association_digest_percentage = association_digest * 100 / association_digest.sum()
+        fig = plt.figure()
+        sns.set(style="whitegrid", font_scale=1)
+        export_df = association_digest.rename(columns={i: Utilities.safe_findall(
+            "/data1/bio/projects/auhrbach/klebsiella_infants/map_data/Statistics/(.+)_tadb_v2.0_coverage.tsv", i) for i in
+                                                       list(association_digest)}).transpose()
+        export_df.index.name = "sample_name"
+        ax = export_df.plot(kind='bar', stacked='True', figsize=(20, 10))
+        ax.set_ylabel(value_col_name)
+        legend = ax.legend(loc="center left", shadow=True, fontsize="x-small", bbox_to_anchor=(1.04, 0.5), borderaxespad=0)
+        image_file_name = os.path.join(tadb_digest_dir, "digest_tadb_{}_{}.png".format(value_col_name, annotation_col_name))
+        ax.set_title(os.path.basename(image_file_name), fontsize="large")
+        plt.savefig(image_file_name, dpi=300, bbox_inches="tight")
+        plt.close()
+        plt.clf()
