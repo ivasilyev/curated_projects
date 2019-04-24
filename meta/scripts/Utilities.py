@@ -137,7 +137,8 @@ class Utilities:
         os.makedirs(os.path.dirname(table_file), exist_ok=True)
         if col_names:
             df.loc[:, col_names].to_csv(table_file, encoding="utf-8", sep="\t", index=False, header=True)
-        df.to_csv(table_file, encoding="utf-8", sep="\t", index=False, header=True)
+        else:
+            df.to_csv(table_file, encoding="utf-8", sep="\t", index=False, header=True)
 
     @staticmethod
     def dict2pd_series(dictionary):
