@@ -97,8 +97,10 @@ class Utilities:
 
     @staticmethod
     def dump_string(string: str, file: str):
+        os.makedirs(os.path.dirname(file), exist_ok=True)
         with open(file=file, mode="w", encoding="utf-8") as f:
             f.write(string)
+            f.close()
 
     @staticmethod
     def scan_whole_dir(dir_name: str):

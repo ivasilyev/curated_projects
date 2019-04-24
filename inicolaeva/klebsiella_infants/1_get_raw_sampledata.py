@@ -32,6 +32,6 @@ raw_sampledata_df["sample_name"] = raw_sampledata_df["R1"].map(
     lambda x: Utilities.safe_findall("(.+)_S[0-9]{2}_R[1|2]_001.fastq.gz", os.path.basename(x)))
 # Export sampledata
 project_describer = ProjectDescriber()
-raw_sampledata_file = os.path.join(project_describer.ROOT_DIR, "sampledata", "raw_reads.sampledata")
+raw_sampledata_file = os.path.join(project_describer.ROOT_DIR, "sample_data", "raw_reads.sampledata")
 Utilities.dump_tsv(df=raw_sampledata_df, table_file=raw_sampledata_file, col_names=["sample_name", "R1", "R2"])
-print(raw_sampledata_file)  # /data1/bio/projects/inicolaeva/klebsiella_infants/sampledata/raw_reads.sampledata
+print(raw_sampledata_file)  # /data1/bio/projects/inicolaeva/klebsiella_infants/sample_data/raw_reads.sampledata
