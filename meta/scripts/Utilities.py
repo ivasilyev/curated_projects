@@ -124,6 +124,22 @@ class Utilities:
     # Pandas methods
 
     @staticmethod
+    def load_tsv(table_file: str, col_names: list = None):
+        import pandas as pd
+        if col_names:
+            return pd.read_table(table_file, encoding="utf-8", sep="\t", header="infer", names=col_names)
+        return pd.read_table(table_file, encoding="utf-8", sep="\t", header=0)
+
+    @staticmethod
+    def dump_tsv(df, table_file: str, col_names: list = None):
+        import pandas as pd
+        assert isinstance(df, pd.DataFrame)
+        os.makedirs(os.path.dirname(table_file), exist_ok=True)
+        if col_names:
+            df.loc[:, col_names].to_csv(table_file, encoding="utf-8", sep="\t", index=False, header=True)
+        df.to_csv(table_file, encoding="utf-8", sep="\t", index=False, header=True)
+
+    @staticmethod
     def dict2pd_series(dictionary):
         import pandas as pd
         output = pd.Series()
