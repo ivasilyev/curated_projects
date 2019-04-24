@@ -101,7 +101,7 @@ class Utilities:
             f.write(string)
 
     @staticmethod
-    def ls(dir_name: str):
+    def scan_whole_dir(dir_name: str):
         out = []
         for root, dirs, files in os.walk(dir_name):
             for file in files:
@@ -109,16 +109,11 @@ class Utilities:
         return out
 
     @staticmethod
-    def cat(*args):
-        """
-        :param args: concatenating files and tailing target file
-        :return: None
-        """
-        if len(args) < 2:
-            raise ValueError("Not enough files: '{}'".format(args))
-        sources = sorted(args[:-1])
-        with open(args[-1], mode="w", encoding="utf-8") as target:
-            for source_file in sources:
+    def concatenate_files(*source_files, target_file):
+        if len(source_files) < 2:
+            raise ValueError("Not enough files (at least 2 needed): '{}'".format(source_files))
+        with open(target_file, mode="w", encoding="utf-8") as target:
+            for source_file in source_files:
                 with open(source_file, mode="r", encoding="utf-8") as source:
                     for line in source:
                         target.write(line)
