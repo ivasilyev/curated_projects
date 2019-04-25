@@ -6,6 +6,12 @@ from meta.scripts.CounterWrapper import CounterWrapper
 
 
 class DigestAssociationsKeeper:
+    """
+    This class is designed for digestion of annotated table.
+    If some table row contain a word from the values list, it will be counted into the group corresponding to the key.
+    Then the group values will be combined.
+    Intersections (e.g. multiple selection of the same row into different groups) are allowed.
+    """
     VIRULENCE_FACTORS = {"adhesion": ("adhesin", "adhesion", "laminin"),
                          "invasion": ("invasion", "invasin"),
                          "iron metabolism": (
@@ -48,6 +54,27 @@ class DigestAssociationsKeeper:
                              "target alteration": ("target alteration", "target methylation", "target glycosylation"),
                              "target protection": ("target protection", "target enhancement", "target binding"),
                              "target replacement": ("target replacement", )}
+
+    @staticmethod
+    def generate_keywords_dict(keywords: list, split_words: bool = False):
+        from meta.scripts.Utilities import Utilities
+        keywords = [i.strip() for i in keywords if isinstance(i, str)]
+        if split_words:
+            keywords = Utilities.flatten_2d_array([i.split(" ") for i in keywords])
+        return {j: () for j in sorted([i for i in set(keywords)])}
+
+    @staticmethod
+    def get_n_majors_from_2d_array(arr: list, n: int = 10):
+        """
+        :param arr: [[key_1, value_1], ..., [last_key, last_value]]
+        :param n: number of major keys to return without the "other" key
+        :return: [<n keys with largest values>, ["other", the sum of all non-included values]]
+        """
+        arr = sorted([[str(i[0]), int(i[1])] for i in arr], key=lambda x: x[1], reverse=True)
+        if n > len(arr):
+            raise ValueError("The size of provided list is too small: {}".format(len(arr)))
+        return arr[:n] + [["others", sum([i[1] for i in arr[n:]])]]
+
     @staticmethod
     def digest_df(df: pd.DataFrame, associations: dict, *columns_with_keywords):
         df_columns = list(df)
