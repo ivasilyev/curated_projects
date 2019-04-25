@@ -16,6 +16,7 @@ python3
 """
 
 import os
+import re
 import subprocess
 import pandas as pd
 from meta.scripts.Utilities import Utilities
@@ -56,7 +57,8 @@ def run_spades(input_list: list):
 
 
 projectDescriber = ProjectDescriber()
-rawSampledataDF = Utilities.load_tsv("/data1/bio/projects/inicolaeva/klebsiella_infants/sample_data/raw_reads.sampledata")
+rawSampledataDF = Utilities.load_tsv(
+    "/data1/bio/projects/inicolaeva/klebsiella_infants/sample_data/raw_reads.sampledata")
 # Prepare path
 rawReadsDir = os.path.join(projectDescriber.RAW_DATA_DIR, "reads")
 cutadaptDir = os.path.join(rawReadsDir, "cutadapt")
@@ -64,10 +66,17 @@ os.makedirs(cutadaptDir, exist_ok=True)
 # Trim reads
 cutadaptResults = Utilities.multi_core_queue(run_cutadapt, queue=rawSampledataDF.values.tolist())
 cutadaptResultsDF = pd.DataFrame.from_dict(cutadaptResults).sort_values("sample_name")
-Utilities.dump_tsv(cutadaptResultsDF, table_file=projectDescriber.SAMPLE_DATA_FILE)
+Utilities.dump_tsv(cutadaptResultsDF, table_file=projectDescriber.SAMPLE_DATA_FILE,
+                   col_names=["sample_name", "trimmed_file_1", "trimmed_file_2"])
 # Assemble reads
 spadesDir = os.path.join(rawReadsDir, "spades")
 spadesResults = Utilities.single_core_queue(run_spades, cutadaptResultsDF.values.tolist())
+spadesResultsDF = pd.DataFrame.from_dict(spadesResults).sort_values("sample_name")
 spadesResultsSampleData = os.path.join(os.path.dirname(projectDescriber.SAMPLE_DATA_FILE), "assemblies.sampledata")
-Utilities.dump_tsv(spadesResults, table_file=spadesResultsSampleData)
-print(projectDescriber.SAMPLE_DATA_FILE, "\n", spadesResultsSampleData)
+Utilities.dump_tsv(spadesResultsDF, table_file=spadesResultsSampleData, col_names=["sample_name", "assembly"])
+print("\n".join([projectDescriber.SAMPLE_DATA_FILE, spadesResultsSampleData]))
+
+"""
+/data1/bio/projects/inicolaeva/klebsiella_infants/sample_data/trimmed.sampledata
+/data1/bio/projects/inicolaeva/klebsiella_infants/sample_data/assemblies.sampledata
+"""
