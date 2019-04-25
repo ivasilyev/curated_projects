@@ -16,7 +16,6 @@ python3
 """
 
 import os
-import re
 import subprocess
 import pandas as pd
 from meta.scripts.Utilities import Utilities
