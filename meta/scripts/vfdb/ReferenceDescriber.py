@@ -10,46 +10,40 @@ docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it 
 
 import os
 import re
-import subprocess
 import pandas as pd
-import numpy as np
+import xlrd
+from meta.scripts.Utilities import Utilities
 from meta.templates.ReferenceDescriberTemplate import ReferenceDescriberTemplate
 
 
 class ReferenceDescriber(ReferenceDescriberTemplate):
-    alias = "vfdb_v2018.11.09"
-    name = "VFDB"
-    description = "A reference database for bacterial virulence factors"
-    documentation = "http://www.mgc.ac.cn/VFs/main.htm"
-    refdata = "/data/reference/VFDB/vfdb_v2018.11.09/index/vfdb_v2018.11.09_refdata.json"
+    NAME = "VFDB"
+    VERSION = "2018.11.09"
+    ALIAS = "vfdb_v2018.11.09"
+    DESCRIPTION = "A reference database for bacterial virulence factors"
+    DOCUMENTATION = "https://www.ncbi.nlm.nih.gov/pubmed/30395255"
+    WEBSITE = "http://www.mgc.ac.cn/VFs/main.htm"
+    REFDATA = "/data/reference/VFDB/vfdb_v2018.11.09/index/vfdb_v2018.11.09_refdata.json"
 
 
 class SequenceRetriever:
-    # In the case of connection failure download data via chinese proxy from http://www.mgc.ac.cn/VFs/download.htm
-    urls_dict = {"VFs description file": "http://www.mgc.ac.cn/VFs/Down/VFs.xls.gz",
-                 "Intra-genera VFs comparison tables": "http://www.mgc.ac.cn/VFs/Down/Comparative_tables_from_VFDB.tar.gz",
-                 "DNA sequence of core dataset": "http://www.mgc.ac.cn/VFs/Down/VFDB_setA_nt.fas.gz",
-                 "Protein sequences of core dataset": "http://www.mgc.ac.cn/VFs/Down/VFDB_setA_pro.fas.gz",
-                 "DNA sequences of full dataset": "http://www.mgc.ac.cn/VFs/Down/VFDB_setB_nt.fas.gz",
-                 "Protein sequences of full dataset": "http://www.mgc.ac.cn/VFs/Down/VFDB_setB_pro.fas.gz"}
+    _DL_PAGE_URL = "http://www.mgc.ac.cn/VFs/download.htm"
     def __init__(self):
-        dt = ReferenceDescriberTemplate()
-        dt.name = "VFDB"
-        dt.description = "A reference database for bacterial virulence factors"
-        dt.documentation = "http://www.mgc.ac.cn/VFs/main.htm"
-        dt.alias = "{a}_v{b}".format(a=dt.name.lower(), b=self._get_last_friday())
-        self.reference_dir = "/data/reference/{a}/{b}/".format(a=dt.name, b=dt.alias).replace(" ", "_")
-        dt.reference_dir = self.reference_dir
-        subprocess.getoutput("rm -rf {}".format(self.reference_dir))
-        os.makedirs(dt.reference_dir, exist_ok=True)
-        self.raw_nfasta = "{a}{b}.fasta".format(a=dt.reference_dir, b=dt.alias)
-        self.index_dir = "{}index/".format(dt.reference_dir)
-        self._download()
-        self._get_index_guide()
-        print("Please replace the following lines in control script:")
-        # refdata = "{a}{b}.json".format(a=self.index_dir, b=self.alias)
-        dt.export()
-        print("Please change the 'refdata' field after indexing is finished")
+        self.describer = ReferenceDescriber()
+        self.describer.VERSION = self._get_last_friday()
+        self.describer.update_alias()
+        self.reference_dir = os.path.join("/data/reference", self.describer.NAME, self.describer.ALIAS)
+        links = [i for i in Utilities.scrap_links_from_web_page(self._DL_PAGE_URL) if i.endswith(".gz")]
+        self._dl_queue = []
+        for dl_link in links:
+            dl_dir = self.reference_dir
+            if "_pro" in dl_link:
+                dl_dir = os.path.join(dl_dir, "protein")
+            elif "_nt" in dl_link:
+                dl_dir = os.path.join(dl_dir, "nucleotide")
+            self._dl_queue.append((dl_link, dl_dir))
+        self.nfasta = os.path.join(self.reference_dir, "{}.fasta".format(self.describer.ALIAS))
+        self.pfasta = os.path.join(self.reference_dir, "{}_protein.fasta".format(self.describer.ALIAS))
     @staticmethod
     def _get_last_friday():
         # VFDB updates at every Friday
@@ -60,69 +54,79 @@ class SequenceRetriever:
         while last_friday.weekday() != calendar.FRIDAY:
             last_friday -= oneday
         return "{:%Y.%m.%d}".format(last_friday)
-    def _download(self):
-        for key in self.urls_dict:
-            print("Now downloading: {}".format(key))
-            url = self.urls_dict[key]
-            file = url.split("/")[-1]
-            cmd = "cd {A} && curl -fsSL {B} -o {C} && gunzip {C}".format(A=self.reference_dir, B=url, C=file)
-            if file.endswith(".tar.gz"):
-                cmd = "cd {A} && curl -fsSL {B} | tar -xz -C {A}".format(A=self.reference_dir, B=url)
-            print(subprocess.getoutput(cmd))
-        print(subprocess.getoutput("ln -s {A} {B}".format(A="{}VFDB_setB_nt.fas".format(self.reference_dir), B=self.raw_nfasta)))
-        print("Finished downloading new raw reference: {}".format(self.raw_nfasta))
-    def _get_index_guide(self):
-        from meta.scripts.LaunchGuideLiner import LaunchGuideLiner
-        LaunchGuideLiner.get_index_guide(index_directory=self.index_dir, raw_nfasta_file=self.raw_nfasta)
+    @staticmethod
+    def _download_handler(input_tuple: tuple):
+        os.makedirs(input_tuple[1], exist_ok=True)
+        out_file = Utilities.download_file(url=input_tuple[0], out_dir=input_tuple[1])
+        Utilities.decompress_file(out_file)
+    def retrieve(self):
+        print(Utilities.single_core_queue(self._download_handler, self._dl_queue))
+    def merge(self):
+        Utilities.concatenate_files(*Utilities.scan_whole_dir(os.path.join(self.reference_dir, "nucleotide")),
+                                    target_file=self.nfasta)
+        Utilities.concatenate_files(*Utilities.scan_whole_dir(os.path.join(self.reference_dir, "protein")),
+                                    target_file=self.pfasta)
+        self.describer.get_index_guide(self.nfasta)
 
 
 class Annotator:
-    def __init__(self, annotation: str):
+    def __init__(self, pfasta: str):
+        self.describer = ReferenceDescriber()
+        self.annotation_file = self.describer.get_refdata_dict().get("sequence_1").annotation_file
+        self._raw_pfasta_file = pfasta
+        self._raw_nfasta_df = pd.DataFrame()
 
-        self.annotation_file = annotation
-        self.annotation_df = pd.read_table(self.annotation_file, sep="\t", header=0).set_index("reference_id").sort_index()
-        self.annotation_df["host_strain"] = self.annotation_df["former_id"].apply(
-            lambda x: re.findall("\[([^\[\]]+)\]$", x.strip())[0].strip())
-        self.annotation_df["host_species"] = self.annotation_df["host_strain"].apply(
-            lambda x: re.findall("([A-Z]{1}[a-z]+ [a-z]+)", x)[0].strip())
-        self.annotation_df["host_genera"] = self.annotation_df["host_strain"].apply(
-            lambda x: re.findall("([A-Z]{1}[a-z]+)", x)[0].strip())
-        self.annotation_df["vfdb_id"] = self.annotation_df["former_id"].apply(
-            lambda x: re.findall("(^VFG[0-9]+)", x)[0].strip())
-        self.annotation_df["genbank_id"] = self.annotation_df["former_id"].apply(self.get_genbank_id)
-        self.annotation_df["gene_name"] = self.annotation_df["former_id"].apply(self.get_gene_name)
-        self.annotation_df["gene_description"] = self.annotation_df["former_id"].apply(self.get_gene_description)
-        self.annotation_df = self.annotation_df.loc[:, [i for i in list(self.annotation_df) if i != "id_bp"] + ["id_bp"]]
-    def update(self):
-        from shutil import copy2
-        copy2(self.annotation_file, "{}.bak".format(self.annotation_file))
-        self.annotation_df.to_csv(self.annotation_file, sep='\t', header=True, index=True)
-        print("Updated annotation: '{}'".format(self.annotation_file))
+        self._processed_nfasta_df, self.nfasta_df, self.pfasta_df, self.merged_df = (pd.DataFrame(),) * 4
     @staticmethod
-    def is_string_valid(s: str):
-        s = s.strip()
-        if len(s) > 0 and s != "-":
-            return s
-    @staticmethod
-    def process_regex(pattern: str, s: str):
-        out = re.findall(pattern, s)
-        if len(out) > 0:
-            out = Annotator.is_string_valid(out[0])
-            if out:
-                return out
-        return np.nan
-    @staticmethod
-    def get_genbank_id(s: str):
-        return Annotator.process_regex("^VFG[0-9]+\(([^\(\)]+)\)", s)
-    @staticmethod
-    def get_gene_name(s: str):
-        return Annotator.process_regex("^VFG[^ ]+ \(([^\(\)]+)\)", s)
-    @staticmethod
-    def get_gene_description(s: str):
-        return Annotator.process_regex("\)([^\[\]\(\)]+)\[", s)
+    def _mp_parse_nfasta_header(header: str):
+        _VFDB_REGEXES = (("vfdb_id", "^VFG(\d+)", "VFG{}"), ("gene_accession_id", "\(([^\(]+)\) ", "({}) "),
+                         ("gene_symbol", "^\(([^\(]+)\) ", "({}) "), ("gene_host", "\[([^\]]+)\]$", "[{}]"),
+                         ("gene_name", " \[([^\]]+)\] $", " [{}] "), ("gene_description", ".*", "{}"))
+        out = {"former_id": header}
+        # Spaces are important here
+        for _tuple in _VFDB_REGEXES:
+            key, regex, replacement = _tuple
+            out[key] = Utilities.safe_findall(regex, header)
+            if len(out.get(key)) > 0:
+                header = header.replace(replacement.format(out.get(key)), "")
+        return {k: out.get(k).strip() for k in out}
+    def _mp_parse_pfasta_header(self, header: str):
+        out = self._mp_parse_nfasta_header(header)
+        out = {k.replace("gene", "protein"): out.get(k) for k in out}
+        out["protein_header"] = out.pop("former_id")
+        return out
+    def annotate(self):
+        self._raw_nfasta_df = Utilities.load_tsv(self.annotation_file)
+        raw_nfasta_headers = self._raw_nfasta_df["former_id"].values.tolist()
+        processed_nfasta_headers = [Utilities.dict2pd_series(i) for i in
+                                    Utilities.multi_core_queue(self._mp_parse_nfasta_header, raw_nfasta_headers)]
+        self._processed_nfasta_df = Utilities.merge_pd_series_list(processed_nfasta_headers).sort_values("former_id")
+        zf_len = len(max(self._processed_nfasta_df["vfdb_id"].values.tolist()))
+        # Join table assembled from pFASTA headers
+        raw_pfasta_headers = []
+        with open(self._raw_pfasta_file, mode="r", encoding="utf-8") as _f:
+            for _line in _f:
+                if _line.startswith(">"):
+                    raw_pfasta_headers.append(re.sub("^>", "", _line).strip())
+            _f.close()
+        raw_pfasta_headers = sorted(set([i for i in raw_pfasta_headers if len(i) > 0]))
+        processed_pfasta_headers = [Utilities.dict2pd_series(i) for i in
+                                    Utilities.multi_core_queue(self._mp_parse_pfasta_header, raw_pfasta_headers)]
+        self._processed_pfasta_df = Utilities.merge_pd_series_list(processed_pfasta_headers).sort_values("protein_header")
+        self._processed_pfasta_df["vfdb_id"] = self._processed_pfasta_df["vfdb_id"].str.zfill(zf_len)
+        # Join provided table
+        vfs_table_file = os.path.join(os.path.dirname(os.path.dirname(self._raw_pfasta_file)), "VFs.xls")
+        vfs_df = pd.read_excel(vfs_table_file, sheet_name="VFs", header=1).fillna("")
+        vfs_df["vfdb_id"] = vfs_df["VFID"].str.extract("VF(\d+)")[0].str.zfill(zf_len)
+        self.merged_df = pd.concat([i.set_index("vfdb_id").sort_index() for i in
+                                    [self._processed_nfasta_df, self._processed_pfasta_df, vfs_df]], axis=1,
+                                   sort=False).sort_index()
+        self.merged_df.index.names = ["vfdb_id"]
+        self.merged_df = self.merged_df.loc[self.merged_df["former_id"].str.len() > 0].reset_index()
+        self.merged_df = Utilities.left_merge(self._raw_nfasta_df, self.merged_df, "former_id")
+        Utilities.dump_tsv(self.merged_df, "/data1/bio/projects/inicolaeva/klebsiella_infants/raw/test_ann.tsv")
+    def export(self):
+        import shutil
+        shutil.copy2(self.annotation_file, "{}.bak".format(self.annotation_file))
+        Utilities.dump_tsv(self.merged_df, table_file=self.annotation_file)
 
-
-if __name__ == '__main__':
-    sequenceRetriever = SequenceRetriever()
-    annotator = Annotator("/data/reference/VFDB/vfdb_v2018.11.09/index/vfdb_v2018.11.09_annotation.tsv")
-    annotator.update()
