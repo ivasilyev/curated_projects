@@ -123,6 +123,31 @@ class Utilities:
                     source.close()
             target.close()
 
+    @staticmethod
+    def decompress_file(file_name: str, remove_file: bool = True):
+        import subprocess
+        _ARCHIVE_EXTENSIONS = ("tar", "gz", "bz2", "zip")
+        cmd = ""
+        if not any(file_name.endswith(".{}".format(i)) for i in _ARCHIVE_EXTENSIONS):
+            print("Nothing to extract: '{}'".format(file_name))
+        if file_name.endswith(".tar.gz"):
+            cmd = "tar -xvzf {i} -C {o}/"
+        elif file_name.endswith(".tar.bz2"):
+            cmd = "tar -xvjf {i} -C {o}/"
+        elif file_name.endswith(".tar"):
+            cmd = "tar -xvf {i} -C {o}/"
+        elif file_name.endswith(".gz"):
+            cmd = "cd {o} && gzip -d {i}"
+        elif file_name.endswith(".zip"):
+            cmd = "unzip {i} -d {o}/"
+        elif file_name.endswith(".rar"):
+            cmd = "unrar e {i} {o}/"
+        print(subprocess.getoutput(cmd.format(i=file_name, o=os.path.normpath(os.path.dirname(file_name)))))
+        print("Extracting completed: '{}'".format(file_name))
+        if os.path.isfile(file_name) and remove_file:
+            print("Removing file: '{}'".format(file_name))
+            os.remove(file_name)
+
     # Pandas methods
 
     @staticmethod
@@ -228,10 +253,10 @@ class Utilities:
         while _RETRIES_LEFT > 0:
             out_file = os.path.join(out_dir, url.split("/")[-1])
             print(subprocess.getoutput("curl -fsSL {} -o {}".format(url, out_file)))
-            sleep(_SLEEP_SECONDS)
             if os.path.isfile(out_file):
                 print("Download finished: '{}'".format(out_file))
                 return out_file
             _RETRIES_LEFT -= 1
+            sleep(_SLEEP_SECONDS)
             print("Warning! Failed download: '{}'. Retries left: {}".format(url, _RETRIES_LEFT))
         return ""
