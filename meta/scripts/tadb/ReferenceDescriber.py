@@ -52,7 +52,7 @@ class SequenceRetriever:
     def merge(self):
         for fasta_type, fasta_file in zip(self._fasta_types, [self.nfasta, self.pfasta]):
             source = os.path.join(self.reference_dir, fasta_type)
-            Utilities.cat(*Utilities.ls(source), fasta_file)
+            Utilities.concatenate_files(*Utilities.scan_whole_dir(source), target_file=fasta_file)
         self.index_dir = self.describer.get_index_guide(self.nfasta)
         print("Merge completed")
 
@@ -62,8 +62,8 @@ class Annotator:
         self.describer = ReferenceDescriber()
         self.annotation_file = self.describer.get_refdata_dict().get("sequence_1").annotation_file
         self._raw_pfasta_file = pfasta
-        self._raw_nfasta_df, \
-            self._processed_nfasta_df, self.nfasta_df, self.pfasta_df, self.merged_df = (pd.DataFrame(),) * 5
+        self._raw_nfasta_df = pd.DataFrame()
+        self._processed_nfasta_df, self.nfasta_df, self.pfasta_df, self.merged_df = (pd.DataFrame(),) * 4
     @staticmethod
     def _mp_parse_nfasta_header(header):
         out = {"former_id": header}
@@ -102,8 +102,8 @@ class Annotator:
             host = Utilities.safe_findall("([A-Z][a-z]+ [a-z]+[\.]{0,1})", tail)
         out["host"] = host
         for key in out:
-            if isinstance(out[key], str):
-                out[key] = out[key].strip()
+            if isinstance(out.get(key), str):
+                out[key] = out.get(key).strip()
         return out
     def annotate(self):
         # Process nucleotide FASTA
