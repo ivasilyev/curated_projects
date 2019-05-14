@@ -3,6 +3,7 @@
 
 import pandas as pd
 from meta.scripts.CounterWrapper import CounterWrapper
+from meta.scripts.Utilities import Utilities
 
 
 class DigestAssociationsKeeper:
@@ -57,11 +58,15 @@ class DigestAssociationsKeeper:
 
     @staticmethod
     def generate_keywords_dict(keywords: list, split_words: bool = False):
-        from meta.scripts.Utilities import Utilities
-        keywords = [i.strip() for i in keywords if isinstance(i, str)]
+        keywords = [j for j in [i.strip() for i in keywords if isinstance(i, str)] if len(j) > 0]
         if split_words:
             keywords = Utilities.flatten_2d_array([i.split(" ") for i in keywords])
-        return {j: () for j in sorted([i for i in set(keywords)])}
+        return {j: () for j in sorted([i.strip() for i in set(keywords)]) if len(j) > 0}
+
+    @staticmethod
+    def generate_genera_dict(keywords: list):
+        return DigestAssociationsKeeper.generate_keywords_dict(
+            [Utilities.safe_findall("([A-Z][a-z]{4,})", i) for i in keywords])
 
     @staticmethod
     def get_n_majors_from_2d_array(arr: list, n: int = 10):
@@ -76,7 +81,7 @@ class DigestAssociationsKeeper:
         return arr[:n] + [["others", sum([i[1] for i in arr[n:]])]]
 
     @staticmethod
-    def digest_df(df: pd.DataFrame, associations: dict, *columns_with_keywords):
+    def digest_df(df: pd.DataFrame, associations: dict, columns_with_keywords: list, include_key: bool = True):
         df_columns = list(df)
         columns_with_keywords = [i for i in columns_with_keywords if len(i) > 0]
         if len(columns_with_keywords) == 0:
@@ -84,13 +89,19 @@ class DigestAssociationsKeeper:
         try:
             df["lookup_column"] = df.loc[:, columns_with_keywords].astype(str).apply(
                 lambda x: " ".join([CounterWrapper.prepare_string(i) for i in x]), axis=1)
-        except KeyError:
-            print(list(df), associations, columns_with_keywords)
+        except KeyError as e:
+            print(e, list(df), associations, columns_with_keywords)
         keywords_series = []
         for main_word in associations:
             key_words = associations.get(main_word)
             if not key_words or len(key_words) == 0:
-                key_words = (main_word, )
+                key_words = ()
+            if include_key:
+                key_words = sorted(set([i.strip() for i in list(key_words) + [main_word, ]]))
+            else:
+                key_words = sorted([j for j in set([i.strip() for i in list(key_words)]) if len(j) > 0])
+            if len(key_words) == 0:
+                raise ValueError("No values to search: '{}: {}'".format(main_word, key_words))
             sub_df = df.loc[df["lookup_column"].apply(lambda x: any(i.lower() in str(x) for i in key_words)) == True,
                             [i for i in df_columns if i not in columns_with_keywords]]
             keywords_series.append(sub_df.sum().rename(main_word))
