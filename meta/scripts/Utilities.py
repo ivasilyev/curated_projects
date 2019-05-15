@@ -207,6 +207,25 @@ class Utilities:
         df.sort_values(index_col_name, inplace=True)
         return df
 
+    @staticmethod
+    def get_n_majors_from_df(df, col_name: str, n: int = 10):
+        """
+        :param df: Pandas DataFrame object
+        :param col_name: Name of the value column to sort
+        :param n: number of rows without to return without the "Other" row
+        :return: Pandas DataFrame with given number of rows and extra row containing sum of all non-included rows called 
+                 "Other"
+        """
+        import pandas as pd
+        if not isinstance(df, pd.DataFrame):
+            raise ValueError("The first argument must be a Pandas DataFrame object")
+        majors_df = df.loc[:, [col_name]].sort_values(col_name, ascending=False).head(n=n)
+        others_df = df.loc[:, [col_name]].sort_values(col_name, ascending=False).tail(n=df.shape[0] - n)
+        out = pd.concat([majors_df, pd.DataFrame(others_df.sum().rename({col_name: "Other"}).rename(col_name))], axis=0)
+        out.index.name = df.index.name
+        out.columns.name = df.columns.name
+        return out
+    
     # Queue processing methods
 
     @staticmethod
