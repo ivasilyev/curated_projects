@@ -208,18 +208,21 @@ class Utilities:
         return df
 
     @staticmethod
-    def get_n_majors_from_df(df, col_name: str, n: int = 10):
+    def get_n_majors_from_df(df, col_name: str, n: int = 10, drop_nulls: bool = True):
         """
         :param df: Pandas DataFrame object
         :param col_name: Name of the value column to sort
         :param n: number of rows without to return without the "Other" row
-        :return: Pandas DataFrame with given number of rows and extra row containing sum of all non-included rows called 
+        :param drop_nulls: Only keep values more than 0
+        :return: Pandas DataFrame with given number of rows and extra row containing sum of all non-included rows called
                  "Other"
         """
         import pandas as pd
         if not isinstance(df, pd.DataFrame):
             raise ValueError("The first argument must be a Pandas DataFrame object")
         majors_df = df.loc[:, [col_name]].sort_values(col_name, ascending=False).head(n=n)
+        if drop_nulls:
+            majors_df = majors_df.loc[majors_df[col_name].astype(float) > 0]
         others_df = df.loc[:, [col_name]].sort_values(col_name, ascending=False).tail(n=df.shape[0] - n)
         out = pd.concat([majors_df, pd.DataFrame(others_df.sum().rename({col_name: "Other"}).rename(col_name))], axis=0)
         out.index.name = df.index.name
