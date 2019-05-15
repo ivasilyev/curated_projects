@@ -142,6 +142,6 @@ class DigestAssociationsKeeper:
             keywords_series.append(df_with_keywords.sum().rename(main_word))
             out_dict[main_word] = df_with_keywords
         out_df = Utilities.merge_pd_series_list(keywords_series).fillna(0)
-        out_df.columns.name = "sample_path"
+        out_df.columns.name = "value"
         out_df.index.name = "keyword"
         return out_df, out_dict
