@@ -23,8 +23,8 @@ class Utilities:
         return output_list
 
     @staticmethod
-    def filename_only(string):
-        return str(".".join(string.rsplit("/", 1)[-1].split(".")[:-1]))
+    def filename_only(s: str):
+        return os.path.splitext(os.path.basename(s))[0]
 
     @staticmethod
     def get_script_dir():
