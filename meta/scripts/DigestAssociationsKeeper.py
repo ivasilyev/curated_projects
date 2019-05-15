@@ -101,7 +101,8 @@ class DigestAssociationsKeeper:
         :param include_key: Should the key of keyword group be included?
         :param all_in_lowercase: Convert both strings to lowercase?
         :param strict: Only count full match
-        :return:
+        :return: Pandas DataFrame object with keys as index and columns sums as values and dictionary with corresponding
+                 intermediate grouped Pandas DataFrame objects
         """
         def __regular_search(s: str):
             return any(i in str(s) for i in key_words)
