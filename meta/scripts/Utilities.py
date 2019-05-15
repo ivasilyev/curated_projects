@@ -224,6 +224,8 @@ class Utilities:
         if drop_nulls:
             majors_df = majors_df.loc[majors_df[col_name].astype(float) > 0]
         others_df = df.loc[:, [col_name]].sort_values(col_name, ascending=False).tail(n=df.shape[0] - n)
+        if others_df.astype(float).sum().values.tolist()[0] == 0.0:
+            return majors_df
         out = pd.concat([majors_df, pd.DataFrame(others_df.sum().rename({col_name: "Other"}).rename(col_name))], axis=0)
         out.index.name = df.index.name
         out.columns.name = df.columns.name
