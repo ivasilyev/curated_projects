@@ -59,14 +59,16 @@ class SequenceRetriever:
         self.index_dir = self.describer.get_index_guide(self.nfasta)
     @staticmethod
     def _mp_parse_nfasta_header(header):
-        output_dict = {"former_id": header}
+        output_dict = dict(former_id=header)
         output_dict["genbank_id"] = Utilities.safe_findall("^gb\|([^|]+)", header)
         output_dict["is_antisense_strand"] = header.split("|")[2].startswith("-")
         output_dict["locus"] = Utilities.safe_findall("\|(\d+\-\d+)", header)
         output_dict["aro_id"] = Utilities.safe_findall("\|ARO:(\d+)", header)
         gene_chunk = header.split("|")[-1]
         output_dict["host"] = Utilities.safe_findall("\[(.+)\]", gene_chunk)
-        output_dict["gene"] = gene_chunk.replace("[{}]".format(output_dict["host"]), "").strip()
+        output_dict["gene_description"] = gene_chunk.replace("[{}]".format(output_dict["host"]), "").strip()
+        output_dict["gene_symbol"] = min(
+            Utilities.remove_empty_values([j for j in output_dict.get("gene_description").split(" ")]))
         return Utilities.dict2pd_series(output_dict)
     def set_refdata(self, refdata_file: str):
         self.describer.set_refdata(refdata_file)
