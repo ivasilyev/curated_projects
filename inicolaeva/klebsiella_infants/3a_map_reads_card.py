@@ -5,7 +5,8 @@
 # Pre-setup:
 export IMG=ivasilyev/curated_projects:latest && \
 docker pull ${IMG} && \
-docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it ${IMG} python3
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it ${IMG} \
+python3
 """
 
 import os
@@ -15,7 +16,7 @@ import seaborn as sns
 from meta.scripts.Utilities import Utilities
 from meta.scripts.DigestAssociationsKeeper import DigestAssociationsKeeper
 from inicolaeva.klebsiella_infants.ProjectDescriber import ProjectDescriber
-from meta.scripts.card.ReferenceDescriber import ReferenceDescriber as cardDescriber
+from meta.scripts.card.ReferenceDescriber import ReferenceDescriber
 
 
 def get_standalone_map_cmd(input_sampledata: str, output_dir: str, describer_instance):
@@ -42,7 +43,7 @@ VALUE_COL_NAMES = {"id_mapped_reads_per_million_sample_mapped_reads": "RPM",
 
 # Map trimmed reads
 # Get CARD map guideline
-get_standalone_map_cmd(projectDescriber.SAMPLE_DATA_FILE, projectDescriber.MAPPED_DATA_DIR, cardDescriber())
+get_standalone_map_cmd(projectDescriber.SAMPLE_DATA_FILE, projectDescriber.MAPPED_DATA_DIR, ReferenceDescriber())
 
 """
 # Log in into worker node and enter:
@@ -78,13 +79,6 @@ class InterpretationHandler:
         out = pd.concat([annotation_df, values_df], axis=1, sort=False)
         out.index.names = [REFERENCE_COL_NAME]
         return out
-    @staticmethod
-    def get_keywords_dict(keywords: list):
-        return {j: () for j in sorted([i.strip() for i in set(keywords) if isinstance(i, str)]) if len(j) > 0}
-    @staticmethod
-    def get_genera_dict(input_list: list):
-        return InterpretationHandler.get_keywords_dict(
-            [Utilities.safe_findall("([A-Z][a-z]{4,})", i) for i in input_list])
     def update_sample_names(self, regex: str):
         import re
         new_sample_names = [re.findall(regex, i)[0] for i in self.sample_names]
@@ -99,20 +93,103 @@ class InterpretationHandler:
         association_digest_df.index.name = association_index_name
         association_digest_df.columns.name = "sample_name"
         association_digest_dir = os.path.join(projectDescriber.DATA_DIGEST_DIR, self.describer.ALIAS, value_col_name, association_index_name)
-        association_digest_file = os.path.join(association_digest_dir, "digest_card_{}_{}.tsv".format(value_col_name, association_index_name))
+        association_digest_file = os.path.join(association_digest_dir, "digest_{}_{}_{}.tsv".format(self.describer.ALIAS, value_col_name, association_index_name))
         os.makedirs(association_digest_dir, exist_ok=True)
         Utilities.dump_tsv(association_digest_df.reset_index(), table_file=association_digest_file)
         return association_digest_df
 
 
 # Create raw coverage pivot for CARD data
-card_describer = cardDescriber()
+describer = ReferenceDescriber()
 value_col_name = list(VALUE_COL_NAMES)[1]
-card_handler = InterpretationHandler(card_describer, value_col_name)
-genera_names_dict = card_handler.get_genera_dict(card_handler.raw_annotated_pivot["host"].values.tolist())
-card_handler.update_sample_names("\/([A-Z][^\/_]+)_")
+handler = InterpretationHandler(describer, value_col_name)
+genera_names_dict = digestAssociationsKeeper.generate_genera_dict(handler.raw_annotated_pivot["host"].values.tolist())
+handler.update_sample_names("\/([A-Z][^\/_]+)_")
 
 
 columns_with_keywords = ["host"]
-df = card_handler.raw_annotated_pivot.loc[:, columns_with_keywords + card_handler.sample_names]
-associations = genera_names_dict
+df = handler.raw_annotated_pivot.loc[:, columns_with_keywords + handler.sample_names]
+associations = digestAssociationsKeeper.generate_genera_dict(df["host"].values.tolist())
+digest_df, intermediate_dict = digestAssociationsKeeper.digest_df(df, associations=associations, columns_with_keywords=columns_with_keywords)
+
+major_digest_df = [Utilities.get_n_majors_from_df(digest_df, i) for i in list(digest_df)][-1]
+
+pie_file = os.path.join(projectDescriber.DATA_DIGEST_DIR, "test_pie.png")
+os.makedirs(os.path.dirname(pie_file), exist_ok=True)
+
+
+def make_autopct(values):
+    def my_autopct(pct):
+        return "{v}\n({p:.1f}%)".format(v="{:.2g}".format(int(round(pct * sum(values) / 100.0)), "E"), p=pct)
+    return my_autopct
+
+
+fig, ax = plt.subplots()
+plt.rcParams.update({"font.size": 10, "figure.figsize": (20, 20)})
+fig.suptitle(pie_file, fontsize=20)
+ax.axis("equal")
+y_col_name = major_digest_df.columns[0]
+
+raw_values_dfs_dict = {}
+raw_values_dict = {"x": [], "y": []}
+for keyword in major_digest_df.index:
+    _keyword_pivot_df = intermediate_dict.get(keyword)
+    if _keyword_pivot_df is not None:
+        # keyword_pivot_df = keyword_pivot_df.loc[keyword_pivot_df[y_col_name].astype(float) > 0.0][y_col_name]
+        keyword_pivot_df = Utilities.get_n_majors_from_df(_keyword_pivot_df, col_name=y_col_name, n=5)
+        if keyword_pivot_df.shape[0] > 0:
+            keyword_pivot_df = keyword_pivot_df.join(handler.raw_annotated_pivot["gene"], how="left").fillna("Other")
+            raw_values_dfs_dict[keyword] = keyword_pivot_df
+            raw_values_dict["x"].extend([min((j for j in i.strip().split(" ") if j), key=len) for i in keyword_pivot_df["gene"].values.tolist()])
+            raw_values_dict["y"].extend(keyword_pivot_df[y_col_name])
+
+
+size = 0.3
+wedgeprops = dict(width=size, edgecolor="w")
+pie_in = ax.pie(major_digest_df[y_col_name], radius=1 - size, labels=major_digest_df.index, labeldistance=1 - size,
+                autopct=make_autopct(major_digest_df[y_col_name]), wedgeprops=wedgeprops)
+pie_out = ax.pie(raw_values_dict.get("y"), radius=1, labels=raw_values_dict.get("x"),
+                 wedgeprops=wedgeprops)
+ax.set_xlabel(y_col_name)
+ax.set_ylabel(value_col_name)
+plt.tight_layout()
+plt.savefig(pie_file, dpi=300, bbox_inches="tight")
+plt.close("all")
+plt.clf()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def make_autopct(values):
+    def my_autopct(pct):
+        return "{v}\n({p:.1f}%)".format(v="{:.2g}".format(int(round(pct * sum(values) / 100.0)), "E"), p=pct)
+    return my_autopct
+
+
+fig = plt.figure()
+sns.set(style="whitegrid", font_scale=1)
+y_col_name = major_digest_df.columns[0]
+
+ax = major_digest_df.plot.pie(y=y_col_name, figsize=(10, 10), title=pie_file, autopct=make_autopct(major_digest_df[y_col_name]))
+ax.set_xlabel(y_col_name)
+ax.set_ylabel(value_col_name)
+plt.axis("equal")
+plt.tight_layout()
+plt.savefig(pie_file, dpi=300, bbox_inches="tight")
+plt.close("all")
+plt.clf()
+
+
+
