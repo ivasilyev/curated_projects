@@ -33,6 +33,7 @@ class RefDataParser:
             self._body_dict = self._parse_json_refdata()
         else:
             self._body_dict = self._parse_table_refdata()
+        self._file_wrapper.close()
         try:
             self._verify_json_refdata(self._body_dict)
         except ValueError:

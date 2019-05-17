@@ -2,9 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """
+# Pre-setup:
 export IMG=ivasilyev/curated_projects:latest && \
 docker pull ${IMG} && \
-docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it ${IMG} python3
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it ${IMG} \
+bash
+
+git pull
+python3
 """
 
 import os
@@ -16,12 +21,12 @@ from meta.scripts.Utilities import Utilities
 
 class ReferenceDescriber(ReferenceDescriberTemplate):
     NAME = "CARD"
-    VERSION = "3.0.1"
-    ALIAS = "card_v3.0.1"
+    VERSION = "3.0.2"
+    ALIAS = "card_v3.0.2"
     DESCRIPTION = "The Comprehensive Antibiotic Resistance Database"
     DOCUMENTATION = "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3697360/"
     WEBSITE = "https://card.mcmaster.ca/"
-    REFDATA = "/data/reference/CARD/card_v3.0.1/index/card_v3.0.1_refdata.json"
+    REFDATA = "/data/reference/CARD/card_v3.0.2/index/card_v3.0.2_refdata.json"
 
 
 class SequenceRetriever:
@@ -67,8 +72,11 @@ class SequenceRetriever:
         gene_chunk = header.split("|")[-1]
         output_dict["host"] = Utilities.safe_findall("\[(.+)\]", gene_chunk)
         output_dict["gene_description"] = gene_chunk.replace("[{}]".format(output_dict["host"]), "").strip()
+        _MIN_GENE_SYMBOL_LENGTH = 3
+        _NON_GENE_SYMBOL_WORDS = ("DNA", "RNA")
         output_dict["gene_symbol"] = min(
-            Utilities.remove_empty_values([j for j in output_dict.get("gene_description").split(" ")]), key=len)
+            [j for j in [i.strip() for i in output_dict.get("gene_description").split(" ")] if
+             len(j) >= _MIN_GENE_SYMBOL_LENGTH and j not in _NON_GENE_SYMBOL_WORDS], key=len)
         return Utilities.dict2pd_series(output_dict)
     def set_refdata(self, refdata_file: str):
         self.describer.set_refdata(refdata_file)
@@ -79,18 +87,18 @@ class SequenceRetriever:
                                                self._raw_nfasta_df["former_id"].values.tolist())
         self._processed_nfasta_df = Utilities.merge_pd_series_list(mp_result).sort_values("former_id")
         self.nfasta_df = Utilities.left_merge(self._raw_nfasta_df, self._processed_nfasta_df, "former_id")
-        # Join 'aro_index.csv'
-        aro_index_df = pd.read_table(os.path.join(self.reference_dir, "data", "aro_index.csv"), sep='\t', header=0)
+        # Join 'aro_index.tsv'
+        aro_index_df = pd.read_table(os.path.join(self.reference_dir, "data", "aro_index.tsv"), sep='\t', header=0)
         aro_index_df["aro_id"] = aro_index_df["ARO Accession"].str.extract("ARO:(\d+)")
-        # 'aro_index.csv' has more entries than 'nucleotide_fasta_protein_homolog_model.fasta' provides
+        # 'aro_index.tsv' has more entries than 'nucleotide_fasta_protein_homolog_model.fasta' provides
         self.nfasta_df = Utilities.left_merge(self.nfasta_df, aro_index_df, "aro_id")
-        # Join 'aro_categories_index.csv'
-        aro_categories_index_df = pd.read_table(os.path.join(self.reference_dir, "data", "aro_categories_index.csv"),
+        # Join 'aro_categories_index.tsv'
+        aro_categories_index_df = pd.read_table(os.path.join(self.reference_dir, "data", "aro_categories_index.tsv"),
                                                 sep='\t', header=0)
         self.nfasta_df = Utilities.left_merge(self.nfasta_df, aro_categories_index_df, "Protein Accession")
-        # Joining 'aro_categories.csv' is useless: 'ARO Category' is filled by NaN
-        # Join 'aro.csv'
-        aro_df = pd.read_table(os.path.join(self.reference_dir, "ontology", "aro.csv"), sep='\t', header=0)
+        # Joining 'aro_categories.tsv' is useless: the resulting 'ARO Category' is filled by NaN
+        # Join 'aro.tsv'
+        aro_df = pd.read_table(os.path.join(self.reference_dir, "ontology", "aro.tsv"), sep='\t', header=0)
         aro_df.rename(columns={"Accession": "ARO Accession", "Name": "ARO Name"}, inplace=True)
         self.nfasta_df = Utilities.left_merge(self.nfasta_df, aro_df, "ARO Accession")
         self.nfasta_df = Utilities.combine_duplicate_rows(self.nfasta_df, "reference_id")
@@ -102,31 +110,34 @@ class SequenceRetriever:
 
 if __name__ == '__main__':
     # Paste updated version here
-    retriever = SequenceRetriever("3.0.1")
+    retriever = SequenceRetriever("3.0.2")
     retriever.retrieve()
     """
     # Reference indexing (from worker node):
     
-    rm -rf /data/reference/CARD/card_v3.0.1/index
+    rm -rf /data/reference/CARD/card_v3.0.2/index
     export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \
     docker pull $IMG && \
     docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG \
     python3 /home/docker/scripts/cook_the_reference.py \
-    -i /data/reference/CARD/card_v3.0.1/card_v3.0.1.fasta \
-    -o /data/reference/CARD/card_v3.0.1/index
+    -i /data/reference/CARD/card_v3.0.2/card_v3.0.2.fasta \
+    -o /data/reference/CARD/card_v3.0.2/index
     
     # Wait until REFDATA file creates and complete the describer class template
     """
-    retriever.set_refdata("/data/reference/CARD/card_v3.0.1/index/card_v3.0.1_refdata.json")
+    retriever.set_refdata("/data/reference/CARD/card_v3.0.2/index/card_v3.0.2_refdata.json")
     """
     class ReferenceDescriber(ReferenceDescriberTemplate):
         NAME = "CARD"
-        VERSION = "3.0.1"
-        ALIAS = "card_v3.0.1"
+        VERSION = "3.0.2"
+        ALIAS = "card_v3.0.2"
         DESCRIPTION = "The Comprehensive Antibiotic Resistance Database"
         DOCUMENTATION = "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3697360/"
         WEBSITE = "https://card.mcmaster.ca/"
-        REFDATA = "/data/reference/CARD/card_v3.0.1/index/card_v3.0.1_refdata.json"
+        REFDATA = "/data/reference/CARD/card_v3.0.2/index/card_v3.0.2_refdata.json"
     """
-    retriever.annotate()
-    retriever.export_annotation()
+    try:
+        retriever.annotate()
+        retriever.export_annotation()
+    except Exception as e:
+        raise e
