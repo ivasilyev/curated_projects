@@ -68,7 +68,7 @@ class SequenceRetriever:
         output_dict["host"] = Utilities.safe_findall("\[(.+)\]", gene_chunk)
         output_dict["gene_description"] = gene_chunk.replace("[{}]".format(output_dict["host"]), "").strip()
         output_dict["gene_symbol"] = min(
-            Utilities.remove_empty_values([j for j in output_dict.get("gene_description").split(" ")]))
+            Utilities.remove_empty_values([j for j in output_dict.get("gene_description").split(" ")]), key=len)
         return Utilities.dict2pd_series(output_dict)
     def set_refdata(self, refdata_file: str):
         self.describer.set_refdata(refdata_file)

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import pandas as pd
-from meta.scripts.CounterWrapper import CounterWrapper
 from meta.scripts.Utilities import Utilities
 
 
@@ -110,12 +109,14 @@ class DigestAssociationsKeeper:
         def __strict_search(s: str):
             return any(i == str(s) for i in key_words)
 
+        df = df.copy()
         df_columns = list(df)
         columns_with_keywords = Utilities.remove_empty_values([i for i in columns_with_keywords])
         columns_without_keywords = Utilities.remove_empty_values(
             [i for i in df_columns if i not in columns_with_keywords])
         if len(columns_with_keywords) == 0:
-            raise ValueError("No column for keyword search specified")
+            print("No column for keyword search specified!")
+            return
         try:
             # 'columns_with_keywords' might be more than 1
             df["lookup_column"] = df.loc[:, columns_with_keywords].astype(str).apply(
@@ -123,7 +124,7 @@ class DigestAssociationsKeeper:
         except KeyError as e:
             print(e, list(df), associations, columns_with_keywords)
         keywords_series = []
-        out_dict = {}
+        raw_values_ds = pd.DataFrame()
         for main_word in associations:
             key_words = associations.get(main_word)
             if not key_words or len(key_words) == 0:
@@ -140,8 +141,14 @@ class DigestAssociationsKeeper:
                 df_with_keywords = df.loc[df["lookup_column"].apply(__regular_search) == True,
                                           columns_without_keywords]
             keywords_series.append(df_with_keywords.sum().rename(main_word))
-            out_dict[main_word] = df_with_keywords
+            # Reset index to avoid exceptions thrown by duplicates
+            raw_values_df = df_with_keywords.reset_index()
+            raw_values_df["keyword"] = main_word
+            if raw_values_ds.shape[0] == 0:
+                raw_values_ds = raw_values_df
+            else:
+                raw_values_ds = pd.concat([raw_values_ds, raw_values_df], axis=0, ignore_index=True)
         out_df = Utilities.merge_pd_series_list(keywords_series).fillna(0)
         out_df.columns.name = "value"
         out_df.index.name = "keyword"
-        return out_df, out_dict
+        return out_df, raw_values_ds
