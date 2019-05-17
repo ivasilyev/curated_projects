@@ -6,6 +6,9 @@
 export IMG=ivasilyev/curated_projects:latest && \
 docker pull ${IMG} && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it ${IMG} \
+bash
+
+git pull
 python3
 """
 
@@ -35,15 +38,22 @@ python3 /home/docker/scripts/nBee.py \\
 
 # Declare class instances & some text constants at global order
 projectDescriber = ProjectDescriber()
+referenceDescriber = ReferenceDescriber()
 digestAssociationsKeeper = DigestAssociationsKeeper()
-COVERAGE_DIR = os.path.join(projectDescriber.MAPPED_DATA_DIR, "Statistics")
+COVERAGE_DIR = os.path.join(projectDescriber.MAPPED_DATA_DIR, referenceDescriber.ALIAS, "Statistics")
 REFERENCE_COL_NAME = "reference_id"
+KEYWORDS_ASSOCIATIVE_PAIRS = {"host": {}, "Drug Class": digestAssociationsKeeper.DRUG_CLASSES,
+                              "Resistance Mechanism": digestAssociationsKeeper.RESISTANCE_MECHANISMS}
+DIGEST_LABEL_COL_NAME = "keyword"
+RAW_LABEL_COL_NAME = "gene_symbol"
 VALUE_COL_NAMES = {"id_mapped_reads_per_million_sample_mapped_reads": "RPM",
                    "id_mapped_reads_per_kbp_per_million_sample_mapped_reads": "RPKM"}
+INNER_DONUT_GROUPS = 10
+OUTER_DONUT_SUBGROUPS = 5
 
 # Map trimmed reads
 # Get CARD map guideline
-get_standalone_map_cmd(projectDescriber.SAMPLE_DATA_FILE, projectDescriber.MAPPED_DATA_DIR, ReferenceDescriber())
+get_standalone_map_cmd(projectDescriber.SAMPLE_DATA_FILE, os.path.dirname(COVERAGE_DIR), referenceDescriber)
 
 """
 # Log in into worker node and enter:
@@ -53,8 +63,8 @@ docker pull $IMG && \
 docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG \
 python3 /home/docker/scripts/nBee.py \
 -i /data1/bio/projects/inicolaeva/klebsiella_infants/sample_data/trimmed.sampledata \
--r /data/reference/CARD/card_v3.0.1/index/card_v3.0.1_refdata.json \
--o /data1/bio/projects/inicolaeva/klebsiella_infants/mapped
+-r /data/reference/CARD/card_v3.0.2/index/card_v3.0.2_refdata.json \
+-o /data1/bio/projects/inicolaeva/klebsiella_infants/mapped/card_v3.0.2
 """
 
 
@@ -100,22 +110,44 @@ class InterpretationHandler:
 
 
 # Create raw coverage pivot for CARD data
-describer = ReferenceDescriber()
 value_col_name = list(VALUE_COL_NAMES)[1]
-handler = InterpretationHandler(describer, value_col_name)
-genera_names_dict = digestAssociationsKeeper.generate_genera_dict(handler.raw_annotated_pivot["host"].values.tolist())
+handler = InterpretationHandler(referenceDescriber, value_col_name)
 handler.update_sample_names("\/([A-Z][^\/_]+)_")
 
+# for
+col_name_with_keywords = list(KEYWORDS_ASSOCIATIVE_PAIRS)[1]
+df = handler.raw_annotated_pivot.loc[:, [col_name_with_keywords] + handler.sample_names]
+associations = KEYWORDS_ASSOCIATIVE_PAIRS.get(col_name_with_keywords)
+if col_name_with_keywords == "host":
+    associations = digestAssociationsKeeper.generate_genera_dict(df[col_name_with_keywords].values.tolist())
 
-columns_with_keywords = ["host"]
-df = handler.raw_annotated_pivot.loc[:, columns_with_keywords + handler.sample_names]
-associations = digestAssociationsKeeper.generate_genera_dict(df["host"].values.tolist())
-digest_df, intermediate_dict = digestAssociationsKeeper.digest_df(df, associations=associations, columns_with_keywords=columns_with_keywords)
+digest_df, raw_ds = digestAssociationsKeeper.digest_df(df, associations=associations, columns_with_keywords=[col_name_with_keywords])
+raw_ds = Utilities.left_merge(raw_ds, handler.raw_annotated_pivot[RAW_LABEL_COL_NAME].reset_index(), REFERENCE_COL_NAME)
+raw_ds[RAW_LABEL_COL_NAME] = raw_ds[RAW_LABEL_COL_NAME].apply(lambda x: min((j for j in x.strip().split(" ") if j), key=len))
 
-major_digest_df = [Utilities.get_n_majors_from_df(digest_df, i) for i in list(digest_df)][-1]
+# for
+sample_name = digest_df.columns[-1]
+major_digest_df = Utilities.get_n_majors_from_df(digest_df, sample_name, n=INNER_DONUT_GROUPS - 1)
+# Manual sort the dataset with raw values prior to the order of digest keywords
+major_raw_ds = pd.DataFrame()
+for digest_keyword in major_digest_df.index:
+    if digest_keyword == "Other":
+        major_raw_ds_append = pd.DataFrame(major_digest_df.loc["Other"]).transpose()
+        major_raw_ds_append.index.name = DIGEST_LABEL_COL_NAME
+        major_raw_ds_append = major_raw_ds_append.reset_index()
+    else:
+        major_raw_ds_append_right = raw_ds.loc[raw_ds[DIGEST_LABEL_COL_NAME] == digest_keyword, [REFERENCE_COL_NAME, sample_name, DIGEST_LABEL_COL_NAME, RAW_LABEL_COL_NAME]]
+        major_raw_ds_append_left = Utilities.get_n_majors_from_df(major_raw_ds_append_right.set_index(REFERENCE_COL_NAME), sample_name, n=OUTER_DONUT_SUBGROUPS - 1).rename(index={"Other": digest_keyword}).reset_index()
+        major_raw_ds_append = Utilities.left_merge(major_raw_ds_append_left, major_raw_ds_append_right, REFERENCE_COL_NAME)
+        major_raw_ds_append[RAW_LABEL_COL_NAME] = major_raw_ds_append[RAW_LABEL_COL_NAME].fillna("Other")
+        major_raw_ds_append[DIGEST_LABEL_COL_NAME] = major_raw_ds_append[DIGEST_LABEL_COL_NAME].fillna(digest_keyword)
+    if major_raw_ds_append.shape[0] > 0:
+        if major_raw_ds.shape[0] == 0:
+            major_raw_ds = major_raw_ds_append
+        else:
+            major_raw_ds = pd.concat([major_raw_ds, major_raw_ds_append], axis=0, ignore_index=True, sort=False)
 
-pie_file = os.path.join(projectDescriber.DATA_DIGEST_DIR, "test_pie.png")
-os.makedirs(os.path.dirname(pie_file), exist_ok=True)
+major_raw_ds = major_raw_ds.fillna("Other")
 
 
 def make_autopct(values):
@@ -126,33 +158,22 @@ def make_autopct(values):
 
 fig, ax = plt.subplots()
 plt.rcParams.update({"font.size": 10, "figure.figsize": (20, 20)})
-fig.suptitle(pie_file, fontsize=20)
 ax.axis("equal")
 y_col_name = major_digest_df.columns[0]
 
-raw_values_dfs_dict = {}
-raw_values_dict = {"x": [], "y": []}
-for keyword in major_digest_df.index:
-    _keyword_pivot_df = intermediate_dict.get(keyword)
-    if _keyword_pivot_df is not None:
-        # keyword_pivot_df = keyword_pivot_df.loc[keyword_pivot_df[y_col_name].astype(float) > 0.0][y_col_name]
-        keyword_pivot_df = Utilities.get_n_majors_from_df(_keyword_pivot_df, col_name=y_col_name, n=5)
-        if keyword_pivot_df.shape[0] > 0:
-            keyword_pivot_df = keyword_pivot_df.join(handler.raw_annotated_pivot["gene"], how="left").fillna("Other")
-            raw_values_dfs_dict[keyword] = keyword_pivot_df
-            raw_values_dict["x"].extend([min((j for j in i.strip().split(" ") if j), key=len) for i in keyword_pivot_df["gene"].values.tolist()])
-            raw_values_dict["y"].extend(keyword_pivot_df[y_col_name])
-
-
 size = 0.3
 wedgeprops = dict(width=size, edgecolor="w")
-pie_in = ax.pie(major_digest_df[y_col_name], radius=1 - size, labels=major_digest_df.index, labeldistance=1 - size,
+pie_in = ax.pie(major_digest_df[sample_name], radius=1 - size, labels=major_digest_df.index, labeldistance=1 - size,
                 autopct=make_autopct(major_digest_df[y_col_name]), wedgeprops=wedgeprops)
-pie_out = ax.pie(raw_values_dict.get("y"), radius=1, labels=raw_values_dict.get("x"),
+pie_out = ax.pie(major_raw_ds[sample_name], radius=1, labels=major_raw_ds[RAW_LABEL_COL_NAME],
                  wedgeprops=wedgeprops)
 ax.set_xlabel(y_col_name)
 ax.set_ylabel(value_col_name)
 plt.tight_layout()
+
+pie_file = os.path.join(projectDescriber.DATA_DIGEST_DIR, "test_pie.png")
+os.makedirs(os.path.dirname(pie_file), exist_ok=True)
+fig.suptitle(pie_file, fontsize=10)
 plt.savefig(pie_file, dpi=300, bbox_inches="tight")
 plt.close("all")
 plt.clf()
