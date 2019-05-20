@@ -128,26 +128,6 @@ raw_ds[RAW_LABEL_COL_NAME] = raw_ds[RAW_LABEL_COL_NAME].apply(lambda x: min((j f
 # for
 sample_name = digest_df.columns[-1]
 major_digest_df = Utilities.get_n_majors_from_df(digest_df, sample_name, n=INNER_DONUT_GROUPS - 1)
-# Manual sort the dataset with raw values prior to the order of digest keywords
-major_raw_ds = pd.DataFrame()
-for digest_keyword in major_digest_df.index:
-    if digest_keyword == "Other":
-        major_raw_ds_append = pd.DataFrame(major_digest_df.loc["Other"]).transpose()
-        major_raw_ds_append.index.name = DIGEST_LABEL_COL_NAME
-        major_raw_ds_append = major_raw_ds_append.reset_index()
-    else:
-        major_raw_ds_append_right = raw_ds.loc[raw_ds[DIGEST_LABEL_COL_NAME] == digest_keyword, [REFERENCE_COL_NAME, sample_name, DIGEST_LABEL_COL_NAME, RAW_LABEL_COL_NAME]]
-        major_raw_ds_append_left = Utilities.get_n_majors_from_df(major_raw_ds_append_right.set_index(REFERENCE_COL_NAME), sample_name, n=OUTER_DONUT_SUBGROUPS - 1).rename(index={"Other": digest_keyword}).reset_index()
-        major_raw_ds_append = Utilities.left_merge(major_raw_ds_append_left, major_raw_ds_append_right, REFERENCE_COL_NAME)
-        major_raw_ds_append[RAW_LABEL_COL_NAME] = major_raw_ds_append[RAW_LABEL_COL_NAME].fillna("Other")
-        major_raw_ds_append[DIGEST_LABEL_COL_NAME] = major_raw_ds_append[DIGEST_LABEL_COL_NAME].fillna(digest_keyword)
-    if major_raw_ds_append.shape[0] > 0:
-        if major_raw_ds.shape[0] == 0:
-            major_raw_ds = major_raw_ds_append
-        else:
-            major_raw_ds = pd.concat([major_raw_ds, major_raw_ds_append], axis=0, ignore_index=True, sort=False)
-
-major_raw_ds = major_raw_ds.fillna("Other")
 
 
 def make_autopct(values):
@@ -163,9 +143,46 @@ y_col_name = major_digest_df.columns[0]
 
 size = 0.3
 wedgeprops = dict(width=size, edgecolor="w")
-pie_in = ax.pie(major_digest_df[sample_name], radius=1 - size, labels=major_digest_df.index, labeldistance=1 - size,
-                autopct=make_autopct(major_digest_df[y_col_name]), wedgeprops=wedgeprops)
-pie_out = ax.pie(major_raw_ds[sample_name], radius=1, labels=major_raw_ds[RAW_LABEL_COL_NAME],
+# Returning value: [[wedges...], [labels...], [values...]]
+pie_int = ax.pie(major_digest_df[sample_name], radius=1 - size, labels=major_digest_df.index, labeldistance=1 - size,
+                 autopct=make_autopct(major_digest_df[y_col_name]), wedgeprops=wedgeprops)
+# Combine color values in 'RGBA' format into the one dictionary
+pie_int_colors = {pie_int[1][idx].get_text(): wedge.get_facecolor() for idx, wedge in enumerate(pie_int[0])}
+
+# Manual sort the dataset with raw values prior to the order of digest keywords
+major_raw_ds = pd.DataFrame()
+for digest_keyword in major_digest_df.index:
+    if digest_keyword == "Other":
+        major_raw_ds_append = pd.DataFrame(major_digest_df.loc["Other"]).transpose()
+        major_raw_ds_append.index.name = DIGEST_LABEL_COL_NAME
+        major_raw_ds_append = major_raw_ds_append.reset_index()
+    else:
+        major_raw_ds_append_right = raw_ds.loc[raw_ds[DIGEST_LABEL_COL_NAME] == digest_keyword, [REFERENCE_COL_NAME, sample_name, DIGEST_LABEL_COL_NAME, RAW_LABEL_COL_NAME]]
+        major_raw_ds_append_left = Utilities.get_n_majors_from_df(major_raw_ds_append_right.set_index(REFERENCE_COL_NAME), sample_name, n=OUTER_DONUT_SUBGROUPS - 1).rename(index={"Other": digest_keyword}).reset_index()
+        major_raw_ds_append = Utilities.left_merge(major_raw_ds_append_left, major_raw_ds_append_right, REFERENCE_COL_NAME)
+        major_raw_ds_append[RAW_LABEL_COL_NAME] = major_raw_ds_append[RAW_LABEL_COL_NAME].fillna("{}_Other".format(digest_keyword))
+        major_raw_ds_append[DIGEST_LABEL_COL_NAME] = major_raw_ds_append[DIGEST_LABEL_COL_NAME].fillna("Other")
+    pie_ext_append_colors = []
+    for row_number in major_raw_ds_append.index.values:
+        row_color = pie_int_colors.get(digest_keyword)
+        if not row_color:
+            continue
+        row_old_alpha = row_color[3]
+        if major_raw_ds_append.shape[0] < 4:
+            row_new_alpha = row_old_alpha - (row_old_alpha * row_number / 5.0)
+        else:
+            row_new_alpha = row_old_alpha - (row_old_alpha * row_number / float(major_raw_ds_append.shape[0] - 1))
+        pie_ext_append_colors.append(";".join(str(i) for i in list(row_color[:2]) + [row_new_alpha]))
+    major_raw_ds_append["color"] = pie_ext_append_colors
+    if major_raw_ds_append.shape[0] > 0:
+        if major_raw_ds.shape[0] == 0:
+            major_raw_ds = major_raw_ds_append
+        else:
+            major_raw_ds = pd.concat([major_raw_ds, major_raw_ds_append], axis=0, ignore_index=True, sort=False)
+
+major_raw_ds = major_raw_ds.fillna("Other")
+
+pie_ext = ax.pie(major_raw_ds[sample_name], radius=1, labels=major_raw_ds[RAW_LABEL_COL_NAME], colors=major_raw_ds["color"].apply(lambda x: tuple(float(i) for i in x.split(";"))).values.tolist(),
                  wedgeprops=wedgeprops)
 ax.set_xlabel(y_col_name)
 ax.set_ylabel(value_col_name)
