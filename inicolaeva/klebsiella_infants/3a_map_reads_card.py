@@ -13,6 +13,7 @@ python3
 """
 
 import os
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -136,42 +137,21 @@ def make_autopct(values):
     return my_autopct
 
 
+# Create visualization
 fig, ax = plt.subplots()
-plt.rcParams.update({"font.size": 10, "figure.figsize": (20, 20)})
+_BASE_FONT_SIZE = 10
+plt.rcParams.update({"font.size": _BASE_FONT_SIZE, "figure.figsize": (20, 20)})
 ax.axis("equal")
 y_col_name = major_digest_df.columns[0]
 
-size = 0.3
-wedgeprops = dict(width=size, edgecolor="w")
+_WEDGE_WIDTH = 0.3
+_WEDGE_PROPERTIES = dict(width=0.3, edgecolor="w")
 # Returning value: [[wedges...], [labels...], [values...]]
-pie_int = ax.pie(major_digest_df[sample_name], radius=1 - size, labels=major_digest_df.index, labeldistance=1 - size,
-                 autopct=make_autopct(major_digest_df[y_col_name]), wedgeprops=wedgeprops)
+pie_int = ax.pie(major_digest_df[sample_name], radius=1 - _WEDGE_WIDTH, labels=major_digest_df.index,
+                 labeldistance=1 - _WEDGE_WIDTH, autopct=make_autopct(major_digest_df[y_col_name]),
+                 wedgeprops=_WEDGE_PROPERTIES)
 # Combine color values in 'RGBA' format into the one dictionary
 pie_int_colors = {pie_int[1][idx].get_text(): wedge.get_facecolor() for idx, wedge in enumerate(pie_int[0])}
-
-
-def alter_color(color, amount: float = 0.5):
-    """
-    Lightens the given color by multiplying (1-luminosity) by the given amount.
-    :param color: matplotlib color string, hex string, or RGB tuple.
-    :param amount: coefficient to alter color, less 1 to lighten, more 1 to darken
-    :return:
-    Examples:
-    >> lighten_color('g', 0.3)
-    >> lighten_color('#F034A3', 0.6)
-    >> lighten_color((.3,.55,.1), 0.5)
-    Original topic: 'https://stackoverflow.com/questions/37765197/darken-or-lighten-a-color-in-matplotlib'
-    """
-    import matplotlib.colors as mc
-    import colorsys
-    try:
-        c = mc.cnames[color]
-    except Exception as e:
-        print(e)
-        c = color
-    c = colorsys.rgb_to_hls(*mc.to_rgb(c))
-    return colorsys.hls_to_rgb(c[0], 1 - amount * (1 - c[1]), c[2])
-
 
 # Manual sort the dataset with raw values prior to the order of digest keywords
 major_raw_ds = pd.DataFrame()
@@ -207,15 +187,31 @@ for digest_keyword in major_digest_df.index:
 
 major_raw_ds = major_raw_ds.fillna("Other")
 
-pie_ext = ax.pie(major_raw_ds[sample_name], radius=1, labels=major_raw_ds[RAW_LABEL_COL_NAME], colors=major_raw_ds["color"].apply(lambda x: tuple(float(i) for i in x.split(";"))).values.tolist(),
-                 wedgeprops=wedgeprops)
+pie_ext = ax.pie(major_raw_ds[sample_name], radius=1, labels=major_raw_ds[RAW_LABEL_COL_NAME],
+                 colors=major_raw_ds["color"].apply(lambda x: tuple(float(i) for i in x.split(";"))).values.tolist(),
+                 wedgeprops=_WEDGE_PROPERTIES)
+
+# Annotate wedges
+_ANNOTATION_PROPERTIES = dict(arrowprops=dict(arrowstyle="-"), zorder=0, va="center", bbox=dict(boxstyle="square", pad=0.3, fc="w", ec="k", lw=0.72))
+for idx, wedge in enumerate(pie_ext[0]):
+    annotation_line_angle = (wedge.theta2 - wedge.theta1) / 2. + wedge.theta1
+    annotation_line_y = np.sin(np.deg2rad(annotation_line_angle))
+    annotation_line_x = np.cos(np.deg2rad(annotation_line_angle))
+    horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(annotation_line_x))]
+    connectionstyle = "angle,angleA=0,angleB={}".format(annotation_line_angle)
+    annotation_properties = _ANNOTATION_PROPERTIES.copy()
+    annotation_properties["arrowprops"].update({"connectionstyle": connectionstyle})
+    ax.annotate(pie_ext[1][idx].get_text(), xy=(annotation_line_x, annotation_line_y),
+                xytext=(1.35 * np.sign(annotation_line_x), 1.4 * annotation_line_y),
+                horizontalalignment=horizontalalignment, **annotation_properties)
+
 ax.set_xlabel(y_col_name)
 ax.set_ylabel(value_col_name)
 plt.tight_layout()
 
 pie_file = os.path.join(projectDescriber.DATA_DIGEST_DIR, "test_pie.png")
 os.makedirs(os.path.dirname(pie_file), exist_ok=True)
-fig.suptitle(pie_file, fontsize=10)
+fig.suptitle(pie_file, fontsize=_BASE_FONT_SIZE)
 plt.savefig(pie_file, dpi=300, bbox_inches="tight")
 plt.close("all")
 plt.clf()
