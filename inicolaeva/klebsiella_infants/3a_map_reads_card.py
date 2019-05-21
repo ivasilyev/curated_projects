@@ -149,6 +149,30 @@ pie_int = ax.pie(major_digest_df[sample_name], radius=1 - size, labels=major_dig
 # Combine color values in 'RGBA' format into the one dictionary
 pie_int_colors = {pie_int[1][idx].get_text(): wedge.get_facecolor() for idx, wedge in enumerate(pie_int[0])}
 
+
+def alter_color(color, amount: float = 0.5):
+    """
+    Lightens the given color by multiplying (1-luminosity) by the given amount.
+    :param color: matplotlib color string, hex string, or RGB tuple.
+    :param amount: coefficient to alter color, less 1 to lighten, more 1 to darken
+    :return:
+    Examples:
+    >> lighten_color('g', 0.3)
+    >> lighten_color('#F034A3', 0.6)
+    >> lighten_color((.3,.55,.1), 0.5)
+    Original topic: 'https://stackoverflow.com/questions/37765197/darken-or-lighten-a-color-in-matplotlib'
+    """
+    import matplotlib.colors as mc
+    import colorsys
+    try:
+        c = mc.cnames[color]
+    except Exception as e:
+        print(e)
+        c = color
+    c = colorsys.rgb_to_hls(*mc.to_rgb(c))
+    return colorsys.hls_to_rgb(c[0], 1 - amount * (1 - c[1]), c[2])
+
+
 # Manual sort the dataset with raw values prior to the order of digest keywords
 major_raw_ds = pd.DataFrame()
 for digest_keyword in major_digest_df.index:
@@ -168,11 +192,12 @@ for digest_keyword in major_digest_df.index:
         if not row_color:
             continue
         row_old_alpha = row_color[3]
+        _MINIMAL_ALPHA = 0.2
         if major_raw_ds_append.shape[0] < 4:
-            row_new_alpha = row_old_alpha - (row_old_alpha * row_number / 5.0)
+            row_new_alpha = row_old_alpha - (row_old_alpha * row_number * _MINIMAL_ALPHA)
         else:
-            row_new_alpha = row_old_alpha - (row_old_alpha * row_number / float(major_raw_ds_append.shape[0] - 1))
-        pie_ext_append_colors.append(";".join(str(i) for i in list(row_color[:2]) + [row_new_alpha]))
+            row_new_alpha = row_old_alpha - ((row_old_alpha - _MINIMAL_ALPHA) * row_number / float(major_raw_ds_append.shape[0] - 1))
+        pie_ext_append_colors.append(";".join(str(i) for i in list(row_color[:3]) + [row_new_alpha]))
     major_raw_ds_append["color"] = pie_ext_append_colors
     if major_raw_ds_append.shape[0] > 0:
         if major_raw_ds.shape[0] == 0:
