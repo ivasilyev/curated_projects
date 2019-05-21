@@ -13,7 +13,6 @@ python3
 """
 
 import os
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -139,17 +138,18 @@ def make_autopct(values):
 
 # Create visualization
 fig, ax = plt.subplots()
-_BASE_FONT_SIZE = 10
+_BASE_FONT_SIZE = 15
 plt.rcParams.update({"font.size": _BASE_FONT_SIZE, "figure.figsize": (20, 20)})
 ax.axis("equal")
 y_col_name = major_digest_df.columns[0]
 
 _WEDGE_WIDTH = 0.3
-_WEDGE_PROPERTIES = dict(width=0.3, edgecolor="w")
+_WEDGE_PROPERTIES = dict(width=_WEDGE_WIDTH, edgecolor="w")
+_LABEL_PROPERTIES = dict(fontsize=_BASE_FONT_SIZE, rotation_mode="anchor", verticalalignment="center", horizontalalignment="center")
 # Returning value: [[wedges...], [labels...], [values...]]
 pie_int = ax.pie(major_digest_df[sample_name], radius=1 - _WEDGE_WIDTH, labels=major_digest_df.index,
-                 labeldistance=1 - _WEDGE_WIDTH, autopct=make_autopct(major_digest_df[y_col_name]),
-                 wedgeprops=_WEDGE_PROPERTIES)
+                 labeldistance=1 - _WEDGE_WIDTH, rotatelabels=False, autopct=make_autopct(major_digest_df[y_col_name]), pctdistance=1 - _WEDGE_WIDTH / 2.0,
+                 wedgeprops=_WEDGE_PROPERTIES, textprops=_LABEL_PROPERTIES)
 # Combine color values in 'RGBA' format into the one dictionary
 pie_int_colors = {pie_int[1][idx].get_text(): wedge.get_facecolor() for idx, wedge in enumerate(pie_int[0])}
 
@@ -188,22 +188,8 @@ for digest_keyword in major_digest_df.index:
 major_raw_ds = major_raw_ds.fillna("Other")
 
 pie_ext = ax.pie(major_raw_ds[sample_name], radius=1, labels=major_raw_ds[RAW_LABEL_COL_NAME],
-                 colors=major_raw_ds["color"].apply(lambda x: tuple(float(i) for i in x.split(";"))).values.tolist(),
-                 wedgeprops=_WEDGE_PROPERTIES)
-
-# Annotate wedges
-_ANNOTATION_PROPERTIES = dict(arrowprops=dict(arrowstyle="-"), zorder=0, va="center", bbox=dict(boxstyle="square", pad=0.3, fc="w", ec="k", lw=0.72))
-for idx, wedge in enumerate(pie_ext[0]):
-    annotation_line_angle = (wedge.theta2 - wedge.theta1) / 2. + wedge.theta1
-    annotation_line_y = np.sin(np.deg2rad(annotation_line_angle))
-    annotation_line_x = np.cos(np.deg2rad(annotation_line_angle))
-    horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(annotation_line_x))]
-    connectionstyle = "angle,angleA=0,angleB={}".format(annotation_line_angle)
-    annotation_properties = _ANNOTATION_PROPERTIES.copy()
-    annotation_properties["arrowprops"].update({"connectionstyle": connectionstyle})
-    ax.annotate(pie_ext[1][idx].get_text(), xy=(annotation_line_x, annotation_line_y),
-                xytext=(1.35 * np.sign(annotation_line_x), 1.4 * annotation_line_y),
-                horizontalalignment=horizontalalignment, **annotation_properties)
+                 labeldistance=1 - _WEDGE_WIDTH / 2, rotatelabels=True, wedgeprops=_WEDGE_PROPERTIES, textprops=_LABEL_PROPERTIES,
+                 colors=major_raw_ds["color"].apply(lambda x: tuple(float(i) for i in x.split(";"))).values.tolist())
 
 ax.set_xlabel(y_col_name)
 ax.set_ylabel(value_col_name)
