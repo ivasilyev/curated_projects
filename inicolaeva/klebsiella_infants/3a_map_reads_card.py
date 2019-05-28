@@ -15,7 +15,6 @@ python3
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 from meta.scripts.Utilities import Utilities
 from meta.scripts.DigestAssociationsKeeper import DigestAssociationsKeeper
 from inicolaeva.klebsiella_infants.ProjectDescriber import ProjectDescriber
@@ -205,40 +204,3 @@ for value_col_name in VALUE_COL_NAMES:
             plt.savefig(pie_file, dpi=300, bbox_inches="tight")
             plt.close("all")
             plt.clf()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def make_autopct(values):
-    def my_autopct(pct):
-        return "{v}\n({p:.1f}%)".format(v="{:.2g}".format(int(round(pct * sum(values) / 100.0)), "E"), p=pct)
-    return my_autopct
-
-
-fig = plt.figure()
-sns.set(style="whitegrid", font_scale=1)
-y_col_name = major_digest_df.columns[0]
-
-ax = major_digest_df.plot.pie(y=y_col_name, figsize=(10, 10), title=pie_file, autopct=make_autopct(major_digest_df[y_col_name]))
-ax.set_xlabel(y_col_name)
-ax.set_ylabel(value_col_name)
-plt.axis("equal")
-plt.tight_layout()
-plt.savefig(pie_file, dpi=300, bbox_inches="tight")
-plt.close("all")
-plt.clf()
-
-
-
