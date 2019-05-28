@@ -107,6 +107,26 @@ class InterpretationHandler:
         os.makedirs(association_digest_dir, exist_ok=True)
         Utilities.dump_tsv(association_digest_df.reset_index(), table_file=association_digest_file)
         return association_digest_df
+    @staticmethod
+    def create_mirrored_path(items: list, sep: str = "_", makedirs: bool = False):
+        """
+        Simple function to create partially mirroring file path, e.g ["/foo/", "bar", "baz"] -> "/foo/bar/baz/bar_baz"
+        :param items: List with root dir as the heading item and other dirs as tailing items
+        :param sep: Separator for joining items
+        :param makedirs: Should the resulting directory be created?
+        :return: file: String with resulting file path (mask)
+        """
+        file = os.path.join(*items, sep.join(items[1:]))
+        if makedirs:
+            os.makedirs(os.path.dirname(file), exist_ok=True)
+        return file
+    @staticmethod
+    def make_autopct(values):
+        def autopct(pct):
+            return "{v}\n({p:.1f}%)".format(v="{:.2g}".format(int(round(pct * sum(values) / 100.0)), "E"), p=pct)
+        return autopct
+
+
 
 
 # Create raw coverage pivot for CARD data
@@ -116,25 +136,19 @@ handler.update_sample_names("\/([A-Z][^\/_]+)_")
 
 # for
 col_name_with_keywords = list(KEYWORDS_ASSOCIATIVE_PAIRS)[1]
-df = handler.raw_annotated_pivot.loc[:, [col_name_with_keywords] + handler.sample_names]
+df_to_digest = handler.raw_annotated_pivot.loc[:, [col_name_with_keywords] + handler.sample_names]
 associations = KEYWORDS_ASSOCIATIVE_PAIRS.get(col_name_with_keywords)
 if col_name_with_keywords == "host":
-    associations = digestAssociationsKeeper.generate_genera_dict(df[col_name_with_keywords].values.tolist())
+    associations = digestAssociationsKeeper.generate_genera_dict(df_to_digest[col_name_with_keywords].values.tolist())
 
-digest_df, raw_ds = digestAssociationsKeeper.digest_df(df, associations=associations, columns_with_keywords=[col_name_with_keywords])
+digest_df, raw_ds = digestAssociationsKeeper.digest_df(df_to_digest, associations=associations, columns_with_keywords=[col_name_with_keywords])
 raw_ds = Utilities.left_merge(raw_ds, handler.raw_annotated_pivot[RAW_LABEL_COL_NAME].reset_index(), REFERENCE_COL_NAME)
 raw_ds[RAW_LABEL_COL_NAME] = raw_ds[RAW_LABEL_COL_NAME].apply(lambda x: min((j for j in x.strip().split(" ") if j), key=len))
 
 # for
 sample_name = digest_df.columns[-1]
 major_digest_df = Utilities.get_n_majors_from_df(digest_df, sample_name, n=INNER_DONUT_GROUPS - 1)
-
-
-def make_autopct(values):
-    def my_autopct(pct):
-        return "{v}\n({p:.1f}%)".format(v="{:.2g}".format(int(round(pct * sum(values) / 100.0)), "E"), p=pct)
-    return my_autopct
-
+sample_export_mask = InterpretationHandler.create_mirrored_path([projectDescriber.DATA_DIGEST_DIR, value_col_name, col_name_with_keywords, sample_name], makedirs=True)
 
 # Create visualization
 fig, ax = plt.subplots()
@@ -148,11 +162,10 @@ _WEDGE_PROPERTIES = dict(width=_WEDGE_WIDTH, edgecolor="w")
 _LABEL_PROPERTIES = dict(fontsize=_BASE_FONT_SIZE, rotation_mode="anchor", verticalalignment="center", horizontalalignment="center")
 # Returning value: [[wedges...], [labels...], [values...]]
 pie_int = ax.pie(major_digest_df[sample_name], radius=1 - _WEDGE_WIDTH, labels=major_digest_df.index,
-                 labeldistance=1 - _WEDGE_WIDTH, rotatelabels=False, autopct=make_autopct(major_digest_df[y_col_name]), pctdistance=1 - _WEDGE_WIDTH / 2.0,
+                 labeldistance=1 - _WEDGE_WIDTH, rotatelabels=False, autopct=InterpretationHandler.make_autopct(major_digest_df[y_col_name]), pctdistance=1 - _WEDGE_WIDTH / 2.0,
                  wedgeprops=_WEDGE_PROPERTIES, textprops=_LABEL_PROPERTIES)
 # Combine color values in 'RGBA' format into the one dictionary
 pie_int_colors = {pie_int[1][idx].get_text(): wedge.get_facecolor() for idx, wedge in enumerate(pie_int[0])}
-
 # Manual sort the dataset with raw values prior to the order of digest keywords
 major_raw_ds = pd.DataFrame()
 for digest_keyword in major_digest_df.index:
@@ -185,18 +198,20 @@ for digest_keyword in major_digest_df.index:
         else:
             major_raw_ds = pd.concat([major_raw_ds, major_raw_ds_append], axis=0, ignore_index=True, sort=False)
 
-major_raw_ds = major_raw_ds.fillna("Other")
 
+major_raw_ds = major_raw_ds.fillna("Other")
 pie_ext = ax.pie(major_raw_ds[sample_name], radius=1, labels=major_raw_ds[RAW_LABEL_COL_NAME],
                  labeldistance=1 - _WEDGE_WIDTH / 2, rotatelabels=True, wedgeprops=_WEDGE_PROPERTIES, textprops=_LABEL_PROPERTIES,
                  colors=major_raw_ds["color"].apply(lambda x: tuple(float(i) for i in x.split(";"))).values.tolist())
-
+# Export tables
+Utilities.dump_tsv(major_digest_df.reset_index(), "{}_inner_values.tsv".format(sample_export_mask))
+Utilities.dump_tsv(major_raw_ds, "{}_outer_values.tsv".format(sample_export_mask))
+# Set labels
 ax.set_xlabel(y_col_name)
 ax.set_ylabel(value_col_name)
 plt.tight_layout()
-
-pie_file = os.path.join(projectDescriber.DATA_DIGEST_DIR, "test_pie.png")
-os.makedirs(os.path.dirname(pie_file), exist_ok=True)
+# Export PNG
+pie_file = "{}_double_donut.png".format(sample_export_mask)
 fig.suptitle(pie_file, fontsize=_BASE_FONT_SIZE)
 plt.savefig(pie_file, dpi=300, bbox_inches="tight")
 plt.close("all")
