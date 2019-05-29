@@ -41,7 +41,8 @@ referenceDescriber = ReferenceDescriber()
 digestAssociationsKeeper = DigestAssociationsKeeper()
 COVERAGE_DIR = os.path.join(projectDescriber.MAPPED_DATA_DIR, referenceDescriber.ALIAS, "Statistics")
 REFERENCE_COL_NAME = "reference_id"
-KEYWORDS_ASSOCIATIVE_PAIRS = {"host": {}, "Drug Class": digestAssociationsKeeper.DRUG_CLASSES,
+HOST_COL_NAME = "host"
+KEYWORDS_ASSOCIATIVE_PAIRS = {HOST_COL_NAME: {}, "Drug Class": digestAssociationsKeeper.DRUG_CLASSES,
                               "Resistance Mechanism": digestAssociationsKeeper.RESISTANCE_MECHANISMS}
 DIGEST_LABEL_COL_NAME = "keyword"
 RAW_LABEL_COL_NAME = "gene_symbol"
@@ -94,18 +95,6 @@ class InterpretationHandler:
         self.raw_annotated_pivot.rename(columns={i: j for i, j in zip(self.sample_names, new_sample_names)},
                                         inplace=True)
         self.sample_names = new_sample_names
-    def get_gigest_df(self, associations: dict, columns_with_keywords: list):
-        association_digest_df = digestAssociationsKeeper.digest_df(
-            self.raw_annotated_pivot.loc[:, columns_with_keywords + self.sample_names], associations,
-            *columns_with_keywords)
-        association_index_name = "_".join(columns_with_keywords)
-        association_digest_df.index.name = association_index_name
-        association_digest_df.columns.name = "sample_name"
-        association_digest_dir = os.path.join(projectDescriber.DATA_DIGEST_DIR, self.describer.ALIAS, value_col_name, association_index_name)
-        association_digest_file = os.path.join(association_digest_dir, "digest_{}_{}_{}.tsv".format(self.describer.ALIAS, value_col_name, association_index_name))
-        os.makedirs(association_digest_dir, exist_ok=True)
-        Utilities.dump_tsv(association_digest_df.reset_index(), table_file=association_digest_file)
-        return association_digest_df
     @staticmethod
     def create_mirrored_path(items: list, sep: str = "_", makedirs: bool = False):
         """
@@ -124,83 +113,116 @@ class InterpretationHandler:
         def autopct(pct):
             return "{v}\n({p:.1f}%)".format(v="{:.2g}".format(int(round(pct * sum(values) / 100.0)), "E"), p=pct)
         return autopct
+    def process(self):
+        value_col_name_raw_pivot_annotated_mask = self.create_mirrored_path(
+            [projectDescriber.DATA_DIGEST_DIR, self.value_col_name], makedirs=True)
+        Utilities.dump_tsv(self.raw_annotated_pivot.reset_index(),
+                           "{}_raw_annotated_pivot.tsv".format(value_col_name_raw_pivot_annotated_mask))
+        for col_name_with_keywords in KEYWORDS_ASSOCIATIVE_PAIRS:
+            df_to_digest = self.raw_annotated_pivot.loc[:, [col_name_with_keywords] + self.sample_names]
+            associations = KEYWORDS_ASSOCIATIVE_PAIRS.get(col_name_with_keywords)
+            if col_name_with_keywords == HOST_COL_NAME:
+                associations = digestAssociationsKeeper.generate_genera_dict(
+                    df_to_digest[col_name_with_keywords].values.tolist())
+            digest_df, raw_ds = digestAssociationsKeeper.digest_df(df_to_digest, associations=associations,
+                                                                   columns_with_keywords=[col_name_with_keywords])
+            raw_ds = Utilities.left_merge(raw_ds, self.raw_annotated_pivot[RAW_LABEL_COL_NAME].reset_index(),
+                                          REFERENCE_COL_NAME).fillna("")
+            raw_ds[RAW_LABEL_COL_NAME] = raw_ds[RAW_LABEL_COL_NAME].apply(
+                lambda x: min(Utilities.remove_empty_values([i for i in x.strip().split(" ")]), key=len))
+            keyword_export_mask = self.create_mirrored_path(
+                [projectDescriber.DATA_DIGEST_DIR, self.value_col_name, col_name_with_keywords],
+                makedirs=True)
+            Utilities.dump_tsv(digest_df.reset_index(), "{}_digest.tsv".format(keyword_export_mask))
+            Utilities.dump_tsv(raw_ds, "{}_raw.tsv".format(keyword_export_mask))
+            for sample_name in digest_df.columns:
+                _BASE_FONT_SIZE = 15
+                _WEDGE_WIDTH = 0.3
+                _WEDGE_PROPERTIES = dict(width=_WEDGE_WIDTH, edgecolor="w")
+                _LABEL_PROPERTIES = dict(fontsize=_BASE_FONT_SIZE, rotation_mode="anchor", verticalalignment="center",
+                                         horizontalalignment="center")
+                major_digest_df = Utilities.get_n_majors_from_df(digest_df, sample_name, n=INNER_DONUT_GROUPS - 1)
+                # Create visualization
+                fig, ax = plt.subplots()
+                plt.rcParams.update({"font.size": _BASE_FONT_SIZE, "figure.figsize": (20, 20)})
+                ax.axis("equal")
+                y_col_name = major_digest_df.columns[0]
+                # Returning value: [[wedges...], [labels...], [values...]]
+                pie_int = ax.pie(major_digest_df[sample_name], radius=1 - _WEDGE_WIDTH, labels=major_digest_df.index,
+                                 labeldistance=1 - _WEDGE_WIDTH, rotatelabels=False,
+                                 autopct=self.make_autopct(major_digest_df[y_col_name]),
+                                 pctdistance=1 - _WEDGE_WIDTH / 2.0,
+                                 wedgeprops=_WEDGE_PROPERTIES, textprops=_LABEL_PROPERTIES)
+                # Combine color values in 'RGBA' format into the one dictionary
+                pie_int_colors = {pie_int[1][idx].get_text(): wedge.get_facecolor() for idx, wedge in
+                                  enumerate(pie_int[0])}
+                # Manual sort the dataset with raw values prior to the order of digest keywords
+                major_raw_ds = pd.DataFrame()
+                for digest_keyword in major_digest_df.index:
+                    if digest_keyword == "Other":
+                        major_raw_ds_append = pd.DataFrame(major_digest_df.loc["Other"]).transpose()
+                        major_raw_ds_append.index.name = DIGEST_LABEL_COL_NAME
+                        major_raw_ds_append = major_raw_ds_append.reset_index()
+                    else:
+                        major_raw_ds_append_right = raw_ds.loc[
+                            raw_ds[DIGEST_LABEL_COL_NAME] == digest_keyword, [REFERENCE_COL_NAME, sample_name,
+                                                                              DIGEST_LABEL_COL_NAME,
+                                                                              RAW_LABEL_COL_NAME]]
+                        major_raw_ds_append_left = Utilities.get_n_majors_from_df(
+                            major_raw_ds_append_right.set_index(REFERENCE_COL_NAME), sample_name,
+                            n=OUTER_DONUT_SUBGROUPS - 1).rename(index={"Other": digest_keyword}).reset_index()
+                        major_raw_ds_append = Utilities.left_merge(major_raw_ds_append_left, major_raw_ds_append_right,
+                                                                   REFERENCE_COL_NAME)
+                        major_raw_ds_append[RAW_LABEL_COL_NAME] = major_raw_ds_append[RAW_LABEL_COL_NAME].fillna(
+                            "{}_Other".format(digest_keyword))
+                        major_raw_ds_append[DIGEST_LABEL_COL_NAME] = major_raw_ds_append[DIGEST_LABEL_COL_NAME].fillna(
+                            "Other")
+                    pie_ext_append_colors = []
+                    for row_number in major_raw_ds_append.index.values:
+                        row_color = pie_int_colors.get(digest_keyword)
+                        if not row_color:
+                            continue
+                        row_old_alpha = row_color[3]
+                        _MINIMAL_ALPHA = 0.2
+                        if major_raw_ds_append.shape[0] < 4:
+                            row_new_alpha = row_old_alpha - (row_old_alpha * row_number * _MINIMAL_ALPHA)
+                        else:
+                            row_new_alpha = row_old_alpha - ((row_old_alpha - _MINIMAL_ALPHA) * row_number / float(
+                                major_raw_ds_append.shape[0] - 1))
+                        pie_ext_append_colors.append(";".join(str(i) for i in list(row_color[:3]) + [row_new_alpha]))
+                    major_raw_ds_append["color"] = pie_ext_append_colors
+                    if major_raw_ds_append.shape[0] > 0:
+                        if major_raw_ds.shape[0] == 0:
+                            major_raw_ds = major_raw_ds_append
+                        else:
+                            major_raw_ds = pd.concat([major_raw_ds, major_raw_ds_append], axis=0, ignore_index=True,
+                                                     sort=False)
+                major_raw_ds = major_raw_ds.fillna("Other")
+                pie_ext = ax.pie(major_raw_ds[sample_name], radius=1, labels=major_raw_ds[RAW_LABEL_COL_NAME],
+                                 labeldistance=1 - _WEDGE_WIDTH / 2, rotatelabels=True, wedgeprops=_WEDGE_PROPERTIES,
+                                 textprops=_LABEL_PROPERTIES, colors=major_raw_ds["color"].apply(
+                        lambda x: tuple(float(i) for i in x.split(";"))).values.tolist())
+                # Export visualization tables
+                sample_export_mask = self.create_mirrored_path(
+                    [projectDescriber.DATA_DIGEST_DIR, self.value_col_name, col_name_with_keywords, sample_name],
+                    makedirs=True)
+                Utilities.dump_tsv(major_digest_df.reset_index(), "{}_inner_values.tsv".format(sample_export_mask))
+                Utilities.dump_tsv(major_raw_ds, "{}_outer_values.tsv".format(sample_export_mask))
+                # Set labels
+                ax.set_xlabel(y_col_name)
+                ax.set_ylabel(self.value_col_name)
+                plt.tight_layout()
+                # Export PNG
+                pie_file = "{}_double_donut.png".format(sample_export_mask)
+                fig.suptitle(pie_file, fontsize=_BASE_FONT_SIZE)
+                plt.savefig(pie_file, dpi=300, bbox_inches="tight")
+                plt.close("all")
+                plt.clf()
 
 
-# Create raw coverage pivot for CARD data
-for value_col_name in VALUE_COL_NAMES:
-    handler = InterpretationHandler(referenceDescriber, value_col_name)
-    handler.update_sample_names("\/([A-Z][^\/_]+)_")
-    for col_name_with_keywords in KEYWORDS_ASSOCIATIVE_PAIRS:
-        df_to_digest = handler.raw_annotated_pivot.loc[:, [col_name_with_keywords] + handler.sample_names]
-        associations = KEYWORDS_ASSOCIATIVE_PAIRS.get(col_name_with_keywords)
-        if col_name_with_keywords == "host":
-            associations = digestAssociationsKeeper.generate_genera_dict(df_to_digest[col_name_with_keywords].values.tolist())
-        digest_df, raw_ds = digestAssociationsKeeper.digest_df(df_to_digest, associations=associations, columns_with_keywords=[col_name_with_keywords])
-        raw_ds = Utilities.left_merge(raw_ds, handler.raw_annotated_pivot[RAW_LABEL_COL_NAME].reset_index(), REFERENCE_COL_NAME)
-        raw_ds[RAW_LABEL_COL_NAME] = raw_ds[RAW_LABEL_COL_NAME].apply(lambda x: min((j for j in x.strip().split(" ") if j), key=len))
-        for sample_name in digest_df.columns:
-            major_digest_df = Utilities.get_n_majors_from_df(digest_df, sample_name, n=INNER_DONUT_GROUPS - 1)
-            sample_export_mask = InterpretationHandler.create_mirrored_path([projectDescriber.DATA_DIGEST_DIR, value_col_name, col_name_with_keywords, sample_name], makedirs=True)
-            # Create visualization
-            fig, ax = plt.subplots()
-            _BASE_FONT_SIZE = 15
-            plt.rcParams.update({"font.size": _BASE_FONT_SIZE, "figure.figsize": (20, 20)})
-            ax.axis("equal")
-            y_col_name = major_digest_df.columns[0]
-            _WEDGE_WIDTH = 0.3
-            _WEDGE_PROPERTIES = dict(width=_WEDGE_WIDTH, edgecolor="w")
-            _LABEL_PROPERTIES = dict(fontsize=_BASE_FONT_SIZE, rotation_mode="anchor", verticalalignment="center", horizontalalignment="center")
-            # Returning value: [[wedges...], [labels...], [values...]]
-            pie_int = ax.pie(major_digest_df[sample_name], radius=1 - _WEDGE_WIDTH, labels=major_digest_df.index,
-                             labeldistance=1 - _WEDGE_WIDTH, rotatelabels=False, autopct=InterpretationHandler.make_autopct(major_digest_df[y_col_name]), pctdistance=1 - _WEDGE_WIDTH / 2.0,
-                             wedgeprops=_WEDGE_PROPERTIES, textprops=_LABEL_PROPERTIES)
-            # Combine color values in 'RGBA' format into the one dictionary
-            pie_int_colors = {pie_int[1][idx].get_text(): wedge.get_facecolor() for idx, wedge in enumerate(pie_int[0])}
-            # Manual sort the dataset with raw values prior to the order of digest keywords
-            major_raw_ds = pd.DataFrame()
-            for digest_keyword in major_digest_df.index:
-                if digest_keyword == "Other":
-                    major_raw_ds_append = pd.DataFrame(major_digest_df.loc["Other"]).transpose()
-                    major_raw_ds_append.index.name = DIGEST_LABEL_COL_NAME
-                    major_raw_ds_append = major_raw_ds_append.reset_index()
-                else:
-                    major_raw_ds_append_right = raw_ds.loc[raw_ds[DIGEST_LABEL_COL_NAME] == digest_keyword, [REFERENCE_COL_NAME, sample_name, DIGEST_LABEL_COL_NAME, RAW_LABEL_COL_NAME]]
-                    major_raw_ds_append_left = Utilities.get_n_majors_from_df(major_raw_ds_append_right.set_index(REFERENCE_COL_NAME), sample_name, n=OUTER_DONUT_SUBGROUPS - 1).rename(index={"Other": digest_keyword}).reset_index()
-                    major_raw_ds_append = Utilities.left_merge(major_raw_ds_append_left, major_raw_ds_append_right, REFERENCE_COL_NAME)
-                    major_raw_ds_append[RAW_LABEL_COL_NAME] = major_raw_ds_append[RAW_LABEL_COL_NAME].fillna("{}_Other".format(digest_keyword))
-                    major_raw_ds_append[DIGEST_LABEL_COL_NAME] = major_raw_ds_append[DIGEST_LABEL_COL_NAME].fillna("Other")
-                pie_ext_append_colors = []
-                for row_number in major_raw_ds_append.index.values:
-                    row_color = pie_int_colors.get(digest_keyword)
-                    if not row_color:
-                        continue
-                    row_old_alpha = row_color[3]
-                    _MINIMAL_ALPHA = 0.2
-                    if major_raw_ds_append.shape[0] < 4:
-                        row_new_alpha = row_old_alpha - (row_old_alpha * row_number * _MINIMAL_ALPHA)
-                    else:
-                        row_new_alpha = row_old_alpha - ((row_old_alpha - _MINIMAL_ALPHA) * row_number / float(major_raw_ds_append.shape[0] - 1))
-                    pie_ext_append_colors.append(";".join(str(i) for i in list(row_color[:3]) + [row_new_alpha]))
-                major_raw_ds_append["color"] = pie_ext_append_colors
-                if major_raw_ds_append.shape[0] > 0:
-                    if major_raw_ds.shape[0] == 0:
-                        major_raw_ds = major_raw_ds_append
-                    else:
-                        major_raw_ds = pd.concat([major_raw_ds, major_raw_ds_append], axis=0, ignore_index=True, sort=False)
-            major_raw_ds = major_raw_ds.fillna("Other")
-            pie_ext = ax.pie(major_raw_ds[sample_name], radius=1, labels=major_raw_ds[RAW_LABEL_COL_NAME],
-                             labeldistance=1 - _WEDGE_WIDTH / 2, rotatelabels=True, wedgeprops=_WEDGE_PROPERTIES, textprops=_LABEL_PROPERTIES,
-                             colors=major_raw_ds["color"].apply(lambda x: tuple(float(i) for i in x.split(";"))).values.tolist())
-            # Export visualization tables
-            Utilities.dump_tsv(major_digest_df.reset_index(), "{}_inner_values.tsv".format(sample_export_mask))
-            Utilities.dump_tsv(major_raw_ds, "{}_outer_values.tsv".format(sample_export_mask))
-            # Set labels
-            ax.set_xlabel(y_col_name)
-            ax.set_ylabel(value_col_name)
-            plt.tight_layout()
-            # Export PNG
-            pie_file = "{}_double_donut.png".format(sample_export_mask)
-            fig.suptitle(pie_file, fontsize=_BASE_FONT_SIZE)
-            plt.savefig(pie_file, dpi=300, bbox_inches="tight")
-            plt.close("all")
-            plt.clf()
+if __name__ == '__main__':
+    # Create raw coverage pivot for CARD data
+    for value_col_name in VALUE_COL_NAMES:
+        handler = InterpretationHandler(referenceDescriber, value_col_name)
+        handler.update_sample_names("\/([A-Z][^\/_]+)_")
+        handler.process()
