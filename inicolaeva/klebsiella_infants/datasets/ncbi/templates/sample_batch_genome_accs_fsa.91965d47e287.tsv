@@ -1,0 +1,4 @@
+biosample_accession	sample_name	assembly_date	assembly_name	assembly_method	assembly_method_version	genome_coverage	sequencing_technology	reference_genome	update_for	bacteria_available_from	filename
+SAMN0000001				MaSuRCA	8	11x	PacBio	GCA_001743455.1 			genome1.fsa
+SAMN0000054				Newbler	3	5x	Illumina NextSeq 500		ABDC00000000		genome2.fsa
+SAMN000466				Velvet	16	8x	Illumina MiSeq			Dr. Robert Smith lab at University of Wellness	genome3.fsa
