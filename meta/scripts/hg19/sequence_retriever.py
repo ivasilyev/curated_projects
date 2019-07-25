@@ -80,7 +80,28 @@ if __name__ == '__main__':
     retriever = SequenceRetriever(Utilities.get_time())
     retriever.retrieve()
     """
+# Reference indexing (from worker node):
+rm -rf /data/reference/homo_sapiens/ucsc/hg/hg19/hg19_v2019-07-25-14-42-32/index
+export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \
+docker pull $IMG && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG \
+python3 /home/docker/scripts/cook_the_reference.py \
+-i /data/reference/homo_sapiens/ucsc/hg/hg19/hg19_v2019-07-25-14-42-32/hg19.fasta \
+-o /data/reference/homo_sapiens/ucsc/hg/hg19/hg19_v2019-07-25-14-42-32/index
+
+# Wait until REFDATA file creates and complete the describer class template
+Created reference data linker: '/data/reference/homo_sapiens/ucsc/hg/hg19/hg19_v2019-07-25-14-42-32/index/hg19_refdata.json'
     """
-    retriever.set_refdata("")
+    retriever.set_refdata("/data/reference/homo_sapiens/ucsc/hg/hg19/hg19_v2019-07-25-14-42-32/index/hg19_refdata.json")
     """
+Please update the following script lines:
+class ReferenceDescriber(ReferenceDescriberTemplate):
+    NAME = "hg19"
+    VERSION = "2019-07-25-14-42-32"
+    ALIAS = "hg19_v2019-07-25-14-42-32"
+    DESCRIPTION = "The February 2009 human reference sequence (GRCh37)"
+    DOCUMENTATION = "https://www.ncbi.nlm.nih.gov/assembly/GCF_000001405.13/"
+    WEBSITE = "https://genome.ucsc.edu/cgi-bin/hgGateway?db=hg19&redirect=manual&source=genome.ucsc.edu"
+    REFDATA = "/data/reference/homo_sapiens/ucsc/hg/hg19/hg19_v2019-07-25-14-42-32/index/hg19_refdata.json"
+
     """
