@@ -10,6 +10,9 @@ bash
 
 git pull
 python3
+
+from meta.scripts.hg19.sequence_retriever import SequenceRetriever
+from meta.scripts.Utilities import Utilities
 """
 
 import os
@@ -50,7 +53,8 @@ class SequenceRetriever:
         os.makedirs(self.reference_dir, exist_ok=True)
         chromosomes_dir = os.path.join(self.reference_dir, "chromosomes")
         os.makedirs(chromosomes_dir, exist_ok=True)
-        compressed_chromosomes = Utilities.multi_core_queue(
+        # UCSC returns HTTP 530 when attempting to download in multi-thread
+        compressed_chromosomes = Utilities.single_core_queue(
             self._dl_wrapper, [{"chromosome": i, "chromosomes_dir": chromosomes_dir} for i in self.CHROMOSOMES])
         # Process sequence
         self.parsed_records = Utilities.flatten_2d_array(Utilities.single_core_queue(
