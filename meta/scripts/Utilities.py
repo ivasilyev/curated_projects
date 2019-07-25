@@ -148,6 +148,18 @@ class Utilities:
             print("Removing file: '{}'".format(file_name))
             os.remove(file_name)
 
+    @staticmethod
+    def get_time():
+        from datetime import datetime
+        now = datetime.now()
+        output_list = []
+        for time_unit in [now.year, now.month, now.day, now.hour, now.minute, now.second]:
+            time_unit = str(time_unit)
+            if len(time_unit) < 2:
+                time_unit = '0' + time_unit
+            output_list.append(time_unit)
+        return '-'.join(output_list)
+
     # Pandas methods
 
     @staticmethod
