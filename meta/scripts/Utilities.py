@@ -160,6 +160,17 @@ class Utilities:
             output_list.append(time_unit)
         return '-'.join(output_list)
 
+    # SeqIO methods
+    @staticmethod
+    def get_reads_stats_from_fq_gz(raw_reads_file):
+        import gzip
+        from Bio import SeqIO
+        with gzip.open(raw_reads_file, "rt") as f:
+            seq_records = list(SeqIO.parse(f, "fastq"))
+            f.close()
+        return {"sample_file": raw_reads_file, "sample_reads_number": len(seq_records),
+                "sample_reads_bp": sum([len(i) for i in seq_records])}
+
     # Pandas methods
 
     @staticmethod
@@ -295,4 +306,5 @@ class Utilities:
             _RETRIES_LEFT -= 1
             sleep(_SLEEP_SECONDS)
             print("Warning! Failed download: '{}'. Retries left: {}".format(url, _RETRIES_LEFT))
+        print("Exceeded URL download limits: '{}'".format(url))
         return ""

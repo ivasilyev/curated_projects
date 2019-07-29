@@ -54,15 +54,8 @@ print(pipeline_sampledata_file)
 # /data1/bio/projects/inicolaeva/klebsiella_infants/sample_data/raw_reads_pipeline.sampledata
 
 
-def get_reads_stats_from_fq_gz(raw_reads_file):
-    with gzip.open(raw_reads_file, "rt") as f:
-        seq_records = list(SeqIO.parse(f, "fastq"))
-        f.close()
-    return {"sample_file": raw_reads_file, "sample_reads_number": len(seq_records),
-            "sample_reads_bp": sum([len(i) for i in seq_records])}
-
-
-reads_stats_list = Utilities.single_core_queue(get_reads_stats_from_fq_gz, raw_sampledata_df["R1"].values.tolist())
+reads_stats_list = Utilities.single_core_queue(Utilities.get_reads_stats_from_fq_gz,
+                                               raw_sampledata_df["R1"].values.tolist())
 reads_stats_df = pd.DataFrame(reads_stats_list)
 # Illumina's PE reads always have same counts of base pairs and total reads
 raw_sampledata_df["sample_reads_number"] = reads_stats_df["sample_reads_number"] * 2
