@@ -12,40 +12,73 @@ python3
 """
 
 import os
+import subprocess
 import pandas as pd
 from meta.scripts.Utilities import Utilities
 from inicolaeva.klebsiella_infants.ProjectDescriber import ProjectDescriber
 from Bio import SeqIO
+from copy import deepcopy
 
-assembler_result_dir = "/data1/bio/projects/inicolaeva/klebsiella_infants/test/pipeline/04_spades"
+
+ASSEMBLY_TYPES = ("genome", "plasmid")
+ORGANISM = "Klebsiella pneumoniae"
+ISOLATE_PREFIX = "KZN_INI_KINF"
+
+assembler_result_dir = "/data1/bio/projects/inicolaeva/klebsiella_infants/pipeline/05_spades"
 assembly_files = [i for i in Utilities.scan_whole_dir(assembler_result_dir) if os.path.basename(i) == "contigs.fasta"]
 assemblies_target_dir = "/data1/bio/projects/inicolaeva/klebsiella_infants/assemblies"
 
-assemblies_dict = dict()
-for assembly_file in assembly_files:
-    sample_name = Utilities.safe_findall("(Kleb[0-9]+)", assembly_file)
-    if "plasmid" in assembly_file:
-        assembly_type = "plasmid"
-    else:
-        assembly_type = "genome"
-    if assemblies_dict.get(sample_name) is None:
-        assemblies_dict[sample_name] = dict()
-    assemblies_dict[sample_name]["sample_name"] = sample_name
-    assemblies_dict[sample_name]["{}_file".format(assembly_type)] = assembly_file
-    seq_records_raw = list(SeqIO.parse(assembly_file, "fasta"))
-    assemblies_dict[sample_name]["{}_assembly_contigs_number_raw".format(assembly_type)] = len(seq_records_raw)
-    assemblies_dict[sample_name]["{}_assembly_bp_raw".format(assembly_type)] = sum([len(i) for i in seq_records_raw])
-    # NCBI does not allow to submit sequences shorter than 200 nucleotides
-    seq_records_valid = [i for i in list(SeqIO.parse(assembly_file, "fasta")) if len(i) > 200]
-    assemblies_dict[sample_name]["{}_assembly_contigs_number_valid".format(assembly_type)] = len(seq_records_valid)
-    assemblies_dict[sample_name]["{}_assembly_bp_valid".format(assembly_type)] = sum(
-        [len(i) for i in seq_records_valid])
-    SeqIO.write(seq_records_valid, os.path.join(assemblies_target_dir, "{}_{}.fna".format(sample_name, assembly_type)),
-                "fasta")
+sample_dirs = sorted(set([os.path.dirname(os.path.dirname(i)) for i in assembly_files]))
+
+_ = subprocess.getoutput("rm -rf {}".format(assemblies_target_dir))
+os.makedirs(assemblies_target_dir, exist_ok=True)
+
+
+assemblies_annotations = []
+for sample_dir in sample_dirs:
+    sample_name = os.path.basename(sample_dir)
+    sample_number = Utilities.safe_findall("([0-9]+)", sample_name)
+    sample_assemblies = [i for i in assembly_files if i.startswith(sample_dir)]
+    assemblies_annotation = dict()
+    seq_records_processed = []
+    plasmid_counter = 0
+    assembly_target_file = os.path.join(assemblies_target_dir, "{}_genome.fna".format(sample_name))
+    for assembly_file_raw in sample_assemblies:
+        for assembly_type in ASSEMBLY_TYPES:
+            if os.path.dirname(assembly_file_raw).endswith(assembly_type):
+                seq_records = sorted(list(SeqIO.parse(assembly_file_raw, "fasta")), key=lambda x: len(x), reverse=True)
+                assemblies_annotation["sample_name"] = sample_name
+                assemblies_annotation["{}_file".format(assembly_type)] = assembly_file_raw
+                seq_records_raw = list(SeqIO.parse(assembly_file_raw, "fasta"))
+                assemblies_annotation["{}_assembly_contigs_number_raw".format(assembly_type)] = len(seq_records_raw)
+                assemblies_annotation["{}_assembly_bp_raw".format(assembly_type)] = sum(
+                    [len(i) for i in seq_records_raw])
+                # NCBI does not allow to submit sequences shorter than 200 nucleotides
+                seq_records_valid = [i for i in seq_records if len(i) > 200]
+                assemblies_annotation["{}_assembly_contigs_number_valid".format(assembly_type)] = len(seq_records_valid)
+                assemblies_annotation["{}_assembly_bp_valid".format(assembly_type)] = sum(
+                    [len(i) for i in seq_records_valid])
+                for seq_record_raw in seq_records_valid:
+                    # Example `contigs.fasta` header:
+                    # '>NODE_1_length_42950_cov_12.6852_component_0'
+                    # contig_number = int(Utilities.safe_findall("^NODE_([0-9]+)", seq_record_raw.id))
+                    # Processed FASTA header example:
+                    # >contig02 [organism=Clostridium difficile] [strain=ABDC] [plasmid-name=pABDC1] [topology=circular] [completeness=complete]
+                    seq_record_processed = deepcopy(seq_record_raw)
+                    seq_record_processed.id = "contig{0:03d}".format(len(seq_records_processed) + 1)
+                    seq_record_processed.description = "[organism={}] [strain={}_{}]".format(
+                        ORGANISM, ISOLATE_PREFIX, sample_number)
+                    if assembly_type == "plasmid":
+                        plasmid_counter += 1
+                        seq_record_processed.description += " [plasmid-name=unnamed{0:02d}]" .format(plasmid_counter)
+                    seq_records_processed.append(seq_record_processed)
+    #
+    assemblies_annotations.append(assemblies_annotation)
+    SeqIO.write(seq_records_processed, assembly_target_file, "fasta")
 
 
 INDEX_COL_NAME = "sample_name"
-assemblies_statistics_df = pd.DataFrame(assemblies_dict.values()).set_index(INDEX_COL_NAME)
+assemblies_statistics_df = pd.DataFrame(assemblies_annotations).set_index(INDEX_COL_NAME)
 reads_statistics_file = "/data1/bio/projects/inicolaeva/klebsiella_infants/sample_data/reads_statistics.tsv"
 reads_statistics_df = Utilities.load_tsv(reads_statistics_file).set_index(INDEX_COL_NAME)
 combined_statistics_df = pd.concat([reads_statistics_df, assemblies_statistics_df], axis=1, sort=False)
