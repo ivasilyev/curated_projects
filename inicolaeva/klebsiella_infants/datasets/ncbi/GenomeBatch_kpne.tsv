@@ -1,0 +1,11 @@
+biosample_accession	sample_name	assembly_date	assembly_name	assembly_method	assembly_method_version	genome_coverage	sequencing_technology	reference_genome	update_for	bacteria_available_from	filename
+	Kleb102	29.07.2019		SPAdes	quay.io/biocontainers/spades:3.9.1--0	58.7x	Illumina MiSeq				Kleb102_genome.fna
+	Kleb22	29.07.2019		SPAdes	quay.io/biocontainers/spades:3.9.1--0	45.4x	Illumina MiSeq				Kleb22_genome.fna
+	Kleb24	29.07.2019		SPAdes	quay.io/biocontainers/spades:3.9.1--0	48.3x	Illumina MiSeq				Kleb24_genome.fna
+	Kleb27	29.07.2019		SPAdes	quay.io/biocontainers/spades:3.9.1--0	59.6x	Illumina MiSeq				Kleb27_genome.fna
+	Kleb28	29.07.2019		SPAdes	quay.io/biocontainers/spades:3.9.1--0	52.3x	Illumina MiSeq				Kleb28_genome.fna
+	Kleb29	29.07.2019		SPAdes	quay.io/biocontainers/spades:3.9.1--0	71.1x	Illumina MiSeq				Kleb29_genome.fna
+	Kleb60	29.07.2019		SPAdes	quay.io/biocontainers/spades:3.9.1--0	56.1x	Illumina MiSeq				Kleb60_genome.fna
+	Kleb85	29.07.2019		SPAdes	quay.io/biocontainers/spades:3.9.1--0	68.1x	Illumina MiSeq				Kleb85_genome.fna
+	Kleb90	29.07.2019		SPAdes	quay.io/biocontainers/spades:3.9.1--0	68.6x	Illumina MiSeq				Kleb90_genome.fna
+	Kleb91	29.07.2019		SPAdes	quay.io/biocontainers/spades:3.9.1--0	78.0x	Illumina MiSeq				Kleb91_genome.fna
