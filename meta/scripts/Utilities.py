@@ -42,7 +42,8 @@ class Utilities:
 
     @staticmethod
     def string_to_2d_array(string: str):
-        return Utilities.remove_empty_values([[j.strip() for j in i.split("\t")] for i in Utilities.split_lines(string)])
+        out = [[j.strip() for j in i.split("\t")] for i in Utilities.split_lines(string)]
+        return Utilities.remove_empty_values(out)
 
     @staticmethod
     def _2d_array_to_dicts_list(arr: list, names: list):
@@ -87,6 +88,30 @@ class Utilities:
             print("Warning! Can't find the regex pattern '{}' within the string: '{}'".format(pattern, string))
             return ""
 
+    @staticmethod
+    def count_index_based_similarity(words: list):
+        words = sorted(set(words))
+        out = dict()
+        for idx_1, word in enumerate(words):
+            other_words = words[:idx_1] + words[idx_1 + 1:]
+            out[word] = []
+            for other_word in other_words:
+                comparison_group = sorted([word, other_word], key=len, reverse=True)
+                score = 0
+                for idx_2, char in enumerate(comparison_group[0]):
+                    try:
+                        score += char == comparison_group[1][idx_2]
+                    except IndexError:
+                        pass
+                out[word].append([other_word, score])
+            out[word] = sorted(out[word], key=lambda x: x[1], reverse=True)
+        return out
+
+    @staticmethod
+    def get_most_similar_word_pairs(words: list):
+        similarities = Utilities.count_index_based_similarity(words)
+        return [(k, similarities[k][0][0]) for k in similarities.keys()]
+
     # File processing methods
 
     @staticmethod
@@ -108,7 +133,7 @@ class Utilities:
         for root, dirs, files in os.walk(dir_name):
             for file in files:
                 out.append(os.path.join(root, file))
-        return out
+        return sorted(out)
 
     @staticmethod
     def concatenate_files(*source_files, target_file):
@@ -161,6 +186,7 @@ class Utilities:
         return '-'.join(output_list)
 
     # SeqIO methods
+
     @staticmethod
     def get_reads_stats_from_fq_gz(raw_reads_file):
         import gzip
