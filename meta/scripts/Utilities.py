@@ -110,7 +110,12 @@ class Utilities:
     @staticmethod
     def get_most_similar_word_pairs(words: list):
         similarities = Utilities.count_index_based_similarity(words)
-        return [(k, similarities[k][0][0]) for k in similarities.keys()]
+        pairs = [(k, similarities[k][0][0]) for k in similarities.keys()]
+        for pair in pairs:
+            pair_reversed = tuple(reversed(pair))
+            if pair_reversed in pairs:
+                pairs.remove(pair_reversed)
+        return pairs
 
     # File processing methods
 
