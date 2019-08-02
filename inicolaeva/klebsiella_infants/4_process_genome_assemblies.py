@@ -68,12 +68,16 @@ for sample_dir in sample_dirs:
                     if assembly_type == "plasmid":
                         plasmid_counter += 1
                         seq_record_processed.description += " PLASMID"
-    for seq_record_processed in Utilities.remove_duplicate_sequences(seq_records_processed):
+                    seq_records_processed.append(seq_record_processed)
+    seq_records_processed = Utilities.remove_duplicate_sequences(seq_records_processed)
+    for idx, seq_record_processed in enumerate(seq_records_processed):
         seq_record_processed.id = "contig{a:03d} [organism={b}] [strain={c}_{d}]".format(
-            a=len(seq_records_processed) + 1, b=ORGANISM, c=ISOLATE_PREFIX, d=sample_number)
+            a=idx + 1, b=ORGANISM, c=ISOLATE_PREFIX, d=sample_number)
         if seq_record_processed.description.endswith(" PLASMID"):
             plasmid_counter += 1
             seq_record_processed.description = "[plasmid-name=unnamed{0:02d}]".format(plasmid_counter)
+        else:
+            seq_record_processed.description = ""
     assemblies_annotations.append(assemblies_annotation)
     #
     SeqIO.write(seq_records_processed, assembly_target_file, "fasta")
