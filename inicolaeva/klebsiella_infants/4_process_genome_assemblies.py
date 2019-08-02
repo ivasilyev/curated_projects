@@ -18,7 +18,8 @@ from meta.scripts.Utilities import Utilities
 from inicolaeva.klebsiella_infants.ProjectDescriber import ProjectDescriber
 from Bio import SeqIO
 from copy import deepcopy
-
+from meta.scripts.ncbi_contamination_remover import ContaminationRemover
+from shutil import copy2
 
 ASSEMBLY_TYPES = ("genome", "plasmid")
 ORGANISM = "Klebsiella pneumoniae"
@@ -110,3 +111,22 @@ Utilities.dump_tsv(combined_statistics_df, combined_statistics_file,
 print(combined_statistics_file)
 # /data1/bio/projects/inicolaeva/klebsiella_infants/sample_data/combined_assembly_statistics.tsv
 # Copied into the ./datasets directory
+
+# Decontamination (after NCBI submission)
+contamination_reports_dir = os.path.join(assemblies_target_dir, "contamination")
+decontaminated_assemblies_dir = os.path.join(assemblies_target_dir, "decontaminated")
+_ = [os.makedirs(i, exist_ok=True) for i in (contamination_reports_dir, decontaminated_assemblies_dir)]
+# Place reports into this directory
+
+for report_file in Utilities.scan_whole_dir(contamination_reports_dir):
+    sample_name_report = Utilities.safe_findall("Contamination_(.+)_genome.txt", report_file)
+    for assembly_file in [i for i in Utilities.scan_whole_dir(assemblies_target_dir)
+                          if os.path.dirname(i) == assemblies_target_dir and i.endswith("_genome.fna")]:
+        sample_name_assembly = Utilities.safe_findall("([^/]+)_genome.fna", assembly_file)
+        decontaminated_assembly = os.path.join(
+            decontaminated_assemblies_dir, "{}_genome.fna".format(sample_name_assembly))
+        if sample_name_report == sample_name_assembly:
+            remover = ContaminationRemover(contamination_report=report_file, fna_file=assembly_file)
+            remover.export(decontaminated_assembly)
+        elif not os.path.isfile(decontaminated_assembly):
+            copy2(assembly_file, decontaminated_assembly)
