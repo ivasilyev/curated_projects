@@ -81,7 +81,8 @@ class ContaminationRemover:
         trim_index = self.find_index(self.contamination_lines, ["Trim:"])
         duplicated_index = self.find_index(self.contamination_lines, ["Duplicated:"])
         # Issue lines order: exclude, trim, duplicated
-        exclude_lines, duplicated_lines = ([] * 2)
+        exclude_lines = []
+        duplicated_lines = []
         trim_lines_processed = dict()
         if exclude_index:
             if trim_index:
