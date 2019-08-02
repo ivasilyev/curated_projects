@@ -190,7 +190,7 @@ class Utilities:
             output_list.append(time_unit)
         return '-'.join(output_list)
 
-    # SeqIO methods
+    # Biopython methods
 
     @staticmethod
     def get_reads_stats_from_fq_gz(raw_reads_file):
@@ -201,6 +201,16 @@ class Utilities:
             f.close()
         return {"sample_file": raw_reads_file, "sample_reads_number": len(seq_records),
                 "sample_reads_bp": sum([len(i) for i in seq_records])}
+
+    @staticmethod
+    def remove_duplicate_sequences(records: list):
+        out = []
+        sequences = []
+        for record in records:
+            if record.seq not in sequences:
+                sequences.append(record.seq)
+                out.append(record)
+        return out
 
     # Pandas methods
 

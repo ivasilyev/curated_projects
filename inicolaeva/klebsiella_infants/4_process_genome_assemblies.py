@@ -65,15 +65,17 @@ for sample_dir in sample_dirs:
                     # Processed FASTA header example:
                     # >contig02 [organism=Clostridium difficile] [strain=ABDC] [plasmid-name=pABDC1] [topology=circular] [completeness=complete]
                     seq_record_processed = deepcopy(seq_record_raw)
-                    seq_record_processed.id = "contig{0:03d}".format(len(seq_records_processed) + 1)
-                    seq_record_processed.description = "[organism={}] [strain={}_{}]".format(
-                        ORGANISM, ISOLATE_PREFIX, sample_number)
                     if assembly_type == "plasmid":
                         plasmid_counter += 1
-                        seq_record_processed.description += " [plasmid-name=unnamed{0:02d}]" .format(plasmid_counter)
-                    seq_records_processed.append(seq_record_processed)
-    #
+                        seq_record_processed.description += " PLASMID"
+    for seq_record_processed in Utilities.remove_duplicate_sequences(seq_records_processed):
+        seq_record_processed.id = "contig{a:03d} [organism={b}] [strain={c}_{d}]".format(
+            a=len(seq_records_processed) + 1, b=ORGANISM, c=ISOLATE_PREFIX, d=sample_number)
+        if seq_record_processed.description.endswith(" PLASMID"):
+            plasmid_counter += 1
+            seq_record_processed.description = "[plasmid-name=unnamed{0:02d}]".format(plasmid_counter)
     assemblies_annotations.append(assemblies_annotation)
+    #
     SeqIO.write(seq_records_processed, assembly_target_file, "fasta")
 
 
