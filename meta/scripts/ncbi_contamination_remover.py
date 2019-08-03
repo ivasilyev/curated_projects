@@ -119,13 +119,8 @@ class ContaminationRemover:
             record_id = record_raw.id.split(" ")[0].strip()
             if record_id not in bad_words:
                 out_records.append(record_raw)
-            if exclude_index and record_id in exclude_lines:
-                pass
-            if trim_index and record_id in trim_lines_processed.keys():
-                trim_indices = trim_lines_processed[record_id]
-                record_trimmed = record_raw[trim_indices[0]: trim_indices[1]]
-                out_records.append(record_trimmed)
-
+            # Some positions from the "Trim" entry after NCBI processing were moved into the "Exclude" entry
+            # The point is removing them instead of trimming
         self.valid_records = [i for i in out_records if len(i) >= self._NCBI_MIN_SEQ_LENGTH]
 
     @staticmethod
