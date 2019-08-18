@@ -15,8 +15,6 @@ import os
 import pandas as pd
 from meta.scripts.Utilities import Utilities
 from inicolaeva.klebsiella_infants.ProjectDescriber import ProjectDescriber
-import gzip
-from Bio import SeqIO
 
 
 # Get the raw reads files
@@ -52,7 +50,6 @@ Utilities.dump_tsv(df=raw_sampledata_df, table_file=pipeline_sampledata_file,
 
 print(pipeline_sampledata_file)
 # /data1/bio/projects/inicolaeva/klebsiella_infants/sample_data/raw_reads_pipeline.sampledata
-
 
 reads_stats_list = Utilities.single_core_queue(Utilities.get_reads_stats_from_fq_gz,
                                                raw_sampledata_df["R1"].values.tolist())

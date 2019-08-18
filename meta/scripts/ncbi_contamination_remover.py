@@ -58,7 +58,9 @@ class ArgParser:
     def __init__(self):
         from argparse import ArgumentParser
         parser = ArgumentParser(description="Tool to remove contamination from given FASTA nucleotide sequence file "
-                                            "based on NCBI contamination report")
+                                            "based on NCBI contamination report",
+                                epilog="Note if the FASTA headers contain spaces, only the first piece of split header "
+                                       "will be processed")
         parser.add_argument("-i", "--input", metavar="<input.fna>", required=True, help="Input FASTA file")
         parser.add_argument("-c", "--contamination", metavar="<Contamination_input.txt>", required=True,
                             help="NCBI contamination report file")

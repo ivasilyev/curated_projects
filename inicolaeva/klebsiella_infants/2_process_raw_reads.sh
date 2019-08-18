@@ -22,7 +22,7 @@ python3 \
         -o /data1/bio/projects/inicolaeva/klebsiella_infants/pipeline
 
 # Combine MLST results
-mlst=$(find /data1/bio/projects/inicolaeva/klebsiella_infants/test/pipeline/10_srst2/ -name *__results.txt -print)
+mlst=$(find /data1/bio/projects/inicolaeva/klebsiella_infants/pipeline/11_srst2 -name *__results.txt -print)
 cat <(echo "${mlst}" | head -n 1 | xargs head -qn 1) <(echo "${mlst}" | xargs tail -qn 1 | sort) | \
     tee /data1/bio/projects/inicolaeva/klebsiella_infants/pipeline/mlst.tsv
 
