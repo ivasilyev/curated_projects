@@ -9,13 +9,15 @@ from copy import deepcopy
 class ArgParser:
     def __init__(self):
         from argparse import ArgumentParser
-        parser = ArgumentParser(description="Tool to merge and deduplicate genome and plasmid nucleotide sequences",
+        parser = ArgumentParser(description="Tool to merge and deduplicate chromosome and plasmid nucleotide sequences",
                                 epilog="Sequences must be in FASTA format")
-        parser.add_argument("-g", "--genome", metavar="<genome.fna>", required=True, help="Input genome contigs file")
-        parser.add_argument("-p", "--plasmid", metavar="<plasmid.fna>", required=True, help="Input plasmid contigs file")
+        parser.add_argument("-c", "--chromosome", metavar="<chromosome.fna>", required=True,
+                            help="Input chromosome assembly file")
+        parser.add_argument("-p", "--plasmid", metavar="<plasmid.fna>", required=True,
+                            help="Input plasmid assembly file")
         parser.add_argument("-o", "--output", metavar="<output.fna>", required=True, help="Output file")
         self._namespace = parser.parse_args()
-        self.genome = self._namespace.genome
+        self.chromosome = self._namespace.chromosome
         self.plasmid = self._namespace.plasmid
         self.output = self._namespace.output
 
@@ -23,10 +25,10 @@ class ArgParser:
 class Merger:
     PLASMID_MARK = " ___@PLASMID"
 
-    def __init__(self, genome_file: str, plasmid_file: str):
+    def __init__(self, chromosome_file: str, plasmid_file: str):
         self.plasmid_number = 0
         self.seq_records_processed = []
-        self._parse(genome_file)
+        self._parse(chromosome_file)
         self._parse(plasmid_file, is_plasmid=True)
         self.seq_records_processed = Utilities.remove_duplicate_sequences(self.seq_records_processed)
         contigs_number = len(self.seq_records_processed)
@@ -64,5 +66,5 @@ class Merger:
 
 if __name__ == '__main__':
     argparser = ArgParser()
-    merger = Merger(argparser.genome, argparser.plasmid)
+    merger = Merger(argparser.chromosome, argparser.plasmid)
     merger.export(argparser.output)
