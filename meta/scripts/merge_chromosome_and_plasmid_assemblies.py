@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from meta.scripts.Utilities import Utilities
 from Bio import SeqIO
 from copy import deepcopy
 
@@ -30,7 +29,7 @@ class Merger:
         self.seq_records_processed = []
         self._parse(chromosome_file)
         self._parse(plasmid_file, is_plasmid=True)
-        self.seq_records_processed = Utilities.remove_duplicate_sequences(self.seq_records_processed)
+        self.seq_records_processed = self.remove_duplicate_sequences(self.seq_records_processed)
         contigs_number = len(self.seq_records_processed)
         plasmid_counter = 0
         for idx, seq_record_processed in enumerate(self.seq_records_processed):
@@ -57,6 +56,16 @@ class Merger:
                 self.plasmid_number += 1
                 seq_record_processed.description += self.PLASMID_MARK
             self.seq_records_processed.append(seq_record_processed)
+
+    @staticmethod
+    def remove_duplicate_sequences(records: list):
+        out = []
+        sequences = []
+        for record in records:
+            if record.seq not in sequences:
+                sequences.append(record.seq)
+                out.append(record)
+        return out
 
     def export(self, out_file):
         import os

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from meta.scripts.Utilities import Utilities
 from Bio import SeqIO
 
 
@@ -22,6 +21,7 @@ class ArgParser:
         self._namespace = parser.parse_args()
         self.chromosome = self._namespace.chromosome
         self.plasmid = self._namespace.plasmid
+        self.rename = self._namespace.rename
         self.output = self._namespace.output
 
 
@@ -33,7 +33,7 @@ class Filter:
         for plasmid_record in plasmid_records:
             if plasmid_record.seq not in chromosome_sequences:
                 self.processed_records.append(plasmid_record)
-        self.processed_records = Utilities.remove_duplicate_sequences(self.processed_records)
+        self.processed_records = self.remove_duplicate_sequences(self.processed_records)
         if rename:
             for idx, seq_record_processed in enumerate(self.processed_records):
                 seq_record_processed.id = "contig{}".format(str(idx + 1).zfill(len(str(len(self.processed_records)))))
@@ -43,6 +43,16 @@ class Filter:
     def _parse(assembly_file):
         return sorted(list(SeqIO.parse(assembly_file, "fasta")), key=lambda x: len(x), reverse=True)
 
+    @staticmethod
+    def remove_duplicate_sequences(records: list):
+        out = []
+        sequences = []
+        for record in records:
+            if record.seq not in sequences:
+                sequences.append(record.seq)
+                out.append(record)
+        return out
+
     def export(self, out_file):
         import os
         os.makedirs(os.path.dirname(out_file), exist_ok=True)
@@ -51,5 +61,5 @@ class Filter:
 
 if __name__ == '__main__':
     argparser = ArgParser()
-    filter_ = Filter(argparser.chromosome, argparser.plasmid)
+    filter_ = Filter(argparser.chromosome, argparser.plasmid, argparser.rename)
     filter_.export(argparser.output)
