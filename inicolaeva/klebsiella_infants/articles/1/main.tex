@@ -1,0 +1,108 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc} 
+\usepackage[english]{babel}
+\usepackage{csquotes}
+\usepackage[hidelinks]{hyperref}
+\nonfrenchspacing
+\usepackage{pgfplotstable}  % TSV data support
+\usepackage[backend=biber, % style=authoryear,
+natbib=true]{biblatex}  % Bibliography support
+\usepackage[acronym]{glossaries}  % Abbreviations & species support
+\addbibresource{latexrefs.bib}
+
+% Define species
+\newacronym[first={\textit{Escherichia coli}}]{ecoli}{\textit{E. coli}}{\textit{Escherichia coli}}
+\newacronym[first={\textit{Klebsiella pneumoniae}}]{kpne}{\textit{K. pneumoniae}}{\textit{Klebsiella pneumoniae}}
+% Define abbreviations
+\newacronym{mdrkp}{MDRKP}{Multi drug resistant \gls{kpne}}
+
+\title{Multidrug-resistant Klebsiella pneumoniae found in infant gut microbiota}
+\date{\today}
+\author{Vasilyev IY}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+TODO
+\end{abstract}
+
+\section{Introduction}\label{sec:intro}
+Newborn patients could obtain microorganisms from clinical environment, personnel, other patients and parents,
+e.g.\ via breast milk.
+Since Enterobacteriaceae are known early human gastrointestinal tract colonisers, local and systemic diseases could take
+place during the dynamic microbiome development.
+Their persistence as stable colonizers may have destructive consequence on the host vital functions.
+Moreover, due to the high horizontal gene transport frequency between the microbiome parts, persistence of even single
+strain carrying pathobiotic genes after its spread may cause explicit cyto- and genotoxic effects on host cells
+leading to dangerous repercussion including colorectal cancer in particular~\cite{Pope2019}.
+Underweight and weakened patients of neonatal intensive care nurseries often suffer Gram-positive bacteria infections,
+mostly caused by coagulase-negative Staphylococci, while Gram-negative bacteria infections are considered as more rare
+and deadly after even more rapid generalization~\cite{Dorota2017}.
+
+\gls{kpne} is the causative agent of numerous nosocomial and community acquired infections including
+pneumonia, sepsis, bacteremia, meningitis, pyogenic liver abscesses, urinary tract infections and more.
+The risk group historically includes patients with weakened and malfunctioning immune system, but the spread of
+hypervirulent strains also endangers immunosufficient individuals~\cite{Shankar2018}.
+First isolated from lungs of patient with pneumonia \textit{postmortem}, \gls{kpne} were acknowledged as a part of
+normal human gastrointestinal tract microbiome since then.
+The colonization can spread, persist for years and cause different pathologies from hidden carriage to
+fatal acute infections even for the healthy individuals~\cite{Martin2018}.
+
+In this article we present 8 cases of mature infants with the no-manifested carriage of multi drug resistant
+\gls{kpne} (\gls{mdrkp}) in the gastrointestinal tract detected at some time after the birth.
+The source(s) of the \gls{mdrkp} infection was not defined.
+
+\section{Materials and methods}\label{sec:mat_met}
+\subsection{Isolation of rectal \gls{mdrkp} samples from the infant patients}\label{subsec:iso}
+A total of 10 \gls{kpne} isolates demonstrating multidrug resistance phenotype were collected from 10
+stool samples of 8 monitored newborn patients during hospitalization in maternity hospital of Kazan, Russia.
+5 infants were born with vaginal delivery, 3~--- after caesarean surgery.
+No microbial DNA was found in the meconium samples from the all 8 individuals.
+However, the stool samples collected at 4~--- 5 day of life were contaminated with $10^8$..$10^9$ of \gls{mdrkp}
+colony-forming units per gram of stool.
+Two samples collected from two infants after 1 and 6 months of monitoring also contained \gls{mdrkp}.
+No manifested symptoms were reported across the whole monitoring time from all patients.
+
+\subsection{Phenotypic Characterization}\label{subsec:phe}
+The antimicrobial susceptibilities of the isolates were determined using a broth microdilution procedure.
+The results were interpreted in automated mode using VITEK 2 Compact analyzer (bioMérieux SA, France) according to
+producer's guidance documents.
+
+\subsection{Whole-genome sequencing and assembly.}\label{subsec:proc_raw}
+Libraries were prepared using Nextera XT DNA Library Preparation Kit.
+Whole-genome DNA was sequenced using Illumina MiSeq platform (Illumina Inc., USA),
+with a paired-end run of 2 by 250 bp.
+Raw reads quality control was performed with FastQC v0.11,  % quay.io/biocontainers/fastqc:0.11.8--1
+% fastqc -t 32 sample.fastq.gz -o sample
+trimmed by trimmomatic v0.39  % quay.io/biocontainers/trimmomatic:0.39--1
+% trimmomatic PE -threads 32 -phred33 sample.1.fastq.gz sample.2.fastq.gz sample_trimmomatic.1.fastq.gz sample_trimmomatic_untrimmed.1.fastq.gz sample_trimmomatic.2.fastq.gz sample_trimmomatic_untrimmed.2.fastq.gz ILLUMINACLIP:adapters.fasta:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+and cutadapt v2.4,  % quay.io/biocontainers/cutadapt:2.4--py37h14c3975_0
+% cutadapt -a AGATCGGAAGAG -A AGATCGGAAGAG -m 50 -o sample_cutadapt.1.fastq.gz -p sample_cutadapt.2.fastq.gz sample_trimmomatic.1.fastq.gz sample_trimmomatic.2.fastq.gz
+assembled using SPAdes v3.9.1.  % quay.io/biocontainers/spades:3.9.1--0
+% spades --careful -o sample/genome -1 sample_cutadapt.1.fastq.gz -2 sample_cutadapt.2.fastq.gz
+% spades --careful -o sample/plasmid -1 sample_cutadapt.1.fastq.gz -2 sample_cutadapt.2.fastq.gz --plasmid
+
+\subsection{Further genome assembly processing.}\label{subsec:proc_ass}
+For each sample genome and plasmid assemblies were merged, filtered and deduplicated using own scripts.
+The resulting assemblies were submitted to NCBI.\
+The corresponding Whole Genome Shotgun project has been deposited at NCBI GenBank database under the main
+BioProject accession ID PRJNA556398.
+The assemblies were annotated locally with prokka v1.13.7,   % quay.io/biocontainers/prokka:1.13.7--pl526_0
+% prokka --compliant --centre UoN --cpu 32 --outdir prokka/sample --force --prefix sample --locustag sample --genus Klebsiella --species pneumoniae sample.fasta
+MLST results were computed using SRST2 v0.2.  % quay.io/biocontainers/srst2:0.2.0--py27_2
+% getmlst.py --species "Klebsiella pneumoniae"
+% srst2 --output sample --input_pe sample_cutadapt.1.fastq.gz sample_cutadapt.2.fastq.gz --mlst_db Klebsiella_pneumoniae.fasta --mlst_definitions kpneumoniae.txt --mlst_delimiter '_' --log --threads 32
+
+\section{Results and discussion}\label{sec:res_dis}
+TODO
+%\pgfplotstabletypeset[
+%  string type,
+%]{../../datasets/antibiogram.tsv}
+\section{Acknowledgments}\label{sec:acks}
+TODO
+
+\printbibliography
+Compiled from \LaTeXe{}.
+\end{document}
