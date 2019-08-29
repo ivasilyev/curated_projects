@@ -4,25 +4,32 @@
 \usepackage[english]{babel}
 \usepackage{csquotes}
 \usepackage[hidelinks]{hyperref}
-\nonfrenchspacing
+\usepackage{authblk}  % Add the affiliation to the author's name
 \usepackage{pgfplotstable}  % TSV data support
 \usepackage[backend=biber, % style=authoryear,
 natbib=true]{biblatex}  % Bibliography support
 \usepackage[acronym]{glossaries}  % Abbreviations & species support
 \addbibresource{latexrefs.bib}
+\nonfrenchspacing
+
+% Define macros
+\newcommand{\betalactam}{$\beta$-lactam}
 
 % Define species
+% \newacronym{<label>}{<abbrv>}{<full>}
 \newacronym[first={\textit{Escherichia coli}}]{ecoli}{\textit{E. coli}}{\textit{Escherichia coli}}
 \newacronym[first={\textit{Klebsiella pneumoniae}}]{kpne}{\textit{K. pneumoniae}}{\textit{Klebsiella pneumoniae}}
 % Define abbreviations
-\newacronym{mdrkp}{MDRKP}{Multi drug resistant \gls{kpne}}
+\newacronym{mdrkp}{MDRKP}{multi drug resistant \gls{kpne}}
+\newacronym{esbl}{ESBL}{extended spectrum \betalactam ase}
+\newacronym{mlst}{MLST}{\textit{in silico} multi-locus sequence type}
 
-\title{Multidrug-resistant Klebsiella pneumoniae found in infant gut microbiota}
+\title{Multidrug-resistant hypervirulent \Gls{kpne} found persisting silently in infant gut microbiota}
 \date{\today}
-\author{Vasilyev IY}
 
 \begin{document}
 \maketitle
+\glsresetall
 
 \begin{abstract}
 TODO
@@ -50,23 +57,35 @@ normal human gastrointestinal tract microbiome since then.
 The colonization can spread, persist for years and cause different pathologies from hidden carriage to
 fatal acute infections even for the healthy individuals~\cite{Martin2018}.
 
-In this article we present 8 cases of mature infants with the no-manifested carriage of multi drug resistant
-\gls{kpne} (\gls{mdrkp}) in the gastrointestinal tract detected at some time after the birth.
+In this study we present 8 cases of mature infants with the no-manifested carriage of
+\gls{mdrkp} in the gastrointestinal tract detected at some time after the birth.
 The source(s) of the \gls{mdrkp} infection was not defined.
 
 \section{Materials and methods}\label{sec:mat_met}
 \subsection{Isolation of rectal \gls{mdrkp} samples from the infant patients}\label{subsec:iso}
 A total of 10 \gls{kpne} isolates demonstrating multidrug resistance phenotype were collected from 10
-stool samples of 8 monitored newborn patients during hospitalization in maternity hospital of Kazan, Russia.
+stool samples of 8 newborn mature patients during hospitalization in maternity hospital of Kazan, Russia.
 5 infants were born with vaginal delivery, 3~--- after caesarean surgery.
-No microbial DNA was found in the meconium samples from the all 8 individuals.
-However, the stool samples collected at 4~--- 5 day of life were contaminated with $10^8$..$10^9$ of \gls{mdrkp}
+No microbiological analysis was performed over parents.
+The stool samples collected at 3~--- 4 day of life were contaminated with $10^8$..$10^9$ of \gls{mdrkp}
 colony-forming units per gram of stool.
+The meconium samples obtained from the all 8 individuals were not tested for contamination.
+Yet, the meconium samples obtained from 40 infants during the previous research were sterile or
+contained lactobacteria~\cite{Nikolaeva2019a}.
 Two samples collected from two infants after 1 and 6 months of monitoring also contained \gls{mdrkp}.
-No manifested symptoms were reported across the whole monitoring time from all patients.
+All the 8 babies were discharged from hospital at 4~--- 5 day of life in satisfactory condition.
+Blood in stool and liquid stool were reported once for patient \#1 to the third month of life,
+and constipation was reported for patient \#2 to the first month of life.
+No other manifested and prolonged symptoms were reported across the whole monitoring time from the all individuals.
 
 \subsection{Phenotypic Characterization}\label{subsec:phe}
-The antimicrobial susceptibilities of the isolates were determined using a broth microdilution procedure.
+The antimicrobial susceptibilities of the 10 microbial isolates were determined using a broth microdilution procedure.
+The following antibacterial agents were tested: aminoglycosides (amikacin, netilmicin, gentamicin),
+\betalactam s (amoxicillin-clavulanic acid, ampicillin, aztreonam, ceftriaxone, imipenem, meropenem),
+nitrofuran derivatives (nitrofurantoin), sulfonamides (sulfamethoxazole), 2,4-diaminopyrimidines (trimethoprim),
+fluoroquinolones (ciprofloxacin), chloramphenicol, fosfomycin.
+The production of \gls{esbl} and susceptibility to \textit{Klebsiella} phage and pyo bacteriophage
+were also analyzed during the routine.
 The results were interpreted in automated mode using VITEK 2 Compact analyzer (bioMérieux SA, France) according to
 producer's guidance documents.
 
@@ -74,29 +93,78 @@ producer's guidance documents.
 Libraries were prepared using Nextera XT DNA Library Preparation Kit.
 Whole-genome DNA was sequenced using Illumina MiSeq platform (Illumina Inc., USA),
 with a paired-end run of 2 by 250 bp.
-Raw reads quality control was performed with FastQC v0.11,  % quay.io/biocontainers/fastqc:0.11.8--1
+Raw reads quality control was performed with FastQC v0.11~\cite{FastQC},  % quay.io/biocontainers/fastqc:0.11.8--1
 % fastqc -t 32 sample.fastq.gz -o sample
-trimmed by trimmomatic v0.39  % quay.io/biocontainers/trimmomatic:0.39--1
+trimmed by Trimmomatic v0.39~\cite{Trimmomatic}
+% quay.io/biocontainers/trimmomatic:0.39--1
 % trimmomatic PE -threads 32 -phred33 sample.1.fastq.gz sample.2.fastq.gz sample_trimmomatic.1.fastq.gz sample_trimmomatic_untrimmed.1.fastq.gz sample_trimmomatic.2.fastq.gz sample_trimmomatic_untrimmed.2.fastq.gz ILLUMINACLIP:adapters.fasta:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
-and cutadapt v2.4,  % quay.io/biocontainers/cutadapt:2.4--py37h14c3975_0
+and Cutadapt v2.4~\cite{Cutadapt},
+% quay.io/biocontainers/cutadapt:2.4--py37h14c3975_0
 % cutadapt -a AGATCGGAAGAG -A AGATCGGAAGAG -m 50 -o sample_cutadapt.1.fastq.gz -p sample_cutadapt.2.fastq.gz sample_trimmomatic.1.fastq.gz sample_trimmomatic.2.fastq.gz
-assembled using SPAdes v3.9.1.  % quay.io/biocontainers/spades:3.9.1--0
+assembled using SPAdes v3.9.1~\cite{SPAdes}.
+% quay.io/biocontainers/spades:3.9.1--0
 % spades --careful -o sample/genome -1 sample_cutadapt.1.fastq.gz -2 sample_cutadapt.2.fastq.gz
 % spades --careful -o sample/plasmid -1 sample_cutadapt.1.fastq.gz -2 sample_cutadapt.2.fastq.gz --plasmid
 
 \subsection{Further genome assembly processing.}\label{subsec:proc_ass}
-For each sample genome and plasmid assemblies were merged, filtered and deduplicated using own scripts.
+The sample genome and plasmid assemblies were merged, filtered and deduplicated using in-house scripts.
 The resulting assemblies were submitted to NCBI.\
-The corresponding Whole Genome Shotgun project has been deposited at NCBI GenBank database under the main
-BioProject accession ID PRJNA556398.
-The assemblies were annotated locally with prokka v1.13.7,   % quay.io/biocontainers/prokka:1.13.7--pl526_0
+The assemblies were annotated locally with Prokka v1.13.7~\cite{Prokka}
+% quay.io/biocontainers/prokka:1.13.7--pl526_0
 % prokka --compliant --centre UoN --cpu 32 --outdir prokka/sample --force --prefix sample --locustag sample --genus Klebsiella --species pneumoniae sample.fasta
-MLST results were computed using SRST2 v0.2.  % quay.io/biocontainers/srst2:0.2.0--py27_2
+and remotely with the NCBI Prokaryotic Genome Annotation Pipeline (PGAP)~\cite{PGAP}.
+The \gls{mlst} results were computed using SRST2 v0.2~\cite{SRST2}
+% quay.io/biocontainers/srst2:0.2.0--py27_2
 % getmlst.py --species "Klebsiella pneumoniae"
 % srst2 --output sample --input_pe sample_cutadapt.1.fastq.gz sample_cutadapt.2.fastq.gz --mlst_db Klebsiella_pneumoniae.fasta --mlst_definitions kpneumoniae.txt --mlst_delimiter '_' --log --threads 32
+and Kleborate~\cite{Kleborate}.
+The virulence-associated genes encoding yersiniabactin, aerobactin, salmochelin, colibactin, the regulators of mucoid
+phenotype, the serotype and the drug resistance determinants were combined using Kleborate with
+Kaptive subroutine~\cite{Kaptive}.
+% ivasilyev/kleborate_kaptive:latest
+% Kleborate --all -o results.tsv -a *.fna
+Pangenome analysis was performed across the sequence query containing also 365 \gls{kpne} completed genome assemblies
+downloaded from the NCBI FTP server.
+A phylogeny was drawn using Roary, the Pan Genome Pipeline v3.12.0~\cite{Roary}.
+% sangerpathogens/roary:latest
+% roary -p 32 -f roary/ -e --mafft gff/*.gff
 
 \section{Results and discussion}\label{sec:res_dis}
-TODO
+Neonatal infection is a clinical syndrome, characterized by systemic symptoms of first month of life.
+However, in this study, we observed the case of newborn infant gastrointestinal tract colonization by the known
+pathogen, \gls{kpne}, demonstrating a multi drug resistance phenotype without manifested symptoms.
+The microdilution method has confirmed isolates with resistance to aminoglycosides, \betalactam,
+nitrofuran, fluoroquinolone, sulfonamide, trimethoprim and fosfomycin antibiotics and \textit{Klebsiella} phage.
+All the isolates were susceptible to amikacin, chloramphenicol and pyo bacteriophage.
+The discovered \textit{de novo} resistome profile included genetic determinants of drug resistance to aminoglycoside,
+fluoroquinolone, macrolide, sulfonamide, chloramphenicol, tetracycline and trimethoprim.
+It also confirmed the common \betalactam ase genes spread across the all isolates as well as the occurrence of isolates
+carrying certain genes of broad spectrum \betalactam ases with resistance to \betalactam ase inhibitors and \gls{esbl}.
+The results of the screening for genetic determinants of resistance to colistin, fosfomycin, glycopeptide,
+nitroimidazole, rifampicin and possible production of carbapenemases or \gls{esbl} with resistance to \betalactam ase
+inhibitors were negative.
+
+Biotype profiling has revealed 31 related strain combined with the 10 isolates into two clusters.
+The first clade included samples \#\# 60, 85, 91, 102 and 24.
+Surprisingly, all the isolates except the last one were obtained from the infants born with caesarean delivery.
+The other five isolates, \#\# 22, 90, 27, 28, 29 have formed even less divergent clade.
+All the children from the clade were born vaginally.
+More interesting, the their \gls{mlst} result was only ST23.
+All the 5 isolates were also positive for genes of siderophores yersiniabactin (\textit{ybt}),
+aerobactin (\textit{iuc}) and salmochelin (\textit{iro}), genotoxin colibactin (\textit{clb}),
+hypermucoidy determinants (\textit{rmpA}, \textit{rmpA2}), specific \textit{wzi} loci alleles related to the
+K- (capsule) and O- (LPS) antigen development which cumulative presence corresponds to extremely virulent phenotype
+in theory.
+In fact, it means the 4 cases of infant intestinal tract colonization by hypervirulent strains of \gls{mdrkp} which
+took place silently, without visible symptoms.
+The persistence of the \gls{mdrkp} strain has been also confirmed for patient \#1 (sample \#90) at 3rd month of life.
+
+\section{Data availability}\label{sec:data}
+The corresponding Whole Genome Shotgun project has been deposited at NCBI GenBank database under the main
+BioProject accession ID PRJNA556398.
+The project data analysis scripts and materials are hosted on GitHub
+(\url{https://github.com/ivasilyev/curated_projects/tree/master/inicolaeva/klebsiella_infants}).
+
 %\pgfplotstabletypeset[
 %  string type,
 %]{../../datasets/antibiogram.tsv}
