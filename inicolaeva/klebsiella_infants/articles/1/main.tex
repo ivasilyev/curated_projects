@@ -9,6 +9,8 @@
 \usepackage{graphicx}  % Table rotate support
 \usepackage{mfirstuc}  % For First Letter Capitalization
 \usepackage{booktabs}
+\usepackage{makecell}  % Enhance MultiIndex rows
+\usepackage[flushleft]{threeparttable}  % For table with footnotes
 \usepackage[backend=biber, % style=authoryear,
 natbib=true]{biblatex}  % Bibliography support
 \usepackage[acronym]{glossaries}  % Abbreviations & species support
@@ -17,12 +19,19 @@ natbib=true]{biblatex}  % Bibliography support
 
 % Define macros
 \newcommand{\betalactam}{$\beta$-lactam}
+% Rotate & weighten items in table header
+\newcommand{\rB}[1]{\rotatebox{90}{\textbf{#1}}}
+% Convert cell to the union
+\newcommand{\mCL}[1]{\makecell[l]{#1}}
 
 % Define species
 % \newacronym{<label>}{<abbrv>}{<full>}
 \newacronym[first={\textit{Klebsiella pneumoniae}}]{kpne}{\textit{K. pneumoniae}}{\textit{Klebsiella pneumoniae}}
 % Define abbreviations
-\newacronym{esbl}{ESBL}{extended spectrum \betalactam ase}
+\newacronym{bla}{BLA}{\betalactam ase}
+\newacronym{bsbl}{BSBL}{broad spectrum \glsdesc{bla}}
+\newacronym{ibsbl}{BSBL-inhR}{\gls{bsbl} with resistance to \glsdesc{bla} inhibitors}
+\newacronym{esbl}{ESBL}{extended spectrum \glsdesc{bla}}
 \newacronym{mlst}{MLST}{\textit{in silico} multi-locus sequence type}
 \newacronym{mdrkp}{MDRKP}{multi drug resistant \gls{kpne}}
 \newacronym{wgs}{WGS}{whole genome shotgun}
@@ -47,6 +56,8 @@ natbib=true]{biblatex}  % Bibliography support
 
 \begin{abstract}
 TODO
+  It carried virulence genes for yersiniabactin (ybt 1; ICEKp10), colibactin (clb 2), aerobactin (iuc 1), salmochelin (iro 1), and the regulator of mucoid phenotype genes rmpA and rmpA2; it has no resistance genes except for the chromosomal gene blaSHV-11
+
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
@@ -59,8 +70,8 @@ Moreover, due to the high horizontal gene transport frequency between the microb
 strain carrying pathobiotic genes after its spread may cause explicit cyto- and genotoxic effects on host cells
 leading to dangerous repercussion including colorectal cancer in particular~\cite{Pope2019}.
 Underweight and weakened patients of neonatal intensive care nurseries often suffer Gram-positive bacteria infections,
-mostly caused by coagulase-negative Staphylococci, while Gram-negative bacteria infections are considered as more rare
-and deadly after even more rapid generalization~\cite{Dorota2017}.
+mostly caused by coagulase-negative Staphylococci, while the infections caused by Gram-negative bacteria are considered
+as more rare and deadly after even more rapid generalization~\cite{Dorota2017}.
 
 \gls{kpne} is the causative agent of numerous nosocomial and community acquired infections including
 pneumonia, sepsis, bacteremia, meningitis, pyogenic liver abscesses, urinary tract infections and more.
@@ -71,17 +82,18 @@ normal human gastrointestinal tract microbiome since then.
 The colonization can spread, persist for years and cause different pathologies from hidden carriage to
 fatal acute infections even for the healthy individuals~\cite{Martin2018}.
 
-In this study we present 8 cases of mature infants with the no-manifested carriage of
-\gls{mdrkp} in the gastrointestinal tract detected at some time after the birth.
-The source(s) of the \gls{mdrkp} infection was not defined.
+In this study we applied \gls{wgs} sequencing to describe in detail 8 cases of the asymptomatic carriage of \gls{mdrkp}
+by mature infants the gastrointestinal tract detected at similar time periods after the birth without visible affection
+on their health.
+The source(s) of the \gls{mdrkp} spread was not defined.
 
 \section{Materials and methods}\label{sec:mat_met}
 \subsection{Isolation of rectal \gls{mdrkp} samples from the infant patients}\label{subsec:iso}
-A total of 10 \gls{kpne} isolates demonstrating multidrug resistance phenotype were collected from 10
-stool samples of 8 newborn mature patients during hospitalization in maternity hospital of Kazan, Russia.
-5 infants were born with vaginal delivery, 3~--- after caesarean surgery.
-No microbiological analysis was performed over parents.
-The stool samples collected at 3~--- 4 day of life were contaminated with $10^8$..$10^9$ of \gls{mdrkp}
+A total of 10 \gls{kpne} isolates demonstrating multi drug resistance phenotype were collected from 10
+stool samples from 8 newborn full-term patients during hospitalization in maternity hospital of Kazan, Russia.
+5 infants were born with vaginal delivery, 3~--- after cesarean surgery.
+No infection outbreak was recorded and no detailed microbiological analysis was performed over parents.
+The infant stool samples were collected at 3~--- 4 day of life and contaminated with $10^8$~--- $10^9$ of \gls{mdrkp}
 colony-forming units per gram of stool.
 The meconium samples obtained from the all 8 individuals were not tested for contamination.
 Yet, the meconium samples obtained from 40 infants during the previous research were sterile or
@@ -122,7 +134,7 @@ assembled using SPAdes v3.9.1~\cite{SPAdes}.
 Assembly statistics were calculated using the reference \gls{kpne} genome with RefSeq ID NC\_016845.1.
 
 \subsection{Further genome assembly processing.}\label{subsec:proc_ass}
-The sample genome and plasmid assemblies were merged, filtered and deduplicated using in-house scripts.
+The per-sample chromosome and plasmid assemblies were merged, filtered and deduplicated using in-house scripts.
 The resulting assemblies were submitted to NCBI.\
 The assemblies were annotated locally with Prokka v1.13.7~\cite{Prokka}
 % quay.io/biocontainers/prokka:1.13.7--pl526_0
@@ -146,34 +158,73 @@ A phylogeny was drawn using Roary, the Pan Genome Pipeline v3.12.0~\cite{Roary}.
 
 \section{Results and discussion}\label{sec:res_dis}
 Neonatal infection is a clinical syndrome, characterized by systemic symptoms of first month of life.
-However, in this study, we observed the case of newborn infant gastrointestinal tract colonization by the known
+However, in this study we observed the case of newborn infant gastrointestinal tract colonization by the known
 pathogen, \gls{kpne}, demonstrating a multi drug resistance phenotype without manifested symptoms.
+
 The microdilution method has confirmed isolates with resistance to aminoglycosides, \betalactam,
-nitrofuran, fluoroquinolone, sulfonamide, trimethoprim and fosfomycin antibiotics and \textit{Klebsiella} phage.
-All the isolates were susceptible to amikacin, chloramphenicol and pyo bacteriophage.
+nitrofuran, fluoroquinolones, sulfonamides, trimethoprim and fosfomycin antibiotics and \textit{Klebsiella} phage.
+All the isolates were susceptible to amikacin, chloramphenicol and pyo bacteriophage~\ref{tab:phenotype}.
 
 The discovered in \gls{wgs} \textit{de novo} resistome profile included genetic determinants of drug resistance to
-aminoglycoside, fluoroquinolone, macrolide, sulfonamide, chloramphenicol, tetracycline and trimethoprim.
-It also confirmed the common \betalactam ase genes spread across the all isolates as well as the occurrence of isolates
-carrying certain genes of broad spectrum \betalactam ases with resistance to \betalactam ase inhibitors and \gls{esbl}.
+aminoglycosides, fluoroquinolones, macrolides, sulfonamides, chloramphenicol, tetracycline and trimethoprim.
+It also confirmed the common \gls{bla} genes spread across the all isolates as well as the occurrence of isolates
+carrying certain genes of \gls{bsbl}, \gls{ibsbl} and \gls{esbl}~\ref{tab:genotype}.
 The results of the screening for genetic determinants of resistance to colistin, fosfomycin, glycopeptide,
-nitroimidazole, rifampicin and possible production of carbapenemases or \gls{esbl} with resistance to \betalactam ase
+nitroimidazole, rifampicin and possible production of carbapenemases or \gls{esbl} with resistance to \glsdesc{bla}
 inhibitors were negative.
 
-Biotype profiling has revealed 10 isolates and 31 related strain combined into two clusters.
-The first cluster included samples \#\# 60, 85, 91, 102 and 24.
-Surprisingly, all the isolates except the last one were obtained from the infants born with caesarean delivery.
-The other five isolates, \#\# 22, 90, 27, 28, 29, obtained from the children born vaginally,
-have formed even less divergent clade.
-More interesting, their \gls{mlst} result was only ST23.
+Biotype profiling has revealed that 10 isolates were related to 31 reference strain and combined into two clusters.
+The first cluster has included samples \#\# 60, 85, 91, 102 and 24.
+Surprisingly, all the isolates except the last one were obtained from the infants born with cesarean delivery.
+The \gls{mlst} analysis results have included STs 37, 45, 268 and 983\-1LV.\
+Due to the genetic divergence within the group, the patients most likely were infected from different sources.
+Since the lack of the microbiological data from detailed examination performed over their mothers, we also cannot except
+the vertical transmission case, e.g.\ after the silent colonization of maternal urinary tract by \gls{mdrkp}.
+It is known that asymptomatic bacteriuria occurs in 2~--- 7 \% of pregnant women in the United States
+and may cause severe urinary tract infection and pyelonephritis even leading to nephrectomy~\cite{Kim2018}.
+Gravidas are experiencing 20-fold increased risk of pyelonephritis mainly caused by the pregnancy immunosuppression,
+mechanical bladder compression and ureteral dilatation~\cite{Farkash2012}.
+A vertical transmission of pathogenic microorganisms is possible during the birth and before.
+The described cases of uterine \gls{kpne} infection during pregnancy include penetration via fetal membranes and
+hemato-placental barrier, resulting to chorioamnionitis~\cite{Oh2017} and acute placental infection~\cite{Sheikh2005}.
+The infection source for the first group of infants remains unclear, because of the fact that all the women
+were reported as healthy, with no symptoms or complains.
+
+The other five isolates, \#\# 22, 90, 27, 28, 29, obtained from the infants born vaginally,
+have formed even less divergent clade, allowing us to make a conclusion about a single \gls{mdrkp} infection source.
 All the 5 isolates were also positive for the genes of siderophores yersiniabactin (\textit{ybt}),
 aerobactin (\textit{iuc}) and salmochelin (\textit{iro}), genotoxin colibactin (\textit{clb}),
 hypermucoidy determinants (\textit{rmpA}, \textit{rmpA2}), specific \textit{wzi} loci alleles related to the
 K- (capsule) and O- (LPS) antigens development which cumulative presence corresponds to extremely virulent phenotype
 in theory.
-In fact, it means the 4 cases of infant intestinal tract colonization by hypervirulent strains of \gls{mdrkp} which
-took place silently, without visible symptoms.
-The persistence of the \gls{mdrkp} strain has been also confirmed for patient \#1 (sample \#90) at 3rd month of life.
+More important, their \gls{mlst} was only ST23.
+First reported in the mid-1980s in Taiwan, ST23 was often mentioned to present and strongly associated with the
+K1 capsular serotype~\cite{Shon2013}.
+The \gls{kpne} ST23 strains were confirmed in numeric researches as multidrug-resistant hypervirulent pathogens
+caused abscesses of kidneys, pancreas, liver~\cite{Shen2019}, endogenous endophthalmitis~\cite{Xu2018},
+with a dominance in the Asian-Pacific region~\cite{Thiry2019}.
+In fact, it means the 4 cases of asymptomatic colonization of infant intestinal tract by hypervirulent strains of
+\gls{mdrkp} which were spread a short time ago and may be accounted as a hospital-acquired infection.
+The persistence of the \gls{mdrkp} ST23 strain has been also confirmed for the patient \#1 (sample \#90)
+at 3rd month of life~\ref{tab:phenotype}~--- still without acute immune response.
+
+The fetal immune system is not developed compared with later life mostly due to the environmental limitation~---
+the stress of the own remodelling tissues and the non-inherited maternal alloantigens should not provoke
+the immune reaction from the fetus side~\cite{Simon2015}.
+Their innate immune system is muted~\cite{Haase2010}, the humoral immune responses are blunted,
+the immunoglobulin class switching is incomplete, the released IgG antibodies decline rapidly after
+immunization~\cite{Pihlgren2006}.
+However, the immature Th1-type T-cell response is compensated by the IFN-$\gamma$ producing
+$\gamma\delta$-T-cells~\cite{Gibbons2009}.
+By the way, the main mechanism of neonatal immune protection is based on vertical transport of antibodies
+via breastfeeding.
+With some fortune, breastfed newborns will not suffer infections that have induced the immune response
+from their mothers earlier.
+Otherwise, a lack of specific antibodies will result an infection development~\cite{Dias2017}.
+
+The demonstrated phenomenon of silent carriage of classic and hypervirulent \gls{kpne} strains within an
+infant gut microbiome may indicate the successful production of the required antibodies by a maternal organism.
+It is possible after immunisation occurred definitely before the childbirth~--- in a maternity hospital or even earlier.
 
 \section{Data availability}\label{sec:data}
 The corresponding \gls{wgs} project has been deposited at NCBI GenBank database under the main
@@ -181,150 +232,17 @@ BioProject accession ID PRJNA556398.
 The project data analysis scripts and materials are hosted on GitHub
 (\url{https://github.com/ivasilyev/curated_projects/tree/master/inicolaeva/klebsiella_infants}).
 
-
-
-
-%\pgfplotstabletypeset[
-%  string type,
-%]{../../datasets/antibiogram.tsv}
-% , multicolumn names
-%
-%\pgfplotstableread[
-%  string type, header=true, col sep=tab, multicolumn names,
-%]{tsv/phenotype.tsv}\phenotypeWide
-%
-%
-%\pgfplotstabletranspose[string type,
-%  % Rename colimns
-%  columns/sample_number/.style={column name=Sample \#},
-%  columns/delivery/.style={column name=Delivery},
-%  columns/patient_id/.style={column name=Patient \#},
-%  columns/checkpoint_age_days/.style={column name={Age, d}},
-%  columns/checkpoint_kpneumoniae_lg_cfu_per_g/.style={column name={$\lg{CFU} / g$}},
-%  columns/extended-spectrum_beta-lactamases/.style={column name=\gls{esbl}},
-%  columns/klebsiella_phage/.style={column name=K-phage},
-%  % Abbreviation conventions were taken from:
-%  % https://aac.asm.org/content/abbreviations-and-conventions
-%  columns/amoxicillin-clavulanic acid/.style={column name=AMC},
-%  columns/amikacin/.style={column name=AMK},
-%  columns/ampicillin/.style={column name=AMP},
-%  columns/aztreonam/.style={column name=ATM},
-%  columns/ceftriaxone/.style={column name=CRO},
-%  columns/ciprofloxacin/.style={column name=CIP},
-%  columns/chloramphenicol/.style={column name=CHL},
-%  columns/fosfomycin/.style={column name=FOF},
-%  columns/gentamicin/.style={column name=GEN},
-%  columns/imipenem/.style={column name=IPM},
-%  columns/meropenem/.style={column name=MEM},
-%  columns/netilmicin/.style={column name=NET},
-%  columns/nitrofurantoin/.style={column name=NIT},
-%  columns/sulfamethoxazole/.style={column name=SMZ},
-%  columns/trimethoprim/.style={column name=TMP},
-%]\phenotypeTall{\phenotypeWide}
-%
-%\pgfplotstabletypeset[string type,
-%  every head row/.style={before row=\toprule, after row=\midrule},
-%  every last row/.style={after row=\bottomrule},
-%  after row=\midrule,
-%]{\phenotypeTall}
-%
-%
-
-%\pgfplotstabletranspose[]\transpose\phenotype
-%
-%\pgfplotstabletypeset[string type,
-%        every head row/.style={before row=\toprule,after row=\midrule},
-%        every last row/.style={after row=\bottomrule},
-%        after row=\midrule
-%]\transpose
-
-% \rotatebox{90}{
-%\pgfplotstabletypeset[
-%  string type, header=true, col sep=tab, multicolumn names,
-%  columns/sample_number/.style={column name=Sample \#},
-%  columns/delivery/.style={column name=Delivery},
-%  columns/patient_id/.style={column name=Patient \#},
-%  columns/checkpoint_age_days/.style={column name={Age, d}},
-%  columns/checkpoint_kpneumoniae_lg_cfu_per_g/.style={column name={$\lg{CFU} / g$}},
-%  columns/extended-spectrum_beta-lactamases/.style={column name=\gls{esbl}},
-%  columns/klebsiella_phage/.style={column name=K-phage},
-%  % Abbreviation conventions were taken from:
-%  % https://aac.asm.org/content/abbreviations-and-conventions
-%  columns/amoxicillin-clavulanic acid/.style={column name=AMC},
-%  columns/amikacin/.style={column name=AMK},
-%  columns/ampicillin/.style={column name=AMP},
-%  columns/aztreonam/.style={column name=ATM},
-%  columns/ceftriaxone/.style={column name=CRO},
-%  columns/ciprofloxacin/.style={column name=CIP},
-%  columns/chloramphenicol/.style={column name=CHL},
-%  columns/fosfomycin/.style={column name=FOF},
-%  columns/gentamicin/.style={column name=GEN},
-%  columns/imipenem/.style={column name=IPM},
-%  columns/meropenem/.style={column name=MEM},
-%  columns/netilmicin/.style={column name=NET},
-%  columns/nitrofurantoin/.style={column name=NIT},
-%  columns/sulfamethoxazole/.style={column name=SMZ},
-%  columns/trimethoprim/.style={column name=TMP},
-%  every head row/.style={before row=\toprule,after row=\midrule},
-%  every last row/.style={after row=\bottomrule},
-%  after row=\midrule
-%]{tsv/phenotype.tsv}
-%
-
-
-
 \section{Acknowledgments}\label{sec:acks}
 TODO
 
 \printbibliography
 
 \newpage
-\begin{table}\label{phenotype}
-
-\rotatebox{90}{
-\pgfplotstabletypeset[string type,
-  string type, header=true, col sep=tab, multicolumn names,
-  % Rename colimns
-%  columns/sample_number/.style={column name=Sample \#},
-%  columns/delivery/.style={column name=Delivery},
-%  columns/patient_id/.style={column name=Patient \#},
-%  columns/checkpoint_age_days/.style={column name={Age, d}},
-%  columns/checkpoint_kpneumoniae_lg_cfu_per_g/.style={column name={$\lg{CFU} / g$}},
-%  columns/extended-spectrum_beta-lactamases/.style={column name=\gls{esbl}},
-%  columns/klebsiella_phage/.style={column name=K-phage},
-%  columns/pyo_bacteriophage/.style={column name=P-phage},
-%  % Abbreviation conventions were taken from:
-%  % https://aac.asm.org/content/abbreviations-and-conventions
-%  columns/amoxicillin-clavulanic acid/.style={column name=AMC},
-%  columns/amikacin/.style={column name=AMK},
-%  columns/ampicillin/.style={column name=AMP},
-%  columns/aztreonam/.style={column name=ATM},
-%  columns/ceftriaxone/.style={column name=CRO},
-%  columns/ciprofloxacin/.style={column name=CIP},
-%  columns/chloramphenicol/.style={column name=CHL},
-%  columns/fosfomycin/.style={column name=FOF},
-%  columns/gentamicin/.style={column name=GEN},
-%  columns/imipenem/.style={column name=IPM},
-%  columns/meropenem/.style={column name=MEM},
-%  columns/netilmicin/.style={column name=NET},
-%  columns/nitrofurantoin/.style={column name=NIT},
-%  columns/sulfamethoxazole/.style={column name=SMZ},
-%  columns/trimethoprim/.style={column name=TMP},
-%  % Rotate columns
-  assign column name/.style={/pgfplots/table/column name={\rotatebox{90}{\textbf{#1}}}},
-  % Add liners
-  every head row/.style={before row=\toprule,after row=\midrule},
-  every last row/.style={after row=\bottomrule},
-  after row=\midrule,
-]{tsv/phenotype.tsv}
-}
-\end{table}
-
+\input{tex/phenotype.tex}
 
 \newpage
-\begin{table}\label{genotype}
+\input{tex/genotype.tex}
 
-\end{table}
 \newpage
 
 \vfill
