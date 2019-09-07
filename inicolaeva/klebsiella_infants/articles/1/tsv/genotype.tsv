@@ -1,0 +1,29 @@
+index	Kleb102	Kleb22	Kleb27	Kleb24	Kleb28	Kleb29	Kleb60	Kleb85	Kleb90	Kleb91
+Accession	VOOJ00000000	VOOA00000000	VOOD00000000	VOOC00000000	VOOE00000000	VOOF00000000	VOOG00000000	VOOH00000000	VOOB00000000	VOOI00000000
+Reads Number	1040088	805318	1056762	856300	926382	1259976	994296	1207354	1216382	1381726
+Coverage	58.7x	45.4x	59.6x	48.3x	52.3x	71.1x	56.1x	68.1x	68.6x	78.0x
+Genome Assembly Length	5297684	5881113	5641111	5518356	5885411	5890967	5666743	5324705	5882697	5326604
+Contigs Number	106	111	76	94	120	118	91	74	108	77
+N50	350001	307112	322041	319410	307112	307112	263911	358425	307112	437151
+Largest Contig Length	1106296	770102	1334922	930837	771547	799268	642551	812552	799226	812552
+Sequence Type	ST983-1LV	ST23	ST23	ST37	ST23	ST23	ST268	ST45	ST23	ST45
+Yersiniabactin	ybt unknown	ybt 1; ICEKp10	ybt 1; ICEKp10	-	ybt 1; ICEKp10	ybt 1; ICEKp10	ybt 17; ICEKp10	-	ybt 1; ICEKp10	-
+Colibactin	-	clb 2	clb 2	-	clb 2	clb 2	clb 3	-	clb 2	-
+Aerobactin	-	iuc 1	iuc 1	-	iuc 1	iuc 1	iuc 1	-	iuc 1	-
+Salmochelin	-	iro 1	iro 1	-	iro 1	iro 1	iro 1	-	iro 1	-
+rmpA	-	rmpA_2(KpVP-1),rmpA_2(KpVP-1)	rmpA_2(KpVP-1)	-	rmpA_2(KpVP-1)	rmpA_2(KpVP-1)	rmpA_2*(KpVP-1),rmpA_2*(KpVP-1)	-	rmpA_2(KpVP-1)	-
+rmpA2	-	rmpA2_8,rmpA2_8	rmpA2_5,rmpA2_5	-	rmpA2_8,rmpA2_8	rmpA2_8,rmpA2_8	rmpA2_2*,rmpA2_2*	-	rmpA2_8,rmpA2_8	-
+wzi	wzi39	wzi1	wzi1	wzi123	wzi1	wzi1	wzi95	wzi101	wzi1	wzi101
+K locus	KL39	KL1	KL1	KL136	KL1	KL1	KL20	KL24	KL1	KL24
+O locus	O3b	O1v2	O1v2	O2v2	O1v2	O1v2	O2v1	O2v1	O1v2	O2v1
+Aminoglycosides	StrB;StrA*	StrB;StrA*;Aac3-IIa*;StrB;StrA*	-	StrB;StrA	StrB;StrA*;Aac3-IIa*	StrB;StrA*;Aac3-IIa*	StrB;StrA*;Aph3-Ia*	StrB;StrA*	StrB;StrA*;Aac3-IIa*;StrB;StrA*	StrB;StrA*
+Fluoroquinolones	-	QnrB1?	-	-	QnrB1?	QnrB1?	-	-	QnrB1?	-
+Macrolides	-	-	-	-	-	-	EreA2	-	-	-
+Phenicols	CatA1*	CatB4	-	-	CatB4	CatB4	-	CatB4	CatB4	CatB4
+Sulfonamides	SulII*	SulII;SulII	-	-	SulII	SulII	SulI;SulII*	SulII	SulII;SulII	SulII
+Tetracyclines	TetA	TetA	-	-	TetA	TetA	-	-	TetA	-
+Trimethoprim	-	DfrA14;DfrA14	-	-	DfrA14	DfrA14	DfrA5	DfrA14	DfrA14	DfrA14
+CBL	SHV-187*;AmpH*	SHV-190*;AmpH;OXA-1	SHV-190*;AmpH	AmpH*	SHV-190*;AmpH;OXA-1	SHV-190*;AmpH;OXA-1	AmpH*	AmpH*;OXA-1	SHV-190*;AmpH;OXA-1	AmpH*;OXA-1
+ESBL	-	CTX-M-15;CTX-M-15	-	-	CTX-M-15	CTX-M-15	SHV-13*;CTX-M-3;CTX-M-3	CTX-M-15	CTX-M-15;CTX-M-15	CTX-M-15
+BSBL	-	-	-	SHV-77*	-	-	-	-	-	-
+BSBL-inhR	TEM-30*	TEM-30*;TEM-30*	-	-	TEM-30*	TEM-30*	-	SHV-26*;TEM-30*	TEM-30*;TEM-30*	SHV-26*;TEM-30*
