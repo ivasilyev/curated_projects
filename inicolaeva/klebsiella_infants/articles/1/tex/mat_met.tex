@@ -1,0 +1,68 @@
+\section{Materials and methods}\label{sec:mat_met}
+\subsection{Isolation of rectal \gls{mdrkp} samples from the infant patients}\label{subsec:iso}
+A total of 10 \gls{kpne} isolates demonstrating multi drug resistance phenotype were collected from 10
+stool samples from 8 newborn full-term patients during hospitalization in maternity hospital of Kazan, Russia.
+5 infants were born with vaginal delivery, 3~--- after cesarean surgery.
+No infection outbreak was recorded and no detailed microbiological analysis was performed over parents.
+The infant stool samples were collected at 3~--- 4 day of life and contaminated with $10^8$~--- $10^9$ of \gls{mdrkp}
+colony-forming units per gram of stool.
+The meconium samples obtained from the all 8 individuals were not tested for contamination.
+Yet, the meconium samples obtained from 40 infants during the previous research were conditionally sterile or
+contained lactobacteria~\cite{Nikolaeva2019a}.
+Two samples collected from two infants after 1 and 6 months of monitoring also contained \gls{mdrkp}.
+All the 8 babies were discharged from hospital at 4~--- 5 day of life in satisfactory condition.
+Blood in stool and liquid stool were reported only once for the patient \#1 to the third month of life,
+and constipation was reported for the patient \#2 to the first month of life.
+No other manifested and prolonged symptoms were reported across the whole monitoring time from the all individuals.
+
+\subsection{Phenotype Characterization}\label{subsec:phe}
+The antimicrobial susceptibilities of the 10 microbial isolates were determined using a broth microdilution procedure.
+The following antibacterial agents were tested: aminoglycosides (amikacin, netilmicin, gentamicin),
+\betalactam s (amoxicillin-clavulanic acid, ampicillin, aztreonam, ceftriaxone, imipenem, meropenem),
+nitrofuran derivatives (nitrofurantoin), sulfonamides (sulfamethoxazole), 2,4-diaminopyrimidines (trimethoprim),
+fluoroquinolones (ciprofloxacin), chloramphenicol, fosfomycin.
+The production of \gls{esbl} and susceptibility to \textit{Klebsiella} phage and pyo bacteriophage
+were also analyzed during the routine.
+The results were interpreted in automated mode using VITEK 2 Compact analyzer (bioMérieux SA, France) according to
+producer's guidance documents.
+
+\subsection{Whole-genome sequencing and assembly}\label{subsec:proc_raw}
+Libraries were prepared using Nextera XT DNA Library Preparation Kit.
+Whole-genome DNA was sequenced using Illumina MiSeq platform (Illumina Inc., USA),
+with a paired-end run of 2 by 250 bp.
+Raw reads quality control was performed with FastQC v0.11~\cite{FastQC},  % quay.io/biocontainers/fastqc:0.11.8--1
+% fastqc -t 32 sample.fastq.gz -o sample
+trimmed by Trimmomatic v0.39~\cite{Trimmomatic}
+% quay.io/biocontainers/trimmomatic:0.39--1
+% trimmomatic PE -threads 32 -phred33 sample.1.fastq.gz sample.2.fastq.gz sample_trimmomatic.1.fastq.gz sample_trimmomatic_untrimmed.1.fastq.gz sample_trimmomatic.2.fastq.gz sample_trimmomatic_untrimmed.2.fastq.gz ILLUMINACLIP:adapters.fasta:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+and Cutadapt v2.4~\cite{Cutadapt},
+% quay.io/biocontainers/cutadapt:2.4--py37h14c3975_0
+% cutadapt -a AGATCGGAAGAG -A AGATCGGAAGAG -m 50 -o sample_cutadapt.1.fastq.gz -p sample_cutadapt.2.fastq.gz sample_trimmomatic.1.fastq.gz sample_trimmomatic.2.fastq.gz
+assembled using SPAdes v3.9.1~\cite{SPAdes}.
+% quay.io/biocontainers/spades:3.9.1--0
+% spades --careful -o sample/genome -1 sample_cutadapt.1.fastq.gz -2 sample_cutadapt.2.fastq.gz
+% spades --careful -o sample/plasmid -1 sample_cutadapt.1.fastq.gz -2 sample_cutadapt.2.fastq.gz --plasmid
+Assembly statistics were calculated using the reference \gls{kpne} genome with RefSeq ID NC\_016845.1.
+
+\subsection{Further genome assembly processing}\label{subsec:proc_ass}
+The per-sample chromosome and plasmid assemblies were merged, filtered and deduplicated using in-house scripts.
+The resulting assemblies were submitted to NCBI.\
+The assemblies were annotated locally with Prokka v1.13.7~\cite{Prokka}
+% quay.io/biocontainers/prokka:1.13.7--pl526_0
+% prokka --compliant --centre UoN --cpu 32 --outdir prokka/sample --force --prefix sample --locustag sample --genus Klebsiella --species pneumoniae sample.fasta
+and remotely with the NCBI Prokaryotic Genome Annotation Pipeline (PGAP)~\cite{PGAP}.
+The \gls{mlst} results were computed using SRST2 v0.2~\cite{SRST2}
+% quay.io/biocontainers/srst2:0.2.0--py27_2
+% getmlst.py --species "Klebsiella pneumoniae"
+% srst2 --output sample --input_pe sample_cutadapt.1.fastq.gz sample_cutadapt.2.fastq.gz --mlst_db Klebsiella_pneumoniae.fasta --mlst_definitions kpneumoniae.txt --mlst_delimiter '_' --log --threads 32
+and Kleborate~\cite{Kleborate}.
+The virulence-associated genes encoding yersiniabactin, aerobactin, salmochelin, colibactin, the regulators of mucoid
+phenotype, the serotype and the drug resistance determinants were combined using Kleborate with
+Kaptive subroutine~\cite{Kaptive}.
+% ivasilyev/kleborate_kaptive:latest
+% Kleborate --all -o results.tsv -a *.fna
+Pangenome analysis was performed across the sequence query containing also 365 \gls{kpne} completed genome assemblies
+downloaded from the NCBI FTP server.
+A phylogeny was drawn using Roary, the Pan Genome Pipeline v3.12.0~\cite{Roary}.
+% sangerpathogens/roary:latest
+% roary -p 32 -f roary/ -e --mafft gff/*.gff
