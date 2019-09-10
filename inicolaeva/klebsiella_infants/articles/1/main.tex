@@ -25,6 +25,9 @@ natbib=true]{biblatex}  % Bibliography support
 \nonfrenchspacing
 
 % Define macros
+\newcommand{\theTitle}{Multidrug-resistant hypervirulent \Glsfirst{kpne} found persisting silently in infant gut microbiota
+\glsresetall}
+\newcommand{\email}[1]{\textit{e-mail:}~\href{mailto:#1}{#1}}
 \newcommand{\betalactam}{$\beta$-lactam}
 % Rotate & weighten items in table header
 \newcommand{\rB}[1]{\rotatebox{90}{\textbf{#1}}}
@@ -39,6 +42,7 @@ natbib=true]{biblatex}  % Bibliography support
 % \newacronym{<label>}{<abbrv>}{<full>}
 \newacronym[first={\textit{Klebsiella pneumoniae}}]{kpne}{\textit{K. pneumoniae}}{\textit{Klebsiella pneumoniae}}
 % Define abbreviations
+\makeglossaries
 \newacronym{bla}{BLA}{\betalactam ase}
 \newacronym{bsbl}{BSBL}{broad spectrum \glsdesc{bla}}
 \newacronym{ibsbl}{BSBL-inhR}{\gls{bsbl} with resistance to \glsdesc{bla} inhibitors}
@@ -48,34 +52,41 @@ natbib=true]{biblatex}  % Bibliography support
 \newacronym{wgs}{WGS}{whole genome shotgun}
 
 % Define authors
-\author[1]{Vasilyev, I. Y.} % Corresponding author, e-mail: u0412u0418u042e@gmail.com
-\author[2]{Nikolaeva, I. V.}  % irinanicolaeva@mail.ru
-\author[1]{Siniagina, M. N.}  % marias25@mail.ru
-\author[1]{Kharchenko, A. M.}  % anastasiahm@list.ru
-\author[2]{Shaikhieva, G. S.}  % studentgulya@yandex.ru
+\author[1]{Vasilyev, I. Y.}
+\author[2]{Nikolaeva, I. V.}
+\author[1]{Siniagina, M. N.}
+\author[1]{Kharchenko, A. M.}
+\author[2]{Shaikhieva, G. S.}
 % Define affilations
-\affil[1]{Institute of Fundamental Medicine and Biology, Kazan Federal University, Kazan, Russia}
-\affil[2]{Kazan State Medical University, Kazan, Russia}
+\affil[1]{Institute of Fundamental Medicine and Biology, Kazan Federal University,
+420008, Ulitsa Kremlyovskaya, 18, Kazan, Russia}
+\affil[2]{Kazan State Medical University,
+420012, Ulitsa Butlerova, 49, Kazan, Russia}
 
-\title{Multidrug-resistant hypervirulent \Gls{kpne} found persisting silently in infant gut microbiota}
+\title{\theTitle}
 \date{\today}
 
 \begin{document}
-\maketitle
-\glsresetall
+
+\input{tex/title.tex}
+
+\pagebreak
+{\centering
+\Large
+\theTitle
+\par}
 
 \input{tex/abstract.tex}
 
 \input{tex/intro.tex}
 
 \input{tex/mat_met.tex}
-%%% All samples were cultured onto MacConkey agar with and without cefotaxime (2 mg/L). After incubation for 18–24 h at 37 °C, each morphotype growing on MacConkey with cefotaxime (MCA + CTX) was subjected to Gram staining, catalase and oxidase tests, followed by biochemical identification with API 20E (bioMérieux, Marcy l’Etoile, France) and the Vitek® 2 System (bioMérieux, Marcy l’Etoile, France).
 
 \input{tex/res_disc.tex}
 
 \input{tex/data.tex}
 
-\input{tex/acks.tex}
+% \input{tex/acks.tex}
 
 \printbibliography
 
@@ -85,15 +96,13 @@ natbib=true]{biblatex}  % Bibliography support
 \pagebreak
 \input{tex/genotype.tex}
 
-\pagebreak
 \begin{figure}[h]
 \includegraphics[width=0.9\textwidth]{png/tree.png}
-\caption{Corresponding dendrogram determined with Roary pangenome pipeline in reference and studying
-isolates of \gls{kpne}}
+\caption{Corresponding dendrogram determined with Roary pangenome pipeline in \gls{kpne} isolates with reference strains}
 \label{fig:tree}
 \end{figure}
 
-\pagebreak
+\printglossaries
 % Compiled from \LaTeXe{}.
 % \pagebreak
 \end{document}
