@@ -1,65 +1,52 @@
-\begin{table}\label{tab:genotype}
+\begin{sidewaystable}[ht]
 \begin{threeparttable}
 \tiny
 
-\caption{Genotype}
-
-\begin{tabular}{lllllllllll}
+\caption{Genome assembly data, \gls{mlst}s and drug resistance determinants of the \gls{kpne} isolates}
+\label{tab:genotype}
+\centering
+\noindent
+\setlength\tabcolsep{1.5pt}  % Default value: 6pt l@{\hspace{1.5\tabcolsep}
+\begin{tabularx}{\textwidth}{lllllllllll}
 \toprule
-            Sample name &         Kleb102 &                           Kleb22 &        Kleb24 &           Kleb27 &                Kleb28 &                Kleb29 &                           Kleb60 &           Kleb85 &                           Kleb90 &           Kleb91 \\
+                   Sample name &       \textbf{Kleb102} &                  \textbf{Kleb22} &   \textbf{Kleb24} &          \textbf{Kleb27} &                 \textbf{Kleb28} &                \textbf{Kleb29} &                  \textbf{Kleb60} &         \textbf{Kleb85} &                  \textbf{Kleb90} &         \textbf{Kleb91} \\
 \midrule
-           Accession ID &    VOOJ00000000 &                     VOOA00000000 &  VOOC00000000 &     VOOD00000000 &          VOOE00000000 &          VOOF00000000 &                     VOOG00000000 &     VOOH00000000 &                     VOOB00000000 &     VOOI00000000 \\
-           Reads number &         1040088 &                           805318 &        856300 &          1056762 &                926382 &               1259976 &                           994296 &          1207354 &                          1216382 &          1381726 \\
-               Coverage &           58.7x &                            45.4x &         48.3x &            59.6x &                 52.3x &                 71.1x &                            56.1x &            68.1x &                            68.6x &            78.0x \\
- \mCL{Genome assembly\\
-                length} &         5297684 &                          5881113 &       5518356 &          5641111 &               5885411 &               5890967 &                          5666743 &          5324705 &                          5882697 &          5326604 \\
-         Contigs number &             106 &                              111 &            94 &               76 &                   120 &                   118 &                               91 &               74 &                              108 &               77 \\
-             N50 metric &          350001 &                           307112 &        319410 &           322041 &                307112 &                307112 &                           263911 &           358425 &                           307112 &           437151 \\
-  \mCL{Largest contig\\
-                length} &         1106296 &                           770102 &        930837 &          1334922 &                771547 &                799268 &                           642551 &           812552 &                           799226 &           812552 \\
+                  Accession ID &           VOOJ00000000 &                     VOOA00000000 &      VOOC00000000 &             VOOD00000000 &                    VOOE00000000 &                   VOOF00000000 &                     VOOG00000000 &            VOOH00000000 &                     VOOB00000000 &            VOOI00000000 \\
+                  Reads number &                1040088 &                           805318 &            856300 &                  1056762 &                          926382 &                        1259976 &                           994296 &                 1207354 &                          1216382 &                 1381726 \\
+                      Coverage &                  58.7x &                            45.4x &             48.3x &                    59.6x &                           52.3x &                          71.1x &                            56.1x &                   68.1x &                            68.6x &                   78.0x \\
+\mCL{Genome\\assembly\\length} &                5297684 &                          5881113 &           5518356 &                  5641111 &                         5885411 &                        5890967 &                          5666743 &                 5324705 &                          5882697 &                 5326604 \\
+                Contigs number &                    106 &                              111 &                94 &                       76 &                             120 &                            118 &                               91 &                      74 &                              108 &                      77 \\
+                    N50 metric &                 350001 &                           307112 &            319410 &                   322041 &                          307112 &                         307112 &                           263911 &                  358425 &                           307112 &                  437151 \\
+ \mCL{Largest\\contig\\length} &                1106296 &                           770102 &            930837 &                  1334922 &                          771547 &                         799268 &                           642551 &                  812552 &                           799226 &                  812552 \\
 \midrule
-          Sequence type &       ST983-1LV &                             ST23 &          ST37 &             ST23 &                  ST23 &                  ST23 &                            ST268 &             ST45 &                             ST23 &             ST45 \\
-         Yersiniabactin &            ybt? &                   \mCL{ybt 1, \\
-                                                                    ICEKp10} &             - &   \mCL{ybt 1, \\
-                                                                                                       ICEKp10} &        \mCL{ybt 1, \\
-                                                                                                                               ICEKp10} &        \mCL{ybt 1, \\
-                                                                                                                                                       ICEKp10} &                  \mCL{ybt 17, \\
-                                                                                                                                                                                          ICEKp10} &                - &                   \mCL{ybt 1, \\
-                                                                                                                                                                                                                                                ICEKp10} &                - \\
-             Colibactin &               - &                            clb 2 &             - &            clb 2 &                 clb 2 &                 clb 2 &                            clb 3 &                - &                            clb 2 &                - \\
-             Aerobactin &               - &                            iuc 1 &             - &            iuc 1 &                 iuc 1 &                 iuc 1 &                            iuc 1 &                - &                            iuc 1 &                - \\
-            Salmochelin &               - &                            iro 1 &             - &            iro 1 &                 iro 1 &                 iro 1 &                            iro 1 &                - &                            iro 1 &                - \\
-          \textit{rmpA} &               - &                 rmpA$_2$(KpVP-1) &             - & rmpA$_2$(KpVP-1) &      rmpA$_2$(KpVP-1) &      rmpA$_2$(KpVP-1) &                rmpA$_2$*(KpVP-1) &                - &                 rmpA$_2$(KpVP-1) &                - \\
-         \textit{rmpA2} &               - &                        rmpA2$_8$ &             - &        rmpA2$_5$ &             rmpA2$_8$ &             rmpA2$_8$ &                       rmpA2$_2$* &                - &                        rmpA2$_8$ &                - \\
-           \textit{wzi} &           wzi39 &                             wzi1 &        wzi123 &             wzi1 &                  wzi1 &                  wzi1 &                            wzi95 &           wzi101 &                             wzi1 &           wzi101 \\
-                K locus &            KL39 &                              KL1 &         KL136 &              KL1 &                   KL1 &                   KL1 &                             KL20 &             KL24 &                              KL1 &             KL24 \\
-                O locus &             O3b &                             O1v2 &          O2v2 &             O1v2 &                  O1v2 &                  O1v2 &                             O2v1 &             O2v1 &                             O1v2 &             O2v1 \\
-        Aminoglycosides &      StrB, StrA* &               \mCL{StrB, StrA*, \\
-                                                                  Aac3-IIa*} &    StrB, StrA &                - &     \mCL{StrB, StrA*\\
-                                                                                                                             Aac3-IIa*} &     \mCL{StrB, StrA*, \\
-                                                                                                                                                     Aac3-IIa*} &               \mCL{StrB, StrA*, \\
-                                                                                                                                                                                         Aph3-Ia*} &      StrB, StrA* &             \mCL{StrB, StrA*, \\
-                                                                                                                                                                                                                                              Aac3-IIa*} &      StrB, StrA* \\
-       Fluoroquinolones &               - &                           QnrB1? &             - &                - &                QnrB1? &                QnrB1? &                                - &                - &                           QnrB1? &                - \\
-             Macrolides &               - &                                - &             - &                - &                     - &                     - &                            EreA2 &                - &                                - &                - \\
-              Phenicols &          CatA1* &                            CatB4 &             - &                - &                 CatB4 &                 CatB4 &                                - &            CatB4 &                            CatB4 &            CatB4 \\
-           Sulfonamides &          SulII* &                     SulII, SulII &             - &                - &                 SulII &                 SulII &                      SulI, SulII* &           SulII &                            SulII &            SulII \\
-          Tetracyclines &            TetA &                             TetA &             - &                - &                  TetA &                  TetA &                                - &                - &                             TetA &                - \\
-           Trimethoprim &               - &                     \mCL{DfrA14} &             - &                - &                DfrA14 &                DfrA14 &                            DfrA5 &           DfrA14 &                           DfrA14 &           DfrA14 \\
-              \gls{bla} &\mCL{SHV-187*,\\
-                                   AmpH*} &            \mCL{SHV-190*, AmpH, \\
-                                                                      OXA-1} &         AmpH* &    SHV-190*, AmpH & \mCL{SHV-190*, AmpH, \\
-                                                                                                                                 OXA-1} &  SHV-190*, AmpH, OXA-1 &                            AmpH* &    AmpH*, OXA-1 &              SHV-190*, AmpH, OXA-1 &      AmpH*, OXA-1 \\
-
-             \gls{esbl} &               - &                   \mCL{CTX-M-15} &             - &                - &              CTX-M-15 &              CTX-M-15 &                 SHV-13*, CTX-M-3 &         CTX-M-15 &                         CTX-M-15 &         CTX-M-15 \\
-             \gls{bsbl} &               - &                                - &       SHV-77* &                - &                     - &                     - &                                - &                - &                                - &                - \\
-            \gls{ibsbl} &         TEM-30* &                    \mCL{TEM-30*} &             - &                - &               TEM-30* &               TEM-30* &                                - & SHV-26*, TEM-30* &                  TEM-30*, TEM-30* &  SHV-26*, TEM-30* \\
+                    \gls{mlst} &              ST983-1LV &                             ST23 &              ST37 &                     ST23 &                            ST23 &                           ST23 &                            ST268 &                    ST45 &                             ST23 &                    ST45 \\
+                Yersiniabactin &                   ybt? &            \mCL{ybt 1,\\ICEKp10} &                 - &    \mCL{ybt 1,\\ICEKp10} &           \mCL{ybt 1,\\ICEKp10} &          \mCL{ybt 1,\\ICEKp10} &           \mCL{ybt 17,\\ICEKp10} &                       - &            \mCL{ybt 1,\\ICEKp10} &                       - \\
+                    Colibactin &                      - &                            clb 2 &                 - &                    clb 2 &                           clb 2 &                          clb 2 &                            clb 3 &                       - &                            clb 2 &                       - \\
+                    Aerobactin &                      - &                            iuc 1 &                 - &                    iuc 1 &                           iuc 1 &                          iuc 1 &                            iuc 1 &                       - &                            iuc 1 &                       - \\
+                   Salmochelin &                      - &                            iro 1 &                 - &                    iro 1 &                           iro 1 &                          iro 1 &                            iro 1 &                       - &                            iro 1 &                       - \\
+                 \textit{rmpA} &                      - &         \mCL{rmpA$_2$\\(KpVP-1)} &                 - & \mCL{rmpA$_2$\\(KpVP-1)} &        \mCL{rmpA$_2$\\(KpVP-1)} &       \mCL{rmpA$_2$\\(KpVP-1)} &        \mCL{rmpA$_2$*\\(KpVP-1)} &                       - &         \mCL{rmpA$_2$\\(KpVP-1)} &                       - \\
+                \textit{rmpA2} &                      - &                        rmpA2$_8$ &                 - &                rmpA2$_5$ &                       rmpA2$_8$ &                      rmpA2$_8$ &                       rmpA2$_2$* &                       - &                        rmpA2$_8$ &                       - \\
+                  \textit{wzi} &                  wzi39 &                             wzi1 &            wzi123 &                     wzi1 &                            wzi1 &                           wzi1 &                            wzi95 &                  wzi101 &                             wzi1 &                  wzi101 \\
+                       K locus &                   KL39 &                              KL1 &             KL136 &                      KL1 &                             KL1 &                            KL1 &                             KL20 &                    KL24 &                              KL1 &                    KL24 \\
+                       O locus &                    O3b &                             O1v2 &              O2v2 &                     O1v2 &                            O1v2 &                           O1v2 &                             O2v1 &                    O2v1 &                             O1v2 &                    O2v1 \\
+               Aminoglycosides &     \mCL{StrB,\\StrA*} &   \mCL{StrB,\\StrA*,\\Aac3-IIa*} & \mCL{StrB,\\StrA} &                        - &  \mCL{StrB,\\StrA*,\\Aac3-IIa*} & \mCL{StrB,\\StrA*,\\Aac3-IIa*} &    \mCL{StrB,\\StrA*,\\Aph3-Ia*} &      \mCL{StrB,\\StrA*} &   \mCL{StrB,\\StrA*,\\Aac3-IIa*} &      \mCL{StrB,\\StrA*} \\
+              Fluoroquinolones &                      - &                           QnrB1? &                 - &                        - &                          QnrB1? &                         QnrB1? &                                - &                       - &                           QnrB1? &                       - \\
+                    Macrolides &                      - &                                - &                 - &                        - &                               - &                              - &                            EreA2 &                       - &                                - &                       - \\
+                     Phenicols &                 CatA1* &                            CatB4 &                 - &                        - &                           CatB4 &                          CatB4 &                                - &                   CatB4 &                            CatB4 &                   CatB4 \\
+                  Sulfonamides &                 SulII* &              \mCL{SulII,\\SulII} &                 - &                        - &                           SulII &                          SulII &              \mCL{SulI,\\SulII*} &                   SulII &                            SulII &                   SulII \\
+                 Tetracyclines &                   TetA &                             TetA &                 - &                        - &                            TetA &                           TetA &                                - &                       - &                             TetA &                       - \\
+                  Trimethoprim &                      - &                           DfrA14 &                 - &                        - &                          DfrA14 &                         DfrA14 &                            DfrA5 &                  DfrA14 &                           DfrA14 &                  DfrA14 \\
+                     \gls{bla} & \mCL{SHV-187*,\\AmpH*} &    \mCL{SHV-190*,\\AmpH,\\OXA-1} &             AmpH* &    \mCL{SHV-190*,\\AmpH} &   \mCL{SHV-190*,\\AmpH,\\OXA-1} &  \mCL{SHV-190*,\\AmpH,\\OXA-1} &                            AmpH* &     \mCL{AmpH*,\\OXA-1} &    \mCL{SHV-190*,\\AmpH,\\OXA-1} &     \mCL{AmpH*,\\OXA-1} \\
+                    \gls{esbl} &                      - &                         CTX-M-15 &                 - &                        - &                        CTX-M-15 &                       CTX-M-15 &           \mCL{SHV-13*, CTX-M-3} &                CTX-M-15 &                         CTX-M-15 &                CTX-M-15 \\
+                    \gls{bsbl} &                      - &                                - &           SHV-77* &                        - &                               - &                              - &                                - &                       - &                                - &                       - \\
+                   \gls{ibsbl} &                TEM-30* &                          TEM-30* &                 - &                        - &                         TEM-30* &                        TEM-30* &                                - & \mCL{SHV-26*,\\TEM-30*} &          \mCL{TEM-30*,\\TEM-30*} & \mCL{SHV-26*,\\TEM-30*} \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 
 \begin{tablenotes}
 \item
-\gls{bla}~-- \glsdesc{bla}, \gls{bsbl}~-- \glsdesc{bsbl}, \gls{ibsbl}~-- \glsdesc{ibsbl}, \gls{esbl}~-- \glsdesc{esbl}.
+\gls{mlst}~--- \glsdesc{mlst}, \gls{bla}~--- \glsdesc{bla}, \gls{bsbl}~--- \glsdesc{bsbl},
+\gls{ibsbl}~--- \glsdesc{ibsbl}, \gls{esbl}~--- \glsdesc{esbl}.
 \end{tablenotes}
 \end{threeparttable}
-\end{table}
+\end{sidewaystable}
