@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
+from shutil import copy2
 from Bio import SeqIO
 from copy import deepcopy
 
@@ -16,9 +18,34 @@ class ArgParser:
                             help="Input plasmid assembly file")
         parser.add_argument("-o", "--output", metavar="<output.fna>", required=True, help="Output file")
         self._namespace = parser.parse_args()
+        self.valid = False
         self.chromosome = self._namespace.chromosome
         self.plasmid = self._namespace.plasmid
         self.output = self._namespace.output
+        err = self.verify()
+        if not self.valid:
+            print(err)
+            self.log_and_raise("Some files are missing, will only copy the rest if available!")
+
+    def verify(self):
+        if all(os.path.isfile(i) for i in (self.chromosome, self.plasmid)):
+            self.valid = True
+            return ""
+
+        if all(not os.path.isfile(i) for i in (self.chromosome, self.plasmid)):
+            return "Warning! The chromosome and plasmid sequence file were not found: '{}', '{}'".format(
+                self.chromosome, self.plasmid)
+        if not os.path.isfile(self.plasmid):
+            copy2(self.chromosome, self.output)
+            return "Warning! The plasmid sequence file was not found: '{}'".format(self.plasmid)
+        elif not os.path.isfile(self.chromosome):
+            copy2(self.plasmid, self.output)
+            return "Warning! The chromosome sequence file was not found: '{}'".format(self.chromosome)
+
+    @staticmethod
+    def log_and_raise(log: str):
+        print(log)
+        raise ValueError(log)
 
 
 class Merger:
