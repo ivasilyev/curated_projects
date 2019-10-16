@@ -28,10 +28,12 @@ class ArgParser:
             self.log_and_raise("Some files are missing, will only copy the rest if available!")
 
     def verify(self):
+        if os.path.isfile(self.output):
+            print("Remove the existing output file: '{}'".format(self.output))
+            os.remove(self.output)
         if all(os.path.isfile(i) for i in (self.chromosome, self.plasmid)):
             self.valid = True
             return ""
-
         if all(not os.path.isfile(i) for i in (self.chromosome, self.plasmid)):
             return "Warning! The chromosome and plasmid sequence file were not found: '{}', '{}'".format(
                 self.chromosome, self.plasmid)
