@@ -123,6 +123,7 @@ class Utilities:
     def load_string(file: str):
         with open(file=file, mode="r", encoding="utf-8") as f:
             s = f.read()
+            f.close()
         return s
 
     @staticmethod
