@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-from shutil import copy2
 from Bio import SeqIO
 from copy import deepcopy
 
@@ -22,27 +21,6 @@ class ArgParser:
         self.chromosome = self._namespace.chromosome
         self.plasmid = self._namespace.plasmid
         self.output = self._namespace.output
-        err = self.verify()
-        if not self.valid:
-            print(err)
-            self.log_and_raise("Some files are missing, will only copy the rest if available!")
-
-    def verify(self):
-        if os.path.isfile(self.output):
-            print("Remove the existing output file: '{}'".format(self.output))
-            os.remove(self.output)
-        if all(os.path.isfile(i) for i in (self.chromosome, self.plasmid)):
-            self.valid = True
-            return ""
-        if all(not os.path.isfile(i) for i in (self.chromosome, self.plasmid)):
-            return "Warning! The chromosome and plasmid sequence file were not found: '{}', '{}'".format(
-                self.chromosome, self.plasmid)
-        if not os.path.isfile(self.plasmid):
-            copy2(self.chromosome, self.output)
-            return "Warning! The plasmid sequence file was not found: '{}'".format(self.plasmid)
-        elif not os.path.isfile(self.chromosome):
-            copy2(self.plasmid, self.output)
-            return "Warning! The chromosome sequence file was not found: '{}'".format(self.chromosome)
 
     @staticmethod
     def log_and_raise(log: str):
@@ -58,6 +36,8 @@ class Merger:
         self.seq_records_processed = []
         self._parse(chromosome_file)
         self._parse(plasmid_file, is_plasmid=True)
+        if len(self.seq_records_processed) == 0:
+            raise ValueError("Nothing to process, exit.")
         self.seq_records_processed = self.remove_duplicate_sequences(self.seq_records_processed)
         contigs_number = len(self.seq_records_processed)
         plasmid_counter = 0
@@ -71,6 +51,9 @@ class Merger:
                 seq_record_processed.description = ""
 
     def _parse(self, assembly_file, is_plasmid: bool = False):
+        if not os.path.isfile(assembly_file):
+            print("The file was not found: '{}'".format(assembly_file))
+            return
         seq_records_raw = sorted(list(SeqIO.parse(assembly_file, "fasta")), key=lambda x: len(x), reverse=True)
         # NCBI does not allow to submit sequences shorter than 200 nucleotides
         seq_records_valid = [i for i in seq_records_raw if len(i) > 200]
