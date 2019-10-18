@@ -1,0 +1,21 @@
+sample_name	raw_reads	raw_reads_number	raw_reads_bp	strain	taxonomy_id	reference_accession_id	cds_number	reference_bp	reference_description	assembly_sequences_number	assembly_total_bp	assembled_reads_percentage	expected_assembly_coverage	real_assembly_coverage
+07sq_Nextera		5707000	430200844	Lactobacillus parabuchneri FAM21731	152331	CP018796.1	2424	2600578	Lactobacillus parabuchneri strain FAM21731, complete genome	81	3274976	0.761266753814179	165.43x	1.26x
+10sq_Nextera		2821628	212762440	Leuconostoc suionicum DSM 20241	1511761	CP015247.1	1924	2026850	Leuconostoc mesenteroides subsp. suionicum strain DSM 20241, complete genome	15	1527232	0.717810906849912	104.97x	0.75x
+1sq_Nextera		7269022	547605518	Lactobacillus salivarius BCRC 14759	1624	CP024068.1	409	405494	Lactobacillus salivarius strain BCRC 14759 plasmid unnamed1, complete sequence	265	2847122	0.5199220801131518	1350.47x	7.02x
+2sq_Nextera		1735076	130679220	Lactobacillus curvatus SRCM103465	28038	CP035110.1	1923	2042320	Lactobacillus curvatus strain SRCM103465 chromosome, complete genome	32	1977452	1.5132107461308693	63.99x	0.97x
+336g_Nextera		8380456	631835948	Bacillus velezensis Hx05	492670	CP029473.2	3820	3913872	Bacillus velezensis strain Hx05 chromosome, complete genome	38	3923596	0.6209833442398563	161.44x	1.00x
+517_Nextera		5128270	386251500	Bacillus velezensis Hx05	492670	CP029473.2	3820	3913872	Bacillus velezensis strain Hx05 chromosome, complete genome	52	3977982	1.029894252837853	98.69x	1.02x
+8sq_Nextera		2546228	191256122	Lactobacillus futsaii Y97	938155	CP040736.1	2478	2558218	Lactobacillus futsaii strain Y97 chromosome, complete genome	23	3011342	1.5745075077910446	74.76x	1.18x
+9sq_Nextera		1432538	107754870	Bifidobacterium asteroides PRL2011	1147128	CP003325.1	1658	2167304	Bifidobacterium asteroides PRL2011, complete genome	18	2140934	1.986855907301452	49.72x	0.99x
+Undetermined_Nextera		857144	64657152	Lactobacillus salivarius JCM1046	1624	CP007649.1	112	101883	Lactobacillus salivarius strain JCM 1046 plasmid pLMP1046, complete sequence	9884	4124715	6.379363879188492	634.62x	40.48x
+01-1sq_FTP		95754	14359538	Lactobacillus salivarius JCM1046	1624	CP007649.1	112	101883	Lactobacillus salivarius strain JCM 1046 plasmid pLMP1046, complete sequence	1336	2229630	15.527170860232411	140.94x	21.88x
+01sq_FTP		2686	403512	Lactobacillus sakei J64	1599	LT960781.1	2100	2050232	Lactobacillus sakei strain J64 genome assembly, chromosome: 1	142	45862	11.365709074327405	0.20x	0.02x
+07sq_FTP		106358	15958764	Lactobacillus parabuchneri FAM21731	152331	CP018796.1	2424	2600578	Lactobacillus parabuchneri strain FAM21731, complete genome	1606	2571233	16.111730206675155	6.14x	0.99x
+08-1sq_FTP		570798	85410906	Lactobacillus farciminis DSM 20184	936140	CP017702.1	2420	2551839	Lactobacillus farciminis KCTC 3681 = DSM 20184, complete genome	540	3127811	3.6620744896442146	33.47x	1.23x
+1-2sq_FTP		1013986	149601914	Lactobacillus salivarius BCRC 12574	1624	CP024063.1	1445	1507589	Lactobacillus salivarius strain BCRC 12574 chromosome	550	2880626	1.9255275036120192	99.23x	1.91x
+1sq_FTP		101556	15219238	Lactobacillus salivarius JCM1046	1624	CP007649.1	112	101883	Lactobacillus salivarius strain JCM 1046 plasmid pLMP1046, complete sequence	1630	2289820	15.045562727910557	149.38x	22.47x
+2sq_FTP		1208374	181029060	Lactobacillus curvatus MRS6	28038	CP022474.1	1975	2114309	Lactobacillus curvatus strain MRS6 chromosome, complete genome	332	2024543	1.118352489926203	85.62x	0.96x
+336g_FTP		1309100	194493322	Bacillus velezensis Hx05	492670	CP029473.2	3820	3913872	Bacillus velezensis strain Hx05 chromosome, complete genome	289	3955453	2.0337217542101524	49.69x	1.01x
+517g_FTP		364452	54558214	Bacillus velezensis WRN014	492670	CP041361.1	3959	4063541	Bacillus velezensis strain WRN014 chromosome, complete genome	237	4805915	8.808783586647467	13.43x	1.18x
+MhP_FTP		173152	25899732	Pantoea agglomerans C410P1	549	CP016891.1	213	216117	Pantoea agglomerans strain C410P1 plasmid unnamed2, complete sequence	3081	4835615	18.67052137836793	119.84x	22.37x
+Undetermined_FTP		848598	127269852	Lactobacillus salivarius JCM1046	1624	CP007649.1	112	101883	Lactobacillus salivarius strain JCM 1046 plasmid pLMP1046, complete sequence	11565	8836685	6.943266501166356	1249.18x	86.73x
