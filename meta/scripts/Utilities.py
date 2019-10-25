@@ -254,6 +254,7 @@ class Utilities:
                 out["d50"] = len(seq_records[idx + 1])
                 n50_supplied = True
             if sum([len(i) for i in contig_records]) > bp90 and not n90_supplied:
+                out["l90"] = idx + 1
                 out["n90"] = len(seq_records[idx])
                 n90_supplied = True
         return out
