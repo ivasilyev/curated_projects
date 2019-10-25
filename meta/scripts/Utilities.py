@@ -198,15 +198,15 @@ class Utilities:
         from Bio import SeqIO
         if type_ == "fasta":
             with open(file, mode="r", encoding="utf-8") as f:
-                gen = SeqIO.parse(f, type_)
+                records = list(SeqIO.parse(f, type_))
                 f.close()
         if type_ == "fastq_gz":
             import gzip
             with gzip.open(file, "rt") as f:
-                gen = SeqIO.parse(f, "fastq")
+                records = list(SeqIO.parse(f, "fastq"))
                 f.close()
         out = Utilities.remove_duplicate_sequences(Utilities.remove_empty_values(
-            sorted(list(gen), key=lambda x: len(x), reverse=True)))
+            sorted(records, key=lambda x: len(x), reverse=True)))
         return out
 
     @staticmethod
