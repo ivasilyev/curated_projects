@@ -205,8 +205,7 @@ class Utilities:
             with gzip.open(file, "rt") as f:
                 records = list(SeqIO.parse(f, "fastq"))
                 f.close()
-        out = Utilities.remove_duplicate_sequences(Utilities.remove_empty_values(
-            sorted(records, key=lambda x: len(x), reverse=True)))
+        out = Utilities.remove_empty_values(sorted(records, key=lambda x: len(x), reverse=True))
         return out
 
     @staticmethod
@@ -228,32 +227,39 @@ class Utilities:
         return out
 
     @staticmethod
-    def count_assembly_statistics(assembly_file: str, type_: str = "fasta"):
-        from Bio.SeqUtils import GC
+    def count_raw_reads_statistics(reads_file: str, type_: str = "fasta"):
         import statistics
+        seq_records = Utilities.parse_sequences(reads_file, type_)
+        total_sequence = "".join([str(i.seq) for i in seq_records])
+        out = dict(file=reads_file, reads_number=len(seq_records), largest_read_bp=len(seq_records[0]),
+                   smallest_read_bp=len(seq_records[-1]), total_reads_bp=len(total_sequence),
+                   mean_reads_bp=statistics.mean([len(i) for i in seq_records]),
+                   median_reads_bp=statistics.median([len(i) for i in seq_records]))
+        return out
+
+    @staticmethod
+    def count_assembly_statistics(assembly_file: str, type_: str = "fasta"):
+        import statistics
+        from Bio.SeqUtils import GC
         seq_records = Utilities.parse_sequences(assembly_file, type_=type_)
         total_sequence = "".join([str(i.seq) for i in seq_records])
-        out = dict(file=assembly_file,
-                   contig_number=len(seq_records),
-                   largest_contig_bp=len(seq_records[0]),
-                   smallest_contig_bp=len(seq_records[-1]),
-                   total_bp=len(total_sequence),
-                   gc_percentage=GC(total_sequence))
-        out["mean_contig_bp"] = statistics.mean([len(i) for i in seq_records])
-        out["median_contig_bp"] = statistics.median([len(i) for i in seq_records])
-        contig_records = []
+        out = dict(file=assembly_file, contigs_number=len(seq_records), largest_contig_bp=len(seq_records[0]),
+                   smallest_contig_bp=len(seq_records[-1]), total_contigs_bp=len(total_sequence),
+                   mean_contigs_bp=statistics.mean([len(i) for i in seq_records]),
+                   median_contigs_bp=statistics.median([len(i) for i in seq_records]), gc_percentage=GC(total_sequence))
+        contigs_records = []
         bp50 = round(len(total_sequence) * 0.5)
         bp90 = round(len(total_sequence) * 0.9)
         n50_supplied = False
         n90_supplied = False
         for idx, seq_record in enumerate(seq_records):
-            contig_records.append(seq_record)
-            if sum([len(i) for i in contig_records]) > bp50 and not n50_supplied:
+            contigs_records.append(seq_record)
+            if sum([len(i) for i in contigs_records]) > bp50 and not n50_supplied:
                 out["l50"] = idx + 1
                 out["n50"] = len(seq_records[idx])
                 out["d50"] = len(seq_records[idx + 1])
                 n50_supplied = True
-            if sum([len(i) for i in contig_records]) > bp90 and not n90_supplied:
+            if sum([len(i) for i in contigs_records]) > bp90 and not n90_supplied:
                 out["l90"] = idx + 1
                 out["n90"] = len(seq_records[idx])
                 n90_supplied = True
