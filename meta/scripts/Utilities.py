@@ -194,14 +194,28 @@ class Utilities:
     # Biopython methods
 
     @staticmethod
-    def get_reads_stats_from_fq_gz(raw_reads_file):
-        import gzip
+    def parse_sequences(file: str, type_: str = "fasta"):
         from Bio import SeqIO
-        with gzip.open(raw_reads_file, "rt") as f:
-            seq_records = list(SeqIO.parse(f, "fastq"))
-            f.close()
-        return {"sample_file": raw_reads_file, "sample_reads_number": len(seq_records),
-                "sample_reads_bp": sum([len(i) for i in seq_records])}
+        if type_ == "fasta":
+            with open(file, mode="r", encoding="utf-8") as f:
+                gen = SeqIO.parse(f, type_)
+                f.close()
+        if type_ == "fastq_gz":
+            import gzip
+            with gzip.open(file, "rt") as f:
+                gen = SeqIO.parse(f, "fastq")
+                f.close()
+        out = Utilities.remove_duplicate_sequences(Utilities.remove_empty_values(
+            sorted(list(gen), key=lambda x: len(x), reverse=True)))
+        return out
+
+    @staticmethod
+    def get_reads_stats_from_fq_gz(reads_file: str, sample_name: str = None):
+        seq_records = Utilities.parse_sequences(reads_file, type_="fastq_gz")
+        out = dict(reads_file=reads_file, reads_number=len(seq_records), reads_bp=sum([len(i) for i in seq_records]))
+        if sample_name:
+            out["sample_name"] = sample_name
+        return out
 
     @staticmethod
     def remove_duplicate_sequences(records: list):
@@ -211,6 +225,37 @@ class Utilities:
             if record.seq not in sequences:
                 sequences.append(record.seq)
                 out.append(record)
+        return out
+
+    @staticmethod
+    def count_assembly_statistics(assembly_file: str, type_: str = "fasta"):
+        from Bio.SeqUtils import GC
+        import statistics
+        seq_records = Utilities.parse_sequences(assembly_file, type_=type_)
+        total_sequence = "".join([str(i.seq) for i in seq_records])
+        out = dict(file=assembly_file,
+                   contig_number=len(seq_records),
+                   largest_contig_bp=len(seq_records[0]),
+                   smallest_contig_bp=len(seq_records[-1]),
+                   total_bp=len(total_sequence),
+                   gc_percentage=GC(total_sequence))
+        out["mean_contig_bp"] = statistics.mean([len(i) for i in seq_records])
+        out["median_contig_bp"] = statistics.median([len(i) for i in seq_records])
+        contig_records = []
+        bp50 = round(len(total_sequence) * 0.5)
+        bp90 = round(len(total_sequence) * 0.9)
+        n50_supplied = False
+        n90_supplied = False
+        for idx, seq_record in enumerate(seq_records):
+            contig_records.append(seq_record)
+            if sum([len(i) for i in contig_records]) > bp50 and not n50_supplied:
+                out["l50"] = idx + 1
+                out["n50"] = len(seq_records[idx])
+                out["d50"] = len(seq_records[idx + 1])
+                n50_supplied = True
+            if sum([len(i) for i in contig_records]) > bp90 and not n90_supplied:
+                out["n90"] = len(seq_records[idx])
+                n90_supplied = True
         return out
 
     # Pandas methods
