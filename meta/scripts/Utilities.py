@@ -347,8 +347,31 @@ class Utilities:
         out.index.name = df.index.name
         out.columns.name = df.columns.name
         return out
-    
+
     # Queue processing methods
+
+    @staticmethod
+    def randomize_sleep(min_: int = 30, max_: int = 120):
+        from time import sleep
+        from random import randint
+        sleep(randint(min_, max_))
+
+    @staticmethod
+    def attempt_func(func, args):
+        _ATTEMPTS = 5
+        attempt = 1
+        while attempt <= _ATTEMPTS:
+            try:
+                if any(isinstance(args, i) for i in (list, tuple)):
+                    return func(*args)
+                if any(isinstance(args, i) for i in (dict,)):
+                    return func(**args)
+            except Exception as e:
+                print("Caught exception for attempt {}: `{}`".format(attempt, e))
+                attempt += 1
+                Utilities.randomize_sleep()
+        print("Exceeded number of attempts for the function: '{}'".format(func.__name__))
+        return
 
     @staticmethod
     def multi_core_queue(func, queue):
