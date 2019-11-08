@@ -12,6 +12,7 @@ python3
 """
 
 import os
+import re
 import pandas as pd
 from meta.scripts.Utilities import Utilities
 from vradchenko.lactobacillus_salivarius.ProjectDescriber import ProjectDescriber
@@ -33,26 +34,36 @@ def count_fasta_statistics(fasta_file: str, sample_name: str = None):
 
 # Process assemblies
 blasted_data_df = Utilities.load_tsv(os.path.join(ProjectDescriber.SAMPLE_DATA_DIR, "BLASTed.sampledata"))
+blasted_data_df.rename(columns={i: "reference_{}".format(i) for i in blasted_data_df.columns if
+                                all(j not in i for j in ["assembly", "reference", "sample"])}, inplace=True)
 assembly_files = blasted_data_df["assembly_file"].values.tolist()
-assembly_stats_df = pd.DataFrame(Utilities.multi_core_queue(count_fasta_statistics, assembly_files))
-assembly_stats_df.rename(columns={i: i.replace("fasta", "assembly") for i in assembly_stats_df.columns}, inplace=True)
+
+assembly_stats_df = pd.DataFrame(Utilities.multi_core_queue(Utilities.count_assembly_statistics, assembly_files))
+assembly_stats_df.rename(columns={i: "assembly_{}".format(i) for i in assembly_stats_df.columns}, inplace=True)
 blasted_data_df = pd.concat([blasted_data_df.set_index("assembly_file"), assembly_stats_df.set_index("assembly_file")],
                             axis=1, sort=False)
 blasted_data_df.index.names = ["assembly_file"]
-blasted_data_df = blasted_data_df.reset_index()
+blasted_data_df.reset_index(inplace=True)
 
 # Process raw reads
 sample_data_df = Utilities.load_tsv(ProjectDescriber.SAMPLE_DATA_FILE)
 sample_data_df["raw_file"] = sample_data_df["raw_reads"].apply(lambda x: x.split(";")[0].strip())
 raw_read_files = sample_data_df["raw_file"].values.tolist()
-raw_read_stats_df = pd.DataFrame(Utilities.multi_core_queue(Utilities.get_reads_stats_from_fq_gz, raw_read_files))
-raw_read_stats_df.rename(columns={i: i.replace("sample", "raw") for i in raw_read_stats_df.columns}, inplace=True)
+
+
+def mp_count_raw_reads_statistics(reads_file):
+    return Utilities.count_raw_reads_statistics(reads_file=reads_file, type_="fastq_gz")
+
+
+raw_read_stats_df = pd.DataFrame(Utilities.multi_core_queue(mp_count_raw_reads_statistics, raw_read_files))
+
+raw_read_stats_df.rename(columns={i: "raw_{}".format(i) for i in raw_read_stats_df.columns}, inplace=True)
 raw_read_stats_df["raw_reads_number"] *= 2
-raw_read_stats_df["raw_reads_bp"] *= 2
+raw_read_stats_df["raw_total_reads_bp"] *= 2
 sample_data_df = pd.concat([i.set_index("raw_file") for i in (sample_data_df, raw_read_stats_df)],
                            axis=1, sort=False)
 sample_data_df.index.names = ["raw_file"]
-sample_data_df = sample_data_df.reset_index()
+sample_data_df.reset_index(inplace=True)
 
 combined_statistics_df = pd.concat([i.set_index(INDEX_COL_NAME) for i in (sample_data_df, blasted_data_df)],
                                    axis=1, sort=False)
@@ -61,17 +72,28 @@ numeric_col_names = [i for i in combined_statistics_df.columns if any(i.endswith
 combined_statistics_df.fillna(0, inplace=True)
 combined_statistics_df = combined_statistics_df.astype({i: int for i in numeric_col_names})
 
-combined_statistics_df["assembled_reads_percentage"] = combined_statistics_df["assembly_total_bp"] * 100 / combined_statistics_df["raw_reads_bp"]
-combined_statistics_df["expected_assembly_coverage"] = combined_statistics_df["raw_reads_bp"] / combined_statistics_df["reference_bp"]
-combined_statistics_df["real_assembly_coverage"] = combined_statistics_df["raw_reads_bp"] * (combined_statistics_df["assembled_reads_percentage"] / 100) / combined_statistics_df["reference_bp"]
+combined_statistics_df["assembled_reads_percentage"] = combined_statistics_df["assembly_total_contigs_bp"] * 100 / combined_statistics_df["raw_total_reads_bp"]
+combined_statistics_df["expected_assembly_coverage"] = combined_statistics_df["raw_total_reads_bp"] / combined_statistics_df["reference_bp"]
+combined_statistics_df["real_assembly_coverage"] = combined_statistics_df["raw_total_reads_bp"] * (combined_statistics_df["assembled_reads_percentage"] / 100) / combined_statistics_df["reference_bp"]
 for coverage_col_name in ("expected_assembly_coverage", "real_assembly_coverage"):
     combined_statistics_df[coverage_col_name] = combined_statistics_df[coverage_col_name].apply(lambda x: "{0:.2f}x".format(x))
 
-combined_statistics_df = combined_statistics_df.reset_index()
+
+def define_strain_name(s: str):
+    _OWNER_PREFIX = "VRA"
+    name = re.sub("_+", "-", "_".join(s.split("_")[:-1]))
+    if "undetermined" in name.lower():
+        name = "UND"
+    suffix = s.split("_")[-1][0].lower()
+    return "_".join([_OWNER_PREFIX, name, suffix])
+
+
+combined_statistics_df.reset_index(inplace=True)
+combined_statistics_df["suggested_strain_name"] = combined_statistics_df[INDEX_COL_NAME].apply(define_strain_name)
 combined_statistics_file = os.path.join(ProjectDescriber.SAMPLE_DATA_DIR, "combined_assembly_statistics.tsv")
 
-Utilities.dump_tsv(combined_statistics_df.drop(columns=["raw_reads", ]), combined_statistics_file,
-                   col_names=[i for i in combined_statistics_df.columns if "file" not in i])
+Utilities.dump_tsv(combined_statistics_df, combined_statistics_file, col_names=[INDEX_COL_NAME] + sorted(
+    [i for i in combined_statistics_df.columns if "file" not in i and i not in ("raw_reads", INDEX_COL_NAME)]))
 
 print(combined_statistics_file)
 # /data1/bio/projects/vradchenko/lactobacillus_salivarius/sample_data/combined_assembly_statistics.tsv
