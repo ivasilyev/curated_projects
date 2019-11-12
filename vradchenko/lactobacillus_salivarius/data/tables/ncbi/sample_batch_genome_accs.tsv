@@ -1,0 +1,21 @@
+biosample_accession	sample_name	assembly_date	assembly_name	assembly_method	assembly_method_version	genome_coverage	sequencing_technology	reference_genome	update_for	bacteria_available_from	filename
+	07sq_Nextera	2019-10-17		SPAdes	quay.io/biocontainers/spades:3.9.1--0	1.26x	Illumina MiSeq				07sq_Nextera_genome.fna
+	10sq_Nextera	2019-10-17		SPAdes	quay.io/biocontainers/spades:3.9.1--0	0.75x	Illumina MiSeq				10sq_Nextera_genome.fna
+	1sq_Nextera	2019-10-17		SPAdes	quay.io/biocontainers/spades:3.9.1--0	7.02x	Illumina MiSeq				1sq_Nextera_genome.fna
+	2sq_Nextera	2019-10-17		SPAdes	quay.io/biocontainers/spades:3.9.1--0	0.97x	Illumina MiSeq				2sq_Nextera_genome.fna
+	336g_Nextera	2019-10-17		SPAdes	quay.io/biocontainers/spades:3.9.1--0	1.00x	Illumina MiSeq				336g_Nextera_genome.fna
+	517_Nextera	2019-10-17		SPAdes	quay.io/biocontainers/spades:3.9.1--0	1.02x	Illumina MiSeq				517_Nextera_genome.fna
+	8sq_Nextera	2019-10-17		SPAdes	quay.io/biocontainers/spades:3.9.1--0	1.18x	Illumina MiSeq				8sq_Nextera_genome.fna
+	9sq_Nextera	2019-10-17		SPAdes	quay.io/biocontainers/spades:3.9.1--0	0.99x	Illumina MiSeq				9sq_Nextera_genome.fna
+	Undetermined_Nextera	2019-10-17		SPAdes	quay.io/biocontainers/spades:3.9.1--0	40.48x	Illumina MiSeq				Undetermined_Nextera_genome.fna
+	01-1sq_FTP	2019-10-17		SPAdes	quay.io/biocontainers/spades:3.9.1--0	21.88x	Illumina MiSeq				01-1sq_FTP_genome.fna
+	01sq_FTP	2019-10-17		SPAdes	quay.io/biocontainers/spades:3.9.1--0	0.02x	Illumina MiSeq				01sq_FTP_genome.fna
+	07sq_FTP	2019-10-17		SPAdes	quay.io/biocontainers/spades:3.9.1--0	0.99x	Illumina MiSeq				07sq_FTP_genome.fna
+	08-1sq_FTP	2019-10-17		SPAdes	quay.io/biocontainers/spades:3.9.1--0	1.23x	Illumina MiSeq				08-1sq_FTP_genome.fna
+	1-2sq_FTP	2019-10-17		SPAdes	quay.io/biocontainers/spades:3.9.1--0	1.91x	Illumina MiSeq				1-2sq_FTP_genome.fna
+	1sq_FTP	2019-10-17		SPAdes	quay.io/biocontainers/spades:3.9.1--0	22.47x	Illumina MiSeq				1sq_FTP_genome.fna
+	2sq_FTP	2019-10-17		SPAdes	quay.io/biocontainers/spades:3.9.1--0	0.96x	Illumina MiSeq				2sq_FTP_genome.fna
+	336g_FTP	2019-10-17		SPAdes	quay.io/biocontainers/spades:3.9.1--0	1.01x	Illumina MiSeq				336g_FTP_genome.fna
+	517g_FTP	2019-10-17		SPAdes	quay.io/biocontainers/spades:3.9.1--0	1.18x	Illumina MiSeq				517g_FTP_genome.fna
+	MhP_FTP	2019-10-17		SPAdes	quay.io/biocontainers/spades:3.9.1--0	22.37x	Illumina MiSeq				MhP_FTP_genome.fna
+	Undetermined_FTP	2019-10-17		SPAdes	quay.io/biocontainers/spades:3.9.1--0	86.73x	Illumina MiSeq				Undetermined_FTP_genome.fna
