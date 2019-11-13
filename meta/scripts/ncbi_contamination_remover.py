@@ -101,10 +101,11 @@ class ContaminationRemover:
             else:
                 trim_lines_raw = self.contamination_lines[trim_index + 2:]
             for trim_line_raw in Utilities.remove_empty_values(trim_lines_raw):
-                trim_indices = [int(i.strip()) for i in trim_line_raw[2].split("..")]
-                # It seems that reported sequence positions are not zero-based
-                trim_indices[0] -= 1
-                trim_lines_processed[trim_line_raw[0]] = trim_indices
+                for trim_span in Utilities.remove_empty_values(trim_line_raw[2].split(",")):
+                    trim_indices = [int(i.strip()) for i in trim_span.split("..")]
+                    # It seems that reported sequence positions are not zero-based
+                    trim_indices[0] -= 1
+                    trim_lines_processed[trim_line_raw[0]] = trim_indices
 
         if duplicated_index:
             duplicated_lines = self.contamination_lines[duplicated_index + 2:]
