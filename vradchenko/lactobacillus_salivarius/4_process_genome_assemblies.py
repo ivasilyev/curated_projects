@@ -17,6 +17,7 @@ import pandas as pd
 from shutil import copy2
 from datetime import datetime
 from meta.scripts.Utilities import Utilities
+from meta.scripts.ncbi_contamination_remover import ContaminationRemover
 from vradchenko.lactobacillus_salivarius.ProjectDescriber import ProjectDescriber
 
 INDEX_COL_NAME = "sample_name"
@@ -146,3 +147,21 @@ for source_target_dict in source_target_dicts:
 print(upload_dir)
 # /data1/bio/projects/vradchenko/lactobacillus_salivarius/assemblies2ncbi
 # Upload data to NCBI
+
+contamination_reports_dir = os.path.join(upload_dir, "contaminations")
+os.makedirs(contamination_reports_dir, exist_ok=True)
+# Copy NCBI contamination reports
+
+# Decontaminate assemblies
+decontaminated_assemblies_dir = os.path.join(upload_dir, "decontaminated")
+os.makedirs(decontaminated_assemblies_dir, exist_ok=True)
+
+for contaminated_assembly in [i.get("uploading_assembly_file") for i in source_target_dicts]:
+    contaminated_basename = os.path.splitext(os.path.basename(contaminated_assembly))[0]
+    contamination_report = os.path.join(contamination_reports_dir, "Contamination_{}.txt".format(contaminated_basename))
+    decontaminated_assembly = os.path.join(decontaminated_assemblies_dir, os.path.basename(contaminated_assembly))
+    if not os.path.isfile(contamination_report):
+        copy2(contaminated_assembly, decontaminated_assembly)
+        continue
+    remover = ContaminationRemover(contaminated_assembly, contamination_report)
+    remover.export(decontaminated_assembly)
