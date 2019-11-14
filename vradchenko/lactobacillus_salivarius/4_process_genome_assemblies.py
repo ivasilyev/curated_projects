@@ -165,3 +165,18 @@ for contaminated_assembly in [i.get("uploading_assembly_file") for i in source_t
         continue
     remover = ContaminationRemover(contaminated_assembly, contamination_report)
     remover.export(decontaminated_assembly)
+
+contamination_reports_dir2 = os.path.join(upload_dir, "contaminations2")
+os.makedirs(contamination_reports_dir, exist_ok=True)
+
+decontaminated_assemblies_dir2 = os.path.join(upload_dir, "decontaminated2")
+os.makedirs(decontaminated_assemblies_dir2, exist_ok=True)
+
+for contaminated_assembly in [i for i in Utilities.scan_whole_dir(decontaminated_assemblies_dir) if i.endswith(".fna")]:
+    contaminated_basename = os.path.splitext(os.path.basename(contaminated_assembly))[0]
+    contamination_report = os.path.join(contamination_reports_dir2, "Contamination_{}.txt".format(contaminated_basename))
+    decontaminated_assembly = os.path.join(decontaminated_assemblies_dir2, os.path.basename(contaminated_assembly))
+    if not os.path.isfile(contamination_report):
+        continue
+    remover = ContaminationRemover(contaminated_assembly, contamination_report)
+    remover.export(decontaminated_assembly)
