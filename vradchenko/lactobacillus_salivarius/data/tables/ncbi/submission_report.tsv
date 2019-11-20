@@ -1,4 +1,4 @@
-sample_name	status	contaminations	SUBID     	BioProject	BioSample	Accession	Organism
+sample_name	status	contaminations	SUBID	BioProject	BioSample	Accession	Organism
 2sq_Nextera	processed		SUB6519458	PRJNA588983	SAMN13262481	WKKT00000000	Lactobacillus curvatus VRA_2sq_n
 336g_Nextera	processed		SUB6519458	PRJNA588983	SAMN13262482	WKKU00000000	Bacillus velezensis VRA_336g_n
 517_Nextera	processed		SUB6519458	PRJNA588983	SAMN13262483	WKKV00000000	Bacillus velezensis VRA_517_n
@@ -9,13 +9,13 @@ sample_name	status	contaminations	SUBID     	BioProject	BioSample	Accession	Orga
 2sq_FTP	processed	Bos taurus	SUB6519458	PRJNA588983	SAMN13262493	WKLA00000000	Lactobacillus curvatus VRA_2sq_f
 336g_FTP	processed	Solanum lycopersicum	SUB6519458	PRJNA588983	SAMN13262494	WKLB00000000	Bacillus velezensis VRA_336g_f
 MhP_FTP	processed	adaptor	SUB6519458	PRJNA588983	SAMN13262496	WKLC00000000	Pantoea agglomerans VRA_MhP_f
-07sq_Nextera	size too large or small	Bos taurus	SUB6519458	PRJNA588983	SAMN13262478
-10sq_Nextera	size too large or small		SUB6519458	PRJNA588983	SAMN13262479
-1sq_Nextera	size too large or small	Brassica napus	SUB6519458	PRJNA588983	SAMN13262480
-8sq_Nextera	ani suggests this is contaminated	Lactobacillus nuruki;Lactobacillus musae;Lactobacillus kimchiensis;Lactobacillus crustorum;Lactobacillus farciminis;etc	SUB6519458	PRJNA588983	SAMN13262484
-Undetermined_Nextera	size too large or small	adaptor	SUB6519458	PRJNA588983	SAMN13262486
-01sq_FTP	size too large or small		SUB6519458	PRJNA588983	SAMN13262488
-08-1sq_FTP	size too large or small	Bos taurus	SUB6519458	PRJNA588983	SAMN13262490
-1-2sq_FTP	size too large or small	Homo sapiens	SUB6519458	PRJNA588983	SAMN13262491
-517g_FTP	size too large or small	Bos taurus	SUB6519458	PRJNA588983	SAMN13262495
-Undetermined_FTP	size too large or small	adaptor;Bos taurus;Solanum lycopersicum	SUB6519458	PRJNA588983	SAMN13262497
+07sq_Nextera	size too large or small	Bos taurus	SUB6519458	PRJNA588983	SAMN13262478	 	 
+10sq_Nextera	size too large or small		SUB6519458	PRJNA588983	SAMN13262479	 	 
+1sq_Nextera	size too large or small	Brassica napus	SUB6519458	PRJNA588983	SAMN13262480	 	 
+8sq_Nextera	ani suggests this is contaminated	Lactobacillus nuruki;Lactobacillus musae;Lactobacillus kimchiensis;Lactobacillus crustorum;Lactobacillus farciminis;etc	SUB6519458	PRJNA588983	SAMN13262484	 	 
+Undetermined_Nextera	size too large or small	adaptor	SUB6519458	PRJNA588983	SAMN13262486	 	 
+01sq_FTP	size too large or small		SUB6519458	PRJNA588983	SAMN13262488	 	 
+08-1sq_FTP	size too large or small	Bos taurus	SUB6519458	PRJNA588983	SAMN13262490	 	 
+1-2sq_FTP	size too large or small	Homo sapiens	SUB6519458	PRJNA588983	SAMN13262491	 	 
+517g_FTP	size too large or small	Bos taurus	SUB6519458	PRJNA588983	SAMN13262495	 	 
+Undetermined_FTP	size too large or small	adaptor;Bos taurus;Solanum lycopersicum	SUB6519458	PRJNA588983	SAMN13262497	 	 
