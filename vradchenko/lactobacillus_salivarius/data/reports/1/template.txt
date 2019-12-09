@@ -1,0 +1,28 @@
+После полногеномного шотган-секвенирования (WGS) на платформе Illumina MiSeq образца {{ sample_name }} получено
+{{ raw_reads_number }} прочтений медианным размером {{ raw_median_reads_bp }}
+и суммарным размером {{ raw_total_reads_bp }} п.о.
+
+Обработка сырых данных выполнялась с помощью развертываемых Docker-образов следующего ПО:
+- контроль качества: FastQC ({{ fastqc_version }})
+- обрезка: trimmomatic ({{ trimmomatic_version }}) и cutadapt ({{ cutadapt_version }})
+- деконтаминация человеческой ДНК: bowtie2 ({{ bowtie2_version }})
+- сборка генома: SPAdes ({{ spades_version }})
+Объединение в конвейер, дедубликация, деконтаминация и извлечение статистических данных производились
+собственными скриптами, исходный код доступен на:
+https://github.com/ivasilyev/curated_projects/tree/master/vradchenko/lactobacillus_salivarius
+
+Ожидаемое покрытие геномной сборки составило {{ expected_assembly_coverage }},
+ее суммарный размер: {{ assembly_total_contigs_bp }} п.о.;
+общее число контигов: {{ assembly_contigs_number }};
+длина наименьшего контига: {{ assembly_smallest_contig_bp }} п.о.;
+длина наибольшего контига: {{ assembly_largest_contig_bp }} п.о.;
+медианная длина контига:  {{ assembly_median_contigs_bp }} п.о.;
+метрика N50: {{ assembly_n50 }} п.о.;
+Г+Ц-соотношение составило {{ assembly_gc_percentage }}%.
+
+Определение видовой принадлежности выполнялось по случайно выбранной последовательности длиной 20 тыс.п.о.,
+проанализированной с помощью NCBI BLAST. Ближайшей оказалась референсная последовательность с описанием
+"{{ reference_description }}" и идентификатором {{ reference_accession_id }}.
+
+Полученная WGS-сборка была успешно депонирована в NCBI GenBank под названием "{{ Organism }}"
+и Accession ID {{ Accession }} в рамках проекта {{ BioProject }}.
