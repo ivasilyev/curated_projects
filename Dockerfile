@@ -7,6 +7,8 @@ RUN mkdir -p /home/docker/scripts && \
 
 WORKDIR /home/docker/scripts/curated_projects
 
+ENV PYTHONPATH=/home/docker/scripts/curated_projects/
+
 CMD ["/bin/bash"]
 
 # MANUAL BUILD COMMAND:
