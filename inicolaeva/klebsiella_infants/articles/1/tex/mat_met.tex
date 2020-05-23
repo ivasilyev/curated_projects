@@ -1,7 +1,15 @@
 \section{Materials and methods}\label{sec:mat_met}
+\subsection{Ethical approval}\label{subsec:eth}
+The infant stool samples collection was performed as a routine task during normal observation at the
+maternity hospital.
+The standard biosecurity and institutional safety procedures have been adhered to handle human
+subjects.
+Informed consent was obtained from all individual participants’ parents included in the study.
+No special ethical restrictions were raised.
+
 \subsection{Isolation of stool \gls{mdrkp} samples from the infant patients}\label{subsec:iso}
 A total of 10 \gls{kpne} isolates demonstrating multi drug resistance phenotype were collected from
-10 stool samples (8 non-repetitive) from 8 newborn full-term infants during hospitalization in
+10 stool samples (8 non-repetitive) from 8 newborn full-term breastfed infants during hospitalization in
 maternity hospital of Kazan, Russia.
 5 neonates were born with vaginal delivery, 3~--- after cesarean surgery.
 No infection outbreak was recorded and no detailed microbiological analysis was performed over parents.
@@ -33,7 +41,7 @@ Whole-genome DNA was sequenced using Illumina MiSeq platform (Illumina Inc., USA
 with a paired-end run of 2 by 250 bp.
 Raw reads quality control was performed with FastQC v0.11~\cite{FastQC},  % quay.io/biocontainers/fastqc:0.11.8--1
 % fastqc -t 32 sample.fastq.gz -o sample
-then reads were trimmed by Trimmomatic v0.39~\cite{Trimmomatic}
+then reads were trimmed using Trimmomatic v0.39~\cite{Trimmomatic}
 % quay.io/biocontainers/trimmomatic:0.39--1
 % trimmomatic PE -threads 32 -phred33 sample.1.fastq.gz sample.2.fastq.gz sample_trimmomatic.1.fastq.gz sample_trimmomatic_untrimmed.1.fastq.gz sample_trimmomatic.2.fastq.gz sample_trimmomatic_untrimmed.2.fastq.gz ILLUMINACLIP:adapters.fasta:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
 and Cutadapt v2.4~\cite{Cutadapt},

@@ -1,4 +1,5 @@
 \documentclass[12pt,a4paper]{article}
+
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc} 
 \usepackage[english]{babel}
@@ -15,13 +16,15 @@
 \usepackage[backend=biber, % style=authoryear,
 natbib=true]{biblatex}  % Bibliography support
 \usepackage[acronym]{glossaries}  % Abbreviations & species support
-
 \usepackage{tabularx}  % Extended tabular data support
 \usepackage{caption}  % For extra data captions
+\usepackage{setspace}  % Text spacing
+\usepackage{lineno}  % Requested line numeration
+
 \captionsetup{justification=raggedright,singlelinecheck=false}  % Align Caption to the left
-% \renewcommand{\thetable}{(Table~\arabic{table})}  % Set table reference format
 
 \addbibresource{latexrefs.bib}
+\doublespacing
 \nonfrenchspacing
 
 % Define macros
@@ -39,15 +42,14 @@ natbib=true]{biblatex}  % Bibliography support
 \newcommand{\refFig}[1]{(Figure~\ref{fig:#1})}
 
 % Define species
-% \newacronym{<label>}{<abbrv>}{<full>}
 \newacronym[first={\textit{Klebsiella pneumoniae}}]{kpne}{\textit{K. pneumoniae}}{\textit{Klebsiella pneumoniae}}
 % Define abbreviations
 \makeglossaries
 \newacronym{bla}{BLA}{\betalactam ase}
 \newacronym{bsbl}{BSBL}{broad spectrum \glsdesc{bla}}
 \newacronym{ibsbl}{BSBL-inhR}{\gls{bsbl} with resistance to \glsdesc{bla} inhibitors}
-\newacronym{esbl}{ESBL}{extended spectrum \glsdesc{bla}}
-\newacronym{mlst}{MLST}{\textit{in silico} multi-locus sequence type}
+\newacronym[plural={extended spectrum \glsdesc{bla}s}]{esbl}{ESBL}{extended spectrum \glsdesc{bla}}
+\newacronym[plural={\textit{in silico} multi-locus sequence types}]{mlst}{MLST}{\textit{in silico} multi-locus sequence type}
 \newacronym{mdrkp}{MDRKP}{multi drug resistant \gls{kpne}}
 \newacronym{wgs}{WGS}{whole genome shotgun}
 
@@ -76,6 +78,8 @@ natbib=true]{biblatex}  % Bibliography support
 \theTitle
 \par}
 
+\linenumbers
+
 \input{tex/abstract.tex}
 
 \input{tex/intro.tex}
@@ -90,11 +94,6 @@ natbib=true]{biblatex}  % Bibliography support
 
 \input{tex/coi.tex}
 
-% \input{tex/acks.tex}
-
-%\printglossaries
-%\printacronyms
-%\printglossary[type=\acronymtype, title=Abbreviations]
 \printbibliography
 
 \pagebreak
@@ -106,10 +105,13 @@ natbib=true]{biblatex}  % Bibliography support
 
 \begin{figure}[h]
 \includegraphics[width=0.9\textwidth]{png/tree.png}
-\caption{Corresponding dendrogram determined with Roary pangenome pipeline in \gls{kpne} isolates with reference strains}
+\caption {
+    Phylogeny tree showing the relationship between 10 studying \gls{kpne} isolates and reference
+    strains.
+    Built using \href{https://sanger-pathogens.github.io/Roary/}{Roary pangenome pipeline}.
+    Visualized using \href{https://itol.embl.de/}{iTOOL}.
+}
 \label{fig:tree}
 \end{figure}
 
-% Compiled from \LaTeXe{}.
-% \pagebreak
 \end{document}
