@@ -60,5 +60,5 @@ chmod -R 777 ${ROARY_DIR}/newick
 
 
 # Uploaded to iTOOL:
-# https://itol.embl.de/tree/53147207280561566215784
+# https://itol.embl.de/tree/9418013720623301590773712
 # Delete redundant clades, export results to the Newick file 'iTOL_collapsed_tree.newick' and upload it

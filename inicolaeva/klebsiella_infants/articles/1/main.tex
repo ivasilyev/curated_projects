@@ -20,6 +20,8 @@ natbib=true]{biblatex}  % Bibliography support
 \usepackage{caption}  % For extra data captions
 \usepackage{setspace}  % Text spacing
 \usepackage{lineno}  % Requested line numeration
+\usepackage{helvet}  % Custom fonts
+\renewcommand{\familydefault}{\sfdefault}
 
 \captionsetup{justification=raggedright,singlelinecheck=false}  % Align Caption to the left
 
@@ -78,7 +80,7 @@ natbib=true]{biblatex}  % Bibliography support
 \theTitle
 \par}
 
-\linenumbers
+%\linenumbers
 
 \input{tex/abstract.tex}
 
@@ -91,6 +93,8 @@ natbib=true]{biblatex}  % Bibliography support
 \input{tex/conclusion.tex}
 
 \input{tex/data.tex}
+
+\input{tex/acks.tex}
 
 \input{tex/coi.tex}
 
