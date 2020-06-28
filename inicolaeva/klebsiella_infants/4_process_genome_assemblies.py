@@ -130,3 +130,43 @@ for report_file in Utilities.scan_whole_dir(contamination_reports_dir):
             remover.export(decontaminated_assembly)
         elif not os.path.isfile(decontaminated_assembly):
             copy2(assembly_file, decontaminated_assembly)
+
+# Add SRA data
+ncbi_accessions_df = Utilities.load_tsv("https://raw.githubusercontent.com/ivasilyev/curated_projects/master/inicolaeva/klebsiella_infants/datasets/ncbi_accessions.tsv")
+
+sra_metadata_df = ncbi_accessions_df.loc[:, ["BioSample", "Organism"]]
+sra_metadata_df["sample_name"] = "Kleb" + sra_metadata_df["Organism"].str.extract(
+    "([0-9]+$)", expand=False)
+sra_metadata_df.drop("Organism", axis=1, inplace=True)
+sra_metadata_df["title"] = "Illumina-PE-WGS-DNA-Seq of Klebsiella pneumoniae: infant's stool"
+sra_metadata_df["library_strategy"] = "WGS"
+sra_metadata_df["library_source"] = "GENOMIC"
+sra_metadata_df["library_selection"] = "RANDOM"
+sra_metadata_df["library_layout"] = "paired"
+sra_metadata_df["platform"] = "ILLUMINA"
+sra_metadata_df["instrument_model"] = "Illumina MiSeq"
+sra_metadata_df["design_description"] = "Libraries were prepared from single colony using the NEBNext Ultra II DNA Library Preparation Kit"
+sra_metadata_df["filetype"] = "fastq"
+
+raw_reads_sampledata_df = Utilities.load_tsv(os.path.join(
+    os.path.dirname(ProjectDescriber.SAMPLE_DATA_FILE), "raw_reads.sampledata")).set_index(
+    "sample_name")
+raw_reads_sampledata_df = raw_reads_sampledata_df.loc[:, ["R1", "R2"]].applymap(
+    lambda x: os.path.basename(x))
+sra_metadata_merged_df = pd.concat([sra_metadata_df.set_index("sample_name"),
+                                    raw_reads_sampledata_df], axis=1, sort=False).rename_axis(
+    index="library_ID", columns="metadata").reset_index().rename(columns={
+        "BioSample": "biosample_accession", "R1": "filename",
+        "R2": "filename2"})
+sra_metadata_merged_file = os.path.join(os.path.dirname(ProjectDescriber.SAMPLE_DATA_FILE),
+                                        "SRA_metadata_kpne.tsv")
+
+# Use the columns order from the corresponding NCBI template
+Utilities.dump_tsv(sra_metadata_merged_df, sra_metadata_merged_file, col_names=[i for i in (
+    "biosample_accession", "library_ID", "title", "library_strategy", "library_source",
+    "library_selection", "library_layout", "platform", "instrument_model", "design_description",
+    "filetype", "filename", "filename2", "filename3", "filename4", "assembly", "fasta_file"
+) if i in sra_metadata_merged_df.columns])
+print(sra_metadata_merged_file)
+# /data1/bio/projects/inicolaeva/klebsiella_infants/sample_data/SRA_metadata_kpne.tsv
+# Copied into the './datasets/ncbi/' directory
