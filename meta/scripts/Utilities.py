@@ -389,7 +389,9 @@ class Utilities:
     # Web methods
 
     @staticmethod
-    def get_page(url):
+    def get_page(url: str, header: str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                                         "AppleWebKit/537.36 (KHTML, like Gecko) "
+                                         "Chrome/90.0.4430.19 Safari/537.36"):
         import requests
         header = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.19 (KHTML, like Gecko) Chrome/1.0.154.53 Safari/525.19"
         return requests.get(url, headers={'User-Agent': header}).content
