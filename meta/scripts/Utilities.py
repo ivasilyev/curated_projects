@@ -393,14 +393,20 @@ class Utilities:
                                          "AppleWebKit/537.36 (KHTML, like Gecko) "
                                          "Chrome/90.0.4430.19 Safari/537.36"):
         import requests
-        header = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.19 (KHTML, like Gecko) Chrome/1.0.154.53 Safari/525.19"
-        return requests.get(url, headers={'User-Agent': header}).content
+        if header is not None:
+            return requests.get(url, headers={'User-Agent': header}).content
+        return requests.get(url).content
+
+
+    @staticmethod
+    def get_soup(*args, **kwargs):
+        import bs4
+        import lxml
+        return bs4.BeautifulSoup(Utilities.get_page(*args, **kwargs), "lxml")
 
     @staticmethod
     def scrap_links_from_web_page(url: str) -> list:
-        import bs4
-        import lxml
-        soup = bs4.BeautifulSoup(Utilities.get_page(url), "lxml")
+        soup = Utilities.get_soup(url)
         root = "/".join(url.split("/")[:-1])
         # Scrap the web page roughly and get all required links
         raw_links = [a["href"].strip() for a in soup.find_all("a", href=True)]
