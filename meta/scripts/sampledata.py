@@ -33,5 +33,9 @@ class SampleDataArray:
             arr.lines.append(SampleDataLine(sample_name, raw_read_pair))
         return arr
 
-    def export(self, output_file: str):
-        Utilities.dump_list([i.export() for i in self.lines], output_file)
+    def export(self):
+        return "\n".join(["sample_name\traw_reads"] + [i.export() for i in self.lines])
+
+    def to_tsv(self):
+        from io import StringIO
+        Utilities.load_tsv(StringIO(self.export()))
