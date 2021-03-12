@@ -10,6 +10,12 @@ class SampleDataLine:
         self.name = sample_name.strip()
         self.reads = Utilities.remove_empty_values(sample_read_files)
 
+    def __eq__(self, other):
+        return self.name == other.name
+
+    def __lt__(self, other):
+        return self.name < other.name
+
     def export(self):
         return "\t".join([self.name, ";".join(self.reads)])
 
@@ -38,4 +44,4 @@ class SampleDataArray:
 
     def to_tsv(self):
         from io import StringIO
-        Utilities.load_tsv(StringIO(self.export()))
+        return Utilities.load_tsv(StringIO(self.export()))
