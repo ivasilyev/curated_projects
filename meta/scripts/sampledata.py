@@ -32,7 +32,8 @@ class SampleDataLine:
 
 
 class SampleDataArray:
-    lines = []
+    def __init__(self):
+        self.lines = []
 
     def __len__(self):
         return len(self.lines)
