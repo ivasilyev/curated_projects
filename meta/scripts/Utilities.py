@@ -348,6 +348,37 @@ class Utilities:
         out.columns.name = df.columns.name
         return out
 
+    @staticmethod
+    def generate_pe_sampledata(files: list, output_file: str, regex: str = "(.+)_S[0-9]+_L[0-9]+_R[0-9]+_[0-9]+"):
+        import pandas as pd
+        _STRANDS = ("R1", "R2")
+        raw_reads_list = []
+        for raw_reads_files_pair in Utilities.get_most_similar_word_pairs(files):
+            # Illumina file names have template '[sample]_[sequence]_[lane]_[strand]_[number].fastq.gz'
+            # E.g: '336g_S1_L001_R1_001.fastq.gz'
+            sample_name = Utilities.safe_findall(regex, os.path.basename(raw_reads_files_pair[0]))
+            raw_reads_dict = dict(sample_name=sample_name)
+            for raw_reads_file in raw_reads_files_pair:
+                for reads_strand in _STRANDS:
+                    if "_{}_".format(reads_strand) in \
+                            os.path.splitext(os.path.basename(raw_reads_file))[0]:
+                        raw_reads_dict[reads_strand] = raw_reads_file
+            if all([raw_reads_dict.get(_STRANDS[0]).replace("_{}_".format(_STRANDS[0]), "_{}_".format(
+                    _STRANDS[-1])) == raw_reads_dict.get(_STRANDS[-1])] +
+                   [raw_reads_dict.get(_STRANDS[-1]).replace("_{}_".format(_STRANDS[-1]),
+                                                             "_{}_".format(
+                                                                 _STRANDS[0])) == raw_reads_dict.get(
+                       _STRANDS[0])]):
+                raw_reads_list.append(raw_reads_dict)
+            else:
+                print("The read pair is invalid: '{}'".format(raw_reads_files_pair))
+        raw_sampledata_df = pd.DataFrame(raw_reads_list)
+        # Add suffices
+        raw_sampledata_df["sample_name"] = raw_sampledata_df["sample_name"] + "_" + raw_sampledata_df["R1"].apply(
+            lambda x: Utilities.safe_findall("\w+", os.path.basename(os.path.dirname(x)).split("_")[-1]))
+        raw_sampledata_df["raw_reads"] = raw_sampledata_df["R1"] + ";" + raw_sampledata_df["R2"]
+
+
     # Queue processing methods
 
     @staticmethod
@@ -396,7 +427,6 @@ class Utilities:
         if header is not None:
             return requests.get(url, headers={'User-Agent': header}).content
         return requests.get(url).content
-
 
     @staticmethod
     def get_soup(*args, **kwargs):
