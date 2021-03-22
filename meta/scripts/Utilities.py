@@ -254,6 +254,26 @@ class Utilities:
         return out
 
     @staticmethod
+    def randomize_gene_slice(record):
+        """
+        :param record: SeqRecord
+        :return: trimmed SeqRecord
+        """
+        from copy import deepcopy
+        from random import randint
+        _LENGTH_LIMIT = 2 * (10 ** 4)
+        # The typical gene is about 1000 bp in length: http://bioscience.jbpub.com/cells/MBIO137.aspx
+        # The slicing will return a chunk containing ~20 genes
+        gene_length = len(record)
+        if gene_length <= _LENGTH_LIMIT:
+            return record
+        start = randint(0, gene_length - _LENGTH_LIMIT)
+        end = start + _LENGTH_LIMIT
+        record_ = deepcopy(record)
+        record_.seq = record_.seq[start:end]
+        return record_
+
+    @staticmethod
     def count_assembly_statistics(assembly_file: str, type_: str = "fasta"):
         import statistics
         from Bio.SeqUtils import GC
