@@ -120,7 +120,7 @@ class Utilities:
     # File processing methods
 
     @staticmethod
-    def check_file(file: str, report: bool = True):
+    def is_file_valid(file: str, report: bool = True):
         if not os.path.exists(file):
             if report:
                 print("Not found: '{}'".format(file))
