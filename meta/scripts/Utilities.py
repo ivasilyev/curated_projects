@@ -120,6 +120,22 @@ class Utilities:
     # File processing methods
 
     @staticmethod
+    def check_file(file: str, report: bool = True):
+        if not os.path.exists(file):
+            if report:
+                print("Not found: '{}'".format(file))
+            return False
+        if not os.path.isfile(file):
+            if report:
+                print("Not a file: '{}'".format(file))
+            return False
+        if os.path.getsize(file) == 0:
+            if report:
+                print("Empty file: '{}'".format(file))
+            return False
+        return True
+
+    @staticmethod
     def load_string(file: str):
         with open(file=file, mode="r", encoding="utf-8") as f:
             s = f.read()
