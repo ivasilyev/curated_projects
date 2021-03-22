@@ -196,14 +196,14 @@ class Utilities:
     @staticmethod
     def parse_sequences(file: str, type_: str = "fasta"):
         from Bio import SeqIO
-        if type_ == "fasta":
-            with open(file, mode="r", encoding="utf-8") as f:
-                records = list(SeqIO.parse(f, type_))
-                f.close()
         if type_ == "fastq_gz":
             import gzip
             with gzip.open(file, "rt") as f:
                 records = list(SeqIO.parse(f, "fastq"))
+                f.close()
+        else:
+            with open(file, mode="r", encoding="utf-8") as f:
+                records = list(SeqIO.parse(f, type_))
                 f.close()
         out = Utilities.remove_empty_values(sorted(records, key=lambda x: len(x), reverse=True))
         return out
@@ -377,7 +377,6 @@ class Utilities:
         raw_sampledata_df["sample_name"] = raw_sampledata_df["sample_name"] + "_" + raw_sampledata_df["R1"].apply(
             lambda x: Utilities.safe_findall("\w+", os.path.basename(os.path.dirname(x)).split("_")[-1]))
         raw_sampledata_df["raw_reads"] = raw_sampledata_df["R1"] + ";" + raw_sampledata_df["R2"]
-
 
     # Queue processing methods
 
