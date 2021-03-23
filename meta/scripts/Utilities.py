@@ -254,21 +254,24 @@ class Utilities:
         return out
 
     @staticmethod
-    def randomize_gene_slice(record):
+    def randomize_gene_slice(record, size: int = 20000):
         """
         :param record: SeqRecord
+
+        :param size: int
+        The typical gene is about 1000 bp in length:
+        http://bioscience.jbpub.com/cells/MBIO137.aspx
+        The default slicing will return a chunk containing ~20 genes.
+
         :return: trimmed SeqRecord
         """
         from copy import deepcopy
         from random import randint
-        _LENGTH_LIMIT = 2 * (10 ** 4)
-        # The typical gene is about 1000 bp in length: http://bioscience.jbpub.com/cells/MBIO137.aspx
-        # The slicing will return a chunk containing ~20 genes
         gene_length = len(record)
-        if gene_length <= _LENGTH_LIMIT:
+        if gene_length <= size:
             return record
-        start = randint(0, gene_length - _LENGTH_LIMIT)
-        end = start + _LENGTH_LIMIT
+        start = randint(0, gene_length - size)
+        end = start + size
         record_ = deepcopy(record)
         record_.seq = record_.seq[start:end]
         return record_
