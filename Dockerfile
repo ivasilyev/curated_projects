@@ -5,10 +5,10 @@ RUN mkdir -p /home/docker/scripts && \
     git clone https://github.com/ivasilyev/curated_projects.git && \
     git clone https://github.com/ivasilyev/statistical_tools.git
 
-WORKDIR /home/docker/scripts/curated_projects
+WORKDIR /home/docker/scripts/curated_projects/
 
 ENV PYTHONPATH=/home/docker/scripts/curated_projects/
-ENV UTILS_DIR=/home/docker/scripts/curated_projects/meta/scripts
+ENV UTILS_DIR=/home/docker/scripts/curated_projects/meta/scripts/
 
 CMD ["/bin/bash"]
 
