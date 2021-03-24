@@ -8,6 +8,7 @@ RUN mkdir -p /home/docker/scripts && \
 WORKDIR /home/docker/scripts/curated_projects
 
 ENV PYTHONPATH=/home/docker/scripts/curated_projects/
+ENV UTILS_DIR =/home/docker/scripts/curated_projects/meta/scripts
 
 CMD ["/bin/bash"]
 
