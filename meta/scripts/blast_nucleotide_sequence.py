@@ -68,7 +68,7 @@ def download_reference_genbank(accession_id: str):
 
 def describe_reference_genbank(genbank_record: GBRecord):
     try:
-        cds_number = genbank_record.annotations["structured_comment"]["Genome-Annotation-Data"]["CDSs (total)"]
+        cds_number = int(genbank_record.annotations["structured_comment"]["Genome-Annotation-Data"]["CDSs (total)"].replace(",", ""))
     except KeyError:
         cds_number = len([i for i in genbank_record.features if i.type == "CDS"])
     qualifiers_dict = [i.qualifiers for i in genbank_record.features if i.type == "source"][0]
