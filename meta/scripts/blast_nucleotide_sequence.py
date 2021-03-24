@@ -15,12 +15,15 @@ from meta.scripts.Utilities import Utilities
 def _parse_args():
     from argparse import ArgumentParser
     parser = ArgumentParser(
-        description="Tool to perform BLAST using randomized slice from largest nucleotide sequence",
+        description="Tool to perform BLAST using randomized slice from the largest nucleotide "
+                    "sequence and download the related GenBank reference entries",
         epilog="Sequences must be in FASTA format")
     parser.add_argument("-i", "--input", metavar="<file>", required=True, help="FASTA nucleotide file")
+    parser.add_argument("-r", "--results", metavar="<int>", type=int, default=25,
+                        help="The maximum size of GenBank entries from the BLAST report to download")
     parser.add_argument("-o", "--output", metavar="<directory>", required=True, help="Output directory")
     _namespace = parser.parse_args()
-    return _namespace.input, _namespace.output
+    return _namespace.input, _namespace.results, _namespace.output
 
 
 def parse_largest_subsequence(fasta_nt_file: str):
@@ -87,7 +90,7 @@ def describe_reference_genbank(genbank_record: GBRecord):
 
 
 if __name__ == '__main__':
-    nt_fasta_file, output_directory = _parse_args()
+    nt_fasta_file, blast_results_number, output_directory = _parse_args()
     out_blast_basename = os.path.join(output_directory, "blast", Utilities.filename_only(nt_fasta_file))
     blast_result_file = "{}_blast_results.json".format(out_blast_basename)
 
@@ -101,7 +104,6 @@ if __name__ == '__main__':
         Utilities.dump_string(json.dumps(blast_results, sort_keys=False, indent=4),
                               blast_result_file)
 
-    blast_results_number = 25
     genbank_descriptions = []
     for blast_result in list(blast_results.values())[:blast_results_number]:
         geninfo_accession = blast_result["geninfo_id"]
