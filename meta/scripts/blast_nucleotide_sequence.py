@@ -74,6 +74,7 @@ def describe_reference_genbank(genbank_record: GBRecord):
         pass
     if cds_number == 0:
         cds_number = len([i for i in genbank_record.features if i.type == "CDS"])
+        # Otherwise the reference genbank might not be annotated
     qualifiers_dict = [i.qualifiers for i in genbank_record.features if i.type == "source"][0]
     organism = Utilities.remove_empty_values(qualifiers_dict.get("organism")[0].split(" "))[:2]
     strain = " ".join(organism + [qualifiers_dict.get("strain")[0]])
@@ -119,7 +120,7 @@ if __name__ == '__main__':
     genbank_description_df = pd.DataFrame(genbank_descriptions)
     combined_blast_result_df = pd.concat([i.set_index("geninfo_id") for i in (blast_result_df, genbank_description_df)],
                                          axis=1, sort=False).drop(["query", "genbank_file"], axis=1).dropna(how="any").rename_axis(index="geninfo_id")
-    Utilities.dump_tsv(combined_blast_result_df, os.path.join(output_directory, "combined_blast_results.tsv"))
+    Utilities.dump_tsv(combined_blast_result_df.reset_index(), os.path.join(output_directory, "combined_blast_results.tsv"))
 
     report_dict = dict(input_file=nt_fasta_file, genbank_files=genbank_description_df["genbank_file"].values.tolist())
     Utilities.dump_string(json.dumps(report_dict), os.path.join(output_directory, "report.json"))
