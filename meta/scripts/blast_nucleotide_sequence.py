@@ -67,9 +67,12 @@ def download_reference_genbank(accession_id: str):
 
 
 def describe_reference_genbank(genbank_record: GBRecord):
+    cds_number = 0
     try:
         cds_number = int(genbank_record.annotations["structured_comment"]["Genome-Annotation-Data"]["CDSs (total)"].replace(",", ""))
     except KeyError:
+        pass
+    if cds_number == 0:
         cds_number = len([i for i in genbank_record.features if i.type == "CDS"])
     qualifiers_dict = [i.qualifiers for i in genbank_record.features if i.type == "source"][0]
     organism = Utilities.remove_empty_values(qualifiers_dict.get("organism")[0].split(" "))[:2]
