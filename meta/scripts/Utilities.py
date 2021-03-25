@@ -354,10 +354,13 @@ class Utilities:
         _df.to_csv(table_file, encoding="utf-8", sep="\t", index=False, header=True)
 
     @staticmethod
-    def dict2pd_series(dictionary):
+    def dict2pd_series(dictionary, sort_keys: bool = False):
         import pandas as pd
         output = pd.Series()
-        for key in dictionary:
+        keys = list(dictionary.keys())
+        if sort_keys:
+            keys = sorted(keys)
+        for key in keys:
             output.at[key] = dictionary[key]
         return output
 
