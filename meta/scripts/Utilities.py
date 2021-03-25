@@ -243,17 +243,6 @@ class Utilities:
         return out
 
     @staticmethod
-    def count_raw_reads_statistics(reads_file: str, type_: str = "fasta"):
-        import statistics
-        seq_records = Utilities.parse_sequences(reads_file, type_)
-        total_sequence = "".join([str(i.seq) for i in seq_records])
-        out = dict(file=reads_file, reads_number=len(seq_records), largest_read_bp=len(seq_records[0]),
-                   smallest_read_bp=len(seq_records[-1]), total_reads_bp=len(total_sequence),
-                   mean_reads_bp=statistics.mean([len(i) for i in seq_records]),
-                   median_reads_bp=statistics.median([len(i) for i in seq_records]))
-        return out
-
-    @staticmethod
     def randomize_gene_slice(record, size: int = 20000):
         """
         :param record: SeqRecord
@@ -277,7 +266,18 @@ class Utilities:
         return record_
 
     @staticmethod
-    def count_assembly_statistics(assembly_file: str, type_: str = "fasta"):
+    def count_raw_reads_statistics(reads_file: str, type_: str = "fasta") -> dict:
+        import statistics
+        seq_records = Utilities.parse_sequences(reads_file, type_)
+        total_sequence = "".join([str(i.seq) for i in seq_records])
+        out = dict(file=reads_file, reads_number=len(seq_records), largest_read_bp=len(seq_records[0]),
+                   smallest_read_bp=len(seq_records[-1]), total_reads_bp=len(total_sequence),
+                   mean_reads_bp=statistics.mean([len(i) for i in seq_records]),
+                   median_reads_bp=statistics.median([len(i) for i in seq_records]))
+        return out
+
+    @staticmethod
+    def count_assembly_statistics(assembly_file: str, type_: str = "fasta") -> dict:
         import statistics
         from Bio.SeqUtils import GC
         seq_records = Utilities.parse_sequences(assembly_file, type_=type_)
@@ -303,6 +303,32 @@ class Utilities:
                 out["n90"] = len(seq_records[idx])
                 n90_supplied = True
         return out
+
+    @staticmethod
+    def count_assembly_coverages(raw_reads_length_sum: int, assembly_length: int,
+                                 reference_length: int) -> dict:
+        """
+        :param raw_reads_length_sum: The number of bases sequenced
+        :param assembly_length: The bases that were placed in the final assembly
+        :param reference_length: The expected genome size
+        :return: dict
+
+        From NCBI template ('Template_GenomeBatch.11700383121d.xlsx'):
+        The estimated base coverage across the genome, eg 12x.
+        This can be calculated by dividing the number of bases sequenced by the expected genome size
+        and multiplying that by the percentage of bases that were placed in the final assembly.
+        More simply it is the number of bases sequenced divided by the expected genome size.
+        """
+
+        def _process_float(x):
+            return "{0:.2f}x".format(x)
+
+        assembled_reads_rate = assembly_length / raw_reads_length_sum
+        expected_assembly_coverage = raw_reads_length_sum / reference_length
+        real_assembly_coverage = raw_reads_length_sum * assembled_reads_rate / reference_length
+        return dict(assembled_reads_rate=assembled_reads_rate,
+                    expected_assembly_coverage=_process_float(expected_assembly_coverage),
+                    real_assembly_coverage=_process_float(real_assembly_coverage))
 
     # Pandas methods
 
