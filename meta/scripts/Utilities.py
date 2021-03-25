@@ -80,12 +80,14 @@ class Utilities:
         return [j for i in array for j in i]
 
     @staticmethod
-    def safe_findall(pattern, string, idx: int = 0):
+    def safe_findall(pattern, string, idx: int = 0, report: bool = False):
         import re
         try:
             return re.findall(pattern, string)[idx]
         except IndexError:
-            print("Warning! Can't find the regex pattern '{}' within the string: '{}'".format(pattern, string))
+            if report:
+                print("Warning! Can't find the regex pattern '{}' within the string: '{}'".format(
+                    pattern, string))
             return ""
 
     @staticmethod
