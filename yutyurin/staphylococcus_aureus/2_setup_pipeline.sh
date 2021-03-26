@@ -29,6 +29,6 @@ docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it 
   '
   git pull;
   python3 $UTILS_DIR/blast_nucleotide_sequence.py \
-    -i ${PIPELINE_DIR}06_plasmid_merger/188staph/188staph_genome.fna \
-    -o ${PIPELINE_DIR}06_plasmid_merger/188staph
+    -i /data1/bio/projects/yutyurin/staphylococcus_aureus/pga-pe/06_plasmid_merger/188staph/188staph_genome.fna \
+    -o /data1/bio/projects/yutyurin/staphylococcus_aureus/pga-pe/06_plasmid_merger/188staph
   '
