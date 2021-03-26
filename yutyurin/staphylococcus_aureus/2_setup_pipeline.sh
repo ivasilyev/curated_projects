@@ -22,4 +22,13 @@ python3 \
         --hg_dir "/data/reference/homo_sapiens/Ensembl/GRCh37/Sequence/Bowtie2Index" \
         -o ${PIPELINE_DIR}
 
-
+echo Get relatives for combined assembly
+export IMG=ivasilyev/curated_projects:latest && \
+docker pull ${IMG} && \
+docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it ${IMG} bash -c \
+  '
+  git pull;
+  python3 $UTILS_DIR/blast_nucleotide_sequence.py \
+    -i ${PIPELINE_DIR}06_plasmid_merger/188staph/188staph_genome.fna \
+    -o ${PIPELINE_DIR}06_plasmid_merger/188staph
+  '
