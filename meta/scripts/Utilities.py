@@ -5,122 +5,7 @@ import os
 
 
 class Utilities:
-    @staticmethod
-    def ends_with_slash(string):
-        return (string + "/", string)[string.endswith("/")]
-
-    @staticmethod
-    def remove_empty_values(input_list):
-        output_list = []
-        if input_list is not None:
-            for i in input_list:
-                if i is not None:
-                    try:
-                        if len(i) > 0:
-                            output_list.append(i)
-                    except TypeError:
-                        continue
-        return output_list
-
-    @staticmethod
-    def filename_only(s: str):
-        return os.path.splitext(os.path.basename(s))[0]
-
-    @staticmethod
-    def get_script_dir():
-        import sys
-        return Utilities.ends_with_slash(os.path.dirname(os.path.realpath(sys.argv[0])))
-
-    @staticmethod
-    def split_lines(string: str):
-        import re
-        return Utilities.remove_empty_values([i.strip() for i in re.sub("[\r\n]+", "\n", string).split("\n")])
-
-    @staticmethod
-    def load_list(file: str):
-        return Utilities.split_lines(Utilities.load_string(file))
-
-    @staticmethod
-    def string_to_2d_array(string: str):
-        out = [[j.strip() for j in i.split("\t")] for i in Utilities.split_lines(string)]
-        return Utilities.remove_empty_values(out)
-
-    @staticmethod
-    def _2d_array_to_dicts_list(arr: list, names: list):
-        if len(arr[0]) != len(names):
-            raise ValueError("Cannot parse dictionary: keys number is not equal!")
-        out = []
-        for row_list in arr:
-            counter = 0
-            while counter < len(row_list):
-                out.append({names[counter]: row_list[counter]})
-                counter += 1
-        return [[j for j in i] for i in arr]
-
-    @staticmethod
-    def load_2d_array(file: str):
-        return Utilities.string_to_2d_array(Utilities.load_string(file))
-
-    @staticmethod
-    def load_dicts_list(file: str, names: list):
-        arr = Utilities.load_2d_array(file)
-        if len(arr[0]) != len(names):
-            raise ValueError("Cannot parse dictionary: keys number is not equal!")
-
-    @staticmethod
-    def dump_list(lst: list, file: str):
-        Utilities.dump_string(string="\n".join([str(i) for i in lst]) + "\n", file=file)
-
-    @staticmethod
-    def dump_2d_array(array: list, file: str):
-        Utilities.dump_list(lst=["\t".join([str(j) for j in i]) for i in array], file=file)
-
-    @staticmethod
-    def flatten_2d_array(array: list):
-        return [j for i in array for j in i]
-
-    @staticmethod
-    def safe_findall(pattern, string, idx: int = 0, report: bool = False):
-        import re
-        try:
-            return re.findall(pattern, string)[idx]
-        except IndexError:
-            if report:
-                print("Warning! Can't find the regex pattern '{}' within the string: '{}'".format(
-                    pattern, string))
-            return ""
-
-    @staticmethod
-    def count_index_based_similarity(words: list):
-        words = sorted(set(words))
-        out = dict()
-        for idx_1, word in enumerate(words):
-            other_words = words[:idx_1] + words[idx_1 + 1:]
-            out[word] = []
-            for other_word in other_words:
-                comparison_group = sorted([word, other_word], key=len, reverse=True)
-                score = 0
-                for idx_2, char in enumerate(comparison_group[0]):
-                    try:
-                        score += char == comparison_group[1][idx_2]
-                    except IndexError:
-                        pass
-                out[word].append([other_word, score])
-            out[word] = sorted(out[word], key=lambda x: x[1], reverse=True)
-        return out
-
-    @staticmethod
-    def get_most_similar_word_pairs(words: list):
-        similarities = Utilities.count_index_based_similarity(words)
-        pairs = [(k, similarities[k][0][0]) for k in similarities.keys()]
-        for pair in pairs:
-            pair_reversed = tuple(reversed(pair))
-            if pair_reversed in pairs:
-                pairs.remove(pair_reversed)
-        return pairs
-
-    # File processing methods
-
+    # File system based methods
     @staticmethod
     def is_file_valid(file: str, report: bool = True):
         if not os.path.exists(file):
@@ -138,6 +23,31 @@ class Utilities:
         return True
 
     @staticmethod
+    def scan_whole_dir(dir_name: str):
+        out = []
+        for root, dirs, files in os.walk(dir_name):
+            for file in files:
+                out.append(os.path.join(root, file))
+        return sorted(out)
+
+    @staticmethod
+    def filename_only(s: str):
+        return os.path.splitext(os.path.basename(s))[0]
+
+    @staticmethod
+    def ends_with_slash(string):
+        return (string + "/", string)[string.endswith("/")]
+
+    @staticmethod
+    def get_script_dir():
+        import sys
+        return Utilities.ends_with_slash(os.path.dirname(os.path.realpath(sys.argv[0])))
+
+
+
+    # I/O methods
+
+    @staticmethod
     def load_string(file: str):
         with open(file=file, mode="r", encoding="utf-8") as f:
             s = f.read()
@@ -152,12 +62,26 @@ class Utilities:
             f.close()
 
     @staticmethod
-    def scan_whole_dir(dir_name: str):
-        out = []
-        for root, dirs, files in os.walk(dir_name):
-            for file in files:
-                out.append(os.path.join(root, file))
-        return sorted(out)
+    def load_list(file: str):
+        return Utilities.split_lines(Utilities.load_string(file))
+
+    @staticmethod
+    def dump_list(lst: list, file: str):
+        Utilities.dump_string(string="\n".join([str(i) for i in lst]) + "\n", file=file)
+
+    @staticmethod
+    def load_2d_array(file: str):
+        return Utilities.string_to_2d_array(Utilities.load_string(file))
+
+    @staticmethod
+    def dump_2d_array(array: list, file: str):
+        Utilities.dump_list(lst=["\t".join([str(j) for j in i]) for i in array], file=file)
+
+    @staticmethod
+    def load_dicts_list(file: str, names: list):
+        arr = Utilities.load_2d_array(file)
+        if len(arr[0]) != len(names):
+            raise ValueError("Cannot parse dictionary: keys number is not equal!")
 
     @staticmethod
     def concatenate_files(*source_files, target_file):
@@ -197,6 +121,8 @@ class Utilities:
             print("Removing file: '{}'".format(file_name))
             os.remove(file_name)
 
+    # System methods
+
     @staticmethod
     def get_time():
         from datetime import datetime
@@ -208,6 +134,88 @@ class Utilities:
                 time_unit = '0' + time_unit
             output_list.append(time_unit)
         return '-'.join(output_list)
+
+    # Primitive processing methods
+
+    @staticmethod
+    def safe_findall(pattern, string, idx: int = 0, report: bool = False):
+        import re
+        try:
+            return re.findall(pattern, string)[idx]
+        except IndexError:
+            if report:
+                print("Warning! Can't find the regex pattern '{}' within the string: '{}'".format(
+                    pattern, string))
+            return ""
+
+    @staticmethod
+    def remove_empty_values(input_list):
+        output_list = []
+        if input_list is not None:
+            for i in input_list:
+                if i is not None:
+                    try:
+                        if len(i) > 0:
+                            output_list.append(i)
+                    except TypeError:
+                        continue
+        return output_list
+
+    @staticmethod
+    def split_lines(string: str):
+        import re
+        out = [i.strip() for i in re.sub("[\r\n]+", "\n", string).split("\n")]
+        return Utilities.remove_empty_values(out)
+
+    @staticmethod
+    def string_to_2d_array(string: str):
+        out = [[j.strip() for j in i.split("\t")] for i in Utilities.split_lines(string)]
+        return Utilities.remove_empty_values(out)
+
+    @staticmethod
+    def _2d_array_to_dicts_list(arr: list, names: list):
+        if len(arr[0]) != len(names):
+            raise ValueError("Cannot parse dictionary: keys number is not equal!")
+        out = []
+        for row_list in arr:
+            counter = 0
+            while counter < len(row_list):
+                out.append({names[counter]: row_list[counter]})
+                counter += 1
+        return [[j for j in i] for i in arr]
+
+    @staticmethod
+    def flatten_2d_array(array: list):
+        return [j for i in array for j in i]
+
+    @staticmethod
+    def count_index_based_similarity(words: list):
+        words = sorted(set(words))
+        out = dict()
+        for idx_1, word in enumerate(words):
+            other_words = words[:idx_1] + words[idx_1 + 1:]
+            out[word] = []
+            for other_word in other_words:
+                comparison_group = sorted([word, other_word], key=len, reverse=True)
+                score = 0
+                for idx_2, char in enumerate(comparison_group[0]):
+                    try:
+                        score += char == comparison_group[1][idx_2]
+                    except IndexError:
+                        pass
+                out[word].append([other_word, score])
+            out[word] = sorted(out[word], key=lambda x: x[1], reverse=True)
+        return out
+
+    @staticmethod
+    def get_most_similar_word_pairs(words: list):
+        similarities = Utilities.count_index_based_similarity(words)
+        pairs = [(k, similarities[k][0][0]) for k in similarities.keys()]
+        for pair in pairs:
+            pair_reversed = tuple(reversed(pair))
+            if pair_reversed in pairs:
+                pairs.remove(pair_reversed)
+        return pairs
 
     # Biopython methods
 
@@ -450,13 +458,18 @@ class Utilities:
             lambda x: Utilities.safe_findall("\w+", os.path.basename(os.path.dirname(x)).split("_")[-1]))
         raw_sampledata_df["raw_reads"] = raw_sampledata_df["R1"] + ";" + raw_sampledata_df["R2"]
 
-    # Queue processing methods
+    # Function handling methods
 
     @staticmethod
     def randomize_sleep(min_: int = 30, max_: int = 120):
         from time import sleep
         from random import randint
         sleep(randint(min_, max_))
+
+    @staticmethod
+    def get_caller_name():
+        import inspect
+        return str(inspect.stack()[1][3])
 
     @staticmethod
     def attempt_func(func, args):
@@ -475,6 +488,12 @@ class Utilities:
         print("Exceeded number of attempts for the function: '{}'".format(func.__name__))
         return
 
+    # Queue processing methods
+
+    @staticmethod
+    def single_core_queue(func, queue):
+        return [func(i) for i in queue]
+
     @staticmethod
     def multi_core_queue(func, queue):
         import multiprocessing
@@ -484,11 +503,7 @@ class Utilities:
         pool.join()
         return output
 
-    @staticmethod
-    def single_core_queue(func, queue):
-        return [func(i) for i in queue]
-
-    # Web methods
+    # Web-based methods
 
     @staticmethod
     def get_page(url: str, header: str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
