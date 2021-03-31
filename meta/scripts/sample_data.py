@@ -7,9 +7,8 @@ from meta.scripts.Utilities import Utilities
 
 
 class SampleDataLine:
-    is_valid = False
-
     def __init__(self, sample_name: str, sample_read_files: list):
+        self.state = dict()
         self.name = sample_name.strip()
         self.reads = sorted(Utilities.remove_empty_values(sample_read_files))
         self.is_valid = False
@@ -34,7 +33,9 @@ class SampleDataLine:
         return SampleDataLine(d["sample_name"], d["raw_reads"])
 
     def export(self):
-        return dict(sample_name=self.name, sample_reads=self.reads)
+        d = dict(sample_name=self.name, sample_reads=self.reads)
+        d.update(self.state)
+        return d
 
 
 class SampleDataArray:
