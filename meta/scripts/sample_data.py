@@ -33,7 +33,7 @@ class SampleDataLine:
         return SampleDataLine(d["sample_name"], d["raw_reads"])
 
     def export(self):
-        d = dict(sample_name=self.name, sample_reads=self.reads)
+        d = dict(name=self.name, reads=self.reads)
         d.update(self.state)
         return d
 
