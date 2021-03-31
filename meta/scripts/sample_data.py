@@ -12,6 +12,7 @@ class SampleDataLine:
     def __init__(self, sample_name: str, sample_read_files: list):
         self.name = sample_name.strip()
         self.reads = sorted(Utilities.remove_empty_values(sample_read_files))
+        self.is_valid = False
         self._validate_reads()
 
     def __eq__(self, other):
