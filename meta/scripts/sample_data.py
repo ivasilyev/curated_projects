@@ -30,7 +30,11 @@ class SampleDataLine:
 
     @staticmethod
     def parse(d: dict):
-        return SampleDataLine(d["sample_name"], d["raw_reads"])
+        """
+        :param d: {sample_name: str, reads: [str,], taxa: str}
+        :return: SampleDataLine object
+        """
+        return SampleDataLine(d["name"], d["reads"])
 
     def export(self):
         d = dict(name=self.name, reads=self.reads)
@@ -46,18 +50,20 @@ class SampleDataArray:
         return len(self.lines.keys())
 
     def validate(self):
-        o = []
-        for line in self.lines:
-            if line.is_valid():
-                o.append(line)
+        d = dict()
+        for key in self.lines:
+            line = self.lines[key]
+            if line.is_valid:
+                d[key] = line
             else:
-                print("Some read files are missing!")
-        self.lines = sorted(o)
+                print("Invalid sample data for the sample: '{}'".format(line.name))
+        self.lines = d
 
     @staticmethod
     def parse(d: dict):
         arr = SampleDataArray()
         arr.lines = {k: SampleDataLine.parse(d[k]) for k in d.keys()}
+        arr.validate()
         return arr
 
     @staticmethod
