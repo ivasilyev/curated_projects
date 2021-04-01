@@ -60,7 +60,7 @@ class SampleDataArray:
         self.lines = d
 
     def update_lines_state(self, d: dict):
-        _ = [i.state.update(d) for i in self.lines]
+        _ = [i.state.update(d) for i in self.lines.values()]
 
     @staticmethod
     def parse(d: dict):
