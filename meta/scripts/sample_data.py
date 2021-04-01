@@ -59,6 +59,9 @@ class SampleDataArray:
                 print("Invalid sample data for the sample: '{}'".format(line.name))
         self.lines = d
 
+    def update_lines_state(self, d: dict):
+        _ = [i.state.update(d) for i in self.lines]
+
     @staticmethod
     def parse(d: dict):
         arr = SampleDataArray()
