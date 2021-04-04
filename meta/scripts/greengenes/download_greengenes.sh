@@ -15,9 +15,16 @@ echo "Unpack ${FEXT}"
 tar -xvzf "${FEXT}"
 
 echo Import taxonomy file for the full-length sequence
-qiime tools import --type 'FeatureData[Taxonomy]' --source-format HeaderlessTSVTaxonomyFormat --input-path gg_13_5_otus/taxonomy/97_otu_taxonomy.txt --output-path 97_otu-ref-taxonomy-GG.qza # import taxonomy
+qiime tools import \
+  --input-format HeaderlessTSVTaxonomyFormat \
+  --input-path gg_13_5_otus/taxonomy/97_otu_taxonomy.txt \
+  --output-path 97_otu-ref-taxonomy-GG.qza \
+  --type 'FeatureData[Taxonomy]'
 
 echo Import FASTA sequences
-qiime tools import --type 'FeatureData[Sequence]' --input-path gg_13_5_otus/rep_set/97_otus.fasta --output-path 97_otus-GG.qza # import fasta seqs
+qiime tools import \
+  --input-path gg_13_5_otus/rep_set/97_otus.fasta \
+  --output-path 97_otus-GG.qza \
+  --type 'FeatureData[Sequence]'
 
 echo The Greengenes database assets were imported into QIIME2
