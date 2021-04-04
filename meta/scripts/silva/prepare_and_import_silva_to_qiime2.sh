@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# It is recommended to launch this script into a working QIIME2 environment
+# or an instance of the official QIIME2 Docker image, e.g.::
+#  export IMG=qiime2/core:latest && \
+#  docker pull ${IMG} && \
+#  docker run --rm --net=host -it ${IMG} bash
+
 echo Import the SILVA database assets into QIIME2
 
 # Files required:
