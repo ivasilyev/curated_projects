@@ -2,6 +2,13 @@
 
 echo Import the SILVA database assets into QIIME2
 
+# Files required:
+#    tax_slv_ssu_138.txt
+#    tax_slv_ssu_138.tre
+#    taxmap_slv_ssu_ref_nr_138.txt
+#    SILVA_138_SSURef_NR99_tax_silva_trunc.fasta
+#    SILVA_138_SSURef_NR99_tax_silva_full_align_trunc.fasta
+
 echo Deploy the SILVA DB parser
 git -C "/opt/" clone "https://github.com/mikerobeson/make_SILVA_db.git"
 export SDIR="/opt/make_SILVA_db/"
@@ -40,7 +47,7 @@ qiime tools import \
   --output-path SILVA-138-SSURef-Full-Seqs.qza \
   --type 'FeatureData[Sequence]'
 
-echo Train classifiers for V4 and full-length
+echo Train classifiers for full-length
 qiime feature-classifier fit-classifier-naive-bayes \
   --i-reference-reads SILVA-138-SSURef-Full-Seqs.qza \
   --i-reference-taxonomy Silva-v138-full-length-seq-taxonomy.qza \
