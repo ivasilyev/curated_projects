@@ -47,7 +47,7 @@ python ${SDIR}filter_seqs_by_length_and_taxonomy.py \
     -o SILVA_seqs_polyfilt_lenfilt.fasta \
     -t SILVA_138_Taxonomy.txt
 
-echo Import consensus taxonomy file for the full-length sequence
+echo Import consensus taxonomy file for the full-length sequences
 qiime tools import \
   --input-path SILVA_138_Taxonomy.txt  \
   --input-format HeaderlessTSVTaxonomyFormat \
@@ -60,7 +60,7 @@ qiime tools import \
   --output-path SILVA-138-SSURef-Full-Seqs.qza \
   --type 'FeatureData[Sequence]'
 
-echo Train classifiers for full-length
+echo Train classifiers for the full-length sequences
 qiime feature-classifier fit-classifier-naive-bayes \
   --i-reference-reads SILVA-138-SSURef-Full-Seqs.qza \
   --i-reference-taxonomy Silva-v138-full-length-seq-taxonomy.qza \
