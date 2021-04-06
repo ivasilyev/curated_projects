@@ -43,8 +43,6 @@ class Utilities:
         import sys
         return Utilities.ends_with_slash(os.path.dirname(os.path.realpath(sys.argv[0])))
 
-
-
     # I/O methods
 
     @staticmethod
@@ -187,6 +185,15 @@ class Utilities:
     @staticmethod
     def flatten_2d_array(array: list):
         return [j for i in array for j in i]
+
+    @staticmethod
+    def split_list_by_chunk_length(list_: list, n: int):
+        return [list_[i:i + n] for i in range(0, len(list_), n)]
+
+    @staticmethod
+    def split_list_by_chunk_number(list_: list, n: int):
+        from math import ceil
+        return Utilities.split_list_by_chunk_length(list_, ceil(len(list_) / n))
 
     @staticmethod
     def count_index_based_similarity(words: list):
