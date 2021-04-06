@@ -88,6 +88,14 @@ class SampleDataArray:
         for read_files in pair_2d_array:
             read_files = sorted(read_files)
             sample_name = Utilities.safe_findall(regex, os.path.basename(read_files[0]))
+            if sample_name in arr.lines.keys():
+                print("Duplicate sample data line key, the regex check is considered: '{}'".format(
+                    sample_name))
+                c = 0
+                sample_name_ = str(sample_name)
+                while sample_name in arr.lines.keys():
+                    c += 1
+                    sample_name = "{}.{}".format(sample_name_, c)
             arr.lines[sample_name] = SampleDataLine(sample_name, read_files)
         return arr
 
