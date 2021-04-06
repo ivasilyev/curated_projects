@@ -20,6 +20,12 @@ class SampleDataLine:
     def __lt__(self, other):
         return self.name < other.name
 
+    def __len__(self):
+        return len(self.reads)
+
+    def __repr__(self):
+        return "SampleDataLine with name '{}' and {} reads".format(self.name, len(self))
+
     def _validate_reads(self):
         c = 0
         for read_file in self.reads:
@@ -48,6 +54,9 @@ class SampleDataArray:
 
     def __len__(self):
         return len(self.lines.keys())
+
+    def __repr__(self):
+        return "SampleDataArray with {} lines".format(len(self))
 
     def validate(self):
         d = dict()
