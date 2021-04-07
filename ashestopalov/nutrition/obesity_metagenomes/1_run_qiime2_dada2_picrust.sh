@@ -18,6 +18,11 @@ mkdir -p ${SSRC}
 chmod -R 777 ${SSRC}
 cd ${SSRC}
 
+export SMETADATA="../../sample_data/qiime2_meta_data_${SSRC}.tsv"
+export RCLASSIFIER="/data/reference/SILVA/SILVA_v138/SILVA-138-SSURef-full-length-classifier.qza"
+
+
+
 # From https://antonioggsousa.github.io/tutorial/example/
 echo Import and convert fastq files to QIIME2 artifact
 qiime tools import --input-format PairedEndFastqManifestPhred33 \
@@ -62,7 +67,7 @@ qiime dada2 denoise-paired --verbose \
 
 echo Assign taxonomy
 qiime feature-classifier classify-sklearn --verbose \
-  --i-classifier "/data/reference/SILVA/SILVA_v138/SILVA-138-SSURef-full-length-classifier.qza" \
+  --i-classifier ${RCLASSIFIER} \
   --i-reads "rep-seqs-dada2.qza" \
   --o-classification "taxonomy-rep-seqs-dada2.qza"
 
@@ -73,6 +78,7 @@ qiime metadata tabulate \
 
 echo Make a prokaryotic profile
 qiime taxa barplot \
+  --m-metadata-file ${SMETADATA} \
   --i-table "table-dada2.qza" \
   --i-taxonomy "taxonomy-rep-seqs-dada2.qza" \
   --o-visualization "taxonomy-bar-plots.qzv"
@@ -92,19 +98,21 @@ qiime phylogeny fasttree \
   --i-alignment "masked-msa-rep-seqs-dada2.qza" \
   --o-tree "unroot-ml-tree-masked.qza"
 
-echo Root the unrooted tree based on midpoint rooting method
+echo Root the unrooted tree based on the midpoint rooting method
 qiime phylogeny midpoint-root \
   --i-tree "unroot-ml-tree-masked.qza" \
   --o-rooted-tree "root-ml-tree.qza"
 
 echo Analyze the core diversity using the phylogenetic pipeline
 qiime diversity core-metrics-phylogenetic --p-sampling-depth 20000 \
+  --m-metadata-file ${SMETADATA} \
   --i-phylogeny "root-ml-tree.qza" \
   --i-table "table-dada2.qza" \
   --output-dir "core-metrics-results"
 
 echo Build rarefaction plots
 qiime diversity alpha-rarefaction --p-max-depth 20000 \
+  --m-metadata-file ${SMETADATA} \
   --i-table "table-dada2.qza" \
   --i-phylogeny "root-ml-tree.qza" \
   --o-visualization "alpha-rarefaction.qzv"
@@ -128,7 +136,7 @@ qiime vsearch dereplicate-sequences \
 
 echo Cluster closed-reference at 97%
 qiime vsearch cluster-features-closed-reference --p-perc-identity 0.97 \
-  --i-reference-sequences "SILVA_v138/SILVA-138-SSURef-Full-Seqs.qza" \
+  --i-reference-sequences ${RCLASSIFIER} \
   --i-table "drpl-tbl.qza" \
   --i-sequences "drpl-seqs.qza" \
   --o-clustered-table "tbl-cr-97.qza" \
