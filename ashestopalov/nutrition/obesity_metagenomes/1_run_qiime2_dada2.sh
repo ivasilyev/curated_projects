@@ -147,13 +147,13 @@ qiime tools export \
 
 echo Convert biom to json
 biom convert --to-json \
-  -i "feature-table.biom" \
-  -o "feature-table.json"
+  --input-fp "feature-table.biom" \
+  --output-fp "feature-table.json"
 
 echo Convert biom to TSV
 biom convert --to-tsv \
-  -i "feature-table.biom" \
-  -o "meta-predic.tsv"
+  --input-fp "feature-table.biom" \
+  --output-fp "meta-predic.tsv"
 
 echo Export the aligned sequences
 mkdir -p "cr-97"

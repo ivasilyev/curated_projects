@@ -11,8 +11,7 @@ export SSRC="blood"
 
 cd "/data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/qiime2/${SSRC}"
 
-
-picrust2_pipeline.py --verbose -p 20 --hsp_method mp \
-  -s "cr-97/dna-sequences.fasta" \
-  -i "feature-table.biom" \
-  -o "picrust2_pipeline_out"
+picrust2_pipeline.py --verbose --processes 20 --hsp_method mp \
+  --study_fasta "cr-97/dna-sequences.fasta" \
+  --input "feature-table.biom" \
+  --output "picrust2_pipeline_out"
