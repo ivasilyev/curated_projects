@@ -9,9 +9,12 @@ export SSRC="stool"
 # node6
 export SSRC="blood"
 
+NPROC="$(grep -c '^processor' /proc/cpuinfo)"
 cd "/data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/qiime2/${SSRC}"
 
-picrust2_pipeline.py --verbose --processes 20 --hsp_method mp \
-  --study_fasta "cr-97/dna-sequences.fasta" \
-  --input "feature-table.biom" \
-  --output "picrust2_pipeline_out"
+mkdir -p "picrust2"
+picrust2_pipeline.py --verbose --hsp_method mp \
+  --processes ${NPROC} \
+  --study_fasta "closed_reference_97/dna-sequences.fasta" \
+  --input "biom/feature-table.biom" \
+  --output "picrust2"
