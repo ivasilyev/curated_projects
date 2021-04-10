@@ -166,6 +166,21 @@ biom convert --to-tsv \
   --input-fp "biom/feature-table.biom" \
   --output-fp "biom/feature-table.tsv"
 
+echo Create table with taxonomy annotations
+qiime tools export \
+  --input-path "taxonomy-rep-seqs-dada2.qza" \
+  --output-path "taxonomy-rep-seqs-dada2"
+
+echo Annotate biom with taxonomy data
+< "taxonomy-rep-seqs-dada2/taxonomy.tsv" \
+  sed 's|Feature ID\tTaxon\tConfidence|#OTUID\ttaxonomy\tconfidence|' \
+  > "taxonomy-rep-seqs-dada2/taxonomy_otuid.tsv"
+biom add-metadata \
+  --sc-separated "taxonomy" \
+  --observation-metadata-fp "taxonomy-rep-seqs-dada2/taxonomy_otuid.tsv" \
+  --input-fp "biom/feature-table.biom" \
+  --output-fp "biom/feature-table_with_taxa.biom"
+
 echo Export the aligned sequences
 qiime tools export \
   --input-path "closed_reference_97/rep-seqs-cr-97.qza" \
