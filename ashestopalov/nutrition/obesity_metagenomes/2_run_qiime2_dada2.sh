@@ -1,30 +1,28 @@
 #!/usr/bin/env bash
 
 cd "/data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/qiime2" || return
-# The S_CHUNK variable is forwarded externally
-mkdir -p "${S_CHUNK}/logs"
-chmod -R 777 "${S_CHUNK}"
-cd "${S_CHUNK}" || return
+# The SAMPLEDATA_MASK and METADATA_TSV variables are defined externally
+mkdir -p "${SAMPLEDATA_MASK}/logs"
+chmod -R 777 "${SAMPLEDATA_MASK}"
+cd "${SAMPLEDATA_MASK}" || return
 
-# export S_METADATA="../../sample_data/qiime2_meta_data_${S_CHUNK}.tsv"
-export S_METADATA="../../sample_data/qiime2_meta_data_stool.tsv"
 export NPROC="$(grep -c '^processor' /proc/cpuinfo)"
 
 # From https://antonioggsousa.github.io/tutorial/example/
 echo Import and convert paired-end FASTQ files to a QIIME2 artifact
 mkdir -p "demultiplexed_reads"
 qiime tools import --input-format PairedEndFastqManifestPhred33 \
-  --input-path "../../sample_data/chopped/qiime2_sample_data_${S_CHUNK}.csv" \
+  --input-path "../../sample_data/chopped/qiime2_sample_data_${SAMPLEDATA_MASK}.csv" \
   --type 'SampleData[PairedEndSequencesWithQuality]' \
   --output-path "demultiplexed_reads/demultiplexed_PE_reads.qza" \
-  |& tee "logs/tools import.log"
+  |& tee "logs/tools import.log"d
 
 echo Demultiplex and summarize sequences
 mkdir -p "visualized"
 qiime demux summarize --verbose \
   --i-data "demultiplexed_reads/demultiplexed_PE_reads.qza" \
   --o-visualization "visualized/demux_PE_reads.qzv" \
-  |& tee "logs/demux summarize demultiplexed.log"
+  |& tee "logs/demux summarize demux_PE_reads.log"
 
 #echo Visualize the plots
 #qiime tools view "visualized/demux_PE_reads.qzv"
@@ -51,13 +49,13 @@ qiime dada2 denoise-paired --verbose \
   --o-denoising-stats "dada2/dada2_denoising_statistics.qza" \
   |& tee "logs/dada2 denoise-paired.log"
 
-#echo Summarize stats
-#qiime feature-table summarize --verbose \
-#  --i-table "dada2/dada2_frequency_table.qza"\
-#  --o-visualization "table-dada2.qzv"
-#qiime feature-table tabulate-seqs --verbose \
-#  --i-data "dada2/dada2_representative_sequences.qza" \
-#  --o-visualization "rep-seqs-dada2.qzv"
+echo Summarize stats
+qiime feature-table summarize --verbose \
+  --i-table "dada2/dada2_frequency_table.qza"\
+  --o-visualization "visualized/table-dada2.qzv"
+qiime feature-table tabulate-seqs --verbose \
+  --i-data "dada2/dada2_representative_sequences.qza" \
+  --o-visualization "visualized/rep-seqs-dada2.qzv"
 
 echo Assign taxonomy
 mkdir -p "classified"
@@ -76,7 +74,7 @@ qiime metadata tabulate --verbose \
 
 echo Make a prokaryotic profile
 qiime taxa barplot --verbose \
-  --m-metadata-file ${S_METADATA} \
+  --m-metadata-file "${METADATA_TSV}" \
   --i-table "dada2/dada2_frequency_table.qza"\
   --i-taxonomy "classified/classified_taxonomy.qza" \
   --o-visualization "visualized/taxonomy_barplots.qzv" \
@@ -95,7 +93,6 @@ mkdir -p "masked"
 qiime alignment mask --verbose \
   --i-alignment "aligned/aligned_sequences.qza" \
   --o-masked-alignment "masked/masked_aligned_sequences.qza" \
-  --output-dir "masked" \
   |& tee "logs/alignment mask.log"
 
 echo Build a phylogenetic ML tree
@@ -106,31 +103,27 @@ qiime phylogeny fasttree --verbose \
   --o-tree "unrooted_trees/unrooted_tree.qza" \
   |& tee "logs/phylogeny fasttree.log"
 
-
 echo Root the unrooted tree based on the midpoint rooting method
 mkdir -p "rooted_trees"
 qiime phylogeny midpoint-root --verbose \
   --i-tree "unrooted_trees/unrooted_tree.qza" \
   --o-rooted-tree "rooted_trees/rooted_tree.qza" \
-  --output-dir "rooted_trees" \
   |& tee "logs/phylogeny midpoint-root.log"
 
 echo Analyze the core diversity using the phylogenetic pipeline
-mkdir -p "phylogenetic_core_metrics"
-qiime diversity core-metrics-phylogenetic --verbose --p-sampling-depth 20000 \
+qiime diversity core-metrics-phylogenetic --verbose --p-sampling-depth 1000 \
   --p-n-jobs-or-threads "${NPROC}" \
-  --m-metadata-file ${S_METADATA} \
+  --m-metadata-file "${METADATA_TSV}" \
   --i-phylogeny "rooted_trees/rooted_tree.qza" \
   --i-table "dada2/dada2_frequency_table.qza"\
   --output-dir "phylogenetic_core_metrics" \
   |& tee "logs/diversity core-metrics-phylogenetic.log"
 
 echo Build rarefaction plots
-mkdir -p "alpha_rarefaction"
 qiime diversity alpha-rarefaction --verbose --p-max-depth 20000 \
-  --m-metadata-file ${S_METADATA} \
+  --m-metadata-file "${METADATA_TSV}" \
   --i-table "dada2/dada2_frequency_table.qza" \
-  --i-phylogeny "trees/rooted_tree.qza" \
+  --i-phylogeny "rooted_trees/rooted_tree.qza" \
   --o-visualization "visualized/alpha_rarefaction.qzv" \
   |& tee "logs/diversity alpha-rarefaction.log"
 
@@ -173,45 +166,48 @@ qiime vsearch cluster-features-closed-reference --verbose --p-perc-identity 0.97
 
 echo Export an OTU table
 mkdir -p "biom"
-qiime tools export --output-format biom \
+qiime tools export \
   --input-path "closed_reference/closed_reference_clustered_table.qza" \
-  --output-path "biom/OTU.biom" \
+  --output-path "biom" \
   |& tee "logs/tools export base biom.log"
+# Output: 'feature-table.biom'
 
 echo Convert biom to JSON
 biom convert --to-json \
-  --input-fp "biom/OTU.biom" \
-  --output-fp "biom/OTU.json" \
+  --input-fp "biom/feature-table.biom" \
+  --output-fp "biom/OTUs.json" \
   |& tee "logs/biom convert base json.log"
 
 echo Convert biom to TSV
 biom convert --to-tsv \
-  --input-fp "biom/OTU.biom" \
-  --output-fp "biom/OTU.tsv" \
+  --input-fp "biom/feature-table.biom" \
+  --output-fp "biom/OTUs.tsv" \
   |& tee "logs/biom convert base tsv.log"
 
 echo Create table with taxonomy annotations
-qiime tools export --output-format tsv \
+qiime tools export \
   --input-path "classified/classified_taxonomy.qza" \
-  --output-path "classified/classified_taxonomy.tsv" \
+  --output-path "biom" \
   |& tee "logs/tools export base tsv.log"
+# Output: 'taxonomy.tsv'
 
 echo Annotate biom with taxonomy data
-< "classified/classified_taxonomy.tsv" \
+< "biom/taxonomy.tsv" \
   sed 's|Feature ID\tTaxon\tConfidence|#OTUID\ttaxonomy\tconfidence|' \
-  > "biom/taxonomy_otuid.tsv"
+  > "biom/taxa.tsv"
 
 biom add-metadata \
   --sc-separated "taxonomy" \
-  --observation-metadata-fp "biom/taxonomy_otuid.tsv" \
-  --input-fp "biom/OTU.biom" \
-  --output-fp "biom/OTU_with_taxa.biom" \
+  --observation-metadata-fp "biom/taxa.tsv" \
+  --input-fp "biom/feature-table.biom" \
+  --output-fp "biom/OTUs_with_taxa.biom" \
   |& tee "logs/biom add-metadata.log"
 
 echo Export the aligned sequences
-qiime tools export --output-format fasta \
+qiime tools export \
   --input-path "closed_reference/closed_reference_clustered_sequences.qza" \
-  --output-path "closed_reference/closed_reference_clustered_sequences.fasta" \
+  --output-path "closed_reference.fasta" \
   |& tee "logs/tools export fasta.log"
+# Output: 'dna-sequences.fasta'
 
 exit 0
