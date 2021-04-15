@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 
-# The WORKING_DIR, SAMPLEDATA_MASK and METADATA_TSV variables are defined externally
-cd "${WORKING_DIR}" || exit 1
+# The SAMPLEDATA_MASK and METADATA_TSV variables are defined externally
 
 mkdir -p "${SAMPLEDATA_MASK}/logs"
-chmod -R 777 "${SAMPLEDATA_MASK}"
 cd "${SAMPLEDATA_MASK}" || exit 1
 
 # The output directory must not exist
@@ -43,3 +41,6 @@ echo Add MetaCyc descriptions
 add_descriptions.py -m METACYC \
   --input "main_pipeline/pathways_out/path_abun_unstrat.tsv.gz" \
   --output "described/pathways_out/path_abun_unstrat_described.tsv"
+
+chmod -R 777 "${SAMPLEDATA_MASK}"
+exit 0

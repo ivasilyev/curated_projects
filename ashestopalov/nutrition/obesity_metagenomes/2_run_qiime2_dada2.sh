@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 
-# The WORKING_DIR, SAMPLEDATA_MASK and METADATA_TSV variables are defined externally
-cd "${WORKING_DIR}" || exit 1
+# The SAMPLEDATA_MASK and METADATA_TSV variables are defined externally
 
 mkdir -p "${SAMPLEDATA_MASK}/logs"
-chmod -R 777 "${SAMPLEDATA_MASK}"
 cd "${SAMPLEDATA_MASK}" || exit 1
 
 export NPROC="$(grep -c '^processor' /proc/cpuinfo)"
@@ -207,8 +205,9 @@ biom add-metadata \
 echo Export the aligned sequences
 qiime tools export \
   --input-path "closed_reference/closed_reference_clustered_sequences.qza" \
-  --output-path "closed_reference.fasta" \
+  --output-path "closed_reference" \
   |& tee "logs/tools export fasta.log"
 # Output: 'dna-sequences.fasta'
 
+chmod -R 777 "${SAMPLEDATA_MASK}"
 exit 0

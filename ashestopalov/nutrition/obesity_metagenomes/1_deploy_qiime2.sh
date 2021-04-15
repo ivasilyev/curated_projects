@@ -14,9 +14,9 @@ export IMG=qiime2/core:latest && \
 docker pull ${IMG} && \
 docker run --rm --net=host -it \
   -v /data:/data -v /data1:/data1 \
-  -e WORKING_DIR="$(pwd)" \
   -e SAMPLEDATA_MASK="${SAMPLEDATA_MASK}" \
   -e METADATA_TSV="${METADATA_TSV}" \
+  --workdir="$(pwd)" \
   ${IMG} bash "2_run_qiime2_dada2.sh"
 
 echo Run PICRUSt2
@@ -28,6 +28,6 @@ export IMG=quay.io/biocontainers/picrust2:2.4.1--py_0 && \
 docker pull ${IMG} && \
 docker run --rm --net=host -it \
   -v /data:/data -v /data1:/data1 \
-  -e WORKING_DIR="$(pwd)" \
   -e SAMPLEDATA_MASK="${SAMPLEDATA_MASK}" \
+  --workdir="$(pwd)" \
   ${IMG} bash "4_run_picrust2.sh"
