@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
-cd "/data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/qiime2" || return
-# The SAMPLEDATA_MASK and METADATA_TSV variables are defined externally
+# The WORKING_DIR, SAMPLEDATA_MASK and METADATA_TSV variables are defined externally
+cd "${WORKING_DIR}" || exit 1
+
 mkdir -p "${SAMPLEDATA_MASK}/logs"
 chmod -R 777 "${SAMPLEDATA_MASK}"
-cd "${SAMPLEDATA_MASK}" || return
+cd "${SAMPLEDATA_MASK}" || exit 1
 
 export NPROC="$(grep -c '^processor' /proc/cpuinfo)"
 
