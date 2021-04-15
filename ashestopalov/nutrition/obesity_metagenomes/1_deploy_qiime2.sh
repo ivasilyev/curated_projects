@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 
-# SAMPLEDATA_MASK="${1}"
-SAMPLEDATA_MASK="stool_chunk_1"
-METADATA_TSV="/data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/sample_data/qiime2_meta_data_$(echo ${SAMPLEDATA_MASK} | grep -E '(stool|blood)').tsv"
+SAMPLEDATA_MASK="${1}"
+if [ -z "${SAMPLEDATA_MASK}" ]
+  then
+    echo "No arguments supplied"
+    exit 1
+fi
+METADATA_TSV="/data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/sample_data/qiime2_meta_data_$(echo "${SAMPLEDATA_MASK}" | grep -E '(stool|blood)').tsv"
+
+
 
 echo Run QIIME2
 mkdir -p "/data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/qiime2"
@@ -17,7 +23,7 @@ docker run --rm --net=host -it \
   -e SAMPLEDATA_MASK="${SAMPLEDATA_MASK}" \
   -e METADATA_TSV="${METADATA_TSV}" \
   --workdir="$(pwd)" \
-  ${IMG} bash "2_run_qiime2_dada2.sh"
+  ${IMG} bash "run_qiime2_dada2.sh"
 
 
 
