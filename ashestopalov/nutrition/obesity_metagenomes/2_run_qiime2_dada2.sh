@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 # The SAMPLEDATA_MASK and METADATA_TSV variables are defined externally
-
 mkdir -p "${SAMPLEDATA_MASK}/logs"
 cd "${SAMPLEDATA_MASK}" || exit 1
 
@@ -14,7 +13,7 @@ qiime tools import --input-format PairedEndFastqManifestPhred33 \
   --input-path "../../sample_data/chopped/qiime2_sample_data_${SAMPLEDATA_MASK}.csv" \
   --type 'SampleData[PairedEndSequencesWithQuality]' \
   --output-path "demultiplexed_reads/demultiplexed_PE_reads.qza" \
-  |& tee "logs/tools import.log"d
+  |& tee "logs/tools import.log"
 
 echo Demultiplex and summarize sequences
 mkdir -p "visualized"
@@ -209,5 +208,5 @@ qiime tools export \
   |& tee "logs/tools export fasta.log"
 # Output: 'dna-sequences.fasta'
 
-chmod -R 777 "${SAMPLEDATA_MASK}"
+chmod -R 777 "$(pwd)"
 exit 0

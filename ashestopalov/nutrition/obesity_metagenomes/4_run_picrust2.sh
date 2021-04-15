@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 # The SAMPLEDATA_MASK and METADATA_TSV variables are defined externally
-
 mkdir -p "${SAMPLEDATA_MASK}/logs"
 cd "${SAMPLEDATA_MASK}" || exit 1
 
@@ -20,7 +19,7 @@ picrust2_pipeline.py --verbose --stratified --coverage --hsp_method mp \
   --output "main_pipeline" \
   |& tee "logs/picrust2_pipeline.log"
 
-mkdir -p "described"
+mkdir -p "described/EC_metagenome_out"
 echo Convert tables
 convert_table.py \
   "main_pipeline/EC_metagenome_out/pred_metagenome_contrib.tsv.gz" \
@@ -42,5 +41,5 @@ add_descriptions.py -m METACYC \
   --input "main_pipeline/pathways_out/path_abun_unstrat.tsv.gz" \
   --output "described/pathways_out/path_abun_unstrat_described.tsv"
 
-chmod -R 777 "${SAMPLEDATA_MASK}"
+chmod -R 777 "$(pwd)"
 exit 0
