@@ -120,7 +120,7 @@ qiime diversity core-metrics-phylogenetic --verbose --p-sampling-depth 1000 \
   |& tee "logs/diversity core-metrics-phylogenetic.log"
 
 echo Build rarefaction plots
-qiime diversity alpha-rarefaction --verbose --p-max-depth 20000 \
+qiime diversity alpha-rarefaction --verbose --p-max-depth 2000 \
   --m-metadata-file "${METADATA_TSV}" \
   --i-table "dada2/dada2_frequency_table.qza" \
   --i-phylogeny "rooted_trees/rooted_tree.qza" \
