@@ -6,37 +6,44 @@ if [ -z "${SAMPLEDATA_MASK}" ]
     echo "No arguments supplied"
     exit 1
 fi
-METADATA_TSV="/data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/sample_data/qiime2_meta_data_$(echo "${SAMPLEDATA_MASK}" | grep -E '(stool|blood)').tsv"
 
-
+SAMPLE_SOURCE="$(echo "${SAMPLEDATA_MASK}" | perl -nle 'm/(stool|blood)_chunk_.+/; print $1')"
+ROOT_DIR="/data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/"
+METADATA_TSV="${ROOT_DIR}sample_data/qiime2_meta_data_${SAMPLE_SOURCE}.tsv"
 
 echo Run QIIME2
-mkdir -p "/data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/qiime2"
-cd "/data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/qiime2" || exit 1
+WORK_DIR="${ROOT_DIR}qiime2"
+mkdir -p "${WORK_DIR}"
+cd "${WORK_DIR}" || exit 1
 curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/2_run_qiime2_dada2.sh" \
   -o "run_qiime2_dada2.sh"
 
 export IMG=qiime2/core:latest && \
 docker pull ${IMG} && \
-docker run --rm --net=host -it \
+docker run --rm --net=host \
   -v /data:/data -v /data1:/data1 \
   -e SAMPLEDATA_MASK="${SAMPLEDATA_MASK}" \
   -e METADATA_TSV="${METADATA_TSV}" \
-  --workdir="$(pwd)" \
+  --workdir="${WORK_DIR}" \
   ${IMG} bash "run_qiime2_dada2.sh"
+
+cd "${ROOT_DIR}" || exit 1
 
 
 
 echo Run PICRUSt2
-mkdir -p "../picrust2"
-cd "../picrust2" || exit 1
+WORK_DIR="${ROOT_DIR}picrust2"
+mkdir -p "${WORK_DIR}"
+cd "${WORK_DIR}" || exit 1
 curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/4_run_picrust2.sh" \
   -o "run_picrust2.sh"
 
 export IMG=quay.io/biocontainers/picrust2:2.4.1--py_0 && \
 docker pull ${IMG} && \
-docker run --rm --net=host -it \
+docker run --rm --net=host \
   -v /data:/data -v /data1:/data1 \
   -e SAMPLEDATA_MASK="${SAMPLEDATA_MASK}" \
-  --workdir="$(pwd)" \
+  --workdir="${WORK_DIR}" \
   ${IMG} bash "run_picrust2.sh"
+
+cd "${ROOT_DIR}" || exit 1

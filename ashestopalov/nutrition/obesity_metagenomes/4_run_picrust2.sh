@@ -7,8 +7,8 @@ cd "${SAMPLEDATA_MASK}" || exit 1
 # The output directory must not exist
 rm -rf "main_pipeline"
 
-export NPROC="$(grep -c '^processor' /proc/cpuinfo)"
-export Q2DIR="../../qiime2/${SAMPLEDATA_MASK}/"
+NPROC="$(grep -c '^processor' /proc/cpuinfo)"
+Q2DIR="../../qiime2/${SAMPLEDATA_MASK}/"
 
 # From https://github.com/picrust/picrust2/wiki/Workflow
 echo Run the PICRUSt2 pipeline
@@ -42,4 +42,5 @@ add_descriptions.py -m METACYC \
   --output "described/pathways_out/path_abun_unstrat_described.tsv"
 
 chmod -R 777 "$(pwd)"
+cd ..
 exit 0

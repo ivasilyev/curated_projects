@@ -4,7 +4,7 @@
 mkdir -p "${SAMPLEDATA_MASK}/logs"
 cd "${SAMPLEDATA_MASK}" || exit 1
 
-export NPROC="$(grep -c '^processor' /proc/cpuinfo)"
+NPROC="$(grep -c '^processor' /proc/cpuinfo)"
 
 # From https://antonioggsousa.github.io/tutorial/example/
 echo Import and convert paired-end FASTQ files to a QIIME2 artifact
@@ -209,4 +209,5 @@ qiime tools export \
 # Output: 'dna-sequences.fasta'
 
 chmod -R 777 "$(pwd)"
+cd ..
 exit 0
