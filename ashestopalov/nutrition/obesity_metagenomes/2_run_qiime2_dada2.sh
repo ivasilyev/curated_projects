@@ -60,7 +60,7 @@ mkdir -p "classified"
 # --p-n-jobs, The maximum number of concurrently worker processes. If -1 all CPUs are used. If 1 is given, no parallel computing code is used at all, which is useful for debugging. For n-jobs below -1, (n_cpus + 1 + n-jobs) are used. Thus for n-jobs = -2, all CPUs but one are used.
 qiime feature-classifier classify-sklearn --verbose \
   --p-n-jobs -1 \
-  --p-reads-per-batch auto \
+  --p-reads-per-batch 10000 \
   --i-classifier "/data/reference/SILVA/SILVA_v138/SILVA-138-SSURef-full-length-classifier.qza" \
   --i-reads "dada2/dada2_representative_sequences.qza" \
   --o-classification "classified/classified_taxonomy.qza" \
