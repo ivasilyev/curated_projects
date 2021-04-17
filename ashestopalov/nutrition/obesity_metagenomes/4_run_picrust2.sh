@@ -24,7 +24,8 @@ echo Convert tables
 convert_table.py \
   "main_pipeline/EC_metagenome_out/pred_metagenome_contrib.tsv.gz" \
   --conversion contrib_to_legacy \
-  --output "described/EC_metagenome_out/pred_metagenome_contrib.legacy.tsv"
+  --output "described/EC_metagenome_out/pred_metagenome_contrib.legacy.tsv" \
+  |& tee "logs/convert_table.log"
 
 echo Add KEGG ENZYME descriptions
 add_descriptions.py -m EC \
