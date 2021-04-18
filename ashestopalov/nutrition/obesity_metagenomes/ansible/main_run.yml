@@ -1,0 +1,4 @@
+- hosts: kube-node
+  tasks:
+    - name: Perform a main run
+      shell: cd /tmp && curl -fsSLO "" && bash main_run.sh

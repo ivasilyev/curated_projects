@@ -1,0 +1,4 @@
+- hosts: kube-node
+  tasks:
+    - name: Perform a dry run
+      shell: cd /tmp && curl -fsSLO "" && bash dry_run.sh
