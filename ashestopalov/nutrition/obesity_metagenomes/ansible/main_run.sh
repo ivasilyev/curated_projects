@@ -23,10 +23,16 @@ do
   echo Processing "${ARGS}"
   LOG_DIR="${ROOT_DIR}pipeline_logs/$(hostname)/"
   mkdir -p "${LOG_DIR}"
+
+  mkdir -p /tmp
   SCRIPT="/tmp/$(hostname)-deploy_qiime2_picrust2.sh"
-  curl -fsSL \
-    "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/1_deploy_qiime2_picrust2.sh" \
-    -o "${SCRIPT}"
+  while ! [ -f "${SCRIPT}" ]
+  do
+    curl -fsSL \
+      "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/1_deploy_qiime2_picrust2.sh" \
+      -o "${SCRIPT}"
+  done
+
   bash "${SCRIPT}" "${ARGS}" &> "${LOG_DIR}$(hostname)_${ARGS}.log"
 done
 

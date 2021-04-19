@@ -10,11 +10,11 @@ cd "${PLAYBOOK_DIR}" || exit 1
 
 echo Dry run
 curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/ansible/dry_run.yml"
-ansible-playbook -i "${AWB_HOSTS}" --user "${AWB_UN}" "dry_run.yml"
+ansible-playbook -i "${AWB_HOSTS}" --user "${AWB_UN}" "dry_run.yml" -vvvv
 
 echo Restore the queue
 cp -r "${QUEUE_FILE}.bak" "${QUEUE_FILE}"
 
 echo Main run
 curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/ansible/main_run.yml"
-nohup ansible-playbook -i "${AWB_HOSTS}" --user "${AWB_UN}" "main_run.yml"
+nohup ansible-playbook -i "${AWB_HOSTS}" --user "${AWB_UN}" "main_run.yml" -vvvv
