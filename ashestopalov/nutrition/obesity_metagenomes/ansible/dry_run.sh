@@ -21,6 +21,12 @@ force_docker_pull "${IMG_PICRUSt2}"
 
 cd "${ROOT_DIR}" || exit 1
 
+if ! [ -f "${QUEUE_FILE}" ]
+then
+  print "Not found: ${QUEUE_FILE}"
+  exit 1
+fi
+
 # The main loop checks if the queue is empty
 while [ -s "${QUEUE_FILE}" ]
 do
