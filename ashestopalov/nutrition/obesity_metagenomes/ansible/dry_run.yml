@@ -1,4 +1,11 @@
 - hosts: kube-node
   tasks:
     - name: Perform a dry run
-      shell: cd /tmp && curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/ansible/dry_run.sh" && bash dry_run.sh
+      shell: |
+        mkdir -p /tmp
+        cd /tmp
+        while ! [ -f "dry_run.sh" ]
+        do
+          curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/ansible/dry_run.sh"
+        done
+        bash dry_run.sh
