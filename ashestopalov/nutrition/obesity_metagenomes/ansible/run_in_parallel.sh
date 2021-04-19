@@ -17,4 +17,5 @@ cp -r "${QUEUE_FILE}.bak" "${QUEUE_FILE}"
 
 echo Main run
 curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/ansible/main_run.yml"
+rm -f nohup.out
 nohup ansible-playbook -i "${AWB_HOSTS}" --user "${AWB_UN}" "main_run.yml" -vvvv

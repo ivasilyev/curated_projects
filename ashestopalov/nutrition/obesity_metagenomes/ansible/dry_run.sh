@@ -30,9 +30,6 @@ fi
 # The main loop checks if the queue is empty
 while [ -s "${QUEUE_FILE}" ]
 do
-  # A 1-10 second random sleep/pause
-  sleep $((1 + RANDOM % 10))
-
   # Grab the top line of the queue
   ARGS="$(head -n 1 "${QUEUE_FILE}")"
 
@@ -40,10 +37,13 @@ do
   sed -i '1d' "${QUEUE_FILE}"
 
   # Deploy & run the script
+  SCRIPT="${ROOT_DIR}scripts/$(hostname)/deploy_qiime2_picrust2.sh"
+  mkdir -p "$(dirname "${SCRIPT}")"
   LOG_DIR="${ROOT_DIR}test_pipeline_logs/$(hostname)/"
   mkdir -p "${LOG_DIR}"
-  SCRIPT="/tmp/$(hostname)-deploy_qiime2_picrust2.sh"
   echo "bash ${SCRIPT} ${ARGS}" >> "${LOG_DIR}$(hostname)_${ARGS}.log"
+  # A 1-10 second random sleep/pause
+  sleep $((1 + RANDOM % 10))
 done
 
 echo Empty queue: "${QUEUE_FILE}"
