@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# To be launched from a master node
 
 export ROOT_DIR="/data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/"
 export QUEUE_FILE="${ROOT_DIR}sample_data/chunks.txt"

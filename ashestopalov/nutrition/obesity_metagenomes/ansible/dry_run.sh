@@ -31,7 +31,10 @@ do
   sed -i '1d' "${QUEUE_FILE}"
 
   # Deploy & run the script
-  echo Processing "${ARGS}"
+  LOG_DIR="${ROOT_DIR}test_pipeline_logs/$(hostname)/"
+  mkdir -p "${LOG_DIR}"
+  SCRIPT="/tmp/$(hostname)-deploy_qiime2_picrust2.sh"
+  echo "bash ${SCRIPT} ${ARGS}" >> "${LOG_DIR}$(hostname)_${ARGS}.log"
 done
 
 echo Empty queue: "${QUEUE_FILE}"
