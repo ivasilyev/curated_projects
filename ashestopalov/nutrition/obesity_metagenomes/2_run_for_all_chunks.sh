@@ -12,5 +12,5 @@ cp "sample_data/chunks.txt" \
 while IFS="" read -r p || [ -n "$p" ]
 do
   printf '%s\n' "Processing $p"
-  bash 1_deploy_qiime2.sh "$p"
+  bash 1_deploy_qiime2_picrust2.sh "$p"
 done < "sample_data/chunks.txt"

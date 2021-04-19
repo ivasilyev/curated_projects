@@ -24,9 +24,9 @@ do
   echo Processing "${ARGS}"
   LOG_DIR="${ROOT_DIR}pipeline_logs/$(hostname)/"
   mkdir -p "${LOG_DIR}"
-  SCRIPT="/tmp/$(hostname)-deploy_qiime2.sh"
+  SCRIPT="/tmp/$(hostname)-deploy_qiime2_picrust2.sh"
   curl -fsSL \
-    "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/1_deploy_qiime2.sh" \
+    "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/1_deploy_qiime2_picrust2.sh" \
     -o "${SCRIPT}"
   bash "${SCRIPT}" "${ARGS}" &> "${LOG_DIR}$(hostname)_${ARGS}.log"
 done

@@ -15,7 +15,7 @@ echo Run QIIME2
 WORK_DIR="${ROOT_DIR}qiime2"
 mkdir -p "${WORK_DIR}"
 cd "${WORK_DIR}" || exit 1
-curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/2_run_qiime2_dada2.sh" \
+curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/1a_run_qiime2_dada2.sh" \
   -o "run_qiime2_dada2.sh"
 
 export IMG=qiime2/core:latest && \
@@ -35,7 +35,7 @@ echo Run PICRUSt2
 WORK_DIR="${ROOT_DIR}picrust2"
 mkdir -p "${WORK_DIR}"
 cd "${WORK_DIR}" || exit 1
-curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/4_run_picrust2.sh" \
+curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/1b_run_picrust2.sh" \
   -o "run_picrust2.sh"
 
 export IMG=quay.io/biocontainers/picrust2:2.4.1--py_0 && \
