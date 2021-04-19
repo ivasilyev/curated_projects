@@ -19,8 +19,7 @@ done
 cd "${ROOT_DIR}" || exit 1
 
 # The main loop checks if the queue is empty
-# The non zero output indicate that the file is empty
-while [ ! -s "${QUEUE_FILE}" ]
+while [ -s "${QUEUE_FILE}" ]
 do
   # A 1-10 second random sleep/pause
   sleep $((1 + RANDOM % 10))
