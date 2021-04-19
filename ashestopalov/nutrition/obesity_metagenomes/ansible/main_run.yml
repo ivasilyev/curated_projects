@@ -1,4 +1,12 @@
 - hosts: kube-node
   tasks:
     - name: Perform a main run
-      shell: cd /tmp && curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/ansible/main_run.sh" && bash main_run.sh
+      shell: |
+        mkdir -p /tmp
+        cd /tmp
+        rm -f "main_run.sh"
+        while ! [ -f "main_run.sh" ]
+        do
+          curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/ansible/main_run.sh"
+        done
+        bash main_run.sh
