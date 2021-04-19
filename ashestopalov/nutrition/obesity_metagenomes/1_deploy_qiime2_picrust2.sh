@@ -18,8 +18,18 @@ cd "${WORK_DIR}" || exit 1
 curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/1a_run_qiime2_dada2.sh" \
   -o "run_qiime2_dada2.sh"
 
-export IMG=qiime2/core:latest && \
-docker pull ${IMG} && \
+force_docker_pull () {
+  while true
+  do
+    if docker pull "$1"
+    then
+      return
+    fi
+  done
+}
+
+export IMG="qiime2/core:latest"
+force_docker_pull "${IMG}"
 docker run --rm --net=host \
   -v /data:/data -v /data1:/data1 \
   -e SAMPLEDATA_MASK="${SAMPLEDATA_MASK}" \
@@ -38,8 +48,8 @@ cd "${WORK_DIR}" || exit 1
 curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/1b_run_picrust2.sh" \
   -o "run_picrust2.sh"
 
-export IMG=quay.io/biocontainers/picrust2:2.4.1--py_0 && \
-docker pull ${IMG} && \
+export IMG="quay.io/biocontainers/picrust2:2.4.1--py_0"
+force_docker_pull "${IMG}"
 docker run --rm --net=host \
   -v /data:/data -v /data1:/data1 \
   -e SAMPLEDATA_MASK="${SAMPLEDATA_MASK}" \

@@ -6,15 +6,18 @@ export ROOT_DIR="/data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/
 export QUEUE_FILE="${ROOT_DIR}sample_data/chunks.txt"
 
 # Force pull the images
-for i in 1 2 3 4 5
-do
-  if docker pull ${IMG_QIIME2} && docker pull ${IMG_PICRUSt2}
-  then
-    break
-  else
-    echo "Failed pull attempt $i"
-  fi
-done
+force_docker_pull () {
+  while true
+  do
+    if docker pull "$1"
+    then
+      return
+    fi
+  done
+}
+
+force_docker_pull "${IMG_QIIME2}"
+force_docker_pull "${IMG_PICRUSt2}"
 
 cd "${ROOT_DIR}" || exit 1
 
