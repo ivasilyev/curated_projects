@@ -24,10 +24,11 @@ redeploy_script () {
 echo Dry run
 restore_queue
 redeploy_script "dry_run.yml" "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/ansible/dry_run.yml"
-ansible-playbook -i "${AWB_HOSTS}" --user "${AWB_UN}" "dry_run.yml" -vvvv
+# From https://docs.ansible.com/ansible/latest/user_guide/playbooks_strategies.html
+ansible-playbook -f 30 -i "${AWB_HOSTS}" --user "${AWB_UN}" "dry_run.yml" -vvvv
 
 echo Main run
 restore_queue
 redeploy_script "main_run.yml" "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/ansible/main_run.yml"
 rm -f nohup.out
-nohup ansible-playbook -i "${AWB_HOSTS}" --user "${AWB_UN}" "main_run.yml" -vvvv
+nohup ansible-playbook -f 30 -i "${AWB_HOSTS}" --user "${AWB_UN}" "main_run.yml" -vvvv

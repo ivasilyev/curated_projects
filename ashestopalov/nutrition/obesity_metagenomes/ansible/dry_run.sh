@@ -67,4 +67,5 @@ do
 
   # Run the script
   echo "bash ${SCRIPT} ${ARGS}" >> "${LOG_DIR}$(hostname)_${ARGS}.log"
+  random_sleep
 done
