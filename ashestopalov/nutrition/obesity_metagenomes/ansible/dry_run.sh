@@ -5,6 +5,11 @@ export IMG_PICRUSt2="quay.io/biocontainers/picrust2:2.4.1--py_0"
 export ROOT_DIR="/data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/"
 export QUEUE_FILE="${ROOT_DIR}sample_data/chunks.txt"
 
+# A 1-10 second random sleep/pause
+random_sleep () {
+  sleep $((1 + RANDOM % 10))
+}
+
 # Force pull the images
 force_docker_pull () {
   while true
@@ -13,12 +18,17 @@ force_docker_pull () {
     then
       return
     fi
+    random_sleep
   done
 }
 
-# A 1-10 second random sleep/pause
-random_sleep () {
-  sleep $((1 + RANDOM % 10))
+redeploy_script () {
+  rm -f "$1"
+  while ! [ -s "$1" ]
+  do
+    curl -fsSL "$2" -o "$1"
+    random_sleep
+  done
 }
 
 force_docker_pull "${IMG_QIIME2}"
@@ -43,16 +53,7 @@ do
   # Deploy the script
   SCRIPT="${ROOT_DIR}scripts/$(hostname)/deploy_qiime2_picrust2.sh"
   mkdir -p "$(dirname "${SCRIPT}")"
-  rm -f "${SCRIPT}"
-
-  # Force download the script
-  while ! [ -s "${SCRIPT}" ]
-  do
-    curl -fsSL \
-      "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/1_deploy_qiime2_picrust2.sh" \
-      -o "${SCRIPT}"
-      random_sleep
-  done
+  redeploy_script "${SCRIPT}" "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/1_deploy_qiime2_picrust2.sh"
 
   # Verify that the queue file exists and has a size greater than zero
   if ! [ -s "${QUEUE_FILE}" ]
