@@ -7,7 +7,7 @@ export QUEUE_FILE="${ROOT_DIR}sample_data/chunks.txt"
 
 # A 1-10 second random sleep/pause
 random_sleep () {
-  sleep $((1 + RANDOM % 10))
+  sleep $((1 + RANDOM % 30))
 }
 
 # Force pull the images
@@ -52,6 +52,8 @@ do
   mkdir -p "$(dirname "${SCRIPT}")"
   redeploy_script "${SCRIPT}" "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/1_deploy_qiime2_picrust2.sh"
 
+  random_sleep
+
   # Verify that the queue file exists and has a size greater than zero
   if ! [ -s "${QUEUE_FILE}" ]
   then
@@ -61,11 +63,9 @@ do
 
   # Grab the top line of the queue
   ARGS="$(head -n 1 "${QUEUE_FILE}")"
-
-  # And remove it from the queue
   sed -i '1d' "${QUEUE_FILE}"
 
   # Run the script
+  echo Processing "${ARGS}"
   echo "bash ${SCRIPT} ${ARGS}" >> "${LOG_DIR}$(hostname)_${ARGS}.log"
-  random_sleep
 done
