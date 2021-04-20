@@ -27,24 +27,41 @@ then
   exit 1
 fi
 
+# Manage logs
+LOG_DIR="${ROOT_DIR}test_pipeline_logs/$(hostname)/"
+mkdir -p "${LOG_DIR}"
+
 # The main loop checks if the queue is empty
-while [ -s "${QUEUE_FILE}" ]
+while true
 do
+  # A 1-10 second random sleep/pause
+  sleep $((1 + RANDOM % 10))
+
+  # Deploy the script
+  SCRIPT="${ROOT_DIR}scripts/$(hostname)/deploy_qiime2_picrust2.sh"
+  mkdir -p "$(dirname "${SCRIPT}")"
+
+  # Force download the script
+  while ! [ -s "${SCRIPT}" ]
+  do
+    curl -fsSL \
+      "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/1_deploy_qiime2_picrust2.sh" \
+      -o "${SCRIPT}"
+  done
+
+  # Verify that the queue file exists and has a size greater than zero
+  if ! [ -s "${QUEUE_FILE}" ]
+  then
+    echo Empty queue: "${QUEUE_FILE}"
+    exit 0
+  fi
+
   # Grab the top line of the queue
   ARGS="$(head -n 1 "${QUEUE_FILE}")"
 
   # And remove it from the queue
   sed -i '1d' "${QUEUE_FILE}"
 
-  # Deploy & run the script
-  SCRIPT="${ROOT_DIR}scripts/$(hostname)/deploy_qiime2_picrust2.sh"
-  mkdir -p "$(dirname "${SCRIPT}")"
-  LOG_DIR="${ROOT_DIR}test_pipeline_logs/$(hostname)/"
-  mkdir -p "${LOG_DIR}"
+  # Run the script
   echo "bash ${SCRIPT} ${ARGS}" >> "${LOG_DIR}$(hostname)_${ARGS}.log"
-  # A 1-10 second random sleep/pause
-  sleep $((1 + RANDOM % 10))
 done
-
-echo Empty queue: "${QUEUE_FILE}"
-exit 0
