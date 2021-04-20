@@ -1,12 +1,17 @@
 - hosts: kube-node
   tasks:
+    - name: Create directory
+      file:
+        path: "/tmp"
+        state: directory
+    - name: Cleanup
+      file:
+        state: absent
+        path: "/tmp/main_run.sh"
+    - name: Download the script
+      get_url:
+          url: "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/ansible/main_run.sh"
+          dest: "/tmp/main_run.sh"
+          mode: "777"
     - name: Perform a main run
-      shell: |
-        mkdir -p /tmp
-        cd /tmp
-        rm -f "main_run.sh"
-        while ! [ -f "main_run.sh" ]
-        do
-          curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/ansible/main_run.sh"
-        done
-        bash main_run.sh
+      shell: "/tmp/main_run.sh"

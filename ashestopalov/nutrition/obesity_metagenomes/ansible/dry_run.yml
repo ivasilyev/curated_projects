@@ -13,5 +13,5 @@
           url: "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/ansible/dry_run.sh"
           dest: "/tmp/dry_run.sh"
           mode: "777"
-    - name: Perform a main run
+    - name: Perform a dry run
       shell: "/tmp/dry_run.sh"

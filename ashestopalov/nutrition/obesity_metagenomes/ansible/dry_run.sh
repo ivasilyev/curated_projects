@@ -18,7 +18,6 @@ force_docker_pull () {
     then
       return
     fi
-    random_sleep
   done
 }
 
@@ -27,7 +26,6 @@ redeploy_script () {
   while ! [ -s "$1" ]
   do
     curl -fsSL "$2" -o "$1"
-    random_sleep
   done
 }
 
@@ -49,7 +47,6 @@ mkdir -p "${LOG_DIR}"
 # The main loop checks if the queue is empty
 while true
 do
-  random_sleep
   # Deploy the script
   SCRIPT="${ROOT_DIR}scripts/$(hostname)/deploy_qiime2_picrust2.sh"
   mkdir -p "$(dirname "${SCRIPT}")"
