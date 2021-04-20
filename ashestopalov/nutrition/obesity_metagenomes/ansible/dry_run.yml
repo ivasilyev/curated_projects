@@ -1,12 +1,5 @@
 - hosts: kube-node
   tasks:
-    - name: Perform a dry run
-      shell: |
-        mkdir -p /tmp
-        cd /tmp
-        rm -f "dry_run.sh"
-        while ! [ -f "dry_run.sh" ]
-        do
-          curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/ansible/dry_run.sh"
-        done
-        bash dry_run.sh
+    - name: Copy and execute the script
+        ansible.builtin.script:
+          cmd: "${PLAYBOOK_DIR}/dry_run.sh"
