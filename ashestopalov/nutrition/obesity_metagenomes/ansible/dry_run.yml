@@ -1,5 +1,5 @@
 - hosts: kube-node
   tasks:
     - name: Copy and execute the script
-        ansible.builtin.script:
-          cmd: "${PLAYBOOK_DIR}/dry_run.sh"
+      ansible.builtin.script:
+        cmd: "${PLAYBOOK_DIR}/dry_run.sh"
