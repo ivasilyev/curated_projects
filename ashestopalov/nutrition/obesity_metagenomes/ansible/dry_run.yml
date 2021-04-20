@@ -1,4 +1,17 @@
 - hosts: kube-node
   tasks:
-    - name: Copy and execute the script
-      script: "${PLAYBOOK_DIR}/dry_run.sh"
+    - name: Create directory
+      file:
+        path: "/tmp"
+        state: directory
+    - name: Cleanup
+      file:
+        state: absent
+        path: "/tmp/dry_run.sh"
+    - name: Download the script
+      get_url:
+          url: "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/ansible/dry_run.sh"
+          dest: "/tmp/dry_run.sh"
+          mode: "777"
+    - name: Perform a main run
+      shell: "/tmp/dry_run.sh"

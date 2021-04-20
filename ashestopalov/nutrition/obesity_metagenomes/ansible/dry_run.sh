@@ -16,6 +16,11 @@ force_docker_pull () {
   done
 }
 
+# A 1-10 second random sleep/pause
+random_sleep () {
+  sleep $((1 + RANDOM % 10))
+}
+
 force_docker_pull "${IMG_QIIME2}"
 force_docker_pull "${IMG_PICRUSt2}"
 
@@ -34,12 +39,11 @@ mkdir -p "${LOG_DIR}"
 # The main loop checks if the queue is empty
 while true
 do
-  # A 1-10 second random sleep/pause
-  sleep $((1 + RANDOM % 10))
-
+  random_sleep
   # Deploy the script
   SCRIPT="${ROOT_DIR}scripts/$(hostname)/deploy_qiime2_picrust2.sh"
   mkdir -p "$(dirname "${SCRIPT}")"
+  rm -f "${SCRIPT}"
 
   # Force download the script
   while ! [ -s "${SCRIPT}" ]
@@ -47,6 +51,7 @@ do
     curl -fsSL \
       "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/obesity_metagenomes/1_deploy_qiime2_picrust2.sh" \
       -o "${SCRIPT}"
+      random_sleep
   done
 
   # Verify that the queue file exists and has a size greater than zero
