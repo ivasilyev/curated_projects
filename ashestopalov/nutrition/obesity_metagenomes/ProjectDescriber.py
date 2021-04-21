@@ -11,5 +11,5 @@ class ProjectDescriber(ProjectDescriberTemplate):
     ROOT_DIR = os.path.join("/data1/bio/projects", OWNER, NAME)
     RAW_READS_DIR = os.path.join(ROOT_DIR, "raw_reads")
     SAMPLE_DATA_DIR = os.path.join(ROOT_DIR, "sample_data")
-    SAMPLE_DATA_FILE = os.path.join(ROOT_DIR, "sample_data.json")
-    GROUP_DATA_FILE = ""
+    DATA_DIR = os.path.join(ROOT_DIR, "data")
+    MERGED_DATA_DIR = os.path.join(DATA_DIR, "merged_data")
