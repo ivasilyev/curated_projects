@@ -5,9 +5,9 @@ export IMG_PICRUSt2="quay.io/biocontainers/picrust2:2.4.1--py_0"
 export ROOT_DIR="/data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/"
 export QUEUE_FILE="${ROOT_DIR}sample_data/chunks.txt"
 
-# A 1-10 second random sleep/pause
+# A 1-60 second random sleep/pause
 random_sleep () {
-  sleep $((1 + RANDOM % 30))
+  sleep $((1 + RANDOM % 60))
 }
 
 redeploy_script () {
