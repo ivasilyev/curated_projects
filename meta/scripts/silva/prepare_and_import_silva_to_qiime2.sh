@@ -26,6 +26,11 @@ python ${SDIR}parse_silva_taxonomy.py -s \
   -m taxmap_slv_ssu_ref_nr_138.txt \
   -o SILVA_138_Taxonomy.txt
 
+echo Add header to the SILVA Taxonomy table
+printf '#OTU ID\ttaxonomy\n' \
+  | cat - SILVA_138_Taxonomy.txt \
+  > SILVA_138_Taxonomy_headed.tsv
+
 echo Remove taxonomy descriptions from FASTA headers, and convert the sequences from RNA to DNA for the unaligned FASTA
 python ${SDIR}convert_rna_to_dna.py \
   -i SILVA_138_SSURef_NR99_tax_silva_trunc.fasta \
