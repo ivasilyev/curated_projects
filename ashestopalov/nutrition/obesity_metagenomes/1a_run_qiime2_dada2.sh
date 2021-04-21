@@ -75,7 +75,7 @@ qiime metadata tabulate --verbose \
 echo Make a prokaryotic profile
 qiime taxa barplot --verbose \
   --m-metadata-file "${METADATA_TSV}" \
-  --i-table "dada2/dada2_frequency_table.qza"\
+  --i-table "dada2/dada2_frequency_table.qza" \
   --i-taxonomy "classified/classified_taxonomy.qza" \
   --o-visualization "visualized/taxonomy_barplots.qzv" \
   |& tee "logs/taxa barplot.log"
@@ -172,36 +172,32 @@ qiime tools export \
   |& tee "logs/tools export base biom.log"
 # Output: 'feature-table.biom'
 
+echo Annotate biom with taxonomy data
+biom add-metadata \
+  --sc-separated "taxonomy" \
+  --observation-metadata-fp "/data/reference/SILVA/SILVA_v138/SILVA_138_Taxonomy_headed.tsv" \
+  --input-fp "biom/feature-table.biom" \
+  --output-fp "biom/OTUs_with_taxa.biom" \
+  |& tee "logs/biom add-metadata.log"
+
 echo Convert biom to JSON
 biom convert --to-json \
-  --input-fp "biom/feature-table.biom" \
-  --output-fp "biom/OTUs.json" \
-  |& tee "logs/biom convert base json.log"
+  --input-fp "biom/OTUs_with_taxa.biom" \
+  --output-fp "biom/OTUs_with_taxa.json" \
+  |& tee "logs/biom convert json.log"
 
 echo Convert biom to TSV
+# Base
 biom convert --to-tsv \
   --input-fp "biom/feature-table.biom" \
   --output-fp "biom/OTUs.tsv" \
   |& tee "logs/biom convert base tsv.log"
-
-echo Create table with taxonomy annotations
-qiime tools export \
-  --input-path "classified/classified_taxonomy.qza" \
-  --output-path "biom" \
-  |& tee "logs/tools export base tsv.log"
-# Output: 'taxonomy.tsv'
-
-echo Annotate biom with taxonomy data
-< "biom/taxonomy.tsv" \
-  sed 's|Feature ID\tTaxon\tConfidence|#OTUID\ttaxonomy\tconfidence|' \
-  > "biom/taxa.tsv"
-
-biom add-metadata \
-  --sc-separated "taxonomy" \
-  --observation-metadata-fp "biom/taxa.tsv" \
-  --input-fp "biom/feature-table.biom" \
-  --output-fp "biom/OTUs_with_taxa.biom" \
-  |& tee "logs/biom add-metadata.log"
+# With taxa
+biom convert --to-tsv \
+  --input-fp "biom/OTUs_with_taxa.biom" \
+  --output-fp "biom/OTUs_with_taxa.tsv" \
+  --header-key taxonomy \
+  |& tee "logs/biom convert taxa tsv.log"
 
 echo Export the aligned sequences
 qiime tools export \
