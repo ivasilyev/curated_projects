@@ -224,6 +224,23 @@ class Utilities:
                 pairs.remove(pair_reversed)
         return pairs
 
+    @staticmethod
+    def filtered_product(lists: list):
+        from itertools import product
+        out = []
+        for sub_list in list(product(*lists)):
+            sub_out = []
+            is_sub_good = True
+            for item in sub_list:
+                is_sub_good = item not in sub_out
+                if is_sub_good:
+                    sub_out.append(item)
+                else:
+                    break
+            if is_sub_good and sorted(sub_out) not in [sorted(i) for i in out]:
+                out.append(tuple(sub_out))
+        return out
+
     # Biopython methods
 
     @staticmethod
