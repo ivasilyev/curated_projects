@@ -540,7 +540,21 @@ class Utilities:
         output = pool.map(func, queue)
         pool.close()
         pool.join()
-        return output
+        return result
+
+    @staticmethod
+    def wrapper(d: dict):
+        """
+        An ultimate wrapper
+        :param d: Dictionary {'func': a function or a method, 'args': list, 'kwargs': dict}
+        :return: The result of evaluating func(*args, **kwargs)
+        """
+        if "args" not in d.keys():
+            d["args"] = []
+        if "kwargs" not in d.keys():
+            d["kwargs"] = dict()
+        return d["func"](*d["args"], **d["kwargs"])
+
 
     # Web-based methods
 
