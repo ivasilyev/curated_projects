@@ -530,11 +530,11 @@ class Utilities:
     # Queue processing methods
 
     @staticmethod
-    def single_core_queue(func, queue):
+    def single_core_queue(func, queue) -> list:
         return [func(i) for i in queue]
 
     @staticmethod
-    def multi_core_queue(func, queue: list, processes: int = 0, async_: bool = True):
+    def multi_core_queue(func, queue: list, processes: int = 0, async_: bool = False) -> list:
         import multiprocessing as mp
         if processes == 0:
             processes = mp.cpu_count()
@@ -545,6 +545,8 @@ class Utilities:
             result = pool.map(func, queue)
         pool.close()
         pool.join()
+        if async_:
+            return result.get()
         return result
 
     @staticmethod
