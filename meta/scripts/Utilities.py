@@ -259,14 +259,6 @@ class Utilities:
         return out
 
     @staticmethod
-    def get_reads_stats_from_fq_gz(reads_file: str, sample_name: str = None):
-        seq_records = Utilities.parse_sequences(reads_file, type_="fastq_gz")
-        out = dict(reads_file=reads_file, reads_number=len(seq_records), reads_bp=sum([len(i) for i in seq_records]))
-        if sample_name:
-            out["sample_name"] = sample_name
-        return out
-
-    @staticmethod
     def remove_duplicate_sequences(records: list):
         out = []
         sequences = []
@@ -300,26 +292,45 @@ class Utilities:
         return record_
 
     @staticmethod
-    def count_raw_reads_statistics(reads_file: str, type_: str = "fasta") -> dict:
+    def count_reads_statistics(reads_file: str, type_: str = "fasta", with_suffix: bool = False,
+                               kwargs: dict = None) -> dict:
         import statistics
+        from Bio.SeqUtils import GC
         seq_records = Utilities.parse_sequences(reads_file, type_)
         total_sequence = "".join([str(i.seq) for i in seq_records])
-        out = dict(file=reads_file, reads_number=len(seq_records), largest_read_bp=len(seq_records[0]),
-                   smallest_read_bp=len(seq_records[-1]), total_reads_bp=len(total_sequence),
-                   mean_reads_bp=statistics.mean([len(i) for i in seq_records]),
-                   median_reads_bp=statistics.median([len(i) for i in seq_records]))
+        out = {
+            "reads_file": reads_file,
+            "reads_number": len(seq_records),
+            "largest_read_bp": len(seq_records[0]),
+            "smallest_read_bp": len(seq_records[-1]),
+            "total_reads_bp": len(total_sequence),
+            "mean_reads_bp": statistics.mean([len(i) for i in seq_records]),
+            "median_reads_bp": statistics.median([len(i) for i in seq_records]),
+            "gc_percentage": GC(total_sequence),
+        }
+        if isinstance(kwargs, dict) and len(kwargs.keys()) > 0:
+            out.update(kwargs)
+        if with_suffix:
+            return {"raw_{}".format(k): out[k] for k in out.keys()}
         return out
 
     @staticmethod
-    def count_assembly_statistics(assembly_file: str, type_: str = "fasta") -> dict:
+    def count_assembly_statistics(assembly_file: str, type_: str = "fasta",
+                                  with_suffix: bool = False, kwargs: dict = None) -> dict:
         import statistics
         from Bio.SeqUtils import GC
         seq_records = Utilities.parse_sequences(assembly_file, type_=type_)
         total_sequence = "".join([str(i.seq) for i in seq_records])
-        out = dict(file=assembly_file, contigs_number=len(seq_records), largest_contig_bp=len(seq_records[0]),
-                   smallest_contig_bp=len(seq_records[-1]), total_contigs_bp=len(total_sequence),
-                   mean_contigs_bp=statistics.mean([len(i) for i in seq_records]),
-                   median_contigs_bp=statistics.median([len(i) for i in seq_records]), gc_percentage=GC(total_sequence))
+        out = {
+            "assembly_file": assembly_file,
+            "contigs_number": len(seq_records),
+            "largest_contig_bp": len(seq_records[0]),
+            "smallest_contig_bp": len(seq_records[-1]),
+            "total_contigs_bp": len(total_sequence),
+            "mean_contigs_bp": statistics.mean([len(i) for i in seq_records]),
+            "median_contigs_bp": statistics.median([len(i) for i in seq_records]),
+            "gc_percentage": GC(total_sequence),
+        }
         contigs_records = []
         bp50 = round(len(total_sequence) * 0.5)
         bp90 = round(len(total_sequence) * 0.9)
@@ -336,6 +347,10 @@ class Utilities:
                 out["l90"] = idx + 1
                 out["n90"] = len(seq_records[idx])
                 n90_supplied = True
+        if isinstance(kwargs, dict) and len(kwargs.keys()) > 0:
+            out.update(kwargs)
+        if with_suffix:
+            return {"assembly_{}".format(k): out[k] for k in out.keys()}
         return out
 
     @staticmethod
