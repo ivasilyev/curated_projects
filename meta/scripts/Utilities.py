@@ -534,10 +534,15 @@ class Utilities:
         return [func(i) for i in queue]
 
     @staticmethod
-    def multi_core_queue(func, queue):
-        import multiprocessing
-        pool = multiprocessing.Pool()
-        output = pool.map(func, queue)
+    def multi_core_queue(func, queue: list, processes: int = 0, async_: bool = True):
+        import multiprocessing as mp
+        if processes == 0:
+            processes = mp.cpu_count()
+        pool = mp.Pool(processes=processes)
+        if async_:
+            result = pool.map_async(func, queue)
+        else:
+            result = pool.map(func, queue)
         pool.close()
         pool.join()
         return result
