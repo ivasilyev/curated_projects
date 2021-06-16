@@ -292,7 +292,7 @@ class Utilities:
         return record_
 
     @staticmethod
-    def count_reads_statistics(reads_file: str, type_: str = "fasta", with_suffix: bool = False,
+    def count_reads_statistics(reads_file: str, type_: str = "fasta", prefix: str = "",
                                kwargs: dict = None) -> dict:
         import statistics
         from Bio.SeqUtils import GC
@@ -310,13 +310,13 @@ class Utilities:
         }
         if isinstance(kwargs, dict) and len(kwargs.keys()) > 0:
             out.update(kwargs)
-        if with_suffix:
-            return {"raw_{}".format(k): out[k] for k in out.keys()}
+        if len(prefix) > 0:
+            return {"{}_{}".format(prefix, k): out[k] for k in out.keys()}
         return out
 
     @staticmethod
     def count_assembly_statistics(assembly_file: str, type_: str = "fasta",
-                                  with_suffix: bool = False, kwargs: dict = None) -> dict:
+                                  prefix: str = "", kwargs: dict = None) -> dict:
         import statistics
         from Bio.SeqUtils import GC
         seq_records = Utilities.parse_sequences(assembly_file, type_=type_)
@@ -349,8 +349,8 @@ class Utilities:
                 n90_supplied = True
         if isinstance(kwargs, dict) and len(kwargs.keys()) > 0:
             out.update(kwargs)
-        if with_suffix:
-            return {"assembly_{}".format(k): out[k] for k in out.keys()}
+        if len(prefix) > 0:
+            return {"{}_{}".format(prefix, k): out[k] for k in out.keys()}
         return out
 
     @staticmethod
@@ -561,7 +561,6 @@ class Utilities:
         if "kwargs" not in d.keys():
             d["kwargs"] = dict()
         return d["func"](*d["args"], **d["kwargs"])
-
 
     # Web-based methods
 
