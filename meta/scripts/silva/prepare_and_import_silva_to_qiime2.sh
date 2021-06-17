@@ -2,12 +2,12 @@
 
 # It is recommended to launch this script into a working QIIME2 environment
 # or an instance of the official QIIME2 Docker image, e.g.:
-#  export IMG=qiime2/core:latest && \
-#  docker pull ${IMG} && \
-#  docker run --rm --net=host -it ${IMG} bash
+  export IMG=qiime2/core:latest && \
+  docker pull ${IMG} && \
+  docker run --rm --net=host -v /data:/data -it ${IMG} bash
 
 echo Import the SILVA database assets into QIIME2
-
+cd /data/reference/SILVA/SILVA_v138
 # Files required:
 #    tax_slv_ssu_138.txt
 #    tax_slv_ssu_138.tre
@@ -70,5 +70,24 @@ qiime feature-classifier fit-classifier-naive-bayes \
   --i-reference-reads SILVA-138-SSURef-Full-Seqs.qza \
   --i-reference-taxonomy Silva-v138-full-length-seq-taxonomy.qza \
   --o-classifier SILVA-138-SSURef-full-length-classifier.qza
+
+echo Import the unrooted tree
+mkdir -p "trees"
+qiime tools import \
+  --input-path tax_slv_ssu_138.tre \
+  --output-path "trees/unrooted.qza" \
+  --type "Phylogeny[Unrooted]"
+
+echo Root the unrooted tree based on the midpoint rooting method
+qiime phylogeny midpoint-root --verbose \
+  --i-tree "trees/unrooted.qza" \
+  --o-rooted-tree "trees/rooted.qza" \
+  |& tee "phylogeny midpoint-root.log"
+
+echo Export the rooted tree
+qiime tools export \
+  --input-path "trees/rooted.qza" \
+  --output-path "trees" && \
+mv "trees/tree.nwk" "trees/rooted.nwk"
 
 echo The SILVA database assets were imported into QIIME2
