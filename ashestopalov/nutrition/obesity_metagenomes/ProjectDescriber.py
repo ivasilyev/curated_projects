@@ -13,3 +13,4 @@ class ProjectDescriber(ProjectDescriberTemplate):
     SAMPLE_DATA_DIR = os.path.join(ROOT_DIR, "sample_data")
     DATA_DIR = os.path.join(ROOT_DIR, "data")
     MERGED_DATA_DIR = os.path.join(DATA_DIR, "merged_data")
+    GROUP_DATA = os.path.join(SAMPLE_DATA_DIR, "cured_group_data.tsv")
