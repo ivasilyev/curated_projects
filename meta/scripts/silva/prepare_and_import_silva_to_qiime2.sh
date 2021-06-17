@@ -2,12 +2,12 @@
 
 # It is recommended to launch this script into a working QIIME2 environment
 # or an instance of the official QIIME2 Docker image, e.g.:
-  export IMG=qiime2/core:latest && \
-  docker pull ${IMG} && \
-  docker run --rm --net=host -v /data:/data -it ${IMG} bash
+#  export IMG=qiime2/core:latest && \
+#  docker pull ${IMG} && \
+#  docker run --rm --net=host -v /data:/data -it ${IMG} bash
+#  cd /data/reference/SILVA/SILVA_v138
 
 echo Import the SILVA database assets into QIIME2
-cd /data/reference/SILVA/SILVA_v138
 # Files required:
 #    tax_slv_ssu_138.txt
 #    tax_slv_ssu_138.tre
