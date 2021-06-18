@@ -35,3 +35,9 @@ def dict2pd_series(dictionary, sort_keys: bool = False):
 def concat(dfs: list, index_name: str = "", columns_name: str = ""):
     return pd.concat(dfs, join="outer", axis=1, sort=False).rename_axis(
         index=index_name, columns=columns_name)
+
+
+def apply_mp_function_to_df(func, df: pd.DataFrame, index_name: str = "", columns_name: str = ""):
+    from meta.scripts.utils.queue_utils import multi_core_queue
+    results = multi_core_queue(func, [df[i] for i in df.columns], async_=True)
+    return pd.DataFrame(results).rename_axis(index=index_name, columns=columns_name)
