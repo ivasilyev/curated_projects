@@ -76,9 +76,10 @@ for analysis_type in ("Indoles", "Resorcinols"):
 merged_data_dir = os.path.join(ProjectDescriber.DATA_DIR, "merged_data")
 
 feature_dfs = dict()
-for feature_name in ("EC", "KO", "pathway"):
+for feature_name in ("EC", "KO", "OTU", "pathway"):
     feature_df = load_tsv(os.path.join(merged_data_dir, "{}_IDs.tsv".format(feature_name)))
-    id_column_names = np.intersect1d(feature_df.columns, ("description", "function", "pathway"))
+    id_column_names = np.intersect1d(feature_df.columns,
+                                     ("description", "function", "#OTU ID", "taxonomy", "pathway"))
     feature_df_index_name = "_".join(id_column_names)
     feature_df[feature_df_index_name] = feature_df.loc[:, id_column_names].apply(
         lambda x: "&".join(["{}={}".format(x.index[idx], i) for idx, i in enumerate(x.astype(str))]), axis=1)
@@ -87,6 +88,7 @@ for feature_name in ("EC", "KO", "pathway"):
         feature_name, feature_df.transpose().rename_axis(index=TA))
 
 otu_df = load_tsv(os.path.join(merged_data_dir, "OTU_IDs.tsv"))
+# Setting taxonomy as index in order to count the Faith estimators
 otu_samples_df = otu_df.set_index("taxonomy").drop("#OTU ID", axis=1)
 alpha_diversity_df = mp_apply_function_to_df(count_alpha_diversity, otu_samples_df)
 alpha_diversity_df = add_prefix_to_columns("Alpha", alpha_diversity_df)
@@ -106,7 +108,8 @@ for age, diagnosis in product(("adult", "child"), ("normal", "obesity")):
     feature_sub_dfs = {k: select_data_columns(v.query(query).reset_index()) for k, v in feature_dfs.items()}
     features_merged_df = concat(feature_sub_dfs.values())
     table_name = os.path.join(correlation_dir, "{}.tsv".format("_".join(["dataset", age, diagnosis])))
-    dump_tsv(features_merged_df, table_name, reset_index=True)
+    dump_tsv(features_merged_df, table_name)
     correlation_tables.append(table_name)
 
 Utilities.dump_list(correlation_tables, os.path.join(correlation_dir, "tables.txt"))
+Utilities.dump_list(correlation_tables, os.path.join(correlation_dir, "tables.txt.bak"))
