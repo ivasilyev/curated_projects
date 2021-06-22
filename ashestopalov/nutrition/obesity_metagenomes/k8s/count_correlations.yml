@@ -1,23 +1,21 @@
 ---
-apiVersion: v1
+apiVersion: batch/v1
 kind: Job
 metadata:
-  name: count_correlations_jobs
+  name: count-correlation
   labels:
-    imageName: curated_projects
     tier: job
 spec:
-  # Nodes number
-  parallelism: 10
+  # Get nodes number: wc -l /data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/data/correlation_data/group_datasets/tables.txt.bak
+  parallelism: 4
   template:
     metadata:
-      name: count_correlations_job
+      name: count-correlations-job
       labels:
-        imageName: curated_projects
         tier: worker
     spec:
       containers:
-        - name: curated_projects
+        - name: curated-projects
           image: docker.io/ivasilyev/curated_projects:latest
           imagePullPolicy: Always
           command: ["python3", "/home/docker/scripts/curated_projects/ashestopalov/nutrition/obesity_metagenomes/5_count_correlations.py"]
@@ -29,30 +27,32 @@ spec:
           hostPath:
             path: /data1
       affinity:
+        # The table parsing eats about 90 Gb of RAM o_O
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
               preference:
                 matchExpressions:
-                  - key: cpu
+                  - key: ram
                     operator: In
                     values:
-                    - xeon-e5-2630-v2
-                    - xeon-e5-2630-v3
+                    - "128"
       restartPolicy: Never
 
+# Restore queue
+# cp -r /data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/data/correlation_data/group_datasets/tables.txt.bak /data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/data/correlation_data/group_datasets/tables.txt
 
 # Deploy from master node:
-# kubectl create -f count_correlations.yml
+# kubectl create -f ~/k8s/count_correlations.yml
 
 # Get pods info:
 # kubectl get pods
 
 # Get node info:
-# kubectl describe pod count_correlations | grep Node:
+# kubectl describe pod count-correlation | grep Node:
 
 # Get token:
-# kubectl logs count_correlations | grep token
+# kubectl logs count-correlation | grep token
 
 # Cleanup:
-# kubectl delete pod count_correlations
+# kubectl get pods | grep count-correlation | awk '{print $1}' | xargs -I {} kubectl delete pod {}
