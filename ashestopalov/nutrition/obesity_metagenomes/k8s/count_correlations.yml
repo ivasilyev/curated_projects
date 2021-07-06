@@ -38,6 +38,12 @@ spec:
                     operator: In
                     values:
                     - "128"
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchLabels:
+                tier: worker
       restartPolicy: Never
 
 # Restore queue
