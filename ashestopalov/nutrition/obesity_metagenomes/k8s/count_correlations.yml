@@ -2,12 +2,13 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: count-correlation
+  name: count-correlations
   labels:
     tier: job
 spec:
-  # Get nodes number: wc -l /data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/data/correlation_data/group_datasets/tables.txt.bak
-  parallelism: 4
+  # Get the required node number:
+  # wc -l /data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/data/correlation_data/group_datasets/tables.txt.bak | awk '{print $1}'
+  parallelism: 112
   template:
     metadata:
       name: count-correlations-job
@@ -43,16 +44,14 @@ spec:
 # cp -r /data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/data/correlation_data/group_datasets/tables.txt.bak /data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/data/correlation_data/group_datasets/tables.txt
 
 # Deploy from master node:
-# kubectl create -f ~/k8s/count_correlations.yml
+# export JOB_NAME="count-correlations" && kubectl create -f ~/k8s/count_correlations.yml
 
 # Get pods info:
 # kubectl get pods
 
 # Get node info:
-# kubectl describe pod count-correlation | grep Node:
-
-# Get token:
-# kubectl logs count-correlation | grep token
+# kubectl describe pods "${JOB_NAME}" | grep Node:
 
 # Cleanup:
-# kubectl get pods | grep count-correlation | awk '{print $1}' | xargs -I {} kubectl delete pod {}
+# kubectl delete job "${JOB_NAME}"
+# kubectl get pods | grep "${JOB_NAME}" | awk '{print $1}' | xargs -I {} kubectl delete pod {}
