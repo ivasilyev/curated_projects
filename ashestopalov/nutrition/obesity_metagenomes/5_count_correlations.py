@@ -67,17 +67,3 @@ dump_tsv(post_correlation_df, os.path.join(out_dir, "all_results_for_{}.tsv".for
 dump_tsv(valid_correlation_df, os.path.join(out_dir, "somewhat_significant_results_for_{}.tsv".format(group_name)))
 
 print("Processed '{}'".format(correlation_table))
-
-Utilities.dump_list(correlations, os.path.join(out_dir, "all_results_for_{}.txt".format(group_name)))
-
-valid_correlations = [dict(
-    pair=" vs ".join(i["columns"]), correlation=i["correlation"], p_value=i["p_value"],
-    denoted_correlation=i["denoted_correlation"], significance_level=i["significance_level"])
-                      for i in correlations if not np.isnan(i["correlation"])]
-
-valid_correlation_df = pd.DataFrame(valid_correlations)
-
-for significance_level in sorted(set(valid_correlation_df["significance_level"].values)):
-    significant_df = valid_correlation_df.query("significance_level == {}".format(significance_level))
-    dump_tsv(significant_df, os.path.join(out_dir, "results_with_significance_{}_for_{}.tsv".format(
-        significance_level, group_name)))
