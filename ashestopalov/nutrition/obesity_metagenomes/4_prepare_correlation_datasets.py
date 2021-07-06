@@ -12,9 +12,10 @@ git pull && jupyter lab --ip=0.0.0.0 --port=61156 --no-browser --NotebookApp.tok
 
 import os
 import xlrd
+import joblib
 import numpy as np
 import pandas as pd
-from itertools import product
+from itertools import product, combinations_with_replacement
 from meta.scripts.Utilities import Utilities
 from meta.scripts.utils.diversity_utils import count_alpha_diversity
 from meta.scripts.utils.pandas_utils import load_tsv, dump_tsv, concat
@@ -22,7 +23,7 @@ from ashestopalov.nutrition.obesity_metagenomes.ProjectDescriber import ProjectD
 
 
 def mp_apply_function_to_df(func, df: pd.DataFrame):
-    results = Utilities.multi_core_queue(func, [df[i] for i in df.columns], async_=True)
+    results = joblib.Parallel(n_jobs=-1)(joblib.delayed(func)(j) for j in [df[i] for i in df.columns])
     return pd.DataFrame(results)
 
 
@@ -49,6 +50,8 @@ combined_group_data_df = pd.concat([i.set_index(SN) for i in (cured_group_data_d
 
 dump_tsv(combined_group_data_df, os.path.join(ProjectDescriber.SAMPLE_DATA_DIR, "combined_group_data.tsv"), reset_index=True)
 
+AGE_GROUPS = ("adult", "child")
+DIAGNOSIS_GROUPS = ("normal", "obesity")
 sample_source = "stool"
 
 ASSOCIATIONS = {
@@ -101,15 +104,16 @@ for feature_name, feature_df in feature_dfs.items():
 feature_dfs.update(raw_data_dfs)
 
 correlation_dir = os.path.join(ProjectDescriber.DATA_DIR, "correlation_data", "group_datasets")
-correlation_tables = []
 
-for age, diagnosis in product(("adult", "child"), ("normal", "obesity")):
+group_combinations = list(product(combinations_with_replacement(feature_dfs.keys(), 2), AGE_GROUPS, DIAGNOSIS_GROUPS))
+
+correlation_tables = []
+for feature_pair, age, diagnosis in group_combinations:
     query = "age == '{}' and diagnosis == '{}'".format(age, diagnosis)
-    feature_sub_dfs = {k: select_data_columns(v.query(query).reset_index()) for k, v in feature_dfs.items()}
-    features_merged_df = concat(feature_sub_dfs.values())
-    table_name = os.path.join(correlation_dir, "{}.tsv".format("_".join(["dataset", age, diagnosis])))
-    dump_tsv(features_merged_df, table_name)
-    correlation_tables.append(table_name)
+    correlation_df = concat([select_data_columns(feature_dfs[i].query(query).reset_index()) for i in sorted(set(feature_pair))])
+    correlation_table = os.path.join(correlation_dir, "{}_for_{}_{}.tsv".format(" vs ".join(feature_pair), age, diagnosis))
+    dump_tsv(correlation_df, correlation_table)
+    correlation_tables.append(correlation_table)
 
 Utilities.dump_list(correlation_tables, os.path.join(correlation_dir, "tables.txt"))
 Utilities.dump_list(correlation_tables, os.path.join(correlation_dir, "tables.txt.bak"))

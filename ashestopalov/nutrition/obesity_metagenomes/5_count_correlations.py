@@ -21,14 +21,17 @@ from ashestopalov.nutrition.obesity_metagenomes.ProjectDescriber import ProjectD
 
 
 def mp_correlation_count(t: tuple):
-    d = dict(columns=t, correlation=1, p_value=0, denoted_correlation="1", significance_level=0)
+    d = dict(feature_1=t[0], feature_2=t[-1], spearman_correlation=1, p_value=0,
+             denoted_correlation="1", significance_level=0, chaddock_tightness=0)
     if t[0] == t[-1]:
         return d
-    d["correlation"], d["p_value"] = stats.spearmanr(correlation_df.loc[:, t])
-    if np.isnan(d["correlation"]):
+    d["spearman_correlation"], d["p_value"] = stats.spearmanr(correlation_df.loc[:, t])
+    if np.isnan(d["spearman_correlation"]):
         return d
     d["significance_level"] = sum([d["p_value"] < i for i in (0.01, 0.05, 0.1)])
-    d["denoted_correlation"] = "{}{}".format(round(d["correlation"], 2), "*" * d["significance_level"])
+    d["denoted_correlation"] = "{}{}".format(round(d["spearman_correlation"], 2), "*" * d["significance_level"])
+    # Based on the Chaddock's correlation scale
+    d["chaddock_tightness"] = sum([d["spearman_correlation"] >= i for i in (0.1, 0.3, 0.5, 0.7, 0.9)])
     return d
 
 
@@ -46,6 +49,7 @@ correlation_table = correlation_tables[0]
 group_name = os.path.splitext(os.path.basename(correlation_table))[0].replace("dataset_", "")
 print("Now processing: '{}'".format(group_name))
 
+
 correlation_df = load_tsv(correlation_table)
 queue = list(combinations(correlation_df.columns, 2))
 
@@ -53,8 +57,16 @@ with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=RuntimeWarning)
     correlations = joblib.Parallel(n_jobs=-1)(joblib.delayed(mp_correlation_count)(i) for i in queue)
 
+post_correlation_df = pd.DataFrame(correlations)
+valid_correlation_df = post_correlation_df.query("significance_level > 0 and chaddock_tightness > 0")
+
+group_name = os.path.splitext(os.path.basename(correlation_table))[0]
 out_dir = os.path.join(ProjectDescriber.DATA_DIR, "correlation_data", "group_results", group_name)
 
+dump_tsv(post_correlation_df, os.path.join(out_dir, "all_results_for_{}.tsv".format(group_name)))
+dump_tsv(valid_correlation_df, os.path.join(out_dir, "somewhat_significant_results_for_{}.tsv".format(group_name)))
+
+print("Processed '{}'".format(correlation_table))
 
 Utilities.dump_list(correlations, os.path.join(out_dir, "all_results_for_{}.txt".format(group_name)))
 
