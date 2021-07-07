@@ -46,8 +46,15 @@ if len(correlation_tables) == 0:
 Utilities.dump_list(correlation_tables[1:], remote_queue)
 
 correlation_table = correlation_tables[0]
-group_name = os.path.splitext(os.path.basename(correlation_table))[0].replace("dataset_", "")
-print("Now processing: '{}'".format(group_name))
+print("Now processing: '{}'".format(correlation_table))
+
+group_name = os.path.splitext(os.path.basename(correlation_table))[0]
+out_dir = os.path.join(ProjectDescriber.DATA_DIR, "correlation_data", "group_results", group_name)
+post_correlation_table = os.path.join(out_dir, "all_results_for_{}.tsv".format(group_name))
+valid_correlation_table = os.path.join(out_dir, "somewhat_significant_results_for_{}.tsv".format(group_name))
+if all(os.path.isfile(i) for i in [post_correlation_table, valid_correlation_table]):
+    print("The output files exist: '{}', '{}'".format(post_correlation_table, valid_correlation_table))
+    sys.exit(0)
 
 
 correlation_df = load_tsv(correlation_table)
