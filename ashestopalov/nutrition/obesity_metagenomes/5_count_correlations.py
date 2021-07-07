@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 from time import sleep
 from scipy import stats
-from itertools import combinations
+from itertools import combinations, product
 from meta.scripts.Utilities import Utilities
 from meta.scripts.utils.pandas_utils import load_tsv, dump_tsv
 from ashestopalov.nutrition.obesity_metagenomes.ProjectDescriber import ProjectDescriber
@@ -51,19 +51,24 @@ print("Now processing: '{}'".format(group_name))
 
 
 correlation_df = load_tsv(correlation_table)
-queue = list(combinations(correlation_df.columns, 2))
+feature_groups = sorted(set([i.split("@")[0] for i in correlation_df.columns]))
+
+if len(feature_groups) < 2:
+    queue = list(combinations(correlation_df.columns, 2))
+else:
+    queue = list(product(*[[j for j in correlation_df.columns if j.startswith("{}@".format(i))]
+                           for i in feature_groups]))
+
 
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=RuntimeWarning)
     correlations = joblib.Parallel(n_jobs=-1)(joblib.delayed(mp_correlation_count)(i) for i in queue)
 
+
 post_correlation_df = pd.DataFrame(correlations)
 valid_correlation_df = post_correlation_df.query("significance_level > 0 and chaddock_tightness > 0")
 
-group_name = os.path.splitext(os.path.basename(correlation_table))[0]
-out_dir = os.path.join(ProjectDescriber.DATA_DIR, "correlation_data", "group_results", group_name)
-
-dump_tsv(post_correlation_df, os.path.join(out_dir, "all_results_for_{}.tsv".format(group_name)))
-dump_tsv(valid_correlation_df, os.path.join(out_dir, "somewhat_significant_results_for_{}.tsv".format(group_name)))
+dump_tsv(post_correlation_df, post_correlation_table)
+dump_tsv(valid_correlation_df, valid_correlation_table)
 
 print("Processed '{}'".format(correlation_table))
