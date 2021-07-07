@@ -8,7 +8,7 @@ metadata:
 spec:
   # Get the required node number:
   # wc -l /data1/bio/projects/ashestopalov/nutrition/obesity_metagenomes/data/correlation_data/group_datasets/tables.txt.bak | awk '{print $1}'
-  parallelism: 112
+  parallelism: 120
   template:
     metadata:
       name: count-correlations-job
@@ -19,7 +19,8 @@ spec:
         - name: curated-projects
           image: docker.io/ivasilyev/curated_projects:latest
           imagePullPolicy: Always
-          command: ["python3", "/home/docker/scripts/curated_projects/ashestopalov/nutrition/obesity_metagenomes/5_count_correlations.py"]
+          command: ["/bin/bash", "-c"]
+          args: ["git pull && python3 ashestopalov/nutrition/obesity_metagenomes/5_count_correlations.py"]
           volumeMounts:
             - name: data1
               mountPath: /data1

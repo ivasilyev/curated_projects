@@ -56,7 +56,6 @@ if all(os.path.isfile(i) for i in [post_correlation_table, valid_correlation_tab
     print("The output files exist: '{}', '{}'".format(post_correlation_table, valid_correlation_table))
     sys.exit(0)
 
-
 correlation_df = load_tsv(correlation_table)
 feature_groups = sorted(set([i.split("@")[0] for i in correlation_df.columns]))
 
@@ -66,7 +65,7 @@ else:
     queue = list(product(*[[j for j in correlation_df.columns if j.startswith("{}@".format(i))]
                            for i in feature_groups]))
 
-
+# The main processing
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=RuntimeWarning)
     correlations = joblib.Parallel(n_jobs=-1)(joblib.delayed(mp_correlation_count)(i) for i in queue)
