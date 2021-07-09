@@ -25,8 +25,7 @@ def mp_correlation_count(t: tuple):
              denoted_correlation="1", significance_level=0, chaddock_tightness=0)
     if t[0] == t[-1]:
         return d
-    d["spearman_correlation"], d["p_value"] = stats.spearmanr(correlation_df.loc[:, t].dropna(
-        axis=0, how="any"))
+    d["spearman_correlation"], d["p_value"] = stats.spearmanr(correlation_df.loc[:, t])
     if np.isnan(d["spearman_correlation"]):
         return d
     d["significance_level"] = sum([d["p_value"] < i for i in (0.01, 0.05, 0.1)])
@@ -57,7 +56,7 @@ if all(os.path.isfile(i) for i in [post_correlation_table, valid_correlation_tab
     print("The output files exist: '{}', '{}'".format(post_correlation_table, valid_correlation_table))
     sys.exit(0)
 
-correlation_df = load_tsv(correlation_table)
+correlation_df = load_tsv(correlation_table).dropna(axis=0, how="any")
 feature_groups = sorted(set([i.split("@")[0] for i in correlation_df.columns]))
 
 if len(feature_groups) < 2:
