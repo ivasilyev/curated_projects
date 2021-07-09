@@ -1,0 +1,40 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis-master
+  labels:
+    app: redis
+    tier: database
+spec:
+  containers:
+    - name: master
+      image: redis:latest
+      imagePullPolicy: Always
+      command: ["/bin/bash", "-c"]
+      args: ["while true; do redis-server; done"]
+      env:
+        - name: MASTER
+          value: "true"
+      ports:
+        - containerPort: 6379
+          protocol: TCP
+          name: redis-port
+
+# CLI:
+# CLI: export IMG=redis:latest && docker pull ${IMG} && docker run --rm -p 6379:6379 -it ${IMG} bash
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    app: redis
+
+# Cleanup
+# kubectl delete pods,services -l app=redis
