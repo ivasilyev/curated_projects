@@ -7,7 +7,6 @@ A worker script
 
 import os
 import sys
-import xlrd
 import joblib
 import warnings
 import numpy as np
@@ -21,18 +20,23 @@ from ashestopalov.nutrition.obesity_metagenomes.ProjectDescriber import ProjectD
 
 
 def mp_correlation_count(t: tuple):
-    d = dict(feature_1=t[0], feature_2=t[-1], spearman_correlation=1, p_value=0,
-             denoted_correlation="1", significance_level=0, chaddock_tightness=0)
+    def _process_out():
+        d["significance_level"] = sum([d["p_value"] < i for i in (0.01, 0.05, 0.1)])
+        d["denoted_correlation"] = "{}{}".format(round(d["spearman_correlation"], 2),
+                                                 "*" * d["significance_level"])
+        # Based on the Chaddock's correlation scale
+        d["chaddock_tightness"] = sum([d["spearman_correlation"] >= i
+                                       for i in (0.1, 0.3, 0.5, 0.7, 0.9)])
+        return d
+
+    d = dict(feature_1=t[0], feature_2=t[-1], spearman_correlation=1, p_value=1)
+    d = _process_out()
     if t[0] == t[-1]:
         return d
     d["spearman_correlation"], d["p_value"] = stats.spearmanr(correlation_df.loc[:, t])
     if np.isnan(d["spearman_correlation"]):
         return d
-    d["significance_level"] = sum([d["p_value"] < i for i in (0.01, 0.05, 0.1)])
-    d["denoted_correlation"] = "{}{}".format(round(d["spearman_correlation"], 2), "*" * d["significance_level"])
-    # Based on the Chaddock's correlation scale
-    d["chaddock_tightness"] = sum([d["spearman_correlation"] >= i for i in (0.1, 0.3, 0.5, 0.7, 0.9)])
-    return d
+    return _process_out()
 
 
 sleep(np.random.randint(90))

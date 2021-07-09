@@ -2,7 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import os
+import joblib
+import numpy as np
 import pandas as pd
+from scipy import stats
 
 
 def load_tsv(table, col_names: list = None):
@@ -38,18 +41,15 @@ def concat(dfs: list, index_name: str = "", columns_name: str = ""):
 
 
 def apply_mp_function_to_df(func, df: pd.DataFrame, index_name: str = "", columns_name: str = ""):
-    from meta.scripts.utils.queue_utils import multi_core_queue
-    results = multi_core_queue(func, [df[i] for i in df.columns], async_=True)
+    results = joblib.Parallel(n_jobs=-1)(joblib.delayed(func)(j) for j in [df[i] for i in df.columns])
     return pd.DataFrame(results).rename_axis(index=index_name, columns=columns_name)
 
 
 def corr(df: pd.DataFrame, methods: list = None):
-    from numpy import eye
-    from scipy import stats
     if methods is None or len(methods) != 2:
         methods = [lambda x, y: stats.spearmanr(x, y)[0], lambda x, y: stats.spearmanr(x, y)[-1]]
     correlation_df = df.corr(method=methods[0])
-    p_values_df = df.corr(method=methods[-1]) - eye(*correlation_df.shape)
+    p_values_df = df.corr(method=methods[-1]) - np.eye(*correlation_df.shape)
     asterisk_df = p_values_df.applymap(
         lambda x: "".join(["*" for i in (0.01, 0.05, 0.1) if x < i]))
     denoted_correlation_df = correlation_df.round(2).astype(str) + asterisk_df
