@@ -53,8 +53,8 @@ spec:
 # Deploy from master node:
 # export JOB_NAME="count-correlations" && kubectl create -f ~/k8s/count_correlations.yml
 
-# Get pods info:
-# kubectl get pods
+# Get overall progress info:
+# kubectl get pods | grep Completed | wc -l
 
 # Get node info:
 # kubectl describe pods "${JOB_NAME}" | grep Node:

@@ -25,7 +25,8 @@ def mp_correlation_count(t: tuple):
              denoted_correlation="1", significance_level=0, chaddock_tightness=0)
     if t[0] == t[-1]:
         return d
-    d["spearman_correlation"], d["p_value"] = stats.spearmanr(correlation_df.loc[:, t])
+    d["spearman_correlation"], d["p_value"] = stats.spearmanr(correlation_df.loc[:, t].dropna(
+        axis=0, how="any"))
     if np.isnan(d["spearman_correlation"]):
         return d
     d["significance_level"] = sum([d["p_value"] < i for i in (0.01, 0.05, 0.1)])
