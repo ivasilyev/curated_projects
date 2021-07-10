@@ -96,7 +96,9 @@ valid_correlation_df = post_correlation_df.query(
     "significance_level > 0 and chaddock_tightness > 0 and is_correlation_valid == True")
 
 print("The valid table has {} rows".format(valid_correlation_df.shape[0]))
-dump_tsv(post_correlation_df, post_correlation_table)
-dump_tsv(valid_correlation_df, valid_correlation_table)
+
+for df, table in zip([post_correlation_df, valid_correlation_df],
+                     [post_correlation_table, valid_correlation_table]):
+    dump_tsv(df.sort_values("spearman_correlation", ascending=False), table)
 
 print("Processed '{}'".format(correlation_table))
