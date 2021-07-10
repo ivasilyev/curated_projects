@@ -42,7 +42,13 @@ def mp_correlation_count(t: tuple):
     return _process_out()
 
 
+try:
+    print("Running on the node {}".format(os.uname()[1]))
+except:
+    pass
+
 sleep(np.random.randint(90))
+print("Polling the queue")
 
 remote_queue = os.path.join(ProjectDescriber.DATA_DIR, "correlation_data", "group_datasets", "tables.txt")
 correlation_tables = Utilities.remove_empty_values(Utilities.load_list(remote_queue))
@@ -72,7 +78,7 @@ else:
     queue = list(product(*[[j for j in correlation_df.columns if j.startswith("{}@".format(i))]
                            for i in feature_groups]))
 
-# The main processing
+print("Starting the main processing, correlations to count: {}".format(len(queue)))
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=RuntimeWarning)
     correlations = joblib.Parallel(n_jobs=-1)(joblib.delayed(mp_correlation_count)(i) for i in queue)
@@ -82,6 +88,7 @@ post_correlation_df = pd.DataFrame(correlations)
 valid_correlation_df = post_correlation_df.query(
     "significance_level > 0 and chaddock_tightness > 0 and is_correlation_valid == True")
 
+print("The valid table has {} rows".format(valid_correlation_df.shape[0]))
 dump_tsv(post_correlation_df, post_correlation_table)
 dump_tsv(valid_correlation_df, valid_correlation_table)
 
