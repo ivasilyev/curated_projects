@@ -29,7 +29,8 @@ def mp_correlation_count(t: tuple):
                                        for i in (0.1, 0.3, 0.5, 0.7, 0.9)])
         return d
 
-    d = dict(feature_1=t[0], feature_2=t[-1], spearman_correlation=0, p_value=0, is_valid=False)
+    d = dict(feature_1=t[0], feature_2=t[-1], spearman_correlation=0, p_value=0,
+             is_correlation_valid=False)
     d = _process_out()
     if t[0] == t[-1]:
         return d
