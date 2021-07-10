@@ -29,7 +29,7 @@ def mp_correlation_count(t: tuple):
                                        for i in (0.1, 0.3, 0.5, 0.7, 0.9)])
         return d
 
-    d = dict(feature_1=t[0], feature_2=t[-1], spearman_correlation=1, p_value=1)
+    d = dict(feature_1=t[0], feature_2=t[-1], spearman_correlation=0, p_value=0, is_valid=False)
     d = _process_out()
     if t[0] == t[-1]:
         return d
@@ -37,6 +37,7 @@ def mp_correlation_count(t: tuple):
     d["spearman_correlation"], d["p_value"] = stats.spearmanr(sub_df)
     if np.isnan(d["spearman_correlation"]) or sub_df.sum().sum() == 0:
         return d
+    d["is_correlation_valid"] = True
     return _process_out()
 
 
@@ -77,7 +78,8 @@ with warnings.catch_warnings():
 
 
 post_correlation_df = pd.DataFrame(correlations)
-valid_correlation_df = post_correlation_df.query("significance_level > 0 and chaddock_tightness > 0")
+valid_correlation_df = post_correlation_df.query(
+    "significance_level > 0 and chaddock_tightness > 0 and is_correlation_valid == True")
 
 dump_tsv(post_correlation_df, post_correlation_table)
 dump_tsv(valid_correlation_df, valid_correlation_table)
