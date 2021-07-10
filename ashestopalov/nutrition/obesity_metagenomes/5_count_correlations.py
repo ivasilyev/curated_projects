@@ -63,11 +63,6 @@ print("Now processing: '{}'".format(correlation_table))
 
 group_name = os.path.splitext(os.path.basename(correlation_table))[0]
 out_dir = os.path.join(ProjectDescriber.DATA_DIR, "correlation_data", "group_results", group_name)
-post_correlation_table = os.path.join(out_dir, "all_results_for_{}.tsv".format(group_name))
-valid_correlation_table = os.path.join(out_dir, "somewhat_significant_results_for_{}.tsv".format(group_name))
-if all(os.path.isfile(i) for i in [post_correlation_table, valid_correlation_table]):
-    print("The output files exist: '{}', '{}'".format(post_correlation_table, valid_correlation_table))
-    sys.exit(0)
 
 correlation_df = load_tsv(correlation_table).dropna(axis=0, how="any")
 feature_groups = sorted(set([i.split("@")[0] for i in correlation_df.columns]))
@@ -77,6 +72,18 @@ if len(feature_groups) < 2:
 else:
     queue = list(product(*[[j for j in correlation_df.columns if j.startswith("{}@".format(i))]
                            for i in feature_groups]))
+
+post_correlation_table = os.path.join(out_dir, "all_results_for_{}.tsv".format(group_name))
+valid_correlation_table = os.path.join(out_dir, "somewhat_significant_results_for_{}.tsv".format(
+    group_name))
+if all(os.path.isfile(i) for i in [post_correlation_table, valid_correlation_table]):
+    print("The output files exist: '{}', '{}'".format(post_correlation_table,
+                                                      valid_correlation_table))
+    existing_correlation_df = load_tsv(post_correlation_table)
+    if existing_correlation_df.shape[0] == len(queue):
+        print("Exiting, the existing table seems to be already fully processed: '{}'".format(
+            post_correlation_table))
+        sys.exit(0)
 
 print("Starting the main processing, correlations to count: {}".format(len(queue)))
 with warnings.catch_warnings():
