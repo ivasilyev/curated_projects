@@ -1,0 +1,1 @@
+{"software": {"biocontainers": {"fastqc": "0.11.9--0", "trimmomatic": "0.35--6", "cutadapt": "3.3--py38h0213d0e_0", "bowtie2": "2.4.2--py38h1c8e9b9_1", "spades": "3.15.0--h633aebb_0", "prokka": "1.14.6--pl526_0", "srst2": "0.1.4.6"}}, "run_fastqc": {}, "remove_hg": {"total_reads_number": 2, "hg_reads_number": 1048, "hg_reads_percentage": 52400.0}}
