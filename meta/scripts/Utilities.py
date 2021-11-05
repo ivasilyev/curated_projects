@@ -122,6 +122,11 @@ class Utilities:
     # System methods
 
     @staticmethod
+    def count_elapsed_seconds(t):
+        from time import perf_counter
+        return f"{perf_counter() - t :.3f} s."
+
+    @staticmethod
     def get_time():
         from datetime import datetime
         now = datetime.now()
