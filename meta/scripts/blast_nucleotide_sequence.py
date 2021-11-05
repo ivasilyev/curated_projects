@@ -6,6 +6,7 @@ import json
 import pandas as pd
 from Bio.SeqUtils import GC
 from Bio import SeqIO, Entrez
+from time import perf_counter
 from collections import OrderedDict
 from Bio.Blast import NCBIWWW, NCBIXML
 from Bio.GenBank import Record as GBRecord
@@ -21,9 +22,11 @@ def _parse_args():
     parser.add_argument("-i", "--input", metavar="<file>", required=True, help="FASTA nucleotide file")
     parser.add_argument("-r", "--results", metavar="<int>", type=int, default=25,
                         help="The maximum size of GenBank entries from the BLAST report to download")
+    parser.add_argument("-b", "--blast_only", metavar="<bool>", type=bool, default=False,
+                        help="If selected, the related GenBank reference entries won't be downloaded")
     parser.add_argument("-o", "--output", metavar="<directory>", required=True, help="Output directory")
     _namespace = parser.parse_args()
-    return _namespace.input, _namespace.results, _namespace.output
+    return _namespace.input, _namespace.results, _namespace.blast_only, _namespace.output
 
 
 def parse_largest_subsequence(fasta_nt_file: str):
@@ -90,39 +93,45 @@ def describe_reference_genbank(genbank_record: GBRecord):
 
 
 if __name__ == '__main__':
-    nt_fasta_file, blast_results_number, output_directory = _parse_args()
+    nt_fasta_file, blast_results_number, blast_only, output_directory = _parse_args()
     out_blast_basename = os.path.join(output_directory, "blast", Utilities.filename_only(nt_fasta_file))
     blast_result_file = "{}_blast_results.json".format(out_blast_basename)
 
-    if Utilities.is_file_valid(blast_result_file):
+    if Utilities.is_file_valid(blast_result_file, report=False):
+        print("Load results of the already performed NCBI BLAST query")
         blast_results = json.loads(Utilities.load_string(blast_result_file))
     else:
+        print("Parsing largest subsequence")
         blast_query = parse_largest_subsequence(nt_fasta_file)
+        print(f"Performing BLAST query from the sequence of length {len(blast_query)}")
+        start = perf_counter()
         blast_report = download_nt_blast_report(blast_query)
+        print(f"The NCBI query was completed with {Utilities.count_elapsed_seconds(start)}")
         blast_results = parse_blast_report(blast_report)
         Utilities.dump_string(blast_query, "{}_blast_query.fna".format(out_blast_basename))
-        Utilities.dump_string(json.dumps(blast_results, sort_keys=False, indent=4),
-                              blast_result_file)
+        Utilities.dump_string(json.dumps(blast_results, sort_keys=False, indent=4), blast_result_file)
 
-    genbank_descriptions = []
-    for blast_result in list(blast_results.values())[:blast_results_number]:
-        geninfo_accession = blast_result["geninfo_id"]
-        genbank_file = os.path.join(output_directory, "genbank", "{}.gbk".format(geninfo_accession))
-        if Utilities.is_file_valid(genbank_file):
-            genbank_report = Utilities.parse_sequences(genbank_file, "genbank")
-        else:
-            genbank_report = download_reference_genbank(geninfo_accession)
-            Utilities.dump_string(genbank_report[0].format("genbank"), genbank_file)
-        genbank_description = describe_reference_genbank(genbank_report[0])
-        genbank_description["geninfo_id"] = geninfo_accession
-        genbank_description["genbank_file"] = genbank_file
-        genbank_descriptions.append(genbank_description)
+    if not blast_only:
+        genbank_descriptions = []
+        for blast_result in list(blast_results.values())[:blast_results_number]:
+            geninfo_accession = blast_result["geninfo_id"]
+            genbank_file = os.path.join(output_directory, "genbank", "{}.gbk".format(geninfo_accession))
+            if Utilities.is_file_valid(genbank_file, report=False):
+                genbank_report = Utilities.parse_sequences(genbank_file, "genbank")
+            else:
+                genbank_report = download_reference_genbank(geninfo_accession)
+                Utilities.dump_string(genbank_report[0].format("genbank"), genbank_file)
+            genbank_description = describe_reference_genbank(genbank_report[0])
+            genbank_description["geninfo_id"] = geninfo_accession
+            genbank_description["genbank_file"] = genbank_file
+            genbank_descriptions.append(genbank_description)
 
-    blast_result_df = pd.DataFrame(blast_results.values())
-    genbank_description_df = pd.DataFrame(genbank_descriptions)
-    combined_blast_result_df = pd.concat([i.set_index("geninfo_id") for i in (blast_result_df, genbank_description_df)],
-                                         axis=1, sort=False).drop(["query", "genbank_file"], axis=1).dropna(how="any").rename_axis(index="geninfo_id")
-    Utilities.dump_tsv(combined_blast_result_df.reset_index(), os.path.join(output_directory, "combined_blast_results.tsv"))
+        blast_result_df = pd.DataFrame(blast_results.values())
+        genbank_description_df = pd.DataFrame(genbank_descriptions)
+        combined_blast_result_df = pd.concat([i.set_index("geninfo_id") for i in (blast_result_df, genbank_description_df)],
+                                             axis=1, sort=False).drop(["query", "genbank_file"], axis=1).dropna(how="any").rename_axis(index="geninfo_id")
+        Utilities.dump_tsv(combined_blast_result_df.reset_index(), os.path.join(output_directory, "combined_blast_results.tsv"))
 
-    report_dict = dict(input_file=nt_fasta_file, genbank_files=genbank_description_df["genbank_file"].values.tolist())
-    Utilities.dump_string(json.dumps(report_dict), os.path.join(output_directory, "report.json"))
+        report_dict = dict(input_file=nt_fasta_file, genbank_files=genbank_description_df["genbank_file"].values.tolist())
+        Utilities.dump_string(json.dumps(report_dict), os.path.join(output_directory, "report.json"))
+    print("Completed")
