@@ -1,6 +1,45 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from meta.scripts.Utilities import Utilities
+
+
+class ReferenceDataLine:
+    def __init__(self):
+        self.state = dict()
+        self.NAME = ""
+        self.VERSION = ""
+        self.ALIAS = ""
+        self.DESCRIPTION = ""
+        self.DOCUMENTATION = ""
+        self.WEBSITE = ""
+        self.BOWTIE_INDEX_MASK = ""
+        self.BOWTIE2_INDEX_MASK = ""
+        self.SAMTOOLS_INDEX_FILE = ""
+        self.BEDTOOLS_GENOME_FILE = ""
+        self.ANNOTATION_FILE = ""
+
+    def _parse(self, d: dict):
+        for key, value in d.items():
+            _KEY = key.upper()
+            if hasattr(self, _KEY):
+                setattr(self, _KEY, value)
+            else:
+                self.state[key] = value
+
+    @staticmethod
+    def load(file: str):
+        r = ReferenceDataLine()
+        r._parse(Utilities.load_dict(file))
+        return r
+
+    def dump(self, file: str):
+        d = {i.lower(): getattr(self, i) for i in dir(self)
+             if not i.startswith("_")
+             and i != "state"}
+        d.update(self.state)
+        Utilities.dump_dict(d, file)
+
 
 class RefDataLine:
     """
