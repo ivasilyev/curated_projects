@@ -60,6 +60,19 @@ class Utilities:
             f.close()
 
     @staticmethod
+    def load_dict(file: str):
+        import json
+        return json.loads(Utilities.load_string(file))
+
+    @staticmethod
+    def dump_dict(d: dict, file: str, **kwargs):
+        _kwargs = dict(indent=4, sort_keys=False)
+        if len(kwargs.keys()) > 0:
+            _kwargs.update(kwargs)
+        import json
+        return Utilities.dump_string(json.dumps(d, **_kwargs), file)
+
+    @staticmethod
     def load_list(file: str):
         return Utilities.split_lines(Utilities.load_string(file))
 
