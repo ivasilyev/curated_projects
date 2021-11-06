@@ -103,12 +103,12 @@ if __name__ == '__main__':
     else:
         print("Parsing largest subsequence")
         blast_query = parse_largest_subsequence(nt_fasta_file)
+        Utilities.dump_string(blast_query, "{}_blast_query.fna".format(out_blast_basename))
         print(f"Performing BLAST query from the sequence of length {len(blast_query)}")
         start = perf_counter()
         blast_report = download_nt_blast_report(blast_query)
         print(f"The NCBI query was completed with {Utilities.count_elapsed_seconds(start)}")
         blast_results = parse_blast_report(blast_report)
-        Utilities.dump_string(blast_query, "{}_blast_query.fna".format(out_blast_basename))
         Utilities.dump_string(json.dumps(blast_results, sort_keys=False, indent=4), blast_result_file)
 
     if not blast_only:
