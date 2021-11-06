@@ -22,7 +22,7 @@ def _parse_args():
     parser.add_argument("-i", "--input", metavar="<file>", required=True, help="FASTA nucleotide file")
     parser.add_argument("-r", "--results", metavar="<int>", type=int, default=25,
                         help="The maximum size of GenBank entries from the BLAST report to download")
-    parser.add_argument("-b", "--blast_only", metavar="<bool>", type=bool, default=False, store=True,
+    parser.add_argument("-b", "--blast_only", metavar="<bool>", type=bool, default=False, action="store_true",
                         help="If selected, the related GenBank reference entries won't be downloaded")
     parser.add_argument("-o", "--output", metavar="<directory>", required=True, help="Output directory")
     _namespace = parser.parse_args()
