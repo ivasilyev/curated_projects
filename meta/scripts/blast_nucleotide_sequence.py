@@ -125,7 +125,8 @@ if __name__ == '__main__':
             sequence_directory = os.path.join(output_directory, "genbank")
 
         genbank_descriptions = []
-        for blast_result in list(blast_results.values())[:blast_result_number]:
+        counter = 1
+        for blast_result in list(blast_results.values()):
             geninfo_accession = blast_result["geninfo_id"]
             genbank_file = os.path.join(sequence_directory, "{}.gbk".format(geninfo_accession))
             if Utilities.is_file_valid(genbank_file, report=False):
@@ -139,6 +140,10 @@ if __name__ == '__main__':
             genbank_description["geninfo_id"] = geninfo_accession
             genbank_description["genbank_file"] = genbank_file
             genbank_descriptions.append(genbank_description)
+            print(f"Downloaded {counter} of {blast_result_number} sequences")
+            counter += 1
+            if counter == blast_result_number:
+                break
 
         blast_result_df = pd.DataFrame(blast_results.values())
         genbank_description_df = pd.DataFrame(genbank_descriptions)
