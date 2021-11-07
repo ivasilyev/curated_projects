@@ -25,7 +25,7 @@ def _parse_args():
     parser.add_argument("-c", "--chromosomes_only", default=False, action="store_true",
                         help="(Optional) If selected, only chromosome GenBank reference entries will be downloaded")
     parser.add_argument("-r", "--results", metavar="<int>", type=int, default=25,
-                        help="The maximum size of GenBank entries from the BLAST report to download")
+                        help="(Optional) The maximum size of GenBank entries from the BLAST report to download")
     parser.add_argument("-s", "--sequence_dir", metavar="<directory>", default="",
                         help="(Optional) Special dir to download sequences to ('genbank' subdirectory by default)")
     parser.add_argument("-o", "--output", metavar="<directory>", required=True, help="Output directory")
@@ -103,7 +103,7 @@ def describe_reference_genbank(genbank_record: GBRecord):
 
 if __name__ == '__main__':
     nt_fasta_file, is_blast_only, is_chromosomes_only, blast_result_number, sequence_directory, output_directory = _parse_args()
-    out_blast_basename = os.path.join(output_directory, "blast", Utilities.filename_only(nt_fasta_file))
+    out_blast_basename = os.path.join(output_directory, Utilities.filename_only(nt_fasta_file))
     blast_result_file = "{}_blast_results.json".format(out_blast_basename)
 
     if Utilities.is_file_valid(blast_result_file, report=False):
