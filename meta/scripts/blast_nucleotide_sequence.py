@@ -20,13 +20,19 @@ def _parse_args():
                     "sequence and download the related GenBank reference entries",
         epilog="Sequences must be in FASTA format")
     parser.add_argument("-i", "--input", metavar="<file>", required=True, help="FASTA nucleotide file")
-    parser.add_argument("-r", "--results", metavar="<int>", type=int, default=25,
-                        help="The maximum size of GenBank entries from the BLAST report to download")
     parser.add_argument("-b", "--blast_only", default=False, action="store_true",
                         help="If selected, the related GenBank reference entries won't be downloaded")
+    parser.add_argument("-c", "--chromosomes_only", default=False, action="store_true",
+                        help="If selected, only chromosome GenBank reference entries will be downloaded")
+    parser.add_argument("-r", "--results", metavar="<int>", type=int, default=25,
+                        help="The maximum size of GenBank entries from the BLAST report to download")
     parser.add_argument("-o", "--output", metavar="<directory>", required=True, help="Output directory")
     _namespace = parser.parse_args()
-    return _namespace.input, _namespace.results, _namespace.blast_only, _namespace.output
+    return (_namespace.input,
+            _namespace.blast_only,
+            _namespace.chromosomes_only,
+            _namespace.results,
+            _namespace.output)
 
 
 def parse_largest_subsequence(fasta_nt_file: str):
@@ -93,7 +99,7 @@ def describe_reference_genbank(genbank_record: GBRecord):
 
 
 if __name__ == '__main__':
-    nt_fasta_file, blast_results_number, blast_only, output_directory = _parse_args()
+    nt_fasta_file, is_blast_only, is_chromosomes_only, blast_result_number, output_directory = _parse_args()
     out_blast_basename = os.path.join(output_directory, "blast", Utilities.filename_only(nt_fasta_file))
     blast_result_file = "{}_blast_results.json".format(out_blast_basename)
 
@@ -111,14 +117,16 @@ if __name__ == '__main__':
         blast_results = parse_blast_report(blast_report)
         Utilities.dump_string(json.dumps(blast_results, sort_keys=False, indent=4), blast_result_file)
 
-    if not blast_only:
+    if not is_blast_only:
         genbank_descriptions = []
-        for blast_result in list(blast_results.values())[:blast_results_number]:
+        for blast_result in list(blast_results.values())[:blast_result_number]:
             geninfo_accession = blast_result["geninfo_id"]
             genbank_file = os.path.join(output_directory, "genbank", "{}.gbk".format(geninfo_accession))
             if Utilities.is_file_valid(genbank_file, report=False):
                 genbank_report = Utilities.parse_sequences(genbank_file, "genbank")
             else:
+                if is_chromosomes_only and " chromosome" not in blast_result["title"]:
+                    continue
                 genbank_report = download_reference_genbank(geninfo_accession)
                 Utilities.dump_string(genbank_report[0].format("genbank"), genbank_file)
             genbank_description = describe_reference_genbank(genbank_report[0])
