@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import json
 import pandas as pd
 from Bio.SeqUtils import GC
 from Bio import SeqIO, Entrez
@@ -108,7 +107,7 @@ if __name__ == '__main__':
 
     if Utilities.is_file_valid(blast_result_file, report=False):
         print("Load results of the already performed NCBI BLAST query")
-        blast_results = json.loads(Utilities.load_string(blast_result_file))
+        blast_results = Utilities.load_dict(blast_result_file)
     else:
         print("Parsing largest subsequence")
         blast_query = parse_largest_subsequence(nt_fasta_file)
@@ -118,7 +117,7 @@ if __name__ == '__main__':
         blast_report = download_nt_blast_report(blast_query)
         print(f"The NCBI query was completed with {Utilities.count_elapsed_seconds(start)}")
         blast_results = parse_blast_report(blast_report)
-        Utilities.dump_string(json.dumps(blast_results, sort_keys=False, indent=4), blast_result_file)
+        Utilities.dump_dict(blast_results, blast_result_file, sort_keys=False, indent=4)
 
     if not is_blast_only:
         if len(sequence_directory) == 0:
@@ -152,5 +151,5 @@ if __name__ == '__main__':
         Utilities.dump_tsv(combined_blast_result_df.reset_index(), os.path.join(output_directory, "combined_blast_results.tsv"))
 
         report_dict = dict(input_file=nt_fasta_file, genbank_files=genbank_description_df["genbank_file"].values.tolist())
-        Utilities.dump_string(json.dumps(report_dict), os.path.join(output_directory, "report.json"))
+        Utilities.dump_dict(report_dict, os.path.join(output_directory, "report.json"))
     print("Completed")
