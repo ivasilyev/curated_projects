@@ -12,6 +12,11 @@ from Bio.GenBank import Record as GBRecord
 from meta.scripts.Utilities import Utilities
 
 
+E_VALUE_THRESH = 0.04
+SLEEP_INTERVAL = (10, 30)
+QUERY_SIZE = 20000
+
+
 def _parse_args():
     from argparse import ArgumentParser
     parser = ArgumentParser(
@@ -41,26 +46,25 @@ def parse_largest_subsequence(fasta_nt_file: str):
     """
     Parses nucleotide FASTA and chunk if it's too large for BLAST query
     """
-    assert Utilities.is_file_valid(fasta_nt_file)
+    assert Utilities.is_file_valid(fasta_nt_file, report=True)
     records = Utilities.parse_sequences(fasta_nt_file)
-    return Utilities.randomize_gene_slice(records[0]).format("fasta")
+    return Utilities.randomize_gene_slice(records[0], size=QUERY_SIZE).format("fasta")
 
 
 def download_nt_blast_report(query: str):
     # The delay to avoid NCBI ban
-    Utilities.randomize_sleep()
+    Utilities.randomize_sleep(*SLEEP_INTERVAL)
     # NCBI query
     result_handle = Utilities.attempt_func(NCBIWWW.qblast, ("blastn", "nt", query))
     return NCBIXML.read(result_handle)
 
 
 def parse_blast_report(blast_record):
-    _E_VALUE_THRESH = 0.04
     # Based on: https://biopython.org/DIST/docs/tutorial/Tutorial.html#htoc95
     high_scoring_pairs = OrderedDict()
     for alignment in blast_record.alignments:
         for hsp in alignment.hsps:
-            if hsp.expect < _E_VALUE_THRESH:
+            if hsp.expect < E_VALUE_THRESH:
                 t = alignment.title
                 d = dict(title=t, length=alignment.length, expect=hsp.expect, score=hsp.score,
                          bits=hsp.bits, identities=hsp.identities, positives=hsp.positives,
@@ -73,7 +77,7 @@ def parse_blast_report(blast_record):
 def download_reference_genbank(accession_id: str):
     Entrez.email = "name@domain.com"
     # The delay to avoid NCBI ban
-    Utilities.randomize_sleep(10, 30)
+    Utilities.randomize_sleep(*SLEEP_INTERVAL)
     # NCBI query
     handle = Utilities.attempt_func(Entrez.efetch, dict(db="nucleotide", id=accession_id,
                                                         rettype="gb", retmode="text"))
