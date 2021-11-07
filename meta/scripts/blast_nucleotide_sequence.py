@@ -65,7 +65,7 @@ def parse_blast_report(blast_record):
 def download_reference_genbank(accession_id: str):
     Entrez.email = "name@domain.com"
     # The delay to avoid NCBI ban
-    Utilities.randomize_sleep()
+    Utilities.randomize_sleep(10, 30)
     # NCBI query
     handle = Utilities.attempt_func(Entrez.efetch, dict(db="nucleotide", id=accession_id,
                                                         rettype="gb", retmode="text"))
