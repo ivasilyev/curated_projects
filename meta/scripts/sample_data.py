@@ -106,7 +106,7 @@ class SampleDataArray:
         return SampleDataArray.parse(json.loads(Utilities.load_string(file)))
 
     @staticmethod
-    def generate_from_2d_array(pair_2d_array: list, regex: str = DEFAULT_REGEX):
+    def generate(pair_2d_array: list, regex: str = DEFAULT_REGEX):
         arr = SampleDataArray()
         for read_files in pair_2d_array:
             read_files = sorted(read_files)
@@ -131,7 +131,7 @@ class SampleDataArray:
                                 reads_extension: str = DEFAULT_READS_EXTENSION):
         pair_2d_array = Utilities.get_most_similar_word_pairs(
             Utilities.find_file_by_tail(directory, reads_extension))
-        return SampleDataArray.generate_from_2d_array(pair_2d_array, regex=regex)
+        return SampleDataArray.generate(pair_2d_array, regex=regex)
 
     def export(self):
         return {k: self.lines[k].export() for k in self.lines}
@@ -145,6 +145,12 @@ class SampleDataArray:
 
 
 if __name__ == '__main__':
-    inputDir, inputExtension, inputRegex, outputFile = parse_args()
-    sampleDataArray = SampleDataArray.generate_from_directory(inputDir, inputRegex, inputExtension)
+    inputDirs, inputExtension, inputRegex, outputFile = parse_args()
+
+    pair2dArray = []
+    for input_dir in inputDirs:
+        pair2dArray.extend(Utilities.get_most_similar_word_pairs(
+            Utilities.find_file_by_tail(i, inputExtension)) for i in inputDirs)
+
+    sampleDataArray = SampleDataArray.generate(pair2dArray, inputRegex)
     sampleDataArray.dump(outputFile)
