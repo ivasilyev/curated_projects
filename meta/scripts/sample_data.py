@@ -108,14 +108,14 @@ class SampleDataArray:
     @staticmethod
     def generate(pair_2d_array: list, regex: str = DEFAULT_REGEX):
         arr = SampleDataArray()
-        for read_files in pair_2d_array:
-            read_files = sorted(read_files)
-            sample_file = os.path.basename(read_files[0])
+        for sample_read_files in pair_2d_array:
+            sample_read_files = sorted(sample_read_files)
+            sample_file = os.path.basename(sample_read_files[0])
             sample_name = Utilities.safe_findall(regex, sample_file)
             if len(sample_name) == 0:
                 raise ValueError(f"Cannot process the file '{sample_file}' with the regex '{regex}'")
-            if any(sample_name not in read_files):
-                raise ValueError(f"Some files from the list '{read_files}' do not contain {sample_name} parsed by the regex '{regex}'")
+            if any(sample_name not in i for i in sample_read_files):
+                raise ValueError(f"Some files from the list '{sample_read_files}' do not contain {sample_name} parsed by the regex '{regex}'")
             if sample_name in arr.lines.keys():
                 print(f"Duplicate sample data line key, the regex check is considered: '{sample_name}'")
                 c = 0
@@ -123,7 +123,7 @@ class SampleDataArray:
                 while sample_name in arr.lines.keys():
                     c += 1
                     sample_name = "{}.{}".format(sample_name_, c)
-            arr.lines[sample_name] = SampleDataLine(sample_name, read_files)
+            arr.lines[sample_name] = SampleDataLine(sample_name, sample_read_files)
         return arr
 
     @staticmethod
@@ -149,8 +149,8 @@ if __name__ == '__main__':
 
     pair2dArray = []
     for input_dir in inputDirs:
-        pair2dArray.extend(Utilities.get_most_similar_word_pairs(
-            Utilities.find_file_by_tail(i, inputExtension)) for i in inputDirs)
+        pair2dArray.extend(Utilities.get_most_similar_word_pairs(Utilities.find_file_by_tail(
+            input_dir, inputExtension, multiple=True)))
 
     sampleDataArray = SampleDataArray.generate(pair2dArray, inputRegex)
     sampleDataArray.dump(outputFile)
