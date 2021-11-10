@@ -4,6 +4,26 @@
 import os
 import json
 from meta.scripts.Utilities import Utilities
+from argparse import ArgumentParser, RawTextHelpFormatter
+
+
+DEFAULT_REGEX = "(.+).+S[0-9]+.*R[12]..*\.fastq\.gz"
+
+
+def parse_args():
+    parser = ArgumentParser(
+        formatter_class=RawTextHelpFormatter,
+        description="Generate sampledata based on directory".strip(),
+        epilog=""
+    )
+    parser.add_argument("-i", "--input", nargs="+",
+                        help="Input directory (directories)")
+    parser.add_argument("-r", "--regex", default=DEFAULT_REGEX,
+                        help="Regular expression to extract sample names")
+    parser.add_argument("-o", "--output", required=True,
+                        help="Output file")
+    _namespace = parser.parse_args()
+    return _namespace.input, _namespace.regex, _namespace.output
 
 
 class SampleDataLine:
@@ -83,14 +103,18 @@ class SampleDataArray:
         return SampleDataArray.parse(json.loads(Utilities.load_string(file)))
 
     @staticmethod
-    def generate(pair_2d_array: list, regex: str = "(.+)_S[0-9]+_L[0-9]+_R[0-9]+_[0-9]+"):
+    def generate_from_2d_array(pair_2d_array: list, regex: str = DEFAULT_REGEX):
         arr = SampleDataArray()
         for read_files in pair_2d_array:
             read_files = sorted(read_files)
-            sample_name = Utilities.safe_findall(regex, os.path.basename(read_files[0]))
+            sample_file = os.path.basename(read_files[0])
+            sample_name = Utilities.safe_findall(regex, sample_file)
+            if len(sample_name) == 0:
+                raise ValueError(f"Cannot process the file '{sample_file}' with the regex '{regex}'")
+            if any(sample_name not in read_files):
+                raise ValueError(f"Some files from the list '{read_files}' do not contain {sample_name} parsed by the regex '{regex}'")
             if sample_name in arr.lines.keys():
-                print("Duplicate sample data line key, the regex check is considered: '{}'".format(
-                    sample_name))
+                print(f"Duplicate sample data line key, the regex check is considered: '{sample_name}'")
                 c = 0
                 sample_name_ = str(sample_name)
                 while sample_name in arr.lines.keys():
@@ -98,6 +122,11 @@ class SampleDataArray:
                     sample_name = "{}.{}".format(sample_name_, c)
             arr.lines[sample_name] = SampleDataLine(sample_name, read_files)
         return arr
+
+    @staticmethod
+    def generate_from_directory(directory: str, regex: str = DEFAULT_REGEX):
+        pair_2d_array = Utilities.get_most_similar_word_pairs(Utilities.find_file_by_tail(directory, ".gz"))
+        return SampleDataArray.generate_from_2d_array(pair_2d_array, regex=regex)
 
     def export(self):
         return {k: self.lines[k].export() for k in self.lines}
@@ -108,3 +137,9 @@ class SampleDataArray:
 
     def dump(self, file: str):
         Utilities.dump_string(json.dumps(self.export(), sort_keys=True, indent=4), file)
+
+
+if __name__ == '__main__':
+    inputDir, regex, outputFile = parse_args()
+    sampleDataArray = SampleDataArray.generate_from_directory(inputDir, regex)
+    sampleDataArray.dump(outputFile)
