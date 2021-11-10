@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os
 import re
 from meta.scripts.Utilities import Utilities
 from argparse import ArgumentParser, RawTextHelpFormatter
@@ -37,5 +36,4 @@ if __name__ == '__main__':
         text_content_replaced = text_content_replaced.replace(
             *(str(i) for i in [renaming_key, renaming_value]))
 
-    text_file_data = os.path.splitext(text_file)
     Utilities.dump_string(text_content_replaced, out_file)

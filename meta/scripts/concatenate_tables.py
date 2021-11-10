@@ -14,7 +14,7 @@ def parse_args():
     )
     parser.add_argument("-i", "--input", nargs="+",
                         help="Tables to concatenate")
-    parser.add_argument("-a", "--axis", default=0, choices=[0, 1],
+    parser.add_argument("-a", "--axis", default=0, type=int, choices=[0, 1],
                         help="The axis to concatenate along.")
     parser.add_argument("-o", "--output", required=True,
                         help="Output table")
