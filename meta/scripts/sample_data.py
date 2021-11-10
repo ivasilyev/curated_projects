@@ -8,6 +8,7 @@ from argparse import ArgumentParser, RawTextHelpFormatter
 
 
 DEFAULT_REGEX = "(.+).+S[0-9]+.*R[12]..*\.fastq\.gz"
+DEFAULT_READS_EXTENSION = ".fastq.gz"
 
 
 def parse_args():
@@ -18,12 +19,14 @@ def parse_args():
     )
     parser.add_argument("-i", "--input", nargs="+",
                         help="Input directory (directories)")
+    parser.add_argument("-e", "--extension", default=DEFAULT_READS_EXTENSION,
+                        help="Extension of reads files")
     parser.add_argument("-r", "--regex", default=DEFAULT_REGEX,
                         help="Regular expression to extract sample names")
     parser.add_argument("-o", "--output", required=True,
                         help="Output file")
     _namespace = parser.parse_args()
-    return _namespace.input, _namespace.regex, _namespace.output
+    return _namespace.input, _namespace.extension, _namespace.regex, _namespace.output
 
 
 class SampleDataLine:
@@ -124,8 +127,10 @@ class SampleDataArray:
         return arr
 
     @staticmethod
-    def generate_from_directory(directory: str, regex: str = DEFAULT_REGEX):
-        pair_2d_array = Utilities.get_most_similar_word_pairs(Utilities.find_file_by_tail(directory, ".gz"))
+    def generate_from_directory(directory: str, regex: str = DEFAULT_REGEX,
+                                reads_extension: str = DEFAULT_READS_EXTENSION):
+        pair_2d_array = Utilities.get_most_similar_word_pairs(
+            Utilities.find_file_by_tail(directory, reads_extension))
         return SampleDataArray.generate_from_2d_array(pair_2d_array, regex=regex)
 
     def export(self):
@@ -140,6 +145,6 @@ class SampleDataArray:
 
 
 if __name__ == '__main__':
-    inputDir, regex, outputFile = parse_args()
-    sampleDataArray = SampleDataArray.generate_from_directory(inputDir, regex)
+    inputDir, inputExtension, inputRegex, outputFile = parse_args()
+    sampleDataArray = SampleDataArray.generate_from_directory(inputDir, inputRegex, inputExtension)
     sampleDataArray.dump(outputFile)
