@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import pandas as pd
+from time import perf_counter
 from meta.scripts.Utilities import Utilities
 from argparse import ArgumentParser, RawTextHelpFormatter
 
@@ -12,7 +13,7 @@ def parse_args():
         description="Concatenate tabular separated data which has same (or almost same) header",
         epilog=""
     )
-    parser.add_argument("-i", "--input", nargs="+",
+    parser.add_argument("-i", "--input", nargs="+", required=True,
                         help="Tables to concatenate")
     parser.add_argument("-a", "--axis", default=0, type=int, choices=[0, 1],
                         help="(Optional) The axis to concatenate along")
@@ -35,8 +36,12 @@ if __name__ == '__main__':
 
     if len(index) > 0:
         for dataframe in dataframes:
-            dataframe.set_index(inplace=True)
+            dataframe.set_index(index, inplace=True)
 
+    print(f"Concatenate {len(dataframes)} dataframes with the shapes: {[i.shape for i in dataframes]}")
+    start = perf_counter()
     out_df = pd.concat(dataframes, axis=axis, join=join, ignore_index=False, keys=None, levels=None,
                        names=None, verify_integrity=False, sort=False, copy=True)
+    print(f"Concatenation completed in {Utilities.count_elapsed_seconds(start)}")
+
     Utilities.dump_tsv(out_df, output_table)
