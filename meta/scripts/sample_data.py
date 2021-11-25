@@ -23,10 +23,12 @@ def parse_args():
                         help="Extension of reads files")
     parser.add_argument("-r", "--regex", default=DEFAULT_REGEX,
                         help="Regular expression to extract sample names")
+    parser.add_argument("-t", "--taxa", default="",
+                        help="(Optional) Taxonomy to add to all samples")
     parser.add_argument("-o", "--output", required=True,
                         help="Output file")
     _namespace = parser.parse_args()
-    return _namespace.input, _namespace.extension, _namespace.regex, _namespace.output
+    return _namespace.input, _namespace.extension, _namespace.regex,  _namespace.taxa, _namespace.output
 
 
 class SampleDataLine:
@@ -34,6 +36,7 @@ class SampleDataLine:
         self.state = dict()
         self.name = sample_name.strip()
         self.reads = sorted(Utilities.remove_empty_values(sample_read_files))
+        self.taxa = ""
         self.is_valid = False
         self._validate_reads()
 
@@ -66,7 +69,7 @@ class SampleDataLine:
         return SampleDataLine(d["name"], d["reads"])
 
     def export(self):
-        d = dict(name=self.name, reads=self.reads)
+        d = dict(name=self.name, reads=self.reads, taxa=self.taxa)
         d.update(self.state)
         return d
 
@@ -141,11 +144,11 @@ class SampleDataArray:
         return pd.DataFrame(list(self.export().values()))
 
     def dump(self, file: str):
-        Utilities.dump_string(json.dumps(self.export(), sort_keys=True, indent=4), file)
+        Utilities.dump_dict(self.export(), file)
 
 
 if __name__ == '__main__':
-    inputDirs, inputExtension, inputRegex, outputFile = parse_args()
+    inputDirs, inputExtension, inputRegex, inputTaxa, outputFile = parse_args()
 
     pair2dArray = []
     for input_dir in inputDirs:
@@ -153,4 +156,8 @@ if __name__ == '__main__':
             input_dir, inputExtension, multiple=True)))
 
     sampleDataArray = SampleDataArray.generate(pair2dArray, inputRegex)
+
+    for sampleDataLine in sampleDataArray.lines:
+        sampleDataLine.taxa = inputTaxa
+
     sampleDataArray.dump(outputFile)
