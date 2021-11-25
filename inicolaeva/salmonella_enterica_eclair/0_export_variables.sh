@@ -6,6 +6,6 @@ export ROOT_DIR="/data1/bio/projects/inicolaeva/salmonella_eclair/"
 mkdir -p "${ROOT_DIR}" && chmod -R 777 "${ROOT_DIR}"
 cd "${ROOT_DIR}" || exit 1
 
-curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/yutyurin/inicolaeva/salmonella_enterica_eclair/1_run_pipeline.sh"
+curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/inicolaeva/salmonella_enterica_eclair/1_run_pipeline.sh"
 
 bash "1_run_pipeline.sh"
