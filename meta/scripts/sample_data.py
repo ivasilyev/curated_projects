@@ -84,6 +84,10 @@ class SampleDataArray:
     def __repr__(self):
         return "SampleDataArray with {} lines".format(len(self))
 
+    @property
+    def values(self):
+        return self.lines.values()
+
     def validate(self):
         d = dict()
         for key in self.lines:
@@ -157,7 +161,7 @@ if __name__ == '__main__':
 
     sampleDataArray = SampleDataArray.generate(pair2dArray, inputRegex)
 
-    for sampleDataLine in sampleDataArray.lines:
+    for sampleDataLine in sampleDataArray.values:
         sampleDataLine.taxa = inputTaxa
 
     sampleDataArray.dump(outputFile)
