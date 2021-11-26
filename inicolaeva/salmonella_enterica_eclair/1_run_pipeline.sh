@@ -11,12 +11,15 @@ echo "Deploy symlinks"
 mkdir -p "${RAW_DIR}" && chmod -R 777 "${RAW_DIR}"
 cd "${ROOT_DIR}" || exit 1
 
-rm -f "reads.txt"
 for SRC_READ in "${SRC_DIR}"*.fastq.gz
     do
         BASENAME="$(basename "${SRC_READ}")"
         TGT_READ="${RAW_DIR}${BASENAME}"
-        ln -s "${SRC_READ}" "${TGT_READ}"
+
+        if [ ! -s "${TGT_READ}" ]
+            then
+              ln -s "${SRC_READ}" "${TGT_READ}"
+        fi
     done
 
 
