@@ -231,7 +231,12 @@ class Utilities:
             key=lambda x: x[1],
             reverse=True
         )
-        return sorted_ratios[0][0]
+        try:
+            out = sorted_ratios[0][0]
+        except IndexError:
+            print(f"Cannot process: '{word}', '{words}'")
+            raise
+        return out
 
     @staticmethod
     def get_most_similar_word_pairs(words: list):
