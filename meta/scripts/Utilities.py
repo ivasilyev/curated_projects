@@ -223,33 +223,25 @@ class Utilities:
         return Utilities.split_list_by_chunk_length(list_, ceil(len(list_) / n))
 
     @staticmethod
-    def count_index_based_similarity(words: list):
-        words = sorted(set(words))
-        out = dict()
-        for idx_1, word in enumerate(words):
-            other_words = words[:idx_1] + words[idx_1 + 1:]
-            out[word] = []
-            for other_word in other_words:
-                comparison_group = sorted([word, other_word], key=len, reverse=True)
-                score = 0
-                for idx_2, char in enumerate(comparison_group[0]):
-                    try:
-                        score += char == comparison_group[1][idx_2]
-                    except IndexError:
-                        pass
-                out[word].append([other_word, score])
-            out[word] = sorted(out[word], key=lambda x: x[1], reverse=True)
-        return out
+    def get_most_similar_word_from_list(word: str, words: list):
+        from difflib import SequenceMatcher
+        _words = [i for i in sorted(set(words)) if i != word]
+        sorted_ratios = sorted(
+            {i: SequenceMatcher(a=word, b=i).ratio() for i in _words}.items(),
+            key=lambda x: x[1],
+            reverse=True
+        )
+        return sorted_ratios[0][0]
 
     @staticmethod
     def get_most_similar_word_pairs(words: list):
-        similarities = Utilities.count_index_based_similarity(words)
-        pairs = [(k, similarities[k][0][0]) for k in similarities.keys()]
-        for pair in pairs:
-            pair_reversed = tuple(reversed(pair))
-            if pair_reversed in pairs:
-                pairs.remove(pair_reversed)
-        return pairs
+        _words = sorted(set(words))
+        out = []
+        for word in _words:
+            word_pair = sorted([word, Utilities.get_most_similar_word_from_list(word, _words)])
+            if word_pair not in out:
+                out.append(word_pair)
+        return out
 
     @staticmethod
     def filtered_product(lists: list):
@@ -267,6 +259,12 @@ class Utilities:
             if is_sub_good and sorted(sub_out) not in [sorted(i) for i in out]:
                 out.append(tuple(sub_out))
         return out
+
+    @staticmethod
+    def is_sequence_file(s: str):
+        return any(s.endswith(i) for i in [
+            ".fasta", ".fastq.gz", ".fastq", ".fq.gz", "fq"
+    ])
 
     # Biopython methods
 
