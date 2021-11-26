@@ -5,7 +5,7 @@ ROOT_DIR="$(realpath -s "${ROOT_DIR}")/"
 SRC_DIR="$(realpath -s "${SRC_DIR}")/"
 
 RAW_DIR="${ROOT_DIR}raw/"
-SAMPLEDATA_FILE="${ROOT_DIR}/sampledata.json"
+SAMPLEDATA_FILE="${ROOT_DIR}sampledata.json"
 
 
 
@@ -61,7 +61,7 @@ curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/mas
 python3 "pipeline_handler.py" \
     --hg_dir "/data/reference/homo_sapiens/Ensembl/GRCh38/bowtie2_idx" \
     --input "${SAMPLEDATA_FILE}" \
-    --output_dir "${ROOT_DIR}/pga-pe-pipeline" \
+    --output_dir "${ROOT_DIR}pga-pe-pipeline" \
     --refdata \
         "/data/reference/MvirDB/mvirdb_v2012.04.28.index/mvirdb_v2012.04.28_refdata.json" \
         "/data/reference/TADB/index/tadb_v2.0/tadb_v2.0_refdata.json" \
