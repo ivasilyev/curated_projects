@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
 # SRC_DIR and ROOT_DIR are exported from '0_export_variables.sh'
-export RAW_DIR="${ROOT_DIR}raw/"
-export SAMPLEDATA_FILE="${ROOT_DIR}/sampledata.json"
+ROOT_DIR="$(realpath -s "${ROOT_DIR}")/"
+SRC_DIR="$(realpath -s "${SRC_DIR}")/"
+
+RAW_DIR="${ROOT_DIR}raw/"
+SAMPLEDATA_FILE="${ROOT_DIR}/sampledata.json"
 
 
 
