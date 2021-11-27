@@ -81,7 +81,7 @@ class ReferenceDescriberTemplate(ABC):
     DESCRIPTION = ""
     DOCUMENTATION = ""
     WEBSITE = ""
-    REFDATA = ""
+    REFDATA_FILE = ""
 
     def __init__(self):
         super().__init__()
@@ -104,13 +104,14 @@ class SequenceRetrieverTemplate(ABC):
     NUCLEOTIDE_FASTA = ""
     REFERENCE_ROOT_DIRECTORY = ""
     REFERENCE_ANNOTATION = ""
-    REFDATA = ""
+    REFDATA_FILE = ""
 
     def __init__(self, describer: ReferenceDescriberTemplate):
         super().__init__()
         self._reference_describer = describer
-        self._reference_describer.REFDATA = self.REFDATA
+        self._reference_describer.REFDATA_FILE = self.REFDATA_FILE
         self._reference_describer.VERSION = self.VERSION
+        self.refdata = ReferenceData()
 
     @property
     def REFERENCE_FETCH_DIRECTORY(self):
@@ -128,7 +129,7 @@ class SequenceRetrieverTemplate(ABC):
 
     def pick_refdata(self):
         try:
-            self.REFDATA = ReferenceData.find_and_load_refdata(self.REFERENCE_INDEX_DIRECTORY)
+            self.refdata = ReferenceData.find_and_load_refdata(self.REFERENCE_INDEX_DIRECTORY)
             return True
         except ValueError:
             dump_index_guide(self.NUCLEOTIDE_FASTA, self.REFERENCE_INDEX_DIRECTORY)

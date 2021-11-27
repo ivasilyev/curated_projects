@@ -29,14 +29,14 @@ class SequenceRetriever(SequenceRetrieverTemplate):
 class Annotator(AnnotatorTemplate):
     def __init__(self, retriever: SequenceRetriever):
         super().__init__()
-        self.annotation_file = retriever.REFERENCE_ANNOTATION
-        self.reference_file = retriever.NUCLEOTIDE_FASTA
+        self.refdata_annotation = retriever.refdata.get_sequence_dict()["annotation"]
+        self.reference_annotation = retriever.REFERENCE_ANNOTATION
 
     def annotate(self):
         annotation_df = Utilities.load_tsv(self.annotation_file)
         _INDEX_COLUMN = "#Virulence Factor ID"
 
-        reference_df = pd.read_csv(self.reference_file, engine="python", header=0,
+        reference_df = pd.read_csv(self.reference_annotation, engine="python", header=0,
                                    sep="\t", warn_bad_lines=True, error_bad_lines=False)
         annotation_df[_INDEX_COLUMN] = annotation_df["former_id"].str.extract("^([^|]+)|").astype(int)
         annotation_df = annotation_df.merge(reference_df, how="outer", on=_INDEX_COLUMN)
