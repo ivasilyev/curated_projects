@@ -8,6 +8,25 @@ from meta.scripts.ChartGenerator import ChartGenerator
 from meta.scripts.Utilities import Utilities
 
 
+def dump_index_guide(input_nucleotide_fasta: str, output_dir: str):
+    if not Utilities.is_file_valid(input_nucleotide_fasta):
+        raise ValueError(f"Invalid file: '{input_nucleotide_fasta}'")
+    cmd_0 = f"""
+    export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \
+    docker pull "$IMG" && \
+    docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it "$IMG" \
+        bash -c '
+            python3 "$HOME/scripts/cook_the_reference.py" \
+                --input "{input_nucleotide_fasta}" \
+                --output "{output_dir}";
+        '
+    """
+    cmd = Utilities.join_lines(cmd_0)
+    out_file = os.path.join(output_dir, "index.sh")
+    Utilities.dump_string(cmd, out_file)
+    print(f""""For indexing, run outside of Docker: 'bash "{out_file}"'""")
+
+
 class Chart(object):
     def __init__(self, file, url):
         self.file = file
@@ -48,22 +67,6 @@ class LaunchGuideLiner:
                                   url="https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/master.yaml")
         self.worker_chart = Chart(file="{}worker.yaml".format(self.charts_directory),
                                   url="https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/bwt_filtering_pipeline/templates/bwt-fp-only-coverage/worker.yaml")
-
-    @staticmethod
-    def get_index_guide(index_directory, raw_nfasta_file):
-        print("""
-# Reference indexing (from worker node):
-
-rm -rf {a}
-export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \\
-docker pull $IMG && \\
-docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it $IMG \\
-python3 /home/docker/scripts/cook_the_reference.py \\
--i {b} \\
--o {a}
-
-# Wait until REFDATA file creates and complete the describer class template
-              """.format(a=index_directory, b=raw_nfasta_file))
 
     def generate_config(self):
         os.makedirs(self.charts_directory, exist_ok=True)

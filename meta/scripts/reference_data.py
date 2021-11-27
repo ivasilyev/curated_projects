@@ -5,6 +5,7 @@ import os
 import pandas as pd
 from abc import ABC, ABCMeta, abstractmethod
 from meta.scripts.Utilities import Utilities
+from meta.scripts.guidelines import dump_index_guide
 
 
 class ReferenceData:
@@ -100,15 +101,34 @@ class SequenceRetrieverTemplate(ABC):
     __metaclass__ = ABCMeta
     VERSION = ""
     NUCLEOTIDE_FASTA = ""
-    REFERENCE_DIRECTORY = ""
+    REFERENCE_ROOT_DIRECTORY = ""
     REFERENCE_ANNOTATION = ""
+    REFDATA = ""
 
     def __init__(self, describer: ReferenceDescriberTemplate):
         super().__init__()
-        describer.VERSION = self.VERSION
+        self._reference_describer = describer
+        self._reference_describer.REFDATA = self.REFDATA
+        self._reference_describer.VERSION = self.VERSION
+
+    @property
+    def REFERENCE_FETCH_DIRECTORY(self):
+        return os.path.join(self.REFERENCE_ROOT_DIRECTORY, self._reference_describer.ALIAS)
+
+    @property
+    def REFERENCE_INDEX_DIRECTORY(self):
+        return os.path.join(self.REFERENCE_FETCH_DIRECTORY, "index")
 
     def download(self):
         return
 
     def retrieve(self):
         return
+
+    def pick_refdata(self):
+        try:
+            self.REFDATA = ReferenceData.find_and_load_refdata(self.REFERENCE_INDEX_DIRECTORY)
+            return True
+        except ValueError:
+            dump_index_guide(self.NUCLEOTIDE_FASTA, self.REFERENCE_INDEX_DIRECTORY)
+            return False
