@@ -31,6 +31,7 @@ class Annotator(AnnotatorTemplate):
         super().__init__()
         self.refdata = retriever.refdata
         self.reference_annotation = retriever.REFERENCE_ANNOTATION
+        self.parse_annotation()
 
     def annotate(self):
         _INDEX_COLUMN = "#Virulence Factor ID"

@@ -14,7 +14,7 @@ class ReferenceData:
         self.refdata_dict = dict()
         self.sequences = ()
 
-    def read(self, refdata_file):
+    def parse(self, refdata_file):
         self.refdata_file = refdata_file
         self.refdata_dict = Utilities.load_dict(self.refdata_file)
         self.sequences = tuple(sorted([i for i in self.refdata_dict.keys()
@@ -29,7 +29,7 @@ class ReferenceData:
     @staticmethod
     def load(refdata_file: str):
         refdata = ReferenceData()
-        refdata.read(refdata_file)
+        refdata.parse(refdata_file)
         return refdata
 
     @staticmethod
@@ -59,11 +59,13 @@ class AnnotatorTemplate(ABC):
         self.annotation_file = ""
         self.annotation_df = pd.DataFrame()
 
-    def load(self, refdata_file: str):
-        self.refdata.load(refdata_file)
+    def parse_annotation(self):
         # Most of reference sequences are short enough to not be split
         self.annotation_file = self.refdata.get_sequence_dict()["annotation"]
         self.annotation_df = Utilities.load_tsv(self.annotation_file)
+
+    def load_refdata(self, refdata_file: str):
+        self.refdata.load(refdata_file)
 
     def dump(self):
         _ = Utilities.backup_file(self.annotation_file)
