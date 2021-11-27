@@ -16,6 +16,7 @@ def dump_index_guide(input_nucleotide_fasta: str, output_dir: str):
     docker pull "$IMG" && \
     docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it "$IMG" \
         bash -c '
+            cd "{output_dir}";
             python3 "$HOME/scripts/cook_the_reference.py" \
                 --input "{input_nucleotide_fasta}" \
                 --output "{output_dir}";
@@ -24,7 +25,7 @@ def dump_index_guide(input_nucleotide_fasta: str, output_dir: str):
     cmd = Utilities.join_lines(cmd_0)
     out_file = os.path.join(output_dir, "index.sh")
     Utilities.dump_string(cmd, out_file)
-    print(f""""For indexing, run outside of Docker: 'bash "{out_file}"'""")
+    print(f"For indexing, run outside of Docker: 'bash \"{out_file}\"'")
 
 
 class Chart(object):
