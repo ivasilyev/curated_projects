@@ -19,6 +19,7 @@ class ReferenceDescriber(ReferenceDescriberTemplate):
 
 class SequenceRetriever(SequenceRetrieverTemplate):
     VERSION = "2012.04.28"
+    NUCLEOTIDE_FASTA = "/data/reference/MvirDB/mvirdb_v2012.04.28.fasta"
     REFERENCE_ANNOTATION = "/data/reference/MvirDB/completeMvirDBTable.txt"
 
     def __init__(self, *args, **kwargs):
@@ -41,21 +42,18 @@ def parse_args():
     parser = ArgumentParser(formatter_class=RawTextHelpFormatter,
                             description=f"Describe and annotate {ReferenceDescriber.NAME}",
                             epilog="")
-    parser.add_argument("-n", "--nfasta", metavar="<file>", required=True,
-                        help="RefData file")
     parser.add_argument("-o", "--output", metavar="<dir>", required=True,
                         help="Output directory")
     namespace = parser.parse_args()
-    return namespace.refdata, namespace.output
+    return namespace.output
 
 
 if __name__ == '__main__':
-    inputNFASTAFile, outputDir = parse_args()
+    outputDir = parse_args()
     os.makedirs(outputDir, exist_ok=True)
 
     referenceDescriber = ReferenceDescriber()
     retriever = SequenceRetriever(referenceDescriber)
-    retriever.NUCLEOTIDE_FASTA = inputNFASTAFile
     retriever.REFERENCE_ROOT_DIRECTORY = outputDir
     if retriever.pick_refdata():
         annotate(retriever.REFDATA.get_sequence_dict()["annotation"], retriever.REFERENCE_ANNOTATION)
