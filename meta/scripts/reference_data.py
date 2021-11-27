@@ -17,7 +17,8 @@ class ReferenceData:
     def read(self, refdata_file):
         self.refdata_file = refdata_file
         self.refdata_dict = Utilities.load_dict(self.refdata_file)
-        self.sequences = tuple(sorted([i for i in self.refdata_dict.keys if i.startswith("sequence_")]))
+        self.sequences = tuple(sorted([i for i in self.refdata_dict.keys()
+                                       if i.startswith("sequence_")]))
 
     def get_sequence_dict(self, number: int = 1):
         n = len(self.sequences)
