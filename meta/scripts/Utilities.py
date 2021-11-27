@@ -141,6 +141,15 @@ class Utilities:
             print("Removing file: '{}'".format(file_name))
             os.remove(file_name)
 
+    @staticmethod
+    def backup_file(file: str):
+        from shutil import copy2
+        backup_file = f"{file}.bak"
+        while Utilities.is_file_valid(backup_file):
+            backup_file = f"{backup_file}.bak"
+        copy2(file, backup_file)
+        return backup_file
+
     # System methods
 
     @staticmethod
