@@ -68,6 +68,9 @@ class AnnotatorTemplate(ABC):
         self.refdata.dump()
         Utilities.dump_tsv(self.annotation_df, self.annotation_file)
 
+    def annotate(self):
+        return
+
 
 class SequenceRetrieverTemplate(ABC):
     __metaclass__ = ABCMeta
@@ -110,3 +113,6 @@ class ReferenceDescriberTemplate(ABC):
             index_directory=index_directory,
             raw_nfasta_file=raw_nfasta_file)
         return index_directory
+
+    def describe(self):
+        return
