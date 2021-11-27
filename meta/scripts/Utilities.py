@@ -282,7 +282,16 @@ class Utilities:
 
     @staticmethod
     def object_to_dict(o):
-        return {k: v for k, v in o.__dict__.items() if not k.startswith("_")}
+        out = dict()
+        for key, value in o.__dict__.items():
+            class_name = value.__class__.__name__
+            if key.startswith("_") or class_name in ["function", "getset_descriptor"]:
+                continue
+            if class_name in ["property", ]:
+                out[key] = o.__dict__[key].__get__(o)
+                continue
+            out[key] = value
+        return out
 
     # Biopython methods
 
