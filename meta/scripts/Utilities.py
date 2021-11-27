@@ -196,9 +196,14 @@ class Utilities:
         return output_list
 
     @staticmethod
+    def join_lines(s: str):
+        from re import sub
+        return sub("[\r\n ]+", " ", s.strip())
+
+    @staticmethod
     def split_lines(string: str):
-        import re
-        out = [i.strip() for i in re.sub("[\r\n]+", "\n", string).split("\n")]
+        from re import split
+        out = [i.strip() for i in split("[\r\n]+", string)]
         return Utilities.remove_empty_values(out)
 
     @staticmethod
