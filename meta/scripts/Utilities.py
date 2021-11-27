@@ -7,7 +7,7 @@ import os
 class Utilities:
     # File system based methods
     @staticmethod
-    def is_file_valid(file: str, report: bool = True):
+    def is_file_valid(file: str, report: bool = False):
         if not os.path.exists(file):
             if report:
                 print("Not found: '{}'".format(file))

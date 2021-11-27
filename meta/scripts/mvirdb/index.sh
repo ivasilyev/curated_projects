@@ -1,10 +1,18 @@
 #!/usr/bin/env bash
 
-export IMG=ivasilyev/bwt_filtering_pipeline_worker:latest && \
-docker pull ${IMG} && \
-docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ${IMG} \
-    bash -c '
-      python3 /home/docker/scripts/cook_the_reference.py \
-        --input "/data/reference/MvirDB/mvirdb_v2012.04.28.fasta" \
-        --output "/data/reference/MvirDB/mvirdb_v2012.04.28.index";
-    '
+function describe {
+    IMG=ivasilyev/curated_projects:latest && \
+    docker pull ${IMG} && \
+    docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 -it ${IMG} \
+        bash -c '
+            git pull --quiet;
+            python3 "${HOME}/scripts/curated_projects/meta/scripts/mvirdb/reference_describer.py" \
+                --output "/data/reference/MvirDB"
+        '
+}
+
+describe
+
+bash "/data/reference/MvirDB/mvirdb_v2012.04.28/index/index.sh"
+
+describe
