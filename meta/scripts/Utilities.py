@@ -280,6 +280,10 @@ class Utilities:
             ".fasta", ".fastq.gz", ".fastq", ".fq.gz", "fq"
     ])
 
+    @staticmethod
+    def object_to_dict(o):
+        return {k: v for k, v in o.__dict__.items() if not k.startswith("_")}
+
     # Biopython methods
 
     @staticmethod
