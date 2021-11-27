@@ -3,9 +3,9 @@
 
 import os
 import pandas as pd
-from meta.scripts.reference_data import ReferenceDescriberTemplate, SequenceRetrieverTemplate
 from meta.scripts.Utilities import Utilities
 from argparse import ArgumentParser, RawTextHelpFormatter
+from meta.scripts.reference_data import AnnotatorTemplate, ReferenceDescriberTemplate, SequenceRetrieverTemplate
 
 
 class ReferenceDescriber(ReferenceDescriberTemplate):
@@ -26,16 +26,22 @@ class SequenceRetriever(SequenceRetrieverTemplate):
         super().__init__(*args, **kwargs)
 
 
-def annotate(annotation_file: str, reference_file: str):
-    annotation_df = Utilities.load_tsv(annotation_file)
-    _INDEX_COLUMN = "#Virulence Factor ID"
+class Annotator(AnnotatorTemplate):
+    def __init__(self, retriever: SequenceRetriever):
+        super().__init__()
+        self.annotation_file = retriever.REFERENCE_ANNOTATION
+        self.reference_file = retriever.NUCLEOTIDE_FASTA
 
-    reference_df = pd.read_csv(reference_file, engine="python", header=0,
-                               sep="\t", warn_bad_lines=True, error_bad_lines=False)
-    annotation_df[_INDEX_COLUMN] = annotation_df["former_id"].str.extract("^([^|]+)|").astype(int)
-    annotation_df = annotation_df.merge(reference_df, how="outer", on=_INDEX_COLUMN)
-    Utilities.backup_file(annotation_df)
-    Utilities.dump_tsv(annotation_df, annotation_file)
+    def annotate(self):
+        annotation_df = Utilities.load_tsv(self.annotation_file)
+        _INDEX_COLUMN = "#Virulence Factor ID"
+
+        reference_df = pd.read_csv(self.reference_file, engine="python", header=0,
+                                   sep="\t", warn_bad_lines=True, error_bad_lines=False)
+        annotation_df[_INDEX_COLUMN] = annotation_df["former_id"].str.extract("^([^|]+)|").astype(int)
+        annotation_df = annotation_df.merge(reference_df, how="outer", on=_INDEX_COLUMN)
+        Utilities.backup_file(self.annotation_file)
+        Utilities.dump_tsv(df=annotation_df, table_file=self.annotation_file)
 
 
 def parse_args():
@@ -53,7 +59,8 @@ if __name__ == '__main__':
     os.makedirs(outputDir, exist_ok=True)
 
     referenceDescriber = ReferenceDescriber()
-    retriever = SequenceRetriever(referenceDescriber)
-    retriever.REFERENCE_ROOT_DIRECTORY = outputDir
-    if retriever.pick_refdata():
-        annotate(retriever.REFDATA.get_sequence_dict()["annotation"], retriever.REFERENCE_ANNOTATION)
+    sequenceRetriever = SequenceRetriever(referenceDescriber)
+    sequenceRetriever.REFERENCE_ROOT_DIRECTORY = outputDir
+    if sequenceRetriever.pick_refdata():
+        annotator = Annotator(sequenceRetriever)
+        annotator.annotate()
