@@ -3,8 +3,8 @@
 
 import os
 import pandas as pd
-from meta.utils.file_system import backup_file
-from meta.utils.pandas import load_tsv, dump_tsv
+from time import perf_counter
+from meta.utils.date_time import count_elapsed_seconds
 from meta.scripts.reference_data import AnnotatorTemplate, ReferenceDescriberTemplate, SequenceRetrieverTemplate
 
 
@@ -51,5 +51,7 @@ if __name__ == '__main__':
     sequenceRetriever.REFERENCE_ROOT_DIRECTORY = outputDir
     # sequenceRetriever.retrieve()  # Not applicable
     if sequenceRetriever.pick_refdata():
+        start = perf_counter()
         annotator = Annotator(sequenceRetriever)
         annotator.annotate()
+        print(f"Annotation complete after {count_elapsed_seconds(count_elapsed_seconds)}")

@@ -4,12 +4,13 @@
 
 import os
 import re
+from time import perf_counter
 from datetime import datetime
-from meta.scripts.reference_data import AnnotatorTemplate, ReferenceDescriberTemplate, SequenceRetrieverTemplate
-from meta.utils.web import get_soup, download_file_to_dir
-from meta.utils.date_time import get_timestamp
 from urllib.parse import urljoin
+from meta.utils.web import get_soup, download_file_to_dir
+from meta.utils.date_time import get_timestamp, count_elapsed_seconds
 from meta.utils.file_system import decompress_file, find_file_by_tail
+from meta.scripts.reference_data import AnnotatorTemplate, ReferenceDescriberTemplate, SequenceRetrieverTemplate
 
 
 class ReferenceDescriber(ReferenceDescriberTemplate):
@@ -70,5 +71,7 @@ if __name__ == '__main__':
     sequenceRetriever.REFERENCE_ROOT_DIRECTORY = outputDir
     sequenceRetriever.retrieve()
     if sequenceRetriever.pick_refdata():
+        start = perf_counter()
         annotator = Annotator()
         annotator.annotate()
+        print(f"Annotation complete after {count_elapsed_seconds(count_elapsed_seconds)}")
