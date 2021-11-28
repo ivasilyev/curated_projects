@@ -20,10 +20,6 @@ class ReferenceDescriber(ReferenceDescriberTemplate):
 
 
 class SequenceRetriever(SequenceRetrieverTemplate):
-    VERSION = ""
-    NUCLEOTIDE_FASTA = ""
-    REFERENCE_ANNOTATION = ""
-
     DOMAIN_ROOT = "http://www.mgc.ac.cn/VFs/"
     DOWNLOAD_PAGE_APPEND = "download.htm"
 
@@ -45,7 +41,8 @@ class SequenceRetriever(SequenceRetrieverTemplate):
         """
         update_text = download_page_table_soup.find("td", {"align": "right"}).find("i").text
         update_date = datetime.strptime(re.sub("^Last update: ", "", update_text), "%a %b %d %H:%M:%S %Y")
-        self.VERSION = get_timestamp(update_date)
+        print(f"Found VFDB reference from {get_timestamp(update_date)}")
+        self._reference_describer.VERSION = get_timestamp(update_date, fmt="%Y.%m.%d")
         self.download_links = [
             urljoin(self.DOMAIN_ROOT, j) for j in
             [i["href"] for i in download_page_table_soup.find_all("a", href=True)]

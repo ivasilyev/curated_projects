@@ -28,6 +28,7 @@ def get_file(url: str, file: str = "", force: bool = True, header: str = "Mozill
         for data in response.iter_content():
             f.write(data)
         f.close()
+        print(f"Downloaded: '{file}'")
     return file
 
 
