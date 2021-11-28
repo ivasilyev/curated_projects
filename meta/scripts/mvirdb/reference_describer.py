@@ -51,6 +51,7 @@ if __name__ == '__main__':
 
     sequenceRetriever = SequenceRetriever(referenceDescriber)
     sequenceRetriever.REFERENCE_ROOT_DIRECTORY = outputDir
+    # sequenceRetriever.retrieve()  # Not applicable
     if sequenceRetriever.pick_refdata():
         annotator = Annotator(sequenceRetriever)
         annotator.annotate()

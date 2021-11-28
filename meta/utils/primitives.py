@@ -30,8 +30,7 @@ def flatten_2d_array(array: list):
 
 
 def split_lines(string: str):
-    from re import split
-    out = [i.strip() for i in split("[\r\n]+", string)]
+    out = [i.strip() for i in re.split("[\r\n]+", string)]
     return remove_empty_values(out)
 
 

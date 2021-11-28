@@ -54,7 +54,6 @@ class SequenceRetriever(SequenceRetrieverTemplate):
         self.download()
         downloaded_nfasta = find_file_by_tail(self.REFERENCE_DOWNLOAD_DIRECTORY, "VFDB_setB_nt.fas")
         self.create_nucleotide_fasta_symlink(downloaded_nfasta, default_nfasta=True)
-        self.pick_refdata()
 
 
 class Annotator(AnnotatorTemplate):
@@ -69,6 +68,7 @@ if __name__ == '__main__':
 
     sequenceRetriever = SequenceRetriever(referenceDescriber)
     sequenceRetriever.REFERENCE_ROOT_DIRECTORY = outputDir
+    sequenceRetriever.retrieve()
     if sequenceRetriever.pick_refdata():
         annotator = Annotator()
         annotator.annotate()
