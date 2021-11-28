@@ -11,19 +11,15 @@ docker run --rm -v /data:/data -v /data1:/data1 -v /data2:/data2 --net=host -it 
 import os
 import re
 import pandas as pd
-import xlrd
 from meta.scripts.Utilities import Utilities
-from meta.templates.ReferenceDescriberTemplate import ReferenceDescriberTemplate
+from meta.scripts.reference_data import ReferenceDescriberTemplate
 
 
 class ReferenceDescriber(ReferenceDescriberTemplate):
     NAME = "VFDB"
-    VERSION = "2019.04.26"
-    ALIAS = "vfdb_v2019.04.26"
     DESCRIPTION = "A reference database for bacterial virulence factors"
     DOCUMENTATION = "https://www.ncbi.nlm.nih.gov/pubmed/30395255"
     WEBSITE = "http://www.mgc.ac.cn/VFs/main.htm"
-    REFDATA = "/data/reference/VFDB/vfdb_v2019.04.26/index/vfdb_v2019.04.26_refdata.json"
 
 
 class SequenceRetriever:
@@ -31,7 +27,6 @@ class SequenceRetriever:
     def __init__(self):
         self.describer = ReferenceDescriber()
         self.describer.VERSION = self._get_last_friday()
-        self.describer.update_alias()
         self.reference_dir = os.path.join("/data/reference", self.describer.NAME, self.describer.ALIAS)
         links = [i for i in Utilities.scrap_links_from_web_page(self._DL_PAGE_URL) if i.endswith(".gz")]
         self._dl_queue = []
