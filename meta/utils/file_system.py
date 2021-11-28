@@ -2,6 +2,26 @@
 import os
 
 
+def filename_only(s: str):
+    return os.path.splitext(os.path.basename(s))[0]
+
+
+def get_file_extension(file: str, deep: int = 1):
+    split = os.path.basename(file.strip()).split(".")[::-1]
+    out = []
+    for sub in split:
+        if 5 >= len(sub) > 1:
+            out.append(str(sub))
+        else:
+            break
+    return ".{}".format(".".join(out[:deep][::-1]))
+
+
+def get_script_dir():
+    import sys
+    return os.path.dirname(os.path.realpath(sys.argv[0]))
+
+
 def is_file_valid(file: str, report: bool = False):
     if not os.path.exists(file):
         if report:
@@ -68,3 +88,11 @@ def decompress_file(file: str, directory: str = "", remove: bool = True):
         print("Removing file: '{}'".format(file))
         os.remove(file)
 
+
+def backup_file(file: str):
+    from shutil import copy2
+    backup_file = f"{file}.bak"
+    while is_file_valid(backup_file):
+        backup_file = f"{backup_file}.bak"
+    copy2(file, backup_file)
+    return backup_file
