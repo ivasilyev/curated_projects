@@ -31,17 +31,15 @@ class Annotator(AnnotatorTemplate):
         super().__init__()
         self.refdata = retriever.refdata
         self.reference_annotation = retriever.REFERENCE_ANNOTATION
-        self.parse_annotation()
 
     def annotate(self):
         _INDEX_COLUMN = "#Virulence Factor ID"
-        annotation_df = load_tsv(self.annotation_file)
+        self.parse_annotation()
         reference_df = pd.read_csv(self.reference_annotation, engine="python", header=0,
                                    sep="\t", warn_bad_lines=True, error_bad_lines=False)
-        annotation_df[_INDEX_COLUMN] = annotation_df["former_id"].str.extract("^([^|]+)|").astype(int)
-        self.annotation_df = annotation_df.merge(reference_df, how="outer", on=_INDEX_COLUMN)
-        backup_file(self.annotation_file)
-        dump_tsv(df=self.annotation_df, table_file=self.annotation_file)
+        self.annotation_df[_INDEX_COLUMN] = self.annotation_df["former_id"].str.extract("^([^|]+)|").astype(int)
+        self.annotation_df = self.annotation_df.merge(reference_df, how="outer", on=_INDEX_COLUMN)
+        self.dump()
 
 
 if __name__ == '__main__':

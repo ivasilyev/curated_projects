@@ -73,7 +73,7 @@ class AnnotatorTemplate(ABC):
     def dump(self):
         _ = backup_file(self.annotation_file)
         self.refdata.dump()
-        dump_tsv(self.annotation_df, self.annotation_file)
+        dump_tsv(df=self.annotation_df, table_file=self.annotation_file)
 
     def annotate(self):
         return

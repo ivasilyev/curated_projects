@@ -41,7 +41,7 @@ class SequenceRetriever(SequenceRetrieverTemplate):
         """
         update_text = download_page_table_soup.find("td", {"align": "right"}).find("i").text
         update_date = datetime.strptime(re.sub("^Last update: ", "", update_text), "%a %b %d %H:%M:%S %Y")
-        print(f"Found VFDB reference from {get_timestamp(update_date)}")
+        print(f"Found {self._reference_describer.NAME} reference from {get_timestamp(update_date)}")
         self._reference_describer.VERSION = get_timestamp(update_date, fmt="%Y.%m.%d")
         self.download_links = [
             urljoin(self.DOMAIN_ROOT, j) for j in
@@ -56,6 +56,9 @@ class SequenceRetriever(SequenceRetrieverTemplate):
 class Annotator(AnnotatorTemplate):
     def __init__(self,):
         super().__init__()
+
+    def annotate(self):
+        return
 
 
 if __name__ == '__main__':
