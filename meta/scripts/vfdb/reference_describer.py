@@ -4,12 +4,12 @@
 
 import os
 import re
-import joblib as jb
 import pandas as pd
 from bs4 import BeautifulSoup
 from time import perf_counter
 from datetime import datetime
 from urllib.parse import urljoin
+from meta.utils.queue import multi_core_queue
 from meta.utils.primitive import safe_findall
 from meta.utils.web import get_soup, download_file_to_dir
 from meta.utils.bio_sequence import get_headers_from_fasta
@@ -102,7 +102,7 @@ class Annotator(AnnotatorTemplate):
         super().__init__()
         self._retriever = retriever
 
-        self.raw_pfasta_headers = ()
+        self.raw_pfasta_headers = []
         self.vfs_df = pd.DataFrame()
 
     def load(self):
@@ -122,8 +122,7 @@ class Annotator(AnnotatorTemplate):
         self.load()
 
         raw_nfasta_headers = self.annotation_df[self.INDEX_NAME_1].values
-        parsed_nfasta_headers = jb.Parallel(n_jobs=-1)(
-            jb.delayed(mp_parse_nfasta_header)(i) for i in raw_nfasta_headers)
+        parsed_nfasta_headers = multi_core_queue(mp_parse_nfasta_header, raw_nfasta_headers)
         parsed_nfasta_header_df = pd.DataFrame(parsed_nfasta_headers)
 
         self.annotation_df = pd.concat(
@@ -133,8 +132,7 @@ class Annotator(AnnotatorTemplate):
             ], axis=1, join="outer", sort=False
         ).rename_axis(index=self.INDEX_NAME_1).reset_index()
 
-        parsed_pfasta_headers = jb.Parallel(n_jobs=-1)(
-            jb.delayed(mp_parse_pfasta_header)(i) for i in self.raw_pfasta_headers)
+        parsed_pfasta_headers = multi_core_queue(mp_parse_pfasta_header, self.raw_pfasta_headers)
         parsed_pfasta_header_df = pd.DataFrame(parsed_pfasta_headers)
 
         zf_len = len(max(self.annotation_df[self.INDEX_NAME_2].values.tolist()))
@@ -161,7 +159,7 @@ if __name__ == '__main__':
 
     sequenceRetriever.get_latest_version()
     if sequenceRetriever.pick_refdata():
-        print(f"Already at latest version: '{sequenceRetriever.VERSION}'")
+        print(f"Already at the latest version: '{sequenceRetriever.VERSION}'")
         start = perf_counter()
         annotator = Annotator(sequenceRetriever)
         annotator.annotate()
