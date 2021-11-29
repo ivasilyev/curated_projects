@@ -7,7 +7,7 @@ from abc import ABC, ABCMeta, abstractmethod
 from meta.scripts.guidelines import dump_index_guide
 from meta.utils.io import dump_dict, load_dict
 from meta.utils.pandas import dump_tsv, load_tsv
-from meta.utils.primitives import object_to_dict
+from meta.utils.primitive import object_to_dict
 from meta.utils.file_system import backup_file, find_file_by_tail
 
 
@@ -141,6 +141,9 @@ class SequenceRetrieverTemplate(ABC):
         self.NUCLEOTIDE_FASTA = os.path.join(self.REFERENCE_DOWNLOAD_DIRECTORY,
                                              f"{self._reference_describer.ALIAS}.fna")
 
+    def get_latest_version(self):
+        return
+
     def download(self):
         return
 
@@ -151,11 +154,13 @@ class SequenceRetrieverTemplate(ABC):
         if default_nfasta:
             self.reset_nucleotide_fasta()
         os.makedirs(os.path.dirname(self.NUCLEOTIDE_FASTA), exist_ok=True)
+        print(f"Create symlink: '{real_file}' <===> '{self.NUCLEOTIDE_FASTA}'")
         os.symlink(real_file, self.NUCLEOTIDE_FASTA)
 
     def pick_refdata(self):
         try:
             self.refdata = ReferenceData.find_and_load_refdata(self.REFERENCE_INDEX_DIRECTORY)
+            print(f"Reference data found at '{self.refdata.refdata_file}'")
             return True
         except ValueError:
             dump_index_guide(self.NUCLEOTIDE_FASTA, self.REFERENCE_INDEX_DIRECTORY)

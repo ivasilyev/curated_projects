@@ -19,7 +19,7 @@ def dump_string(string: str, file: str):
 
 
 def load_list(file: str):
-    from meta.utils.primitives import split_lines
+    from meta.utils.primitive import split_lines
     return split_lines(load_string(file))
 
 
@@ -28,7 +28,7 @@ def dump_list(lst: list, file: str):
 
 
 def load_2d_array(file: str):
-    from meta.utils.primitives import string_to_2d_array
+    from meta.utils.primitive import string_to_2d_array
     return string_to_2d_array(load_string(file))
 
 
