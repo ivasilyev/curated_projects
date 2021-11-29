@@ -128,7 +128,7 @@ class Annotator(AnnotatorTemplate):
             ], axis=1, join="outer", sort=False
         ).rename_axis(index=self.INDEX_NAME_1).reset_index()
 
-        parsed_pfasta_headers = jb.Parallel(n_jobs=-1)(jb.delayed(mp_parse_pfasta_header)(i) for i in parsed_pfasta_headers)
+        parsed_pfasta_headers = jb.Parallel(n_jobs=-1)(jb.delayed(mp_parse_pfasta_header)(i) for i in self.raw_pfasta_headers)
         parsed_pfasta_header_df = pd.DataFrame(parsed_pfasta_headers)
 
         self.vfs_df[self.INDEX_NAME_2] = self.vfs_df["VFID"].str.extract("([0-9]+)")[0]
