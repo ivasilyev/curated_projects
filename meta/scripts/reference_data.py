@@ -116,7 +116,6 @@ class ReferenceDescriberTemplate(ABC):
 
 class SequenceRetrieverTemplate(ABC):
     __metaclass__ = ABCMeta
-    VERSION = ""
     NUCLEOTIDE_FASTA = ""
     REFERENCE_ROOT_DIRECTORY = ""
     REFERENCE_ANNOTATION = ""
@@ -137,8 +136,17 @@ class SequenceRetrieverTemplate(ABC):
     def REFERENCE_INDEX_DIRECTORY(self):
         return os.path.join(self.REFERENCE_DOWNLOAD_DIRECTORY, "index")
 
-    def set_version(self, s: str):
-        self._reference_describer.VERSION = self.VERSION = s
+    @property
+    def VERSION(self):
+        return self._reference_describer.VERSION
+
+    @VERSION.setter
+    def VERSION(self, value: str):
+        self._reference_describer.VERSION = value
+
+    @VERSION.deleter
+    def VERSION(self):
+        self._reference_describer.VERSION = ""
 
     def reset_nucleotide_fasta(self):
         # `cook_the_reference.py` takes alias directly from the file name
