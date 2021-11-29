@@ -63,7 +63,7 @@ class AnnotatorTemplate(ABC):
         self.annotation_file = ""
         self.annotation_df = pd.DataFrame()
 
-    def parse_annotation(self):
+    def load(self):
         # Most of reference sequences are short enough to not be split
         self.annotation_file = self.refdata.get_sequence_dict()["annotation"]
         self.annotation_df = load_tsv(self.annotation_file)

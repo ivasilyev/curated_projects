@@ -104,6 +104,7 @@ class Annotator(AnnotatorTemplate):
         return out
 
     def annotate(self):
+        self.load()
         raw_nfasta_headers = self.annotation_df[self.INDEX_NAME_1].values
         parsed_nfasta_headers = jb.Parallel(n_jobs=-1)(jb.delayed(self.mp_parse_nfasta_header)(i)
                                                        for i in raw_nfasta_headers)
