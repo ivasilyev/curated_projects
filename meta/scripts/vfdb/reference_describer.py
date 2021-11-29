@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 from time import perf_counter
 from datetime import datetime
 from urllib.parse import urljoin
-from meta.utils.queue import multi_core_queue
+from meta.utils.queue import single_core_queue
 from meta.utils.primitive import safe_findall
 from meta.utils.web import get_soup, download_file_to_dir
 from meta.utils.bio_sequence import get_headers_from_fasta
@@ -122,7 +122,7 @@ class Annotator(AnnotatorTemplate):
         self.load()
 
         raw_nfasta_headers = self.annotation_df[self.INDEX_NAME_1].values
-        parsed_nfasta_headers = multi_core_queue(mp_parse_nfasta_header, raw_nfasta_headers)
+        parsed_nfasta_headers = single_core_queue(mp_parse_nfasta_header, raw_nfasta_headers)
         parsed_nfasta_header_df = pd.DataFrame(parsed_nfasta_headers)
 
         self.annotation_df = pd.concat(
@@ -132,7 +132,7 @@ class Annotator(AnnotatorTemplate):
             ], axis=1, join="outer", sort=False
         ).rename_axis(index=self.INDEX_NAME_1).reset_index()
 
-        parsed_pfasta_headers = multi_core_queue(mp_parse_pfasta_header, self.raw_pfasta_headers)
+        parsed_pfasta_headers = single_core_queue(mp_parse_pfasta_header, self.raw_pfasta_headers)
         parsed_pfasta_header_df = pd.DataFrame(parsed_pfasta_headers)
 
         zf_len = len(max(self.annotation_df[self.INDEX_NAME_2].values.tolist()))
