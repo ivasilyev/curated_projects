@@ -67,6 +67,33 @@ class SequenceRetriever(SequenceRetrieverTemplate):
         self.create_nucleotide_fasta_symlink(downloaded_nfasta, default_nfasta=True)
 
 
+def mp_parse_nfasta_header(header: str):
+    # Column name, regex to extract, format to remove
+    _VFDB_REGEXES = {
+        "vfdb_id": ("^VFG(\d+)", "VFG{}"),
+        "gene_accession_id": ("\(([^\(]+)\) ", "({}) "),
+        "gene_symbol": ("^\(([^\(]+)\) ", "({}) "),
+        "gene_host": ("\[([^\]]+)\]$", "[{}]"),
+        "gene_name": (" \[([^\]]+)\] $", " [{}] "),
+        "gene_description": (".*", "{}")
+    }
+    out = {"former_id": header}
+    # Spaces are important here
+    for column_name, regexes in _VFDB_REGEXES.items():
+        regex, replacement = regexes
+        out[column_name] = safe_findall(regex, header, verbose=False)
+        if len(out.get(column_name)) > 0:
+            header = header.replace(replacement.format(out.get(column_name)), "")
+    return {k: out.get(k).strip() for k in out}
+
+
+def mp_parse_pfasta_header(header: str):
+    out = mp_parse_nfasta_header(header)
+    out = {k.replace("gene", "protein"): out.get(k) for k in out}
+    out["protein_header"] = out.pop("former_id")
+    return out
+
+
 class Annotator(AnnotatorTemplate):
     INDEX_NAME_1 = "former_id"
     INDEX_NAME_2 = "vfdb_id"
@@ -77,37 +104,10 @@ class Annotator(AnnotatorTemplate):
         self.pfasta_file = find_file_by_tail(retriever.REFERENCE_DOWNLOAD_DIRECTORY, "VFDB_setB_pro.fas")
         self.vfs_table_file = find_file_by_tail(retriever.REFERENCE_DOWNLOAD_DIRECTORY, "VFs.xls")
 
-    @staticmethod
-    def mp_parse_nfasta_header(header: str):
-        # Column name, regex to extract, format to remove
-        _VFDB_REGEXES = {
-            "vfdb_id": ("^VFG(\d+)", "VFG{}"),
-            "gene_accession_id": ("\(([^\(]+)\) ", "({}) "),
-            "gene_symbol": ("^\(([^\(]+)\) ", "({}) "),
-            "gene_host": ("\[([^\]]+)\]$", "[{}]"),
-            "gene_name": (" \[([^\]]+)\] $", " [{}] "),
-            "gene_description": (".*", "{}")
-        }
-        out = {"former_id": header}
-        # Spaces are important here
-        for column_name, regexes in _VFDB_REGEXES.items():
-            regex, replacement = regexes
-            out[column_name] = safe_findall(regex, header, verbose=False)
-            if len(out.get(column_name)) > 0:
-                header = header.replace(replacement.format(out.get(column_name)), "")
-        return {k: out.get(k).strip() for k in out}
-
-    @staticmethod
-    def mp_parse_pfasta_header(header: str):
-        out = Annotator.mp_parse_nfasta_header(header)
-        out = {k.replace("gene", "protein"): out.get(k) for k in out}
-        out["protein_header"] = out.pop("former_id")
-        return out
-
     def annotate(self):
         self.load()
         raw_nfasta_headers = self.annotation_df[self.INDEX_NAME_1].values
-        parsed_nfasta_headers = jb.Parallel(n_jobs=-1)(jb.delayed(self.mp_parse_nfasta_header)(i)
+        parsed_nfasta_headers = jb.Parallel(n_jobs=-1)(jb.delayed(mp_parse_nfasta_header)(i)
                                                        for i in raw_nfasta_headers)
         parsed_nfasta_header_df = pd.DataFrame(parsed_nfasta_headers)
         self.annotation_df = pd.concat(
@@ -118,7 +118,7 @@ class Annotator(AnnotatorTemplate):
         ).rename_axis(index=self.INDEX_NAME_1).reset_index()
 
         raw_pfasta_headers = get_headers_from_fasta(self.pfasta_file)
-        parsed_pfasta_headers = jb.Parallel(n_jobs=-1)(jb.delayed(self.mp_parse_pfasta_header)(i)
+        parsed_pfasta_headers = jb.Parallel(n_jobs=-1)(jb.delayed(mp_parse_pfasta_header)(i)
                                                        for i in raw_pfasta_headers)
         parsed_pfasta_header_df = pd.DataFrame(parsed_pfasta_headers)
 
