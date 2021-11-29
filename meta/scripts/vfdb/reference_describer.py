@@ -4,12 +4,12 @@
 
 import os
 import re
+import joblib as jb
 import pandas as pd
 from bs4 import BeautifulSoup
 from time import perf_counter
 from datetime import datetime
 from urllib.parse import urljoin
-from meta.utils.queue import single_core_queue
 from meta.utils.primitive import safe_findall
 from meta.utils.language import regex_based_tokenization
 from meta.utils.web import get_soup, download_file_to_dir
@@ -118,28 +118,28 @@ class Annotator(AnnotatorTemplate):
         self.load()
 
         raw_nfasta_headers = self.annotation_df[self.INDEX_NAME_1].values.tolist()
-        parsed_nfasta_headers = single_core_queue(mp_parse_nfasta_header, raw_nfasta_headers)
+        parsed_nfasta_headers = jb.Parallel(n_jobs=-1)(jb.delayed(mp_parse_nfasta_header)(i) for i in raw_nfasta_headers)
         parsed_nfasta_header_df = pd.DataFrame(parsed_nfasta_headers)
 
         self.annotation_df = pd.concat(
             [
                 i.set_index(self.INDEX_NAME_1) for i in
-                [parsed_nfasta_header_df, self.annotation_df]
+                [self.annotation_df, parsed_nfasta_header_df]
             ], axis=1, join="outer", sort=False
         ).rename_axis(index=self.INDEX_NAME_1).reset_index()
 
-        parsed_pfasta_headers = single_core_queue(mp_parse_pfasta_header, self.raw_pfasta_headers)
+        parsed_pfasta_headers = jb.Parallel(n_jobs=-1)(jb.delayed(mp_parse_pfasta_header)(i) for i in parsed_pfasta_headers)
         parsed_pfasta_header_df = pd.DataFrame(parsed_pfasta_headers)
 
-        zf_len = len(max(self.annotation_df[self.INDEX_NAME_2].values.tolist()))
-        parsed_pfasta_header_df[self.INDEX_NAME_2] = parsed_pfasta_header_df[self.INDEX_NAME_2].str.zfill(zf_len)
-        self.vfs_df[self.INDEX_NAME_2] = self.vfs_df["VFID"].str.extract("VF([0-9]+)")[0].astype(int)
+        self.vfs_df[self.INDEX_NAME_2] = self.vfs_df["VFID"].str.extract("([0-9]+)")[0]
+
+        dataframes = [self.annotation_df, parsed_pfasta_header_df, self.vfs_df]
+        for dataframe in dataframes:
+            dataframe[self.INDEX_NAME_2] = dataframe[self.INDEX_NAME_2].astype(int)
 
         self.annotation_df = pd.concat(
-            [
-                i.set_index(self.INDEX_NAME_2).sort_index() for i in
-                [self.annotation_df, parsed_pfasta_header_df, self.vfs_df]
-            ], axis=1, join="outer", sort=False
+            [i.set_index(self.INDEX_NAME_2).sort_index() for i in dataframes],
+            axis=1, join="outer", sort=False
         ).rename_axis(index=self.INDEX_NAME_2).sort_index().reset_index()
 
         self.dump()
