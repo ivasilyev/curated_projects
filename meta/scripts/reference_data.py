@@ -8,7 +8,7 @@ from meta.scripts.guidelines import dump_index_guide
 from meta.utils.io import dump_dict, load_dict
 from meta.utils.pandas import dump_tsv, load_tsv
 from meta.utils.primitive import object_to_dict
-from meta.utils.file_system import backup_file, find_file_by_tail
+from meta.utils.file_system import backup_file, find_file_by_tail, is_file_valid
 
 
 class ReferenceData:
@@ -175,5 +175,6 @@ class SequenceRetrieverTemplate(ABC):
             print(f"Reference data found at '{self.refdata.refdata_file}'")
             return True
         except ValueError:
-            dump_index_guide(self.NUCLEOTIDE_FASTA, self.REFERENCE_INDEX_DIRECTORY)
+            if is_file_valid(self.NUCLEOTIDE_FASTA):
+                dump_index_guide(self.NUCLEOTIDE_FASTA, self.REFERENCE_INDEX_DIRECTORY)
             return False

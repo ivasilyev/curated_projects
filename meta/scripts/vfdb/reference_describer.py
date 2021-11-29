@@ -32,7 +32,7 @@ class SequenceRetriever(SequenceRetrieverTemplate):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.download_links = ()
-        self.download_page_soup = BeautifulSoup(parser="lxml")
+        self.download_page_soup = BeautifulSoup(features="lxml")
 
     def get_download_page_soup(self):
         download_page_soup = get_soup(urljoin(self.DOMAIN_ROOT, self.DOWNLOAD_PAGE_APPEND))
@@ -152,3 +152,4 @@ if __name__ == '__main__':
     else:
         print(f"Download new version: '{sequenceRetriever.VERSION}'")
         sequenceRetriever.retrieve()
+        _ = sequenceRetriever.pick_refdata()
