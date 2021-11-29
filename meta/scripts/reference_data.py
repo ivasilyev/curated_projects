@@ -37,6 +37,7 @@ class ReferenceData:
 
     @staticmethod
     def find_and_load_refdata(directory: str):
+        print(f"Looking for '*refdata.json' in '{directory}'")
         refdata_file = find_file_by_tail(directory, "_refdata.json")
         if len(refdata_file) == 0:
             raise ValueError(f"Cannot find a RefData file within the directory '{directory}'")
@@ -135,6 +136,9 @@ class SequenceRetrieverTemplate(ABC):
     @property
     def REFERENCE_INDEX_DIRECTORY(self):
         return os.path.join(self.REFERENCE_DOWNLOAD_DIRECTORY, "index")
+
+    def set_version(self, s: str):
+        self._reference_describer.VERSION = self.VERSION = s
 
     def reset_nucleotide_fasta(self):
         # `cook_the_reference.py` takes alias directly from the file name

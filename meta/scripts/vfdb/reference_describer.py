@@ -47,7 +47,7 @@ class SequenceRetriever(SequenceRetrieverTemplate):
         update_text = self.download_page_soup.find("td", {"align": "right"}).find("i").text
         update_date = datetime.strptime(re.sub("^Last update: ", "", update_text), "%a %b %d %H:%M:%S %Y")
         print(f"Found {self._reference_describer.NAME} reference from {get_timestamp(update_date)}")
-        self.VERSION = self._reference_describer.VERSION = get_timestamp(update_date, fmt="%Y.%m.%d")
+        self.set_version(get_timestamp(update_date, fmt="%Y.%m.%d"))
 
     def download(self):
         for download_link in self.download_links:
