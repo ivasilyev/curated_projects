@@ -17,11 +17,12 @@ def remove_empty_values(input_list):
     return output_list
 
 
-def safe_findall(pattern, string, idx: int = 0):
+def safe_findall(pattern, string, idx: int = 0, verbose: bool = True):
     try:
         return re.findall(pattern, string)[idx]
     except IndexError:
-        print("Can't find the regex pattern '{}' within the string: '{}'".format(pattern, string))
+        if verbose:
+            print(f"Can't find the regex pattern '{pattern}' within the string: '{string}'")
         return ""
 
 

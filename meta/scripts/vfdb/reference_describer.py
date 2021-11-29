@@ -92,7 +92,7 @@ class Annotator(AnnotatorTemplate):
         # Spaces are important here
         for column_name, regexes in _VFDB_REGEXES.items():
             regex, replacement = regexes
-            out[column_name] = safe_findall(regex, header)
+            out[column_name] = safe_findall(regex, header, verbose=False)
             if len(out.get(column_name)) > 0:
                 header = header.replace(replacement.format(out.get(column_name)), "")
         return {k: out.get(k).strip() for k in out}
