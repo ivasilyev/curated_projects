@@ -11,6 +11,7 @@ from datetime import datetime
 from urllib.parse import urljoin
 from meta.utils.queue import single_core_queue
 from meta.utils.primitive import safe_findall
+from meta.utils.language import regex_based_tokenization
 from meta.utils.web import get_soup, download_file_to_dir
 from meta.utils.bio_sequence import get_headers_from_fasta
 from meta.utils.date_time import get_timestamp, count_elapsed_seconds
@@ -68,23 +69,17 @@ class SequenceRetriever(SequenceRetrieverTemplate):
 
 
 def mp_parse_nfasta_header(header: str):
-    # Column name, regex to extract, format to remove
     _VFDB_REGEXES = {
-        "vfdb_id": ("^VFG(\d+)", "VFG{}"),
-        "gene_accession_id": ("\(([^\(]+)\) ", "({}) "),
-        "gene_symbol": ("^\(([^\(]+)\) ", "({}) "),
-        "gene_host": ("\[([^\]]+)\]$", "[{}]"),
-        "gene_name": (" \[([^\]]+)\] $", " [{}] "),
-        "gene_description": (".*", "{}")
+        "vfdb_id": ("^([^\(\)]+)", "^([^\(\)]+)"),
+        "gene_host": ("\[([^\]]+)\] *$", "(\[[^\]]+\] *$)"),
+        "gene_name": ("\[([^\]]+)\] *$", "(\[[^\]]+\] *$)"),
+        "gene_description": ("([^\(\)]+)$", "([^\(\)]+)$"),
+        "gene_symbol": ("\(([^\(\)]+)\) *$", "^\([^\(\)]+\) *$"),
+        "gene_accession_id": ("^\(([^\(\)]+)\)", "^\([^\(\)]+\) *"),
     }
-    out = {"former_id": header}
-    # Spaces are important here
-    for column_name, regexes in _VFDB_REGEXES.items():
-        regex, replacement = regexes
-        out[column_name] = safe_findall(regex, header, verbose=True)
-        if len(out.get(column_name)) > 0:
-            header = header.replace(replacement.format(out.get(column_name)), "")
-    return {k: out.get(k).strip() for k in out}
+    out = regex_based_tokenization(_VFDB_REGEXES, header)
+    out["former_id"] = out.pop("source_string")
+    return out
 
 
 def mp_parse_pfasta_header(header: str):
@@ -121,7 +116,7 @@ class Annotator(AnnotatorTemplate):
     def annotate(self):
         self.load()
 
-        raw_nfasta_headers = self.annotation_df[self.INDEX_NAME_1].values
+        raw_nfasta_headers = self.annotation_df[self.INDEX_NAME_1].values.tolist()
         parsed_nfasta_headers = single_core_queue(mp_parse_nfasta_header, raw_nfasta_headers)
         parsed_nfasta_header_df = pd.DataFrame(parsed_nfasta_headers)
 
