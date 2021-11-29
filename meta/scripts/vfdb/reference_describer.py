@@ -70,7 +70,7 @@ class SequenceRetriever(SequenceRetrieverTemplate):
 
 def mp_parse_nfasta_header(header: str):
     _VFDB_REGEXES = {
-        "vfdb_id": ("^([^\(\)]+)", "^([^\(\)]+)"),
+        "VFID": ("^([^\(\)]+)", "^([^\(\)]+)"),
         "gene_host": ("\[([^\]]+)\] *$", "(\[[^\]]+\] *$)"),
         "gene_name": ("\[([^\]]+)\] *$", "(\[[^\]]+\] *$)"),
         "gene_description": ("([^\(\)]+)$", "([^\(\)]+)$"),
@@ -78,7 +78,8 @@ def mp_parse_nfasta_header(header: str):
         "gene_accession_id": ("^\(([^\(\)]+)\)", "^\([^\(\)]+\) *"),
     }
     out = regex_based_tokenization(_VFDB_REGEXES, header)
-    out["former_id"] = out.pop("source_string")
+    out[Annotator.INDEX_NAME_1] = out.pop("source_string")
+    out[Annotator.INDEX_NAME_2] = safe_findall("[0-9]+", out["VFID"])
     return out
 
 
@@ -132,7 +133,7 @@ class Annotator(AnnotatorTemplate):
 
         zf_len = len(max(self.annotation_df[self.INDEX_NAME_2].values.tolist()))
         parsed_pfasta_header_df[self.INDEX_NAME_2] = parsed_pfasta_header_df[self.INDEX_NAME_2].str.zfill(zf_len)
-        self.vfs_df[self.INDEX_NAME_2] = self.vfs_df["VFID"].str.extract("VF([0-9]+)")[0].str.zfill(zf_len)
+        self.vfs_df[self.INDEX_NAME_2] = self.vfs_df["VFID"].str.extract("VF([0-9]+)")[0].astype(int)
 
         self.annotation_df = pd.concat(
             [

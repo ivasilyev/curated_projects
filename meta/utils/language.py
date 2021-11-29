@@ -12,6 +12,7 @@ def regex_based_tokenization(regex_dict: dict, string: str, include_source: bool
     _string = str(string)
 
     for key, regexes in regex_dict.items():
+        _string = _string.strip()
         if len(regexes) == 1:
             extract_regex = excise_regex = regexes[0]
         else:
