@@ -32,7 +32,7 @@ class SequenceRetriever(SequenceRetrieverTemplate):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.download_links = ()
-        self.download_page_soup = BeautifulSoup()
+        self.download_page_soup = BeautifulSoup(parser="lxml")
 
     def get_download_page_soup(self):
         download_page_soup = get_soup(urljoin(self.DOMAIN_ROOT, self.DOWNLOAD_PAGE_APPEND))
@@ -46,7 +46,7 @@ class SequenceRetriever(SequenceRetrieverTemplate):
         self.get_download_page_soup()
         update_text = self.download_page_soup.find("td", {"align": "right"}).find("i").text
         update_date = datetime.strptime(re.sub("^Last update: ", "", update_text), "%a %b %d %H:%M:%S %Y")
-        print(f"Found {self._reference_describer.NAME} reference from {get_timestamp(update_date)}")
+        print(f"The latest {self._reference_describer.NAME} reference version is from {get_timestamp(update_date)}")
         self.VERSION = get_timestamp(update_date, fmt="%Y.%m.%d")
 
     def download(self):

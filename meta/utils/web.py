@@ -39,5 +39,4 @@ def download_file_to_dir(url: str, directory: str, **kwargs):
 
 def get_soup(*args, **kwargs):
     from bs4 import BeautifulSoup
-    import lxml
-    return BeautifulSoup(get_page(*args, **kwargs), "lxml")
+    return BeautifulSoup(get_page(*args, **kwargs), parser="lxml")
