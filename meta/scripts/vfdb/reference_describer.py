@@ -71,10 +71,11 @@ class Annotator(AnnotatorTemplate):
     INDEX_NAME_1 = "former_id"
     INDEX_NAME_2 = "vfdb_id"
 
-    def __init__(self, reference_download_directory: str):
+    def __init__(self, retriever: SequenceRetriever):
         super().__init__()
-        self.pfasta_file = find_file_by_tail(reference_download_directory, "VFDB_setB_pro.fas")
-        self.vfs_table_file = find_file_by_tail(reference_download_directory, "VFs.xls")
+        self.refdata = sequenceRetriever.refdata
+        self.pfasta_file = find_file_by_tail(retriever.REFERENCE_DOWNLOAD_DIRECTORY, "VFDB_setB_pro.fas")
+        self.vfs_table_file = find_file_by_tail(retriever.REFERENCE_DOWNLOAD_DIRECTORY, "VFs.xls")
 
     @staticmethod
     def mp_parse_nfasta_header(header: str):
@@ -147,8 +148,9 @@ if __name__ == '__main__':
     if sequenceRetriever.pick_refdata():
         print(f"Already at latest version: '{sequenceRetriever.VERSION}'")
         start = perf_counter()
-        annotator = Annotator(sequenceRetriever.REFERENCE_DOWNLOAD_DIRECTORY)
+        annotator = Annotator(sequenceRetriever)
         annotator.annotate()
+        annotator.dump()
         print(f"Annotation complete after {count_elapsed_seconds(count_elapsed_seconds)}")
     else:
         print(f"Download new version: '{sequenceRetriever.VERSION}'")
