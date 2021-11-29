@@ -66,6 +66,7 @@ class AnnotatorTemplate(ABC):
     def load(self):
         # Most of reference sequences are short enough to not be split
         self.annotation_file = self.refdata.get_sequence_dict()["annotation"]
+        print(f"Use the VFs description file: '{self.annotation_file}'")
         self.annotation_df = load_tsv(self.annotation_file)
         print(f"Loaded annotation file with shape '{self.annotation_df.shape}'")
 

@@ -109,19 +109,23 @@ class Annotator(AnnotatorTemplate):
         self.refdata = self._retriever.refdata
         super().load()
         pfasta_file = find_file_by_tail(self._retriever.REFERENCE_DOWNLOAD_DIRECTORY, "VFDB_setB_pro.fas")
+        print(f"Use the protein FASTA file: '{pfasta_file}'")
         self.raw_pfasta_headers = get_headers_from_fasta(pfasta_file)
-        print(f"Loaded {len(self.raw_pfasta_headers)} protein FASTA headers'")
+        print(f"Loaded {len(self.raw_pfasta_headers)} protein FASTA headers")
 
         vfs_table_file = find_file_by_tail(self._retriever.REFERENCE_DOWNLOAD_DIRECTORY, "VFs.xls")
+        print(f"Use the VFs description file: '{vfs_table_file}'")
         self.vfs_df = pd.read_excel(vfs_table_file, header=1).fillna("")
         print(f"Loaded VFs description file with shape '{self.vfs_df.shape}'")
 
     def annotate(self):
         self.load()
+
         raw_nfasta_headers = self.annotation_df[self.INDEX_NAME_1].values
-        parsed_nfasta_headers = jb.Parallel(n_jobs=-1)(jb.delayed(mp_parse_nfasta_header)(i)
-                                                       for i in raw_nfasta_headers)
+        parsed_nfasta_headers = jb.Parallel(n_jobs=-1)(
+            jb.delayed(mp_parse_nfasta_header)(i) for i in raw_nfasta_headers)
         parsed_nfasta_header_df = pd.DataFrame(parsed_nfasta_headers)
+
         self.annotation_df = pd.concat(
             [
                 i.set_index(self.INDEX_NAME_1) for i in
@@ -129,8 +133,8 @@ class Annotator(AnnotatorTemplate):
             ], axis=1, join="outer", sort=False
         ).rename_axis(index=self.INDEX_NAME_1).reset_index()
 
-        parsed_pfasta_headers = jb.Parallel(n_jobs=-1)(jb.delayed(mp_parse_pfasta_header)(i)
-                                                       for i in self.raw_pfasta_headers)
+        parsed_pfasta_headers = jb.Parallel(n_jobs=-1)(
+            jb.delayed(mp_parse_pfasta_header)(i) for i in self.raw_pfasta_headers)
         parsed_pfasta_header_df = pd.DataFrame(parsed_pfasta_headers)
 
         zf_len = len(max(self.annotation_df[self.INDEX_NAME_2].values.tolist()))
@@ -143,6 +147,8 @@ class Annotator(AnnotatorTemplate):
                 [self.annotation_df, parsed_pfasta_header_df, self.vfs_df]
             ], axis=1, join="outer", sort=False
         ).rename_axis(index=self.INDEX_NAME_2).sort_index().reset_index()
+
+        self.dump()
 
 
 if __name__ == '__main__':
@@ -159,7 +165,6 @@ if __name__ == '__main__':
         start = perf_counter()
         annotator = Annotator(sequenceRetriever)
         annotator.annotate()
-        annotator.dump()
         print(f"Annotation complete after {count_elapsed_seconds(start)}")
     else:
         print(f"Download new version: '{sequenceRetriever.VERSION}'")
