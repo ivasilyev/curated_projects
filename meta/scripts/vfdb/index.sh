@@ -11,8 +11,6 @@ function describe {
         '
 }
 
-describe
-
-bash "/data/reference/VFDB/vfdb_v2021.09.24/index/index.sh"
-
-describe
+describe && \
+bash "/data/reference/VFDB/vfdb_v2021.09.24/index/index.sh" && \
+describe &> "/data/reference/VFDB/vfdb_v2021.09.24/describe.log"

@@ -52,6 +52,7 @@ class ReferenceData:
         if backup:
             _ = backup_file(self.refdata_file)
         dump_dict(self.refdata_dict, self.refdata_file)
+        print(f"Reference Data saved to '{self.refdata_file}'")
 
 
 class AnnotatorTemplate(ABC):
@@ -74,9 +75,11 @@ class AnnotatorTemplate(ABC):
         self.refdata.load(refdata_file)
 
     def dump(self):
-        _ = backup_file(self.annotation_file)
+        backup = backup_file(self.annotation_file)
+        print(f"Annotation file backup saved to: '{backup}'")
         self.refdata.dump()
         dump_tsv(df=self.annotation_df, table_file=self.annotation_file)
+        print(f"Annotation file saved to: '{backup}'")
 
     def annotate(self):
         return

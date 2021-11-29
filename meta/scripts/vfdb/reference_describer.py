@@ -159,7 +159,7 @@ if __name__ == '__main__':
         start = perf_counter()
         annotator = Annotator(sequenceRetriever)
         annotator.annotate()
-        print(f"Annotation complete after {count_elapsed_seconds(start)}")
+        print(f"Annotation complete in {count_elapsed_seconds(start)}")
     else:
         print(f"Download new version: '{sequenceRetriever.VERSION}'")
         sequenceRetriever.retrieve()
