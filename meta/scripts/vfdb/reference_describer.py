@@ -81,7 +81,7 @@ def mp_parse_nfasta_header(header: str):
     # Spaces are important here
     for column_name, regexes in _VFDB_REGEXES.items():
         regex, replacement = regexes
-        out[column_name] = safe_findall(regex, header, verbose=False)
+        out[column_name] = safe_findall(regex, header, verbose=True)
         if len(out.get(column_name)) > 0:
             header = header.replace(replacement.format(out.get(column_name)), "")
     return {k: out.get(k).strip() for k in out}
@@ -100,9 +100,21 @@ class Annotator(AnnotatorTemplate):
 
     def __init__(self, retriever: SequenceRetriever):
         super().__init__()
-        self.refdata = sequenceRetriever.refdata
-        self.pfasta_file = find_file_by_tail(retriever.REFERENCE_DOWNLOAD_DIRECTORY, "VFDB_setB_pro.fas")
-        self.vfs_table_file = find_file_by_tail(retriever.REFERENCE_DOWNLOAD_DIRECTORY, "VFs.xls")
+        self._retriever = retriever
+
+        self.raw_pfasta_headers = ()
+        self.vfs_df = pd.DataFrame()
+
+    def load(self):
+        self.refdata = self._retriever.refdata
+        super().load()
+        pfasta_file = find_file_by_tail(self._retriever.REFERENCE_DOWNLOAD_DIRECTORY, "VFDB_setB_pro.fas")
+        self.raw_pfasta_headers = get_headers_from_fasta(pfasta_file)
+        print(f"Loaded {len(self.raw_pfasta_headers)} protein FASTA headers'")
+
+        vfs_table_file = find_file_by_tail(self._retriever.REFERENCE_DOWNLOAD_DIRECTORY, "VFs.xls")
+        self.vfs_df = pd.read_excel(vfs_table_file, header=1).fillna("")
+        print(f"Loaded VFs description file with shape '{self.vfs_df.shape}'")
 
     def annotate(self):
         self.load()
@@ -117,23 +129,20 @@ class Annotator(AnnotatorTemplate):
             ], axis=1, join="outer", sort=False
         ).rename_axis(index=self.INDEX_NAME_1).reset_index()
 
-        raw_pfasta_headers = get_headers_from_fasta(self.pfasta_file)
         parsed_pfasta_headers = jb.Parallel(n_jobs=-1)(jb.delayed(mp_parse_pfasta_header)(i)
-                                                       for i in raw_pfasta_headers)
+                                                       for i in self.raw_pfasta_headers)
         parsed_pfasta_header_df = pd.DataFrame(parsed_pfasta_headers)
-
-        vfs_df = pd.read_excel(self.vfs_table_file, header=1).fillna("")
 
         zf_len = len(max(self.annotation_df[self.INDEX_NAME_2].values.tolist()))
         parsed_pfasta_header_df[self.INDEX_NAME_2] = parsed_pfasta_header_df[self.INDEX_NAME_2].str.zfill(zf_len)
-        vfs_df[self.INDEX_NAME_2] = vfs_df["VFID"].str.extract("VF([0-9]+)")[0].str.zfill(zf_len)
+        self.vfs_df[self.INDEX_NAME_2] = self.vfs_df["VFID"].str.extract("VF([0-9]+)")[0].str.zfill(zf_len)
 
         self.annotation_df = pd.concat(
             [
                 i.set_index(self.INDEX_NAME_2).sort_index() for i in
-                [self.annotation_df, parsed_pfasta_header_df, vfs_df]
-            ], axis=1, sort=False
-        ).rename_axis(index=self.INDEX_NAME_2).sort_index()
+                [self.annotation_df, parsed_pfasta_header_df, self.vfs_df]
+            ], axis=1, join="outer", sort=False
+        ).rename_axis(index=self.INDEX_NAME_2).sort_index().reset_index()
 
 
 if __name__ == '__main__':
