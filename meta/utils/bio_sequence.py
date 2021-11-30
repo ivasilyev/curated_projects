@@ -10,3 +10,12 @@ def get_headers_from_fasta(file: str):
         _f.close()
     return sorted(set(remove_empty_values(out)))
 
+
+def remove_duplicate_sequences(records: list):
+    out = []
+    sequences = []
+    for record in records:
+        if record.seq not in sequences:
+            sequences.append(record.seq)
+            out.append(record)
+    return out

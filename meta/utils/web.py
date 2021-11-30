@@ -40,3 +40,22 @@ def download_file_to_dir(url: str, directory: str, **kwargs):
 def get_soup(*args, **kwargs):
     from bs4 import BeautifulSoup
     return BeautifulSoup(get_page(*args, **kwargs), features="lxml")
+
+
+def parse_links_from_soup(soup, prefix: str = ""):
+    from urllib.parse import urljoin
+    return [urljoin(prefix, j) for j in
+                [i.get("href") for i in soup.find_all("a")]
+            if j is not None and len(j) > 0]
+
+
+def parse_table(soup):
+    out = dict()
+    for row_soup in soup.find_all("tr"):
+        column_soups = row_soup.find_all("td")
+        key = column_soups[0].text.strip()
+        values = [i.text.strip() for i in column_soups[1:]]
+        if len(key) > 0 and sum([len(i) for i in values]) > 0:
+            out[key] = values
+    return out
+
