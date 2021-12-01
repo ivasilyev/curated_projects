@@ -12,12 +12,13 @@ from time import perf_counter
 from datetime import datetime
 from urllib.parse import urljoin
 from meta.utils.web import get_page
-from meta.utils.queue import single_core_queue
+from meta.utils.pandas import dump_tsv
+from meta.utils.primitive import safe_findall
 from meta.utils.date_time import count_elapsed_seconds
 from meta.utils.language import regex_based_tokenization
-from meta.utils.bio_sequence import remove_duplicate_sequences
 from meta.utils.web import get_soup, parse_table, parse_links_from_soup
-from meta.scripts.reference_data import AnnotatorTemplate, ReferenceDescriberTemplate, SequenceRetrieverTemplate
+from meta.scripts.reference_data import ReferenceDescriberTemplate, SequenceRetrieverTemplate
+from meta.utils.bio_sequence import dump_sequences, load_sequences, remove_duplicate_sequences
 
 
 class ReferenceDescriber(ReferenceDescriberTemplate):
@@ -56,6 +57,18 @@ def mp_parse_nfasta_header(header: str):
     return out
 
 
+def get_tadb_feature_table_dict(tadb_number: int):
+    feature_page_url = urljoin(SequenceRetriever.DOMAIN_ROOT, f"feature_page.php?TAs_id={tadb_number}")
+    feature_page_soup = get_soup(feature_page_url)
+    feature_page_table_soup = feature_page_soup.find("table")
+    if feature_page_table_soup is None or len(feature_page_table_soup) == 0:
+        print(f"Cannot scrap the URL: {feature_page_url}")
+        return dict()
+    feature_parsed_table_dict = {f"Online Feature {k}": v[0] for k, v in parse_table(feature_page_table_soup).items()}
+    feature_parsed_table_dict["tadb_number"] = feature_parsed_table_dict.pop("Online Feature TA ID")
+    return feature_parsed_table_dict
+
+
 class SequenceRetriever(SequenceRetrieverTemplate):
     DOMAIN_ROOT = "https://bioinfo-mml.sjtu.edu.cn/TADB2/"
     DOWNLOAD_PAGE_APPEND = "download.html"
@@ -78,17 +91,6 @@ class SequenceRetriever(SequenceRetrieverTemplate):
         if s.startswith("RE"):
             return "Regulator"
 
-    @staticmethod
-    def get_tadb_feature_table_dict(tadb_number: int):
-        feature_page_url = urljoin(SequenceRetriever.DOMAIN_ROOT,
-                                   f"feature_page.php?TAs_id={tadb_number}")
-        feature_page_soup = get_soup(feature_page_url)
-        feature_page_table_soup = feature_page_soup.find("table")
-        feature_parsed_table_dict = {f"Feature {k}": v[0] for k, v in
-                                     parse_table(feature_page_table_soup).items()}
-        feature_parsed_table_dict["tadb_number"] = feature_parsed_table_dict.pop("Feature TA ID")
-        return feature_parsed_table_dict
-
     def retrieve(self):
         """
         Reference version is parsed directly from the web page.
@@ -101,7 +103,8 @@ class SequenceRetriever(SequenceRetrieverTemplate):
         download_page_soup = get_soup(urljoin(self.DOMAIN_ROOT, self.DOWNLOAD_PAGE_APPEND))
 
         update_text = download_page_soup.find("em").text
-        datetime.strptime(re.sub("^Last Update: ", "", update_text), "%B, %Y")
+        update_datetime = datetime.strptime(re.sub("^Last Update:[ ]*", "", update_text), "%B, %Y")
+        self.VERSION = update_datetime.strftime("%Y.%m")
         table_soup = download_page_soup.find("table")
         download_links = parse_links_from_soup(table_soup, self.DOMAIN_ROOT)
         sequence_types = sorted(set([self.get_sequence_type(i) for i in download_links]))
@@ -118,31 +121,11 @@ class SequenceRetriever(SequenceRetrieverTemplate):
 
         records_by_sequence_type = {k: remove_duplicate_sequences(v) for k, v in records_by_sequence_type.items()}
 
-        parsed_headers = dict()
+        self.reset_nucleotide_fasta()
 
-        parsed_headers["nucleotide"] = jb.Parallel(n_jobs=-1)(
-            jb.delayed(mp_parse_nfasta_header)
-            (i.description)
-            for i in records_by_sequence_type["nucleotide"]
-        )
-
-        parsed_headers["protein"] = jb.Parallel(n_jobs=-1)(
-            jb.delayed(mp_parse_pfasta_header)
-            (i.description)
-            for i in records_by_sequence_type["protein"]
-        )
-
-        header_dataframes = [pd.DataFrame(i) for i in parsed_headers.values()]
-
-        annotation_df = pd.merge(*header_dataframes, how="outer", on=self.INDEX_COLUMN, sort=False)
-        annotation_df["category"] = annotation_df[self.INDEX_COLUMN].map(self.choose_tadb_id_category)
-        annotation_df["tadb_number"] = annotation_df[self.INDEX_COLUMN].str.extract("([0-9]+)").astype(int)
-
-        tadb_numbers = sorted(annotation_df["tadb_number"].unique())
-
-        start = perf_counter()
-        tadb_table_features = single_core_queue(self.get_tadb_feature_table_dict, tadb_numbers)
-        print(f"Completed TADB feature scrapping in {count_elapsed_seconds(start)}")
+        dump_sequences(records_by_sequence_type["nucleotide"], self.NUCLEOTIDE_FASTA)
+        dump_sequences(records_by_sequence_type["protein"],
+                       f"{os.path.splitext(self.NUCLEOTIDE_FASTA)[0]}.faa")
 
 
 if __name__ == '__main__':
@@ -150,3 +133,13 @@ if __name__ == '__main__':
     outputDir = referenceDescriber.parse_args()
     os.makedirs(outputDir, exist_ok=True)
 
+    sequenceRetriever = SequenceRetriever(referenceDescriber)
+    sequenceRetriever.REFERENCE_ROOT_DIRECTORY = outputDir
+
+    sequenceRetriever.get_latest_version()
+    if sequenceRetriever.pick_refdata():
+        pass
+    else:
+        print(f"Download new version: '{sequenceRetriever.VERSION}'")
+        sequenceRetriever.retrieve()
+        _ = sequenceRetriever.pick_refdata()

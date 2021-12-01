@@ -26,7 +26,9 @@ def load_sequences(file: str, fmt: str = "fasta"):
 
 
 def dump_sequences(sequences: list, file: str, fmt: str = "fasta"):
+    import os
     from Bio import SeqIO
+    os.makedirs(os.path.dirname(file), exist_ok=True)
     with open(file, mode="w", encoding="utf-8") as f:
         SeqIO.write(sequences, f, fmt)
         f.close()
