@@ -1,17 +1,23 @@
 
 import os
 
+DEFAULT_HEADER = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.19 Safari/537.36"
 
-def get_page(url: str, header: str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.19 Safari/537.36"):
+
+def get_page(url: str, header: str = DEFAULT_HEADER, empty_content_retries: int = 5):
     from requests import get
-    response = get(url, headers={"User-Agent": header})
-    content = response.content
-    if response.status_code != 200:
-        print(f"Got response with status {response.status_code} for '{url}'")
-    return content
+    for retry in range(empty_content_retries):
+        response = get(url, headers={"User-Agent": header})
+        if response.status_code != 200:
+            print(f"Got response with status {response.status_code} for '{url}'")
+        content = response.content
+        if len(content) > 0:
+            return content
+    print("Exceeded empty content retries count for the URL: '{}'".format(url))
+    return b""
 
 
-def get_file(url: str, file: str = "", force: bool = True, header: str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.19 Safari/537.36"):
+def get_file(url: str, file: str = "", force: bool = True, header: str = DEFAULT_HEADER):
     from requests import get
     from meta.utils.file_system import is_file_valid
     if is_file_valid(file) and not force:
