@@ -160,6 +160,6 @@ if __name__ == '__main__':
         annotator.annotate()
         print(f"Annotation complete in {count_elapsed_seconds(startTime)}")
     else:
-        print(f"Download new version: '{sequenceRetriever.VERSION}'")
+        print(f"Download the new version: '{sequenceRetriever.VERSION}'")
         sequenceRetriever.retrieve()
         _ = sequenceRetriever.pick_refdata()

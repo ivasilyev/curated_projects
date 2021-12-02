@@ -6,6 +6,7 @@ import os
 import re
 import joblib as jb
 import pandas as pd
+from bs4 import BeautifulSoup
 from time import perf_counter
 from datetime import datetime
 from urllib.parse import urljoin
@@ -35,6 +36,10 @@ class SequenceRetriever(SequenceRetrieverTemplate):
         super().__init__(*args, **kwargs)
 
         self.links_by_sequence_type = dict()
+        self.download_page_soup = BeautifulSoup(features="lxml")
+
+    def get_download_page_soup(self):
+        self.download_page_soup = get_soup(urljoin(self.DOMAIN_ROOT, self.DOWNLOAD_PAGE_APPEND))
 
     @staticmethod
     def get_sequence_type(s: str):
@@ -45,7 +50,7 @@ class SequenceRetriever(SequenceRetrieverTemplate):
         s = get_page(url).decode("utf-8")
         return string_to_sequences(s, "fasta")
 
-    def retrieve(self):
+    def get_latest_version(self):
         """
         Reference version is parsed directly from the web page.
         E.g.:
@@ -53,14 +58,15 @@ class SequenceRetriever(SequenceRetrieverTemplate):
         TADB Version: 2.0
         Last Update: June, 2017
         """
-
-        download_page_soup = get_soup(urljoin(self.DOMAIN_ROOT, self.DOWNLOAD_PAGE_APPEND))
-
-        update_text = download_page_soup.find("em").text
+        self.get_download_page_soup()
+        update_text = self.download_page_soup.find("em").text
         update_datetime = datetime.strptime(re.sub("^Last Update:[ ]*", "", update_text), "%B, %Y")
         self.VERSION = update_datetime.strftime("%Y.%m")
 
-        table_soup = download_page_soup.find("table")
+    def retrieve(self):
+        if len(self.download_page_soup) == 0:
+            self.get_latest_version()
+        table_soup = self.download_page_soup.find("table")
         download_links = parse_links_from_soup(table_soup, self.DOMAIN_ROOT)
         sequence_types = sorted(set([self.get_sequence_type(i) for i in download_links]))
 
@@ -215,6 +221,6 @@ if __name__ == '__main__':
         annotator.annotate()
         print(f"Annotation complete in {count_elapsed_seconds(startTime)}")
     else:
-        print(f"Download new version: '{sequenceRetriever.VERSION}'")
+        print(f"Download the new version: '{sequenceRetriever.VERSION}'")
         sequenceRetriever.retrieve()
         _ = sequenceRetriever.pick_refdata()
