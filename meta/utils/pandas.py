@@ -60,3 +60,33 @@ def corr(df: pd.DataFrame, methods: list = None):
     except AttributeError:
         pass
     return d
+
+
+def convert_objects(df: pd.DataFrame, type_=str):
+    _df = df.copy()
+    for column in _df.columns:
+        _df[column] = _df[column].astype(type_)
+    return _df
+
+
+def left_merge(left_df: pd.DataFrame, right_df: pd.DataFrame, on: str, update: bool = True):
+    assert all(isinstance(i, pd.DataFrame) for i in [left_df, right_df])
+    _left_df = left_df.copy()
+    _right_df = right_df.copy()
+    if update:
+        _left_df.update(_right_df)
+    df1_unique_columns = [i for i in _right_df.columns if i not in _left_df.columns]
+
+    return _left_df.merge(_right_df.loc[:, [on] + df1_unique_columns], on=on, how="left")
+
+
+def deduplicate_df_by_row_merging(df: pd.DataFrame, on: str, sep: str = ";"):
+    sep = ";"
+    duplicated_values = df.loc[df[on].sort_values().duplicated(), :][on].sort_values().values
+
+    series = []
+    for duplicated_value in duplicated_values:
+        series.append(df.loc[df[on] == duplicated_value].apply(
+            lambda x: sep.join([str(i) for i in sorted(set(x.values))]), axis=0))
+    return pd.concat([pd.DataFrame(series), df.loc[~df[on].isin(duplicated_values)]],
+                     axis=0).sort_values(on)
