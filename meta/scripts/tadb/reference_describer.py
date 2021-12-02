@@ -214,7 +214,6 @@ class Annotator(AnnotatorTemplate):
 
         self.annotation_df = pd.merge(self.header_based_df, self.scrapped_feature_df,
                                       how="outer", on="tadb_number")
-        self.dump()
 
 
 if __name__ == '__main__':
@@ -231,6 +230,7 @@ if __name__ == '__main__':
         startTime = perf_counter()
         annotator = Annotator(sequenceRetriever)
         annotator.annotate()
+        annotator.dump()
         print(f"Annotation complete in {count_elapsed_seconds(startTime)}")
     else:
         print(f"Download the new version: '{sequenceRetriever.VERSION}'")

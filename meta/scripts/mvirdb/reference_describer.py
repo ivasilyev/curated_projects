@@ -34,12 +34,11 @@ class Annotator(AnnotatorTemplate):
 
     def annotate(self):
         _INDEX_COLUMN = "#Virulence Factor ID"
-        self.parse_annotation()
+        self.load()
         reference_df = pd.read_csv(self.reference_annotation, engine="python", header=0,
                                    sep="\t", warn_bad_lines=True, error_bad_lines=False)
         self.annotation_df[_INDEX_COLUMN] = self.annotation_df["former_id"].str.extract("^([^|]+)|").astype(int)
         self.annotation_df = self.annotation_df.merge(reference_df, how="outer", on=_INDEX_COLUMN)
-        self.dump()
 
 
 if __name__ == '__main__':
@@ -54,4 +53,5 @@ if __name__ == '__main__':
         start = perf_counter()
         annotator = Annotator(sequenceRetriever)
         annotator.annotate()
+        annotator.dump()
         print(f"Annotation complete after {count_elapsed_seconds(count_elapsed_seconds)}")
