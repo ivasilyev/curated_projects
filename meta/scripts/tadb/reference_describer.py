@@ -59,6 +59,7 @@ class SequenceRetriever(SequenceRetrieverTemplate):
         update_text = download_page_soup.find("em").text
         update_datetime = datetime.strptime(re.sub("^Last Update:[ ]*", "", update_text), "%B, %Y")
         self.VERSION = update_datetime.strftime("%Y.%m")
+
         table_soup = download_page_soup.find("table")
         download_links = parse_links_from_soup(table_soup, self.DOMAIN_ROOT)
         sequence_types = sorted(set([self.get_sequence_type(i) for i in download_links]))
@@ -71,11 +72,16 @@ class SequenceRetriever(SequenceRetrieverTemplate):
         records_by_sequence_type = {i: [] for i in sequence_types}
 
         for sequence_type in self.links_by_sequence_type.keys():
+            start = perf_counter()
             sequences = jb.Parallel(n_jobs=-1)(
                 jb.delayed(SequenceRetriever.download_sequence)
                 (i) for i in self.links_by_sequence_type[sequence_type]
             )
-            records_by_sequence_type[sequence_type] = remove_duplicate_sequences(flatten_2d_array(sequences))
+            sequences = flatten_2d_array(sequences)
+            records_by_sequence_type[sequence_type] = remove_duplicate_sequences(sequences)
+            duplicate_number = len(sequences) - len(records_by_sequence_type[sequence_type])
+            print(f"{duplicate_number} {sequence_type} sequence duplicates removed")
+            print(f"Completed {sequence_type} sequence download in {count_elapsed_seconds(start)}")
 
         self.reset_nucleotide_fasta()
 
@@ -204,10 +210,10 @@ if __name__ == '__main__':
     sequenceRetriever.get_latest_version()
     if sequenceRetriever.pick_refdata():
         print(f"Already at the latest version: '{sequenceRetriever.VERSION}'")
-        start = perf_counter()
+        startTime = perf_counter()
         annotator = Annotator(sequenceRetriever)
         annotator.annotate()
-        print(f"Annotation complete in {count_elapsed_seconds(start)}")
+        print(f"Annotation complete in {count_elapsed_seconds(startTime)}")
     else:
         print(f"Download new version: '{sequenceRetriever.VERSION}'")
         sequenceRetriever.retrieve()

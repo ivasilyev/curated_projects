@@ -148,6 +148,7 @@ class SequenceRetrieverTemplate(ABC):
     @VERSION.setter
     def VERSION(self, value: str):
         self._reference_describer.VERSION = value
+        print(f"The latest {self._reference_describer.NAME} reference version is {value}")
 
     @VERSION.deleter
     def VERSION(self):

@@ -13,7 +13,7 @@ from urllib.parse import urljoin
 from meta.utils.primitive import safe_findall
 from meta.utils.language import regex_based_tokenization
 from meta.utils.web import get_soup, download_file_to_dir
-from meta.utils.bio_sequence import get_headers_from_fasta
+from meta.utils.bio_sequence import load_headers_from_fasta
 from meta.utils.date_time import get_timestamp, count_elapsed_seconds
 from meta.utils.file_system import decompress_file, find_file_by_tail
 from meta.scripts.reference_data import AnnotatorTemplate, ReferenceDescriberTemplate, SequenceRetrieverTemplate
@@ -47,7 +47,6 @@ class SequenceRetriever(SequenceRetrieverTemplate):
         self.get_download_page_soup()
         update_text = self.download_page_soup.find("td", {"align": "right"}).find("i").text
         update_date = datetime.strptime(re.sub("^Last update: ", "", update_text), "%a %b %d %H:%M:%S %Y")
-        print(f"The latest {self._reference_describer.NAME} reference version is from {get_timestamp(update_date)}")
         self.VERSION = get_timestamp(update_date, fmt="%Y.%m.%d")
 
     def download(self):
@@ -106,7 +105,7 @@ class Annotator(AnnotatorTemplate):
         super().load()
         pfasta_file = find_file_by_tail(self._retriever.REFERENCE_DOWNLOAD_DIRECTORY, "VFDB_setB_pro.fas")
         print(f"Use the protein FASTA file: '{pfasta_file}'")
-        self.raw_pfasta_headers = get_headers_from_fasta(pfasta_file)
+        self.raw_pfasta_headers = load_headers_from_fasta(pfasta_file)
         print(f"Loaded {len(self.raw_pfasta_headers)} protein FASTA headers")
 
         vfs_table_file = find_file_by_tail(self._retriever.REFERENCE_DOWNLOAD_DIRECTORY, "VFs.xls")
@@ -156,10 +155,10 @@ if __name__ == '__main__':
     sequenceRetriever.get_latest_version()
     if sequenceRetriever.pick_refdata():
         print(f"Already at the latest version: '{sequenceRetriever.VERSION}'")
-        start = perf_counter()
+        startTime = perf_counter()
         annotator = Annotator(sequenceRetriever)
         annotator.annotate()
-        print(f"Annotation complete in {count_elapsed_seconds(start)}")
+        print(f"Annotation complete in {count_elapsed_seconds(startTime)}")
     else:
         print(f"Download new version: '{sequenceRetriever.VERSION}'")
         sequenceRetriever.retrieve()
