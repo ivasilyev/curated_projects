@@ -58,6 +58,7 @@ class SequenceRetriever(SequenceRetrieverTemplate):
         TADB Version: 2.0
         Last Update: June, 2017
         """
+        print("Looking for a new version")
         self.get_download_page_soup()
         update_text = self.download_page_soup.find("em").text
         update_datetime = datetime.strptime(re.sub("^Last Update:[ ]*", "", update_text), "%B, %Y")
@@ -71,17 +72,18 @@ class SequenceRetriever(SequenceRetrieverTemplate):
         sequence_types = sorted(set([self.get_sequence_type(i) for i in download_links]))
 
         self.links_by_sequence_type = {
-            i: [j for j in download_links if self.get_sequence_type(j) == i]
+            i: sorted(set([j for j in download_links if self.get_sequence_type(j) == i]))
             for i in sequence_types
         }
 
         records_by_sequence_type = {i: [] for i in sequence_types}
 
-        for sequence_type in self.links_by_sequence_type.keys():
+        for sequence_type, links in self.links_by_sequence_type.items():
+            print(f"Downloading {len(links)} {sequence_type} sequences")
             start = perf_counter()
             sequences = jb.Parallel(n_jobs=-1)(
                 jb.delayed(SequenceRetriever.download_sequence)
-                (i) for i in self.links_by_sequence_type[sequence_type]
+                (i) for i in links
             )
             sequences = flatten_2d_array(sequences)
             records_by_sequence_type[sequence_type] = remove_duplicate_sequences(sequences)
@@ -92,9 +94,13 @@ class SequenceRetriever(SequenceRetrieverTemplate):
         self.reset_nucleotide_fasta()
 
         dump_sequences(records_by_sequence_type["nucleotide"], self.NUCLEOTIDE_FASTA, "fasta")
-        dump_sequences(records_by_sequence_type["protein"],
-                       f"{os.path.splitext(self.NUCLEOTIDE_FASTA)[0]}.faa",
-                       "fasta")
+        print("{} nucleotide sequences were saved into the file '{}'".format(
+            len(records_by_sequence_type["nucleotide"]), self.NUCLEOTIDE_FASTA))
+
+        protein_fasta = f"{os.path.splitext(self.NUCLEOTIDE_FASTA)[0]}.faa"
+        dump_sequences(records_by_sequence_type["protein"], protein_fasta, "fasta")
+        print("{} nucleotide sequences were saved into the file '{}'".format(
+            len(records_by_sequence_type["protein"]), protein_fasta))
 
 
 class Annotator(AnnotatorTemplate):
