@@ -6,19 +6,16 @@ import os
 import re
 import joblib as jb
 import pandas as pd
-from Bio import SeqIO
-from io import StringIO
 from time import perf_counter
 from datetime import datetime
 from urllib.parse import urljoin
 from meta.utils.web import get_page
-from meta.utils.pandas import dump_tsv
-from meta.utils.primitive import safe_findall
 from meta.utils.date_time import count_elapsed_seconds
 from meta.utils.language import regex_based_tokenization
+from meta.utils.primitive import flatten_2d_array, safe_findall
 from meta.utils.web import get_soup, parse_table, parse_links_from_soup
-from meta.scripts.reference_data import ReferenceDescriberTemplate, SequenceRetrieverTemplate
-from meta.utils.bio_sequence import dump_sequences, load_sequences, remove_duplicate_sequences
+from meta.scripts.reference_data import AnnotatorTemplate, ReferenceDescriberTemplate, SequenceRetrieverTemplate
+from meta.utils.bio_sequence import dump_sequences, load_headers_from_fasta, remove_duplicate_sequences, string_to_sequences
 
 
 class ReferenceDescriber(ReferenceDescriberTemplate):
@@ -26,47 +23,6 @@ class ReferenceDescriber(ReferenceDescriberTemplate):
     DESCRIPTION = "An updated database of bacterial type II toxin-antitoxin loci"
     DOCUMENTATION = "https://www.ncbi.nlm.nih.gov/pubmed/?term=2910666"
     WEBSITE = "http://www.mgc.ac.cn/VFs/main.htm"
-
-
-def mp_parse_pfasta_header(header: str):
-    out = regex_based_tokenization({
-        "tadb_id": ("^TADB\|([^ ]+) *", "(^TADB\|[^ ]+ *)"),
-        "protein_symbol": (" *\[([^\[\]]+)\] *$", "( *\[[^\[\]]+\] *$)"),
-        "protein_host": (" *\[([^\[\]]+)\] *$", "( *\[[^\[\]]+\] *$)"),
-        "protein_geninfo_id": ("^gi\|([0-9]+)\|*", "(^gi\|[0-9]+\|*)"),
-        "protein_refseq_id": ("^[\| ]*ref\|([^\|]+)[\| ]*", "(^[\| ]*ref\|[^\|]+[\| ]*)"),
-        "protein_description": ("(.*)", "(.*)"),
-    }, header)
-    out["protein_header"] = out.pop("source_string")
-    return out
-
-
-def mp_parse_nfasta_header(header: str):
-    out = regex_based_tokenization({
-        "tadb_id": ("^TADB\|([^ ]+) *", "(^TADB\|[^ ]+ *)"),
-        "gene_symbol": (" *\[([^\[\]]+)\] *$", "( *\[[^\[\]]+\] *$)"),
-        "gene_geninfo_id": ("^gi\|([0-9]+)[\| ]*", "(^gi\|[0-9]+[\|]*)"),
-        "gene_refseq_id": ("^[\| ]*ref\|([^\|]+)[\| ]*", "(^[\| ]*ref\|[^\|]+[\| ]*)"),
-        "dna_strand": ("^[\| ]*:([c]*)", "(^[\| ]*:[c]*)"),
-        "start_locus": ("^([0-9]+)[ -]*", "(^[0-9]+[ -]*)"),
-        "end_locus": ("^[ -]*([0-9]+)[ -]*", "(^[ -]*[0-9]+[ -]*)"),
-        "gene_description": ("(.*)", "(.*)"),
-    }, header)
-    out["former_id"] = out.pop("source_string")
-    out["is_antisense_dna_strand"] = out["dna_strand"] == "c"
-    return out
-
-
-def get_tadb_feature_table_dict(tadb_number: int):
-    feature_page_url = urljoin(SequenceRetriever.DOMAIN_ROOT, f"feature_page.php?TAs_id={tadb_number}")
-    feature_page_soup = get_soup(feature_page_url)
-    feature_page_table_soup = feature_page_soup.find("table")
-    if feature_page_table_soup is None or len(feature_page_table_soup) == 0:
-        print(f"Cannot scrap the URL: {feature_page_url}")
-        return dict()
-    feature_parsed_table_dict = {f"Online Feature {k}": v[0] for k, v in parse_table(feature_page_table_soup).items()}
-    feature_parsed_table_dict["tadb_number"] = feature_parsed_table_dict.pop("Online Feature TA ID")
-    return feature_parsed_table_dict
 
 
 class SequenceRetriever(SequenceRetrieverTemplate):
@@ -78,18 +34,16 @@ class SequenceRetriever(SequenceRetrieverTemplate):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.links_by_sequence_type = dict()
+
     @staticmethod
     def get_sequence_type(s: str):
         return s.split("/")[-2].strip()
 
     @staticmethod
-    def choose_tadb_id_category(s: str):
-        if s.startswith("T"):
-            return "Toxin"
-        if s.startswith("AT"):
-            return "Antitoxin"
-        if s.startswith("RE"):
-            return "Regulator"
+    def download_sequence(url: str):
+        s = get_page(url).decode("utf-8")
+        return string_to_sequences(s, "fasta")
 
     def retrieve(self):
         """
@@ -109,23 +63,134 @@ class SequenceRetriever(SequenceRetrieverTemplate):
         download_links = parse_links_from_soup(table_soup, self.DOMAIN_ROOT)
         sequence_types = sorted(set([self.get_sequence_type(i) for i in download_links]))
 
-        links_by_sequence_type = {i: [j for j in download_links if self.get_sequence_type(j) == i]
-                                  for i in sequence_types}
+        self.links_by_sequence_type = {
+            i: [j for j in download_links if self.get_sequence_type(j) == i]
+            for i in sequence_types
+        }
+
         records_by_sequence_type = {i: [] for i in sequence_types}
 
-        for sequence_type in links_by_sequence_type.keys():
-            for sequence_type_link in links_by_sequence_type[sequence_type]:
-                download_buffer = get_page(sequence_type_link)
-                records_by_sequence_type[sequence_type].extend(
-                    list(SeqIO.parse(StringIO(download_buffer.decode("utf-8")), "fasta")))
-
-        records_by_sequence_type = {k: remove_duplicate_sequences(v) for k, v in records_by_sequence_type.items()}
+        for sequence_type in self.links_by_sequence_type.keys():
+            sequences = jb.Parallel(n_jobs=-1)(
+                jb.delayed(SequenceRetriever.download_sequence)
+                (i) for i in self.links_by_sequence_type[sequence_type]
+            )
+            records_by_sequence_type[sequence_type] = remove_duplicate_sequences(flatten_2d_array(sequences))
 
         self.reset_nucleotide_fasta()
 
-        dump_sequences(records_by_sequence_type["nucleotide"], self.NUCLEOTIDE_FASTA)
+        dump_sequences(records_by_sequence_type["nucleotide"], self.NUCLEOTIDE_FASTA, "fasta")
         dump_sequences(records_by_sequence_type["protein"],
-                       f"{os.path.splitext(self.NUCLEOTIDE_FASTA)[0]}.faa")
+                       f"{os.path.splitext(self.NUCLEOTIDE_FASTA)[0]}.faa",
+                       "fasta")
+
+
+class Annotator(AnnotatorTemplate):
+    def __init__(self, retriever: SequenceRetriever):
+        super().__init__()
+        self._retriever = retriever
+
+        self.nucleotide_headers = []
+        self.protein_headers = []
+
+        self.header_based_df = pd.DataFrame()
+        self.tadb_numbers = []
+
+        self.scrapped_feature_df = pd.DataFrame()
+
+    def load(self):
+        start = perf_counter()
+        nfasta_file = ""
+        self.nucleotide_headers = load_headers_from_fasta(nfasta_file)
+        print(f"{len(self.nucleotide_headers)} nucleotide headers were loaded")
+        pfasta_file = ""
+        self.protein_headers = load_headers_from_fasta(pfasta_file)
+        print(f"{len(self.protein_headers)} protein headers were loaded")
+        print(f"Completed FASTA header loading in {count_elapsed_seconds(start)}")
+
+    @staticmethod
+    def mp_parse_pfasta_header(header: str):
+        out = regex_based_tokenization({
+            "tadb_id": ("^TADB\|([^ ]+) *", "(^TADB\|[^ ]+ *)"),
+            "protein_symbol": (" *\[([^\[\]]+)\] *$", "( *\[[^\[\]]+\] *$)"),
+            "protein_host": (" *\[([^\[\]]+)\] *$", "( *\[[^\[\]]+\] *$)"),
+            "protein_geninfo_id": ("^gi\|([0-9]+)\|*", "(^gi\|[0-9]+\|*)"),
+            "protein_refseq_id": ("^[\| ]*ref\|([^\|]+)[\| ]*", "(^[\| ]*ref\|[^\|]+[\| ]*)"),
+            "protein_description": ("(.*)", "(.*)"),
+        }, header)
+        out["protein_header"] = out.pop("source_string")
+        return out
+
+    @staticmethod
+    def mp_parse_nfasta_header(header: str):
+        out = regex_based_tokenization({
+            "tadb_id": ("^TADB\|([^ ]+) *", "(^TADB\|[^ ]+ *)"),
+            "gene_symbol": (" *\[([^\[\]]+)\] *$", "( *\[[^\[\]]+\] *$)"),
+            "gene_geninfo_id": ("^gi\|([0-9]+)[\| ]*", "(^gi\|[0-9]+[\|]*)"),
+            "gene_refseq_id": ("^[\| ]*ref\|([^\|]+)[\| ]*", "(^[\| ]*ref\|[^\|]+[\| ]*)"),
+            "dna_strand": ("^[\| ]*:([c]*)", "(^[\| ]*:[c]*)"),
+            "start_locus": ("^([0-9]+)[ -]*", "(^[0-9]+[ -]*)"),
+            "end_locus": ("^[ -]*([0-9]+)[ -]*", "(^[ -]*[0-9]+[ -]*)"),
+            "gene_description": ("(.*)", "(.*)"),
+        }, header)
+        out["former_id"] = out.pop("source_string")
+        out["is_antisense_dna_strand"] = out["dna_strand"] == "c"
+        return out
+
+    @staticmethod
+    def choose_tadb_id_category(s: str):
+        if s.startswith("T"):
+            return "Toxin"
+        if s.startswith("AT"):
+            return "Antitoxin"
+        if s.startswith("RE"):
+            return "Regulator"
+
+    @staticmethod
+    def get_tadb_feature_table_dict(tadb_number: int):
+        feature_page_url = urljoin(SequenceRetriever.DOMAIN_ROOT,
+                                   f"feature_page.php?TAs_id={tadb_number}")
+        feature_page_soup = get_soup(feature_page_url)
+        feature_page_table_soup = feature_page_soup.find("table")
+        if feature_page_table_soup is None or len(feature_page_table_soup) == 0:
+            print(f"Cannot scrap the URL: {feature_page_url}")
+            return dict()
+        feature_parsed_table_dict = {f"Online Feature {k}": v[0] for k, v in
+                                     parse_table(feature_page_table_soup).items()}
+        feature_parsed_table_dict["tadb_number"] = feature_parsed_table_dict.pop(
+            "Online Feature TA ID")
+        return feature_parsed_table_dict
+
+    def annotate(self):
+        nucleotide_headers = jb.Parallel(n_jobs=-1)(
+            jb.delayed(Annotator.mp_parse_nfasta_header)
+            (i) for i in self.nucleotide_headers
+        )
+        protein_headers = jb.Parallel(n_jobs=-1)(
+            jb.delayed(Annotator.mp_parse_pfasta_header)
+            (i) for i in self.protein_headers
+        )
+        header_dataframes = [pd.DataFrame(i) for i in (nucleotide_headers, protein_headers)]
+        self.header_based_df = pd.merge(*header_dataframes, how="outer", on="tadb_id",
+                                        sort=False).dropna(axis=1, how="all").dropna(axis=0, how="all")
+        self.header_based_df["category"] = self.header_based_df["tadb_id"].map(self.choose_tadb_id_category)
+        self.header_based_df["tadb_number"] = self.header_based_df["tadb_id"].map(
+            lambda x: safe_findall("^[A-Z]*([0-9]+)", str(x).upper(), verbose=False))
+        self.tadb_numbers = sorted(self.header_based_df["tadb_number"].unique())
+
+        start = perf_counter()
+        tadb_scrapped_features = jb.Parallel(n_jobs=-1)(
+            jb.delayed(Annotator.get_tadb_feature_table_dict)
+            (i) for i in self.tadb_numbers
+        )
+        print(f"Completed TADB feature scrapping in {count_elapsed_seconds(start)}")
+
+        self.scrapped_feature_df = pd.DataFrame(tadb_scrapped_features).dropna(
+            axis=1, how="all").dropna(axis=0, how="all").drop_duplicates()
+
+        self.annotation_df = pd.merge(self.header_based_df, self.scrapped_feature_df,
+                                      how="outer", on="tadb_number")
+        self.dump()
 
 
 if __name__ == '__main__':
@@ -138,7 +203,11 @@ if __name__ == '__main__':
 
     sequenceRetriever.get_latest_version()
     if sequenceRetriever.pick_refdata():
-        pass
+        print(f"Already at the latest version: '{sequenceRetriever.VERSION}'")
+        start = perf_counter()
+        annotator = Annotator(sequenceRetriever)
+        annotator.annotate()
+        print(f"Annotation complete in {count_elapsed_seconds(start)}")
     else:
         print(f"Download new version: '{sequenceRetriever.VERSION}'")
         sequenceRetriever.retrieve()

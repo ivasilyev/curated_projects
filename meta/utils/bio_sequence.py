@@ -25,6 +25,12 @@ def load_sequences(file: str, fmt: str = "fasta"):
     return out
 
 
+def string_to_sequences(s: str, fmt: str = "fasta"):
+    from Bio import SeqIO
+    from io import StringIO
+    return list(SeqIO.parse(StringIO(s), fmt))
+
+
 def dump_sequences(sequences: list, file: str, fmt: str = "fasta"):
     import os
     from Bio import SeqIO
@@ -34,7 +40,7 @@ def dump_sequences(sequences: list, file: str, fmt: str = "fasta"):
         f.close()
 
 
-def get_headers_from_fasta(file: str):
+def load_headers_from_fasta(file: str):
     from re import sub
     from meta.utils.primitive import remove_empty_values
     out = []
