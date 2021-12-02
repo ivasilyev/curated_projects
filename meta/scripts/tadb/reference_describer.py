@@ -165,6 +165,10 @@ class Annotator(AnnotatorTemplate):
             return "Regulator"
 
     @staticmethod
+    def _process_table_header(s: str):
+        return f"Online Feature {s}"
+
+    @staticmethod
     def get_tadb_feature_table_dict(tadb_number: int):
         feature_page_url = urljoin(SequenceRetriever.DOMAIN_ROOT,
                                    f"feature_page.php?TAs_id={tadb_number}")
@@ -173,10 +177,12 @@ class Annotator(AnnotatorTemplate):
         if feature_page_table_soup is None or len(feature_page_table_soup) == 0:
             print(f"Cannot scrap the URL: {feature_page_url}")
             return dict()
-        feature_parsed_table_dict = {f"Online Feature {k}": v[0] for k, v in
+        feature_parsed_table_dict = {Annotator._process_table_header(k): v[0] for k, v in
                                      parse_table(feature_page_table_soup).items()}
         feature_parsed_table_dict["tadb_number"] = feature_parsed_table_dict.pop(
-            "Online Feature TA ID")
+            Annotator._process_table_header("TA ID"))
+        feature_parsed_table_dict[Annotator._process_table_header("Feature Replicon")] = feature_parsed_table_dict[
+            Annotator._process_table_header("Feature Replicon")].replace("[Browse all TAs(s) in this replicon]").strip()
         return feature_parsed_table_dict
 
     def annotate(self):
