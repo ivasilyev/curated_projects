@@ -80,7 +80,7 @@ class SequenceRetriever(SequenceRetrieverTemplate):
         records_by_sequence_type = {i: [] for i in sequence_types}
 
         for sequence_type, links in self.links_by_sequence_type.items():
-            print(f"Downloading {len(links)} {sequence_type} sequences")
+            print(f"Downloading {len(links)} {sequence_type} sequence files")
             start = perf_counter()
             sequences = jb.Parallel(n_jobs=-1)(
                 jb.delayed(SequenceRetriever.download_sequence)
@@ -91,8 +91,6 @@ class SequenceRetriever(SequenceRetrieverTemplate):
             duplicate_number = len(sequences) - len(records_by_sequence_type[sequence_type])
             print(f"{duplicate_number} {sequence_type} sequence duplicates removed")
             print(f"Completed {sequence_type} sequence download in {count_elapsed_seconds(start)}")
-
-        self.reset_nucleotide_fasta()
 
         dump_sequences(records_by_sequence_type["nucleotide"], self.NUCLEOTIDE_FASTA, "fasta")
         print("{} nucleotide sequences were saved into the file '{}'".format(
@@ -288,12 +286,14 @@ if __name__ == '__main__':
     sequenceRetriever.REFERENCE_ROOT_DIRECTORY = outputDir
 
     sequenceRetriever.get_latest_version()
-    if sequenceRetriever.pick_refdata():
+
+    isAnnotationReady = sequenceRetriever.pick_refdata()
+    sequenceRetriever.reset_nucleotide_fasta()
+    sequenceRetriever.reset_protein_fasta()
+
+    if isAnnotationReady:
         print(f"Already at the latest version: '{sequenceRetriever.VERSION}'")
         startTime = perf_counter()
-
-        sequenceRetriever.reset_nucleotide_fasta()
-        sequenceRetriever.reset_protein_fasta()
 
         annotator = Annotator(sequenceRetriever.refdata,
                               sequenceRetriever.NUCLEOTIDE_FASTA,
@@ -301,6 +301,6 @@ if __name__ == '__main__':
         annotator.run()
         print(f"Annotation complete in {count_elapsed_seconds(startTime)}")
     else:
-        print(f"Download the new version: '{sequenceRetriever.VERSION}'")
+        print(f"Downloading the new version: '{sequenceRetriever.VERSION}'")
         sequenceRetriever.retrieve()
         _ = sequenceRetriever.pick_refdata()
