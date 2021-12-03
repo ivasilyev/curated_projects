@@ -227,6 +227,30 @@ class Annotator(AnnotatorTemplate):
         return feature_parsed_table_dict
 
     def annotate(self):
+        """
+        Merges data from:
+        * DNA FASTA
+        * Protein FASTA
+        * Reference annotation from `cook_the_reference.py` (main)
+        * Feature HTML tables hosted directly on the TADB website
+
+        The obtained data is very excessive.
+        It requires a careful sequential pre- and post-merging processing.
+
+        E.g. the Salmonella enterica Xre-RelE system, TADB feature ID 6087:
+
+        Feature URL: 'https://bioinfo-mml.sjtu.edu.cn/TADB2/feature_page.php?TAs_id=6087'
+
+        Nucleotide sequences:
+        'TADB|T6087 gi|16763390|ref|NC_003197.1|:c4240403-4240092 Salmonella enterica subsp. enterica serovar Typhimurium str. LT2 chromosome, complete genome [STM4031]',
+        'TADB|AT6087 gi|16763390|ref|NC_003197.1|:c4240077-4239649 Salmonella enterica subsp. enterica serovar Typhimurium str. LT2 chromosome, complete genome [STM4030.S]',
+        'TADB|AT6087 gi|1109557564|ref|NC_003197.2|:c4240108-4239662 Salmonella enterica subsp. enterica serovar Typhimurium str. LT2, complete genome. [STM4030.S]'
+
+        Protein sequences:
+        'TADB|T6087 gi|16767296|ref|NP_462911.1| hypothetical protein STM4031 [Salmonella enterica subsp. enterica serovar Typhimurium str. LT2] [STM4031]',
+        'TADB|AT6087 gi|39546386|ref|NP_462910.2| hypothetical protein STM4030.S [Salmonella enterica subsp. enterica serovar Typhimurium str. LT2] [STM4030.S]'
+        """
+
         self.header_based_df = deduplicate_df_by_row_merging(
             pd.merge(
                 self.nucleotide_header_df, self.protein_header_df, how="outer", on="tadb_id"
@@ -274,7 +298,6 @@ if __name__ == '__main__':
         annotator = Annotator(sequenceRetriever.refdata,
                               sequenceRetriever.NUCLEOTIDE_FASTA,
                               sequenceRetriever.PROTEIN_FASTA)
-        annotator.refdata = sequenceRetriever.refdata
         annotator.run()
         print(f"Annotation complete in {count_elapsed_seconds(startTime)}")
     else:
