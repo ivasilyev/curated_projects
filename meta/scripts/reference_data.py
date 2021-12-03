@@ -15,14 +15,14 @@ class ReferenceData:
     def __init__(self):
         self.refdata_file = ""
         self.refdata_dict = dict()
-        self.sequences = ()
+
+    @property
+    def sequences(self):
+        return tuple(sorted([i for i in self.refdata_dict.keys() if i.startswith("sequence_")]))
 
     def parse(self, refdata_file):
         self.refdata_file = refdata_file
         self.refdata_dict = load_dict(self.refdata_file)
-        self.sequences = tuple(sorted(
-            [i for i in self.refdata_dict.keys() if i.startswith("sequence_")]
-        ))
         print(f"Parsed {len(self.sequences)} reference sequences")
 
     def get_sequence_dict(self, number: int = 1):
