@@ -84,6 +84,11 @@ class AnnotatorTemplate(ABC):
     def annotate(self):
         return
 
+    def run(self):
+        self.load()
+        self.annotate()
+        self.dump()
+
 
 class ReferenceDescriberTemplate(ABC):
     __metaclass__ = ABCMeta
