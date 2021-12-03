@@ -20,8 +20,10 @@ class ReferenceData:
     def parse(self, refdata_file):
         self.refdata_file = refdata_file
         self.refdata_dict = load_dict(self.refdata_file)
-        self.sequences = tuple(sorted([i for i in self.refdata_dict.keys()
-                                       if i.startswith("sequence_")]))
+        self.sequences = tuple(sorted(
+            [i for i in self.refdata_dict.keys() if i.startswith("sequence_")]
+        ))
+        print(f"Parsed {len(self.sequences)} reference sequences")
 
     def get_sequence_dict(self, number: int = 1):
         n = len(self.sequences)
@@ -41,6 +43,7 @@ class ReferenceData:
         refdata_file = find_file_by_tail(directory, "_refdata.json")
         if len(refdata_file) == 0:
             raise ValueError(f"Cannot find a RefData file within the directory '{directory}'")
+        print(f"Reference data found at '{refdata_file}'")
         return ReferenceData.load(refdata_file)
 
     def update_metadata(self, d: dict):
@@ -183,7 +186,6 @@ class SequenceRetrieverTemplate(ABC):
     def pick_refdata(self):
         try:
             self.refdata = ReferenceData.find_and_load_refdata(self.REFERENCE_INDEX_DIRECTORY)
-            print(f"Reference data found at '{self.refdata.refdata_file}'")
             return True
         except ValueError:
             if is_file_valid(self.NUCLEOTIDE_FASTA):
