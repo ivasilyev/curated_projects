@@ -80,13 +80,28 @@ def left_merge(left_df: pd.DataFrame, right_df: pd.DataFrame, on: str, update: b
     return _left_df.merge(_right_df.loc[:, [on] + df1_unique_columns], on=on, how="left")
 
 
-def deduplicate_df_by_row_merging(df: pd.DataFrame, on: str, sep: str = ";"):
-    sep = ";"
-    duplicated_values = df.loc[df[on].sort_values().duplicated(), :][on].sort_values().values
+def find_duplicated_rows(df: pd.DataFrame, on: str):
+    return df.loc[df[on].duplicated(keep=False)].sort_values(on)
 
-    series = []
-    for duplicated_value in duplicated_values:
-        series.append(df.loc[df[on] == duplicated_value].apply(
-            lambda x: sep.join([str(i) for i in sorted(set(x.values))]), axis=0))
-    return pd.concat([pd.DataFrame(series), df.loc[~df[on].isin(duplicated_values)]],
-                     axis=0).sort_values(on)
+
+def find_notna_rows(df: pd.DataFrame, on: str):
+    return df.loc[~df[on].isna()]
+
+
+def deduplicate_df_by_row_merging(df: pd.DataFrame, on: str, sep: str = ";"):
+    def _deduplicate(series: pd.Series):
+        return sep.join(sorted(set([str(i) for i in series.values])))
+
+    _df = convert_objects(df)
+    duplicated_df = find_duplicated_rows(_df, on)
+
+    out_series = []
+    for duplicated_value in sorted(set(duplicated_df[on].values)):
+        out_series.append(
+            duplicated_df.loc[duplicated_df[on] == duplicated_value].apply(_deduplicate, axis=0)
+        )
+
+    return pd.concat(
+        [pd.DataFrame(out_series), _df.drop(index=duplicated_df.index)],
+        axis=0
+    ).sort_values(on)

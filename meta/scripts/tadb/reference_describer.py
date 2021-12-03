@@ -13,8 +13,10 @@ from urllib.parse import urljoin
 from meta.utils.web import get_page
 from meta.utils.date_time import count_elapsed_seconds
 from meta.utils.language import regex_based_tokenization
-from meta.utils.primitive import flatten_2d_array, safe_findall
+from meta.utils.file_system import is_file_valid, find_file_by_tail
 from meta.utils.web import get_soup, parse_table, parse_links_from_soup
+from meta.utils.pandas import find_notna_rows, deduplicate_df_by_row_merging
+from meta.utils.primitive import flatten_2d_array, safe_findall, remove_empty_values
 from meta.scripts.reference_data import AnnotatorTemplate, ReferenceDescriberTemplate, SequenceRetrieverTemplate
 from meta.utils.bio_sequence import dump_sequences, load_headers_from_fasta, remove_duplicate_sequences, string_to_sequences
 
@@ -37,6 +39,13 @@ class SequenceRetriever(SequenceRetrieverTemplate):
 
         self.links_by_sequence_type = dict()
         self.download_page_soup = BeautifulSoup(features="lxml")
+
+    @property
+    def PROTEIN_FASTA(self):
+        out = f"{os.path.splitext(self.NUCLEOTIDE_FASTA)[0]}.faa"
+        if not is_file_valid(out):
+            out = find_file_by_tail(".faa", outputDir)
+        return out
 
     def get_download_page_soup(self):
         self.download_page_soup = get_soup(urljoin(self.DOMAIN_ROOT, self.DOWNLOAD_PAGE_APPEND))
@@ -97,10 +106,9 @@ class SequenceRetriever(SequenceRetrieverTemplate):
         print("{} nucleotide sequences were saved into the file '{}'".format(
             len(records_by_sequence_type["nucleotide"]), self.NUCLEOTIDE_FASTA))
 
-        protein_fasta = f"{os.path.splitext(self.NUCLEOTIDE_FASTA)[0]}.faa"
-        dump_sequences(records_by_sequence_type["protein"], protein_fasta, "fasta")
+        dump_sequences(records_by_sequence_type["protein"], self.PROTEIN_FASTA, "fasta")
         print("{} nucleotide sequences were saved into the file '{}'".format(
-            len(records_by_sequence_type["protein"]), protein_fasta))
+            len(records_by_sequence_type["protein"]), self.PROTEIN_FASTA))
 
 
 class Annotator(AnnotatorTemplate):
@@ -108,23 +116,52 @@ class Annotator(AnnotatorTemplate):
         super().__init__()
         self._retriever = retriever
 
-        self.nucleotide_headers = []
-        self.protein_headers = []
+        self._annotation_df = pd.DataFrame()
 
+        self._nucleotide_headers = []
+        self._protein_headers = []
+        self.nucleotide_header_df = pd.DataFrame()
+        self.protein_header_df = pd.DataFrame()
         self.header_based_df = pd.DataFrame()
-        self.tadb_numbers = []
+        self.header_annotation_df = pd.DataFrame()
 
+        self.tadb_numbers = []
         self.scrapped_feature_df = pd.DataFrame()
+        self.scrapped_header_annotation_df = pd.DataFrame()
 
     def load(self):
+        super().load()
+
         start = perf_counter()
-        nfasta_file = ""
-        self.nucleotide_headers = load_headers_from_fasta(nfasta_file)
-        print(f"{len(self.nucleotide_headers)} nucleotide headers were loaded")
-        pfasta_file = ""
-        self.protein_headers = load_headers_from_fasta(pfasta_file)
-        print(f"{len(self.protein_headers)} protein headers were loaded")
+        self._nucleotide_headers = load_headers_from_fasta(self._retriever.NUCLEOTIDE_FASTA)
+        parsed_nucleotide_headers = jb.Parallel(n_jobs=-1)(
+            jb.delayed(Annotator.mp_parse_nfasta_header)
+            (i) for i in self._nucleotide_headers
+        )
+        self.nucleotide_header_df = pd.DataFrame(parsed_nucleotide_headers).dropna(
+            axis=1, how="all").dropna(axis=0, how="all").drop_duplicates()
+        print(f"Parsed nucleotide header table with shape {self.nucleotide_header_df.shape}")
+
+        self._protein_headers = load_headers_from_fasta(self._retriever.PROTEIN_FASTA)
+        parsed_protein_headers = jb.Parallel(n_jobs=-1)(
+            jb.delayed(Annotator.mp_parse_pfasta_header)
+            (i) for i in self._protein_headers
+        )
+        self.protein_header_df = pd.DataFrame(parsed_protein_headers).dropna(
+            axis=1, how="all").dropna(axis=0, how="all").drop_duplicates()
+        print(f"Parsed protein header table with shape {self.protein_header_df.shape}")
         print(f"Completed FASTA header loading in {count_elapsed_seconds(start)}")
+
+        self.tadb_numbers = sorted(remove_empty_values(self.nucleotide_header_df["tadb_number"].unique()))
+        start = perf_counter()
+        tadb_scrapped_features = jb.Parallel(n_jobs=-1)(
+            jb.delayed(Annotator.get_tadb_feature_table_dict)
+            (i) for i in self.tadb_numbers
+        )
+        self.scrapped_feature_df = pd.DataFrame(tadb_scrapped_features).dropna(
+            axis=1, how="all").dropna(axis=0, how="all").drop_duplicates()
+        print(f"Parse web-scrapped table with shape {self.protein_header_df.shape}")
+        print(f"Completed TADB feature scrapping in {count_elapsed_seconds(start)}")
 
     @staticmethod
     def mp_parse_pfasta_header(header: str):
@@ -153,6 +190,7 @@ class Annotator(AnnotatorTemplate):
         }, header)
         out["former_id"] = out.pop("source_string")
         out["is_antisense_dna_strand"] = out["dna_strand"] == "c"
+        out["tadb_number"] = safe_findall("^[A-Z]*([0-9]+)", str(out["tadb_id"]).upper(), verbose=False)
         return out
 
     @staticmethod
@@ -186,34 +224,32 @@ class Annotator(AnnotatorTemplate):
         return feature_parsed_table_dict
 
     def annotate(self):
-        nucleotide_headers = jb.Parallel(n_jobs=-1)(
-            jb.delayed(Annotator.mp_parse_nfasta_header)
-            (i) for i in self.nucleotide_headers
+        self.header_based_df = deduplicate_df_by_row_merging(
+            pd.merge(
+                self.nucleotide_header_df, self.protein_header_df, how="outer", on="tadb_id"
+            ).drop_duplicates(),
+            on="tadb_id"
         )
-        protein_headers = jb.Parallel(n_jobs=-1)(
-            jb.delayed(Annotator.mp_parse_pfasta_header)
-            (i) for i in self.protein_headers
+        print(f"Merged nucleotide & protein header data into table with shape {self.header_based_df.shape}")
+
+        self.header_annotation_df = pd.merge(
+            self.annotation_df, self.header_based_df, how="outer", on="former_id"
         )
-        header_dataframes = [pd.DataFrame(i) for i in (nucleotide_headers, protein_headers)]
-        self.header_based_df = pd.merge(*header_dataframes, how="outer", on="tadb_id",
-                                        sort=False).dropna(axis=1, how="all").dropna(axis=0, how="all")
-        self.header_based_df["category"] = self.header_based_df["tadb_id"].map(self.choose_tadb_id_category)
-        self.header_based_df["tadb_number"] = self.header_based_df["tadb_id"].map(
-            lambda x: safe_findall("^[A-Z]*([0-9]+)", str(x).upper(), verbose=False))
-        self.tadb_numbers = sorted(self.header_based_df["tadb_number"].unique())
-
-        start = perf_counter()
-        tadb_scrapped_features = jb.Parallel(n_jobs=-1)(
-            jb.delayed(Annotator.get_tadb_feature_table_dict)
-            (i) for i in self.tadb_numbers
+        self.header_annotation_df = find_notna_rows(
+            self.header_annotation_df, "reference_id"
         )
-        print(f"Completed TADB feature scrapping in {count_elapsed_seconds(start)}")
+        print(f"Merged annotated and header data into table with shape {self.header_annotation_df.shape}")
 
-        self.scrapped_feature_df = pd.DataFrame(tadb_scrapped_features).dropna(
-            axis=1, how="all").dropna(axis=0, how="all").drop_duplicates()
+        self.scrapped_header_annotation_df = pd.merge(
+            self.header_annotation_df, self.scrapped_feature_df, how="outer", on="tadb_number"
+        )
+        self.scrapped_header_annotation_df = find_notna_rows(
+            self.scrapped_header_annotation_df, "reference_id"
+        )
+        print(f"Merged annotated, header and scrapped data into table with shape {self.header_annotation_df.shape}")
 
-        self.annotation_df = pd.merge(self.header_based_df, self.scrapped_feature_df,
-                                      how="outer", on="tadb_number")
+        self._annotation_df = self.annotation_df.copy()
+        self.annotation_df = self.scrapped_header_annotation_df
 
 
 if __name__ == '__main__':
@@ -229,8 +265,7 @@ if __name__ == '__main__':
         print(f"Already at the latest version: '{sequenceRetriever.VERSION}'")
         startTime = perf_counter()
         annotator = Annotator(sequenceRetriever)
-        annotator.annotate()
-        annotator.dump()
+        annotator.run()
         print(f"Annotation complete in {count_elapsed_seconds(startTime)}")
     else:
         print(f"Download the new version: '{sequenceRetriever.VERSION}'")
