@@ -17,7 +17,7 @@ from meta.utils.file_system import is_file_valid, find_file_by_tail
 from meta.utils.web import get_soup, parse_table, parse_links_from_soup
 from meta.utils.pandas import find_notna_rows, deduplicate_df_by_row_merging
 from meta.utils.primitive import flatten_2d_array, safe_findall, remove_empty_values
-from meta.scripts.reference_data import AnnotatorTemplate, ReferenceDescriberTemplate, SequenceRetrieverTemplate
+from meta.scripts.reference_data import AnnotatorTemplate, ReferenceData, ReferenceDescriberTemplate, SequenceRetrieverTemplate
 from meta.utils.bio_sequence import dump_sequences, load_headers_from_fasta, remove_duplicate_sequences, string_to_sequences
 
 
@@ -112,11 +112,14 @@ class SequenceRetriever(SequenceRetrieverTemplate):
 
 
 class Annotator(AnnotatorTemplate):
-    def __init__(self, retriever: SequenceRetriever):
+    def __init__(self, refdata: ReferenceData, nfasta_file: str, pfasta_file: str):
         super().__init__()
-        self._retriever = retriever
+        self.refdata = refdata
 
         self._annotation_df = pd.DataFrame()
+
+        self._nfasta_file = nfasta_file
+        self._pfasta_file = pfasta_file
 
         self._nucleotide_headers = []
         self._protein_headers = []
@@ -133,7 +136,7 @@ class Annotator(AnnotatorTemplate):
         super().load()
 
         start = perf_counter()
-        self._nucleotide_headers = load_headers_from_fasta(self._retriever.NUCLEOTIDE_FASTA)
+        self._nucleotide_headers = load_headers_from_fasta(self._nfasta_file)
         parsed_nucleotide_headers = jb.Parallel(n_jobs=-1)(
             jb.delayed(Annotator.mp_parse_nfasta_header)
             (i) for i in self._nucleotide_headers
@@ -142,7 +145,7 @@ class Annotator(AnnotatorTemplate):
             axis=1, how="all").dropna(axis=0, how="all").drop_duplicates()
         print(f"Parsed nucleotide header table with shape {self.nucleotide_header_df.shape}")
 
-        self._protein_headers = load_headers_from_fasta(self._retriever.PROTEIN_FASTA)
+        self._protein_headers = load_headers_from_fasta(self._pfasta_file)
         parsed_protein_headers = jb.Parallel(n_jobs=-1)(
             jb.delayed(Annotator.mp_parse_pfasta_header)
             (i) for i in self._protein_headers
@@ -264,7 +267,10 @@ if __name__ == '__main__':
     if sequenceRetriever.pick_refdata():
         print(f"Already at the latest version: '{sequenceRetriever.VERSION}'")
         startTime = perf_counter()
-        annotator = Annotator(sequenceRetriever)
+        annotator = Annotator(sequenceRetriever.refdata,
+                              sequenceRetriever.NUCLEOTIDE_FASTA,
+                              sequenceRetriever.PROTEIN_FASTA)
+        annotator.refdata = sequenceRetriever.refdata
         annotator.run()
         print(f"Annotation complete in {count_elapsed_seconds(startTime)}")
     else:
