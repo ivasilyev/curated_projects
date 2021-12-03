@@ -223,7 +223,7 @@ class Annotator(AnnotatorTemplate):
             Annotator._process_table_header("Replicon")
         ] = feature_parsed_table_dict[
             Annotator._process_table_header("Replicon")
-        ].replace("[Browse all TAs(s) in this replicon]").strip()
+        ].replace("[Browse all TAs(s) in this replicon]", "").strip()
         return feature_parsed_table_dict
 
     def annotate(self):
