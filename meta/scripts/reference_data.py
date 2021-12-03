@@ -27,6 +27,8 @@ class ReferenceData:
 
     def get_sequence_dict(self, number: int = 1):
         n = len(self.sequences)
+        if n == 0:
+            raise ValueError("This ReferenceData instance does not have any sequences")
         if number > n:
             raise ValueError(f"Too much number: '{number}' ({n} max)")
         return self.refdata_dict[self.sequences[number - 1]]
@@ -42,7 +44,8 @@ class ReferenceData:
         print(f"Looking for '*refdata.json' in '{directory}'")
         refdata_file = find_file_by_tail(directory, "_refdata.json")
         if len(refdata_file) == 0:
-            raise ValueError(f"Cannot find a RefData file within the directory '{directory}'")
+            print(f"Cannot find a ReferenceData compatible file within the directory '{directory}'")
+            raise ValueError
         print(f"Reference data found at '{refdata_file}'")
         return ReferenceData.load(refdata_file)
 
@@ -70,7 +73,7 @@ class AnnotatorTemplate(ABC):
     def load(self):
         # Most of reference sequences are short enough to not be split
         self.annotation_file = self.refdata.get_sequence_dict()["annotation"]
-        print(f"Use the annotation file: '{self.annotation_file}'")
+        print(f"Using the annotation file: '{self.annotation_file}'")
         self.annotation_df = load_tsv(self.annotation_file)
         print(f"Loaded annotation file with shape '{self.annotation_df.shape}'")
 
@@ -79,8 +82,8 @@ class AnnotatorTemplate(ABC):
 
     def dump(self):
         backup = backup_file(self.annotation_file)
-        print(f"Annotation file backup saved to: '{backup}'")
         self.refdata.dump()
+        print(f"Annotation file backup saved to: '{backup}'")
         dump_tsv(df=self.annotation_df, table_file=self.annotation_file)
         print(f"Annotation file saved to: '{backup}'")
 

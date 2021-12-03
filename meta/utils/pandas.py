@@ -85,7 +85,7 @@ def find_duplicated_rows(df: pd.DataFrame, on: str):
 
 
 def find_notna_rows(df: pd.DataFrame, on: str):
-    return df.loc[~df[on].isna()]
+    return df.loc[~df[on].isna()].sort_values(on)
 
 
 def deduplicate_df_by_row_merging(df: pd.DataFrame, on: str, sep: str = ";"):
