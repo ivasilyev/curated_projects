@@ -13,7 +13,6 @@ from urllib.parse import urljoin
 from meta.utils.web import get_page
 from meta.utils.date_time import count_elapsed_seconds
 from meta.utils.language import regex_based_tokenization
-from meta.utils.file_system import is_file_valid, find_file_by_tail
 from meta.utils.web import get_soup, parse_table, parse_links_from_soup
 from meta.utils.pandas import find_notna_rows, deduplicate_df_by_row_merging
 from meta.utils.primitive import flatten_2d_array, safe_findall, remove_empty_values
@@ -39,13 +38,6 @@ class SequenceRetriever(SequenceRetrieverTemplate):
 
         self.links_by_sequence_type = dict()
         self.download_page_soup = BeautifulSoup(features="lxml")
-
-    @property
-    def PROTEIN_FASTA(self):
-        out = f"{os.path.splitext(self.NUCLEOTIDE_FASTA)[0]}.faa"
-        if not is_file_valid(out):
-            out = find_file_by_tail(".faa", outputDir)
-        return out
 
     def get_download_page_soup(self):
         self.download_page_soup = get_soup(urljoin(self.DOMAIN_ROOT, self.DOWNLOAD_PAGE_APPEND))
@@ -267,6 +259,10 @@ if __name__ == '__main__':
     if sequenceRetriever.pick_refdata():
         print(f"Already at the latest version: '{sequenceRetriever.VERSION}'")
         startTime = perf_counter()
+
+        sequenceRetriever.reset_nucleotide_fasta()
+        sequenceRetriever.reset_protein_fasta()
+
         annotator = Annotator(sequenceRetriever.refdata,
                               sequenceRetriever.NUCLEOTIDE_FASTA,
                               sequenceRetriever.PROTEIN_FASTA)
