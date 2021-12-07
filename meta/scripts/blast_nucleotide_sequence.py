@@ -81,7 +81,7 @@ def download_reference_genbank(accession_id: str):
     # NCBI query
     handle = Utilities.attempt_func(Entrez.efetch, dict(db="nucleotide", id=accession_id,
                                                         rettype="gb", retmode="text"))
-    return list(SeqIO.parse(handle, "genbank"))
+    return list(SeqIO.parse(handle, "genbank"))[0]
 
 
 def describe_reference_genbank(genbank_record: GBRecord):
@@ -138,10 +138,13 @@ if __name__ == '__main__':
                 if is_chromosomes_only and " chromosome" not in blast_result["title"]:
                     continue
                 genbank_report = download_reference_genbank(geninfo_accession)
-                Utilities.dump_string(genbank_report[0].format("genbank"), genbank_file)
-            genbank_description = describe_reference_genbank(genbank_report[0])
+                Utilities.dump_string(genbank_report.format("genbank"), genbank_file)
+            genbank_description = describe_reference_genbank(genbank_report)
             genbank_description["geninfo_id"] = geninfo_accession
             genbank_description["genbank_file"] = genbank_file
+            genbank_description["organism"] = genbank_report.annotations.get("organism")
+            genbank_description["taxonomy"] = genbank_report.annotations.get("taxonomy")
+
             genbank_descriptions.append(genbank_description)
             counter += 1
             print(f"Downloaded {counter} of {blast_result_number} sequences")
