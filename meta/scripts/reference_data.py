@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import numpy as np
 import pandas as pd
 from abc import ABC, ABCMeta, abstractmethod
 from meta.scripts.guidelines import dump_index_guide
@@ -69,6 +70,7 @@ class AnnotatorTemplate(ABC):
         self.refdata = ReferenceData()
         self.annotation_file = ""
         self.annotation_df = pd.DataFrame()
+        self._annotation_df = pd.DataFrame()
 
     def load(self):
         # Most of reference sequences are short enough to not be split
@@ -76,14 +78,18 @@ class AnnotatorTemplate(ABC):
         print(f"Using the annotation file: '{self.annotation_file}'")
         self.annotation_df = load_tsv(self.annotation_file)
         print(f"Loaded annotation file with shape '{self.annotation_df.shape}'")
+        self._annotation_df = self.annotation_df.copy()
 
     def load_refdata(self, refdata_file: str):
         self.refdata.load(refdata_file)
 
     def validate(self, index_column: str = "reference_id"):
-        values = self.annotation_df[index_column].values.tolist()
+        values = sorted(self.annotation_df[index_column].values.tolist())
         if len(values) != len(set(values)):
             raise ValueError(f"The index '{index_column}' is not uniquely valued!")
+        _values = sorted(self._annotation_df[index_column].values.tolist())
+        if values != _values:
+            raise ValueError(f"Excessive values: {np.setxor1d([values, _values])}")
 
     def dump(self):
         backup = backup_file(self.annotation_file)
