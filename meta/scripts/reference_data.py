@@ -80,6 +80,11 @@ class AnnotatorTemplate(ABC):
     def load_refdata(self, refdata_file: str):
         self.refdata.load(refdata_file)
 
+    def validate(self, index_column: str = "reference_id"):
+        values = self.annotation_df[index_column].values.tolist()
+        if len(values) != len(set(values)):
+            raise ValueError(f"The index '{index_column}' is not uniquely valued!")
+
     def dump(self):
         backup = backup_file(self.annotation_file)
         self.refdata.dump()
