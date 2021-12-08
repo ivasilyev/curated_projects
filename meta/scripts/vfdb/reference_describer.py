@@ -17,7 +17,7 @@ from meta.utils.bio_sequence import load_headers_from_fasta
 from meta.utils.date_time import get_timestamp, count_elapsed_seconds
 from meta.utils.file_system import decompress_file, find_file_by_tail
 from meta.utils.pandas import left_merge, deduplicate_df_by_row_merging
-from meta.scripts.reference_data import AnnotatorTemplate, ReferenceDescriberTemplate, SequenceRetrieverTemplate
+from meta.scripts.reference_data import AnnotatorTemplate, ReferenceData, ReferenceDescriberTemplate, SequenceRetrieverTemplate
 
 
 class ReferenceDescriber(ReferenceDescriberTemplate):
@@ -91,54 +91,52 @@ def mp_parse_pfasta_header(header: str):
 
 
 class Annotator(AnnotatorTemplate):
-    def __init__(self, retriever: SequenceRetriever):
+    def __init__(self, refdata: ReferenceData, directory: str):
         super().__init__()
-        self._retriever = retriever
+        self.refdata = refdata
+        self.reference_dir = directory
 
-        self.raw_nfasta_headers = []
-        self.raw_pfasta_headers = []
+        self.nucleotide_header_df = pd.DataFrame()
+        self.protein_header_df = pd.DataFrame()
+
         self.vfs_df = pd.DataFrame()
 
     def load(self):
-        self.refdata = self._retriever.refdata
         super().load()
-        nfasta_file = find_file_by_tail(self._retriever.REFERENCE_DOWNLOAD_DIRECTORY, "VFDB_setB_nt.fas")
+        start = perf_counter()
+        nfasta_file = find_file_by_tail(self.reference_dir, "VFDB_setB_nt.fas")
         print(f"Use the protein FASTA file: '{nfasta_file}'")
-        self.raw_nfasta_headers = load_headers_from_fasta(nfasta_file)
-        print(f"Loaded {len(self.raw_nfasta_headers)} protein FASTA headers")
+        raw_nfasta_headers = load_headers_from_fasta(nfasta_file)
+        print(f"Loaded {len(raw_nfasta_headers)} protein FASTA headers")
+        parsed_nfasta_headers = jb.Parallel(n_jobs=-1)(
+            jb.delayed(mp_parse_nfasta_header)(i) for i in raw_nfasta_headers
+        )
+        self.nucleotide_header_df = pd.DataFrame(parsed_nfasta_headers)
+        print(f"Nucleotide FASTA headers parsed into table with shape {self.nucleotide_header_df.shape} with {count_elapsed_seconds(start)}")
 
-        pfasta_file = find_file_by_tail(self._retriever.REFERENCE_DOWNLOAD_DIRECTORY, "VFDB_setB_pro.fas")
+        start = perf_counter()
+        pfasta_file = find_file_by_tail(self.reference_dir, "VFDB_setB_pro.fas")
         print(f"Use the protein FASTA file: '{pfasta_file}'")
-        self.raw_pfasta_headers = load_headers_from_fasta(pfasta_file)
-        print(f"Loaded {len(self.raw_pfasta_headers)} protein FASTA headers")
+        raw_pfasta_headers = load_headers_from_fasta(pfasta_file)
+        print(f"Loaded {len(raw_pfasta_headers)} protein FASTA headers")
+        parsed_pfasta_headers = jb.Parallel(n_jobs=-1)(
+            jb.delayed(mp_parse_pfasta_header)(i) for i in raw_pfasta_headers
+        )
+        self.protein_header_df = pd.DataFrame(parsed_pfasta_headers)
+        print(f"Protein FASTA headers parsed into table with shape {self.protein_header_df.shape} with {count_elapsed_seconds(start)}")
 
-        vfs_table_file = find_file_by_tail(self._retriever.REFERENCE_DOWNLOAD_DIRECTORY, "VFs.xls")
+        vfs_table_file = find_file_by_tail(self.reference_dir, "VFs.xls")
         print(f"Use the VFs description file: '{vfs_table_file}'")
         self.vfs_df = pd.read_excel(vfs_table_file, engine="xlrd", header=1).fillna("")
-        print(f"Loaded VFs description file with shape '{self.vfs_df.shape}'")
+        print(f"Loaded VFs description table with shape {self.vfs_df.shape}")
+        self.vfs_df["vfdb_number"] = self.vfs_df["VFID"].str.extract("([0-9]+)").astype(int)
 
     def annotate(self):
-        start = perf_counter()
-        parsed_nfasta_headers = jb.Parallel(n_jobs=-1)(
-            jb.delayed(mp_parse_nfasta_header)(i) for i in self.raw_nfasta_headers
-        )
-        parsed_nfasta_header_df = pd.DataFrame(parsed_nfasta_headers)
-        print(f"Completed nucleotide FASTA parsing into dataframe with shape {parsed_nfasta_header_df.shape} with {count_elapsed_seconds(start)}")
-
-        start = perf_counter()
-        parsed_pfasta_headers = jb.Parallel(n_jobs=-1)(
-            jb.delayed(mp_parse_pfasta_header)(i) for i in self.raw_pfasta_headers
-        )
-        parsed_pfasta_header_df = pd.DataFrame(parsed_pfasta_headers)
-        print(f"Completed protein FASTA parsing into dataframe with shape {parsed_pfasta_header_df.shape} with {count_elapsed_seconds(start)}")
-
-        fasta_header_df = left_merge(parsed_nfasta_header_df, parsed_pfasta_header_df,
+        fasta_header_df = left_merge(self.nucleotide_header_df, self.protein_header_df,
                                      on="vfdb_number")
         print(f"Merged FASTA header data into dataframe with shape {fasta_header_df.shape}")
 
-        self.vfs_df["vfdb_number"] = self.vfs_df["VFID"].str.extract("([0-9]+)").astype(int)
         annotated_header_df = left_merge(fasta_header_df, self.vfs_df, on="vfdb_number")
-        annotated_header_df = deduplicate_df_by_row_merging(annotated_header_df, on="former_id")
         print(f"Annotated FASTA header data into dataframe with shape {annotated_header_df.shape}")
 
         self.annotation_df = left_merge(self.annotation_df, annotated_header_df, on="former_id")
@@ -157,7 +155,8 @@ if __name__ == '__main__':
     if sequenceRetriever.pick_refdata():
         print(f"Already at the latest version: '{sequenceRetriever.VERSION}'")
         startTime = perf_counter()
-        annotator = Annotator(sequenceRetriever)
+        annotator = Annotator(sequenceRetriever.refdata,
+                              sequenceRetriever.REFERENCE_DOWNLOAD_DIRECTORY)
         annotator.run()
         annotator.validate("reference_id")
         print(f"Annotation complete in {count_elapsed_seconds(startTime)}")
