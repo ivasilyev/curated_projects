@@ -8,10 +8,11 @@ import pandas as pd
 from scipy import stats
 
 
-def load_tsv(table, col_names: list = None):
-    if col_names:
-        return pd.read_csv(table, encoding="utf-8", sep="\t", header="infer", names=col_names)
-    return pd.read_csv(table, encoding="utf-8", sep="\t", header=0)
+def load_tsv(table, **kwargs):
+    _kwargs = dict(encoding="utf-8", sep="\t", header=0)
+    if len(kwargs.keys()) > 0:
+        _kwargs.update(kwargs)
+    return pd.read_csv(table, **_kwargs)
 
 
 def dump_tsv(df: pd.DataFrame, table_file: str, col_names: list = None, reset_index: bool = False):

@@ -32,10 +32,12 @@ def parse_args():
 
 if __name__ == '__main__':
     input_tables, axis, index, join, output_table = parse_args()
-    tables = Utilities.remove_empty_values([i for i in input_tables if Utilities.is_file_valid(i)])
-    if len(tables) == 0:
+    table_files = remove_empty_values([i for i in input_tables if is_file_valid(i)])
+    if len(table_files) == 0:
         raise ValueError("No valid tables!")
-    dataframes = [Utilities.load_tsv(i) for i in tables]
+    dataframes = []
+    for table_file in table_files:
+        dataframes.append(load_tsv(table_file, engine="python", low_memory=False))
 
     if len(index) > 0:
         for dataframe in dataframes:
@@ -45,6 +47,6 @@ if __name__ == '__main__':
     start = perf_counter()
     out_df = pd.concat(dataframes, axis=axis, join=join, ignore_index=False, keys=None, levels=None,
                        names=None, verify_integrity=False, sort=False, copy=True).rename_axis(index=index)
-    print(f"Concatenation completed in {Utilities.count_elapsed_seconds(start)}")
+    print(f"Concatenation completed in {count_elapsed_seconds(start)}")
 
-    Utilities.dump_tsv(out_df, output_table, reset_index=True)
+    dump_tsv(out_df, output_table, reset_index=True)
