@@ -114,7 +114,7 @@ class Annotator(AnnotatorTemplate):
 
         vfs_table_file = find_file_by_tail(self._retriever.REFERENCE_DOWNLOAD_DIRECTORY, "VFs.xls")
         print(f"Use the VFs description file: '{vfs_table_file}'")
-        self.vfs_df = pd.read_excel(vfs_table_file, engine="openpyxl", header=1).fillna("")
+        self.vfs_df = pd.read_excel(vfs_table_file, engine="xlrd", header=1).fillna("")
         print(f"Loaded VFs description file with shape '{self.vfs_df.shape}'")
 
     def annotate(self):
