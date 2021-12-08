@@ -79,7 +79,7 @@ def mp_parse_nfasta_header(header: str):
     }
     out = regex_based_tokenization(_VFDB_REGEXES, header)
     out["former_id"] = out.pop("source_string")
-    out["vfdb_number"] = safe_findall("[0-9]+", out["VFID"])
+    out["vfdb_number"] = int(safe_findall("[0-9]+", out["VFID"]))
     return out
 
 
@@ -91,9 +91,6 @@ def mp_parse_pfasta_header(header: str):
 
 
 class Annotator(AnnotatorTemplate):
-    INDEX_NAME_1 = "former_id"
-    INDEX_NAME_2 = "vfdb_number"
-
     def __init__(self, retriever: SequenceRetriever):
         super().__init__()
         self._retriever = retriever
@@ -117,7 +114,7 @@ class Annotator(AnnotatorTemplate):
 
         vfs_table_file = find_file_by_tail(self._retriever.REFERENCE_DOWNLOAD_DIRECTORY, "VFs.xls")
         print(f"Use the VFs description file: '{vfs_table_file}'")
-        self.vfs_df = pd.read_excel(vfs_table_file, header=1).fillna("")
+        self.vfs_df = pd.read_excel(vfs_table_file, engine="openpyxl", header=1).fillna("")
         print(f"Loaded VFs description file with shape '{self.vfs_df.shape}'")
 
     def annotate(self):
@@ -137,9 +134,9 @@ class Annotator(AnnotatorTemplate):
 
         fasta_header_df = left_merge(parsed_nfasta_header_df, parsed_pfasta_header_df,
                                      on="vfdb_number")
-        self.vfs_df["vfdb_number"] = self.vfs_df["VFID"].str.extract("([0-9]+)").astype(int)
         print(f"Merged FASTA header data into dataframe with shape {fasta_header_df.shape}")
 
+        self.vfs_df["vfdb_number"] = self.vfs_df["VFID"].str.extract("([0-9]+)").astype(int)
         annotated_header_df = left_merge(fasta_header_df, self.vfs_df, on="vfdb_number")
         annotated_header_df = deduplicate_df_by_row_merging(annotated_header_df, on="former_id")
         print(f"Annotated FASTA header data into dataframe with shape {annotated_header_df.shape}")
