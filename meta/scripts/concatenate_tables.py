@@ -45,8 +45,10 @@ if __name__ == '__main__':
 
     print(f"Concatenate {len(dataframes)} dataframes with the shapes: {[i.shape for i in dataframes]}")
     start = perf_counter()
-    out_df = pd.concat(dataframes, axis=axis, join=join, ignore_index=False, keys=None, levels=None,
-                       names=None, verify_integrity=False, sort=False, copy=True).rename_axis(index=index)
+    out_df = pd.concat(
+        dataframes, axis=axis, join=join, ignore_index=False, keys=None, levels=None, names=None,
+        verify_integrity=False, sort=False, copy=True
+    ).rename_axis(index=index).sort_index()
     print(f"Concatenation completed in {count_elapsed_seconds(start)}")
 
     dump_tsv(out_df, output_table, reset_index=True)
