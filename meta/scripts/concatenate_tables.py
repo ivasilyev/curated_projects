@@ -3,7 +3,10 @@
 
 import pandas as pd
 from time import perf_counter
-from meta.scripts.Utilities import Utilities
+from meta.utils.pandas import load_tsv, dump_tsv
+from meta.utils.file_system import is_file_valid
+from meta.utils.primitive import remove_empty_values
+from meta.utils.date_time import count_elapsed_seconds
 from argparse import ArgumentParser, RawTextHelpFormatter
 
 
