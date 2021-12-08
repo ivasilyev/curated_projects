@@ -36,9 +36,17 @@ def dict2pd_series(dictionary, sort_keys: bool = False):
     return out
 
 
-def concat(dfs: list, index_name: str = "", columns_name: str = ""):
-    return pd.concat(dfs, join="outer", axis=1, sort=False).rename_axis(
-        index=index_name, columns=columns_name)
+def concat(dfs: list, index_name: str = "", columns_name: str = "", set_index: bool = True,
+           reset_index: bool = True):
+    _dfs = list(dfs)
+    if set_index:
+        _dfs = [i.set_index(index_name) for i in _dfs]
+    out = pd.concat(
+        _dfs, join="outer", axis=1, sort=False
+    ).rename_axis(index=index_name, columns=columns_name).sort_index()
+    if reset_index:
+        return out.reset_index()
+    return out
 
 
 def apply_mp_function_to_df(func, df: pd.DataFrame, index_name: str = "", columns_name: str = ""):
