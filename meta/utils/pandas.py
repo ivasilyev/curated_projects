@@ -9,7 +9,7 @@ from scipy import stats
 
 
 def load_tsv(table, **kwargs):
-    _kwargs = dict(encoding="utf-8", sep="\t", header=0)
+    _kwargs = dict(encoding="utf-8", engine="python", header=0, sep="\t")
     if len(kwargs.keys()) > 0:
         _kwargs.update(kwargs)
     return pd.read_csv(table, **_kwargs)
