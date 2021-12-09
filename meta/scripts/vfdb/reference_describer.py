@@ -105,7 +105,7 @@ class Annotator(AnnotatorTemplate):
         super().load()
         start = perf_counter()
         nfasta_file = find_file_by_tail(self.reference_dir, "VFDB_setB_nt.fas")
-        print(f"Use the protein FASTA file: '{nfasta_file}'")
+        print(f"Use the nucleotide FASTA file: '{nfasta_file}'")
         raw_nfasta_headers = load_headers_from_fasta(nfasta_file)
         print(f"Loaded {len(raw_nfasta_headers)} protein FASTA headers")
         parsed_nfasta_headers = jb.Parallel(n_jobs=-1)(
