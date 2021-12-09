@@ -94,8 +94,8 @@ if __name__ == '__main__':
     sequenceRetriever.REFERENCE_ROOT_DIRECTORY = outputDir
     # sequenceRetriever.retrieve()  # Not applicable
     if sequenceRetriever.pick_refdata():
-        start = perf_counter()
+        annotationStart = perf_counter()
         annotator = Annotator(sequenceRetriever.refdata, sequenceRetriever.REFERENCE_ROOT_DIRECTORY)
         annotator.run()
         annotator.validate()
-        print(f"Annotation complete after {count_elapsed_seconds(count_elapsed_seconds)}")
+        print(f"Annotation complete after {count_elapsed_seconds(annotationStart)}")
