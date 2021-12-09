@@ -63,6 +63,6 @@ python3 "pipeline_handler.py" \
     --input "${SAMPLEDATA_FILE}" \
     --output_dir "${ROOT_DIR}pga-pe-pipeline" \
     --refdata \
-        "/data/reference/MvirDB/mvirdb_v2012.04.28.index/mvirdb_v2012.04.28_refdata.json" \
-        "/data/reference/TADB/index/tadb_v2.0/tadb_v2.0_refdata.json" \
-        "/data/reference/VFDB/vfdb_v2019.04.26/index/vfdb_v2019.04.26_refdata.json"
+        "/data/reference/MvirDB/mvirdb_v2012.04.28/index/mvirdb_v2012.04.28_refdata.json" \
+        "/data/reference/TADB/tadb_v2017.06/index/tadb_v2017.06_refdata.json" \
+        "/data/reference/VFDB/vfdb_v2021.09.24/index/vfdb_v2021.09.24_refdata.json"
