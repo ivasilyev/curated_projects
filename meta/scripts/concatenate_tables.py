@@ -37,7 +37,7 @@ if __name__ == '__main__':
         raise ValueError("No valid tables!")
     dataframes = []
     for table_file in table_files:
-        dataframes.append(load_tsv(table_file, engine="python", low_memory=False))
+        dataframes.append(load_tsv(table_file, engine="python"))
 
     if len(index) > 0:
         for dataframe in dataframes:
