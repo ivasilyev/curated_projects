@@ -71,10 +71,8 @@ class Annotator(AnnotatorTemplate):
 
         reference_file = find_file_by_tail(self.reference_dir, "completeMvirDBTable.txt")
         print(f"Use the reference description file: '{reference_file}'")
-        self.reference_df = pd.read_csv(
-            reference_file, engine="python", error_bad_lines=False, header=0, sep="\t",
-            on_bad_lines="warn"
-        ).sort_values("#Virulence Factor ID")
+        self.reference_df = pd.read_csv(reference_file, engine="python", header=0, sep="\t",
+                                        on_bad_lines="warn").sort_values("#Virulence Factor ID")
         print(f"Loaded reference description table with shape {self.reference_df.shape}")
 
     def annotate(self):
