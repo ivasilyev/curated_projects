@@ -62,7 +62,7 @@ class Annotator(AnnotatorTemplate):
         nfasta_file = find_file_by_tail(self.reference_dir, "virulenceDB.nucleic.fasta")
         print(f"Use the nucleotide FASTA file: '{nfasta_file}'")
         raw_nfasta_headers = load_headers_from_fasta(nfasta_file)
-        print(f"Loaded {len(raw_nfasta_headers)} protein FASTA headers")
+        print(f"Loaded {len(raw_nfasta_headers)} nucleotide FASTA headers")
         parsed_nfasta_headers = jb.Parallel(n_jobs=-1)(
             jb.delayed(mp_parse_nfasta_header)(i) for i in raw_nfasta_headers
         )
