@@ -18,6 +18,9 @@ def regex_based_tokenization(regex_dict: dict, string: str, include_source: bool
         else:
             extract_regex = regexes[0]
             excise_regex = regexes[1]
+        token = safe_findall(extract_regex, _string, verbose=verbose)
+
+
         out[key] = safe_findall(extract_regex, _string, verbose=verbose).strip()
         _string = re.sub(excise_regex, "", _string)
     return out

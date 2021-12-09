@@ -78,7 +78,7 @@ class AnnotatorTemplate(ABC):
         self.annotation_file = self.refdata.get_sequence_dict()["annotation"]
         print(f"Using the annotation file: '{self.annotation_file}'")
         self.annotation_df = load_tsv(self.annotation_file)
-        print(f"Loaded annotation file with shape '{self.annotation_df.shape}'")
+        print(f"Loaded annotation table with shape {self.annotation_df.shape}")
         self._annotation_df = self.annotation_df.copy()
 
     def load_refdata(self, refdata_file: str):

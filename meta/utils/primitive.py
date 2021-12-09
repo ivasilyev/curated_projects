@@ -17,13 +17,16 @@ def remove_empty_values(input_list):
     return output_list
 
 
-def safe_findall(pattern, string, idx: int = 0, verbose: bool = True):
+def safe_findall(pattern, string, idx: int = 0, verbose: bool = False):
+    out = ""
     try:
-        return re.findall(pattern, string)[idx]
+        out = re.findall(pattern, string)[idx]
+        if isinstance(out, str):
+            print(pattern, string, out)
     except IndexError:
         if verbose:
             print(f"Can't find the regex pattern '{pattern}' within the string: '{string}'")
-        return ""
+    return out
 
 
 def flatten_2d_array(array: list):

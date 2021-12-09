@@ -13,4 +13,4 @@ ENV UTILS_DIR=/home/docker/scripts/curated_projects/meta/scripts/
 CMD ["/bin/bash"]
 
 # MANUAL BUILD COMMAND:
-# export REPO="curated_projects" && export TAG="ivasilyev/${REPO}:latest" && docker build --network=host --tag "${REPO}" . && docker tag "${REPO}" "${TAG}" && docker push "${TAG}"
+# export REPO="curated_projects" && export TAG="ivasilyev/${REPO}:latest" && docker build --network=host --tag "${REPO}" . && docker tag "${REPO}" "${TAG}" && docker push "${TAG}"  && docker push "${TAG}" && rm -f Dockerfile
