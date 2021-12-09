@@ -64,6 +64,7 @@ class ReferenceData:
 
 class AnnotatorTemplate(ABC):
     __metaclass__ = ABCMeta
+    INDEX_COL_NAME = "reference_id"
 
     def __init__(self):
         super().__init__()
@@ -83,11 +84,11 @@ class AnnotatorTemplate(ABC):
     def load_refdata(self, refdata_file: str):
         self.refdata.load(refdata_file)
 
-    def validate(self, index_column: str = "reference_id"):
-        values = sorted(self.annotation_df[index_column].values.tolist())
+    def validate(self):
+        values = sorted(self.annotation_df[self.INDEX_COL_NAME].values.tolist())
         if len(values) != len(set(values)):
-            raise ValueError(f"The index '{index_column}' is not uniquely valued!")
-        _values = sorted(self._annotation_df[index_column].values.tolist())
+            raise ValueError(f"The index '{self.INDEX_COL_NAME}' is not uniquely valued!")
+        _values = sorted(self._annotation_df[self.INDEX_COL_NAME].values.tolist())
         if values != _values:
             raise ValueError(f"Excessive values: {np.setxor1d([values, _values])}")
 
@@ -95,7 +96,8 @@ class AnnotatorTemplate(ABC):
         backup = backup_file(self.annotation_file)
         self.refdata.dump()
         print(f"Annotation file backup saved to: '{backup}'")
-        dump_tsv(df=self.annotation_df, table_file=self.annotation_file)
+        dump_tsv(df=self.annotation_df.sort_values(self.INDEX_COL_NAME),
+                 table_file=self.annotation_file)
         print(f"Annotation file saved to: '{backup}'")
 
     def annotate(self):
