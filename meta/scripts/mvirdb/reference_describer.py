@@ -5,12 +5,12 @@ import os
 import joblib as jb
 import pandas as pd
 from time import perf_counter
-from meta.utils.pandas import left_merge
 from meta.utils.primitive import safe_findall
 from meta.utils.file_system import find_file_by_tail
 from meta.utils.date_time import count_elapsed_seconds
 from meta.utils.language import regex_based_tokenization
 from meta.utils.bio_sequence import load_headers_from_fasta
+from meta.utils.pandas import left_merge, deduplicate_df_by_row_merging
 from meta.scripts.reference_data import AnnotatorTemplate, ReferenceData, ReferenceDescriberTemplate, SequenceRetrieverTemplate
 
 
@@ -73,7 +73,7 @@ class Annotator(AnnotatorTemplate):
         print(f"Use the reference description file: '{reference_file}'")
         self.reference_df = pd.read_csv(
             reference_file, engine="python", error_bad_lines=False, header=0, sep="\t",
-            warn_bad_lines=True
+            on_bad_lines="warn"
         ).sort_values("#Virulence Factor ID")
         print(f"Loaded reference description table with shape {self.reference_df.shape}")
 
@@ -82,7 +82,8 @@ class Annotator(AnnotatorTemplate):
                                          on="#Virulence Factor ID")
         print(f"Annotated FASTA header data into dataframe with shape {annotated_header_df.shape}")
 
-        self.annotation_df = left_merge(self.annotation_df, self.reference_df, on="former_id")
+        self.annotation_df = left_merge(self.annotation_df, annotated_header_df, on="former_id")
+        self.annotation_df = deduplicate_df_by_row_merging(self.annotation_df, on="former_id")
         print(f"Merged final annotation dataframe with shape {self.annotation_df.shape}")
 
 
