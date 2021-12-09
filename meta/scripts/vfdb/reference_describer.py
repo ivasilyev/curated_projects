@@ -158,7 +158,7 @@ if __name__ == '__main__':
         annotator = Annotator(sequenceRetriever.refdata,
                               sequenceRetriever.REFERENCE_DOWNLOAD_DIRECTORY)
         annotator.run()
-        annotator.validate("reference_id")
+        annotator.validate()
         print(f"Annotation complete in {count_elapsed_seconds(startTime)}")
     else:
         print(f"Download the new version: '{sequenceRetriever.VERSION}'")

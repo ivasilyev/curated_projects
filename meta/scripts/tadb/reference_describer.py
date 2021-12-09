@@ -299,6 +299,7 @@ if __name__ == '__main__':
                               sequenceRetriever.NUCLEOTIDE_FASTA,
                               sequenceRetriever.PROTEIN_FASTA)
         annotator.run()
+        annotator.validate()
         print(f"Annotation complete in {count_elapsed_seconds(startTime)}")
     else:
         print(f"Downloading the new version: '{sequenceRetriever.VERSION}'")

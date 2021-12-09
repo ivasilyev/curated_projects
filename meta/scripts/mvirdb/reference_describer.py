@@ -77,7 +77,6 @@ class Annotator(AnnotatorTemplate):
         ).sort_values("#Virulence Factor ID")
         print(f"Loaded reference description table with shape {self.reference_df.shape}")
 
-
     def annotate(self):
         annotated_header_df = left_merge(self.nucleotide_header_df, self.reference_df,
                                          on="#Virulence Factor ID")
@@ -98,6 +97,6 @@ if __name__ == '__main__':
     if sequenceRetriever.pick_refdata():
         start = perf_counter()
         annotator = Annotator(sequenceRetriever.refdata, sequenceRetriever.REFERENCE_ROOT_DIRECTORY)
-        annotator.annotate()
-        annotator.dump()
+        annotator.run()
+        annotator.validate()
         print(f"Annotation complete after {count_elapsed_seconds(count_elapsed_seconds)}")
