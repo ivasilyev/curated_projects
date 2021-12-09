@@ -21,7 +21,7 @@ def safe_findall(pattern, string, idx: int = 0, verbose: bool = False):
     out = ""
     try:
         out = re.findall(pattern, string)[idx]
-        if not isinstance(out, str):
+        if not isinstance(out, str) and verbose:
             print(pattern, string, out)
     except IndexError:
         if verbose:

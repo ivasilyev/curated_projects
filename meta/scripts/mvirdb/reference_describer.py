@@ -36,7 +36,7 @@ def mp_parse_nfasta_header(header: str):
         "#Virulence Factor ID": ("^([^|]+)[ ]*|", "^([^|]+[ ]*\|)"),
         "vfid": ("^vfid\|([^|]+)[ ]*\|", "^(vfid\|[^|]+[ ]*\|)"),
         "vsiid": ("^vsiid\|([^|]+)[ ]*\|", "^(vsiid\|[^|]+[ ]*\|)"),
-        "ssid": ("^(ssid\|(.+)$)", "^(ssid\|.+$)"),
+        "ssid": ("^ssid\|(.+)$", "^(ssid\|.+$)"),
     }
 
     out = regex_based_tokenization(_REGEXES, header)
