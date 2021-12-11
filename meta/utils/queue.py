@@ -33,3 +33,22 @@ def wrapper(d: dict):
     if "kwargs" not in d.keys():
         d["kwargs"] = dict()
     return d["func"](*d["args"], **d["kwargs"])
+
+
+def attempt_func(func, args, raised: bool = False):
+    from meta.utils.date_time import randomize_sleep
+    _ATTEMPTS = 5
+    attempt = 1
+    while attempt <= _ATTEMPTS:
+        try:
+            if any(isinstance(args, i) for i in (list, tuple)):
+                return func(*args)
+            if any(isinstance(args, i) for i in (dict,)):
+                return func(**args)
+        except Exception as e:
+            print("Caught exception for attempt {}: `{}`".format(attempt, e))
+            attempt += 1
+            if raised:
+                raise
+            randomize_sleep()
+    print("Exceeded number of attempts for the function: '{}'".format(func.__name__))

@@ -51,3 +51,27 @@ def load_headers_from_fasta(file: str):
         _f.close()
     return sorted(set(remove_empty_values(out)))
 
+
+def randomize_gene_slice(record, size: int = 20000):
+    """
+    :param record: SeqRecord
+
+    :param size: int
+
+    Cuts a slice with random start and of given length from sequence record
+    The typical gene is about 1000 bp in length:
+    http://bioscience.jbpub.com/cells/MBIO137.aspx
+    The default slicing will return a chunk containing ~20 genes.
+
+    :return: trimmed SeqRecord
+    """
+    from copy import deepcopy
+    from random import randint
+    gene_length = len(record)
+    if gene_length <= size:
+        return record
+    start = randint(0, gene_length - size)
+    end = start + size
+    record_ = deepcopy(record)
+    record_.seq = record_.seq[start:end]
+    return record_
