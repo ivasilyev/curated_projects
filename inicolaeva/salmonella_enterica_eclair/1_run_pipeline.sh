@@ -45,6 +45,7 @@ docker run \
         bash -c '
             git pull --quiet;
             python3 ./meta/scripts/sample_data.py \
+                --extension ".fastq" \
                 --input "${RAW_DIR}" \
                 --output "${SAMPLEDATA_FILE}"
         '

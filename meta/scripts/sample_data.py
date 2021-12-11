@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
 import json
 from meta.scripts.Utilities import Utilities
 from argparse import ArgumentParser, RawTextHelpFormatter
 
 
-DEFAULT_REGEX = "(.+).+S[0-9]+.*R[12]..*\.fastq\.gz"
+DEFAULT_REGEX = "(.+).+S[0-9]+.*R[12]"
 DEFAULT_READS_EXTENSION = ".fastq.gz"
 
 
@@ -22,7 +23,7 @@ def parse_args():
     parser.add_argument("-e", "--extension", default=DEFAULT_READS_EXTENSION,
                         help="Extension of reads files")
     parser.add_argument("-r", "--regex", default=DEFAULT_REGEX,
-                        help="Regular expression to extract sample names")
+                        help="Regular expression to extract sample name(s) from file name(s) without extension")
     parser.add_argument("-t", "--taxa", default="",
                         help="(Optional) Taxonomy to add to all samples")
     parser.add_argument("-o", "--output", required=True,
@@ -113,12 +114,13 @@ class SampleDataArray:
         return SampleDataArray.parse(json.loads(Utilities.load_string(file)))
 
     @staticmethod
-    def generate(pair_2d_array: list, regex: str = DEFAULT_REGEX):
+    def generate(pair_2d_array: list, regex: str = DEFAULT_REGEX,
+                 extension: str = DEFAULT_READS_EXTENSION):
         arr = SampleDataArray()
         for sample_read_files in pair_2d_array:
             sample_read_files = sorted(sample_read_files)
             sample_file = os.path.basename(sample_read_files[0])
-            sample_name = Utilities.safe_findall(regex, sample_file)
+            sample_name = Utilities.safe_findall(regex, re.sub(f"{extension}$", "", sample_file))
             if len(sample_name) == 0:
                 raise ValueError(f"Cannot process the file '{sample_file}' with the regex '{regex}'")
             if any(sample_name not in i for i in sample_read_files):
@@ -138,7 +140,7 @@ class SampleDataArray:
                                 reads_extension: str = DEFAULT_READS_EXTENSION):
         pair_2d_array = Utilities.get_most_similar_word_pairs(
             Utilities.find_file_by_tail(directory, reads_extension))
-        return SampleDataArray.generate(pair_2d_array, regex=regex)
+        return SampleDataArray.generate(pair_2d_array, regex=regex, extension=reads_extension)
 
     def export(self):
         return {k: self.lines[k].export() for k in self.lines}
