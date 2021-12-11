@@ -52,7 +52,7 @@ def parse_largest_subsequence(fasta_nt_file: str):
     """
     Parses nucleotide FASTA and chunk if it's too large for BLAST query
     """
-    assert is_file_valid(fasta_nt_file, verbose=True)
+    assert is_file_valid(fasta_nt_file, True)
     records = load_sequences(fasta_nt_file, "fasta")
     return randomize_gene_slice(records[0], size=QUERY_SIZE).format("fasta")
 
@@ -125,12 +125,14 @@ if __name__ == '__main__':
         blast_query_string = parse_largest_subsequence(nt_fasta_file)
         blast_query_file = f"{out_blast_basename}_blast_query.fna"
         dump_string(blast_query_string, blast_query_file)
+        print(f"Saved BLAST query to file '{blast_query_file}'")
         print(f"Performing BLAST query from the sequence of length {len(blast_query_string)}")
         start = perf_counter()
         blast_report = download_nt_blast_report(blast_query_string)
-        print(f"The NCBI query was completed with {count_elapsed_seconds(start)}")
+        print(f"BLAST query was completed after {count_elapsed_seconds(start)}")
         blast_results = parse_blast_report(blast_report)
         dump_dict(blast_results, blast_result_file, sort_keys=False, indent=4)
+        print(f"{len(blast_results.keys())} BLAST results were saved into {dump_dict}")
 
     if not is_blast_only:
         if len(sequence_directory) == 0:
