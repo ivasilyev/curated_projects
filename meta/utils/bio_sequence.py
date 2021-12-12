@@ -75,3 +75,37 @@ def randomize_gene_slice(record, size: int = 20000):
     record_ = deepcopy(record)
     record_.seq = record_.seq[start:end]
     return record_
+
+
+def describe_genbank(genbank_record, verbose: bool = True):
+    from Bio.SeqUtils import GC
+    from Bio.GenBank import Record
+    assert type(genbank_record) == Record
+    out = dict(
+        total_cds=0,
+        genbank_id=genbank_record.id,
+        gc_percentage=round(GC(genbank_record.seq), 2),
+        reference_bp=len(genbank_record),
+        reference_description=genbank_record.description
+    )
+    try:
+        out["total_cds"] = int(
+            genbank_record.annotations["structured_comment"]["Genome-Annotation-Data"]["CDSs (total)"].replace(",", "")
+        )
+    except KeyError:
+        pass
+    if out["total_cds"] == 0:
+        out["total_cds"] = len([i for i in genbank_record.features if i.type == "CDS"])
+    if out["total_cds"] == 0 and verbose:
+        print("Cannot find annotations for GenBank Accession ID '{}'".format(out["genbank_id"]))
+    annotation_dict = {k: v for k, v in genbank_record.annotations.items()
+                       if all(not isinstance(v, i) for i in [dict, list])}
+    out.update(annotation_dict)
+    if "taxonomy" in genbank_record.annotations.keys():
+        out["taxonomy"] = ";".join(genbank_record.annotations["taxonomy"])
+    qualifiers_dict = [i.qualifiers for i in genbank_record.features if i.type == "source"][0]
+    out.update({k: ";".join(v) for k, v in qualifiers_dict.items()})
+    if "db_xref" in out.keys():
+        out["taxonomy_id"] = out["db_xref"].replace("taxon:", "")
+    return out
+

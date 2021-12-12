@@ -3,19 +3,17 @@
 
 import os
 import pandas as pd
-from Bio.SeqUtils import GC
 from Bio import SeqIO, Entrez
 from time import perf_counter
 from collections import OrderedDict
 from Bio.Blast import NCBIWWW, NCBIXML
 from meta.utils.queue import attempt_func
-from Bio.GenBank import Record as GBRecord
+from meta.utils.primitive import safe_findall
 from meta.utils.pandas import concat, dump_tsv
 from meta.utils.io import load_dict, dump_dict, dump_string
 from meta.utils.file_system import is_file_valid, filename_only
-from meta.utils.primitive import remove_empty_values, safe_findall
 from meta.utils.date_time import randomize_sleep, count_elapsed_seconds
-from meta.utils.bio_sequence import load_sequences, randomize_gene_slice
+from meta.utils.bio_sequence import describe_genbank, load_sequences, randomize_gene_slice
 
 
 E_VALUE_THRESH = 0.04
@@ -88,28 +86,7 @@ def download_reference_genbank(accession_id: str):
     handle = attempt_func(Entrez.efetch, dict(
         db="nucleotide", id=accession_id, rettype="gb", retmode="text"
     ))
-    return list(SeqIO.parse(handle, "genbank"))[0]
-
-
-def describe_reference_genbank(genbank_record: GBRecord):
-    cds_number = 0
-    try:
-        cds_number = int(genbank_record.annotations["structured_comment"]["Genome-Annotation-Data"]["CDSs (total)"].replace(",", ""))
-    except KeyError:
-        pass
-    if cds_number == 0:
-        cds_number = len([i for i in genbank_record.features if i.type == "CDS"])
-        # Otherwise the reference genbank might not be annotated
-    qualifiers_dict = [i.qualifiers for i in genbank_record.features if i.type == "source"][0]
-    organism = remove_empty_values(qualifiers_dict.get("organism")[0].split(" "))[:2]
-    strain = " ".join(organism + [qualifiers_dict.get("strain")[0]])
-    taxonomy_id = safe_findall(
-        "\d+", [i for i in qualifiers_dict.get("db_xref") if i.split(":")[0].strip() == "taxon"][0]
-    )
-    gc_percentage = round(GC(genbank_record.seq), 2)
-    return dict(strain=strain, taxonomy_id=taxonomy_id, genbank_id=genbank_record.id,
-                total_cds=cds_number, reference_bp=len(genbank_record),
-                reference_description=genbank_record.description, gc_percentage=gc_percentage)
+    return list(SeqIO.parse(handle, "genbank"))
 
 
 if __name__ == '__main__':
@@ -132,34 +109,31 @@ if __name__ == '__main__':
         print(f"BLAST query was completed after {count_elapsed_seconds(start)}")
         blast_results = parse_blast_report(blast_report)
         dump_dict(blast_results, blast_result_file, sort_keys=False, indent=4)
-        print(f"{len(blast_results.keys())} BLAST results were saved into {dump_dict}")
+        print(f"{len(blast_results.keys())} BLAST results were saved into {blast_result_file}")
 
     if not is_blast_only:
         if len(sequence_directory) == 0:
             sequence_directory = os.path.join(output_directory, "genbank")
 
         genbank_descriptions = []
-        counter = 0
-        for blast_result in list(blast_results.values()):
+        for counter, blast_result in enumerate(list(blast_results.values())):
             geninfo_accession = blast_result["geninfo_id"]
             genbank_file = os.path.join(sequence_directory, "{}.gbk".format(geninfo_accession))
             if is_file_valid(genbank_file):
-                genbank_report = load_sequences(genbank_file, "genbank")
+                genbank_report = load_sequences(genbank_file, "genbank")[0]
             else:
                 if is_chromosomes_only and " chromosome" not in blast_result["title"]:
                     continue
-                genbank_report = download_reference_genbank(geninfo_accession)
+                genbank_report = download_reference_genbank(geninfo_accession)[0]
                 dump_string(genbank_report.format("genbank"), genbank_file)
-            genbank_description = describe_reference_genbank(genbank_report)
-            genbank_description["geninfo_id"] = geninfo_accession
-            genbank_description["genbank_file"] = genbank_file
-            genbank_description["organism"] = genbank_report.annotations.get("organism")
-            genbank_description["taxonomy"] = genbank_report.annotations.get("taxonomy")
 
-            genbank_descriptions.append(genbank_description)
-            counter += 1
-            print(f"Downloaded {counter} of {blast_result_number} sequences")
-            if counter == blast_result_number:
+            genbank_description = describe_genbank(genbank_report)
+            genbank_description.update(dict(
+                geninfo_id=geninfo_accession,
+                genbank_file=genbank_file
+            ))
+            print(f"Downloaded {counter + 1} of {blast_result_number} sequences")
+            if counter + 1 == blast_result_number:
                 break
 
         blast_result_df = pd.DataFrame(blast_results.values())
