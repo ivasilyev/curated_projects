@@ -9,7 +9,7 @@ from collections import OrderedDict
 from Bio.Blast import NCBIWWW, NCBIXML
 from meta.utils.queue import attempt_func
 from meta.utils.primitive import safe_findall
-from meta.utils.pandas import concat, dump_tsv
+from meta.utils.pandas import dump_tsv, left_merge
 from meta.utils.io import load_dict, dump_dict, dump_string
 from meta.utils.file_system import is_file_valid, filename_only
 from meta.utils.date_time import randomize_sleep, count_elapsed_seconds
@@ -117,9 +117,10 @@ if __name__ == '__main__':
         blast_report = download_nt_blast_report(blast_query_string, blast_result_number)
         print(f"BLAST query was completed after {count_elapsed_seconds(start)}")
         blast_results = parse_blast_report(blast_report)
-        dump_dict(blast_results, blast_result_file, sort_keys=False, indent=4)
+        dump_dict(blast_results, blast_result_file)
         print(f"{len(blast_results.keys())} BLAST results were saved into {blast_result_file}")
 
+    genbank_description_file = "{}_genbank_descriptions.json".format(out_blast_basename)
     if not is_blast_only:
         if len(sequence_directory) == 0:
             sequence_directory = os.path.join(output_directory, "genbank")
@@ -143,12 +144,14 @@ if __name__ == '__main__':
             ))
             genbank_descriptions[blast_result_title] = genbank_description
             print(f"Downloaded {counter + 1} of {blast_result_number} sequences")
+        dump_dict(genbank_descriptions, genbank_description_file)
+        print(f"{len(genbank_descriptions.keys())} GenBank descriptions were saved into {genbank_description_file}")
 
-        print(f"Merging {len(blast_results.keys())} BLAST results and {len(genbank_descriptions.keys())} result descriptions")
-        combined_blast_result_df = concat(
-            [pd.DataFrame(i.values()) for i in (blast_results, genbank_descriptions)],
-            index_name="geninfo_id"
+        combined_blast_result_df = left_merge(
+            *[pd.DataFrame(i.values()) for i in (blast_results, genbank_descriptions)],
+            on="geninfo_id"
         ).drop(["query", "genbank_file"], axis=1).dropna(axis=0, how="any")
+        print(f"Merged {len(blast_results.keys())} BLAST results and {len(genbank_descriptions.keys())} result descriptions")
         combined_blast_result_file = os.path.join(output_directory, "combined_blast_results.tsv")
         dump_tsv(combined_blast_result_df, combined_blast_result_file)
         print(f"Saved combined BLAST result table with shape of {combined_blast_result_df.shape} into '{combined_blast_result_file}'")

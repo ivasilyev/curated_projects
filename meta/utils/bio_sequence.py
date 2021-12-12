@@ -95,7 +95,7 @@ def describe_genbank(genbank_record, verbose: bool = True):
     if out["total_cds"] == 0:
         out["total_cds"] = len([i for i in genbank_record.features if i.type == "CDS"])
     if out["total_cds"] == 0 and verbose:
-        print("Cannot find annotations for GenBank Accession ID '{}'".format(out["genbank_id"]))
+        print("Cannot find CDS annotations for GenBank Accession ID '{}'".format(out["genbank_id"]))
     annotation_dict = {k: v for k, v in genbank_record.annotations.items()
                        if all(not isinstance(v, i) for i in [dict, list])}
     out.update(annotation_dict)
