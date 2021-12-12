@@ -79,8 +79,6 @@ def randomize_gene_slice(record, size: int = 20000):
 
 def describe_genbank(genbank_record, verbose: bool = True):
     from Bio.SeqUtils import GC
-    from Bio.GenBank import Record
-    assert type(genbank_record) == Record
     out = dict(
         total_cds=0,
         genbank_id=genbank_record.id,
