@@ -55,11 +55,13 @@ def parse_largest_subsequence(fasta_nt_file: str):
     return randomize_gene_slice(records[0], size=QUERY_SIZE).format("fasta")
 
 
-def download_nt_blast_report(query: str):
+def download_nt_blast_report(query: str, result_number: int = 50):
     # The delay to avoid NCBI ban
     randomize_sleep(*SLEEP_INTERVAL)
     # NCBI query
-    result_handle = attempt_func(NCBIWWW.qblast, ("blastn", "nt", query))
+    result_handle = attempt_func(
+        NCBIWWW.qblast, database="nt", program="blastn", hitlist_size=result_number, sequence=query
+    )
     return NCBIXML.read(result_handle)
 
 
@@ -70,10 +72,17 @@ def parse_blast_report(blast_record):
         for hsp in alignment.hsps:
             if hsp.expect < E_VALUE_THRESH:
                 t = alignment.title
-                d = dict(title=t, length=alignment.length, expect=hsp.expect, score=hsp.score,
-                         bits=hsp.bits, identities=hsp.identities, positives=hsp.positives,
-                         query="\n".join([hsp.query, hsp.match, hsp.sbjct, ""]),
-                         geninfo_id=safe_findall("\|* *gi\| *([^|]+) *\|", t))
+                d = dict(
+                    title=t,
+                    length=alignment.length,
+                    expect=hsp.expect,
+                    score=hsp.score,
+                    bits=hsp.bits,
+                    identities=hsp.identities,
+                    positives=hsp.positives,
+                    query="\n".join([hsp.query, hsp.match, hsp.sbjct, ""]),
+                    geninfo_id=safe_findall("gi\|([^|]+)\|", t).strip()
+                )
                 high_scoring_pairs[t] = d
     return high_scoring_pairs
 
@@ -83,9 +92,9 @@ def download_reference_genbank(accession_id: str):
     # The delay to avoid NCBI ban
     randomize_sleep(*SLEEP_INTERVAL)
     # NCBI query
-    handle = attempt_func(Entrez.efetch, dict(
-        db="nucleotide", id=accession_id, rettype="gb", retmode="text"
-    ))
+    handle = attempt_func(
+        Entrez.efetch, db="nucleotide", id=accession_id, rettype="gb", retmode="text"
+    )
     return list(SeqIO.parse(handle, "genbank"))
 
 
@@ -105,7 +114,7 @@ if __name__ == '__main__':
         print(f"Saved BLAST query to file '{blast_query_file}'")
         print(f"Performing BLAST query from the sequence of length {len(blast_query_string)}")
         start = perf_counter()
-        blast_report = download_nt_blast_report(blast_query_string)
+        blast_report = download_nt_blast_report(blast_query_string, blast_result_number)
         print(f"BLAST query was completed after {count_elapsed_seconds(start)}")
         blast_results = parse_blast_report(blast_report)
         dump_dict(blast_results, blast_result_file, sort_keys=False, indent=4)
@@ -133,8 +142,6 @@ if __name__ == '__main__':
                 genbank_file=genbank_file
             ))
             print(f"Downloaded {counter + 1} of {blast_result_number} sequences")
-            if counter + 1 == blast_result_number:
-                break
 
         blast_result_df = pd.DataFrame(blast_results.values())
         genbank_description_df = pd.DataFrame(genbank_descriptions)
