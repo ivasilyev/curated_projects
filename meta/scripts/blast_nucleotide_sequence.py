@@ -144,23 +144,25 @@ if __name__ == '__main__':
             ))
             genbank_descriptions[blast_result_title] = genbank_description
             print(f"Downloaded {counter + 1} of {blast_result_number} sequences")
+
         dump_dict(genbank_descriptions, genbank_description_file)
         print(f"{len(genbank_descriptions.keys())} GenBank descriptions were saved into {genbank_description_file}")
 
         combined_blast_result_df = left_merge(
             *[pd.DataFrame(i.values()) for i in (blast_results, genbank_descriptions)],
             on="geninfo_id"
-        ).drop(["query", "genbank_file"], axis=1).dropna(axis=0, how="any")
+        )
         print(f"Merged {len(blast_results.keys())} BLAST results and {len(genbank_descriptions.keys())} result descriptions")
-        combined_blast_result_file = os.path.join(output_directory, "combined_blast_results.tsv")
-        dump_tsv(combined_blast_result_df, combined_blast_result_file)
-        print(f"Saved combined BLAST result table with shape of {combined_blast_result_df.shape} into '{combined_blast_result_file}'")
         report_dict = dict(
             input_file=nt_fasta_file,
             genbank_files=combined_blast_result_df["genbank_file"].values.tolist()
         )
         report_json = os.path.join(output_directory, "report.json")
         dump_dict(report_dict, report_json)
-        print("Saved report JSON of {} items into '{}'".format(
-            len(report_dict["genbank_files"]), report_json))
+        print("Saved report JSON of {} items into '{}'".format(len(report_dict["genbank_files"]), report_json))
+
+        out_blast_result_file = combined_blast_result_df.drop(["query", "genbank_file"], axis=1)
+        combined_blast_result_file = os.path.join(output_directory, "combined_blast_results.tsv")
+        dump_tsv(out_blast_result_file, combined_blast_result_file)
+        print(f"Saved combined BLAST result table with shape of {out_blast_result_file.shape} into '{combined_blast_result_file}'")
     print("Completed")
