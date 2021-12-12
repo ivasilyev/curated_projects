@@ -13,7 +13,7 @@ from meta.utils.pandas import concat, dump_tsv
 from meta.utils.io import load_dict, dump_dict, dump_string
 from meta.utils.file_system import is_file_valid, filename_only
 from meta.utils.date_time import randomize_sleep, count_elapsed_seconds
-from meta.utils.bio_sequence import describe_genbank, load_sequences, randomize_gene_slice
+from meta.utils.bio_sequence import describe_genbank, dump_sequences, load_sequences, randomize_gene_slice
 
 
 E_VALUE_THRESH = 0.04
@@ -124,34 +124,40 @@ if __name__ == '__main__':
         if len(sequence_directory) == 0:
             sequence_directory = os.path.join(output_directory, "genbank")
 
-        genbank_descriptions = []
-        for counter, blast_result in enumerate(list(blast_results.values())):
+        genbank_descriptions = dict()
+        for counter, (blast_result_title, blast_result) in enumerate(list(blast_results.items())):
             geninfo_accession = blast_result["geninfo_id"]
             genbank_file = os.path.join(sequence_directory, "{}.gbk".format(geninfo_accession))
             if is_file_valid(genbank_file):
                 genbank_report = load_sequences(genbank_file, "genbank")[0]
             else:
-                if is_chromosomes_only and " chromosome" not in blast_result["title"]:
+                if is_chromosomes_only and " chromosome" not in blast_result_title:
                     continue
                 genbank_report = download_reference_genbank(geninfo_accession)[0]
-                dump_string(genbank_report.format("genbank"), genbank_file)
+                dump_sequences([genbank_report], genbank_file, "genbank")
 
             genbank_description = describe_genbank(genbank_report)
             genbank_description.update(dict(
                 geninfo_id=geninfo_accession,
                 genbank_file=genbank_file
             ))
+            genbank_descriptions[blast_result_title] = genbank_description
             print(f"Downloaded {counter + 1} of {blast_result_number} sequences")
 
-        blast_result_df = pd.DataFrame(blast_results.values())
-        genbank_description_df = pd.DataFrame(genbank_descriptions)
+        print(f"Merging {len(blast_results.keys())} BLAST results and {len(genbank_descriptions.keys())} result descriptions")
         combined_blast_result_df = concat(
-            [blast_result_df, genbank_description_df], index_name="geninfo_id"
+            [pd.DataFrame(i.values()) for i in (blast_results, genbank_descriptions)],
+            index_name="geninfo_id"
         ).drop(["query", "genbank_file"], axis=1).dropna(axis=0, how="any")
-        dump_tsv(combined_blast_result_df.reset_index(),
-                 os.path.join(output_directory, "combined_blast_results.tsv"))
-
-        report_dict = dict(input_file=nt_fasta_file,
-                           genbank_files=genbank_description_df["genbank_file"].values.tolist())
-        dump_dict(report_dict, os.path.join(output_directory, "report.json"))
+        combined_blast_result_file = os.path.join(output_directory, "combined_blast_results.tsv")
+        dump_tsv(combined_blast_result_df, combined_blast_result_file)
+        print(f"Saved combined BLAST result table with shape of {combined_blast_result_df.shape} into '{combined_blast_result_file}'")
+        report_dict = dict(
+            input_file=nt_fasta_file,
+            genbank_files=combined_blast_result_df["genbank_file"].values.tolist()
+        )
+        report_json = os.path.join(output_directory, "report.json")
+        dump_dict(report_dict, report_json)
+        print("Saved report JSON of {} items into '{}'".format(
+            len(report_dict["genbank_files"]), report_json))
     print("Completed")
