@@ -1,4 +1,7 @@
 
+from Bio import SeqIO
+
+
 def remove_duplicate_sequences(records: list):
     out = []
     sequences = []
@@ -10,7 +13,6 @@ def remove_duplicate_sequences(records: list):
 
 
 def load_sequences(file: str, fmt: str = "fasta"):
-    from Bio import SeqIO
     from meta.utils.primitive import remove_empty_values
     if fmt == "fastq_gz":
         import gzip
@@ -26,14 +28,12 @@ def load_sequences(file: str, fmt: str = "fasta"):
 
 
 def string_to_sequences(s: str, fmt: str = "fasta"):
-    from Bio import SeqIO
     from io import StringIO
     return list(SeqIO.parse(StringIO(s), fmt))
 
 
 def dump_sequences(sequences: list, file: str, fmt: str = "fasta"):
     import os
-    from Bio import SeqIO
     os.makedirs(os.path.dirname(file), exist_ok=True)
     with open(file, mode="w", encoding="utf-8") as f:
         SeqIO.write(sequences, f, fmt)
@@ -79,6 +79,7 @@ def randomize_gene_slice(record, size: int = 20000):
 
 def describe_genbank(genbank_record, verbose: bool = True):
     from Bio.SeqUtils import GC
+    from meta.utils.primitive import clear_non_printing_chars
     out = dict(
         total_cds=0,
         genbank_id=genbank_record.id,
@@ -105,5 +106,4 @@ def describe_genbank(genbank_record, verbose: bool = True):
     out.update({k: ";".join(v) for k, v in qualifiers_dict.items()})
     if "db_xref" in out.keys():
         out["taxonomy_id"] = out["db_xref"].replace("taxon:", "")
-    return out
-
+    return {k: clear_non_printing_chars(v) for k, v in out.items()}

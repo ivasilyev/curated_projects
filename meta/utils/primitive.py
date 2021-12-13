@@ -54,3 +54,10 @@ def object_to_dict(o):
             continue
         out[key] = value
     return out
+
+
+def clear_non_printing_chars(s: str):
+    from re import sub
+    if isinstance(s, str):
+        return sub("[\r\n\t ]+", " ", s)
+    return s

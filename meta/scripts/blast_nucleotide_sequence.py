@@ -8,10 +8,10 @@ from time import perf_counter
 from collections import OrderedDict
 from Bio.Blast import NCBIWWW, NCBIXML
 from meta.utils.queue import attempt_func
-from meta.utils.primitive import safe_findall
-from meta.utils.pandas import dump_tsv, left_merge
+from meta.utils.pandas import dump_tsv, concat
 from meta.utils.io import load_dict, dump_dict, dump_string
 from meta.utils.file_system import is_file_valid, filename_only
+from meta.utils.primitive import safe_findall, clear_non_printing_chars
 from meta.utils.date_time import randomize_sleep, count_elapsed_seconds
 from meta.utils.bio_sequence import describe_genbank, dump_sequences, load_sequences, randomize_gene_slice
 
@@ -80,10 +80,12 @@ def parse_blast_report(blast_record):
                     bits=hsp.bits,
                     identities=hsp.identities,
                     positives=hsp.positives,
-                    query="\n".join([hsp.query, hsp.match, hsp.sbjct, ""]),
+                    query=hsp.query,
+                    match=hsp.match,
+                    sbjct=hsp.sbjct,
                     geninfo_id=safe_findall("gi\|([^|]+)\|", t).strip()
                 )
-                high_scoring_pairs[t] = d
+                high_scoring_pairs[t] = {k: clear_non_printing_chars(v) for k, v in d.items()}
     return high_scoring_pairs
 
 
