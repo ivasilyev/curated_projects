@@ -36,19 +36,6 @@ def dict2pd_series(dictionary, sort_keys: bool = False):
     return out
 
 
-def concat(dfs: list, index_name: str = "", columns_name: str = "", set_index: bool = True,
-           reset_index: bool = True):
-    _dfs = list(dfs)
-    if set_index:
-        _dfs = [i.set_index(index_name) for i in _dfs]
-    out = pd.concat(
-        _dfs, join="outer", axis=1, sort=False
-    ).rename_axis(index=index_name, columns=columns_name).sort_index()
-    if reset_index:
-        return out.reset_index()
-    return out
-
-
 def apply_mp_function_to_df(func, df: pd.DataFrame, index_name: str = "", columns_name: str = ""):
     results = joblib.Parallel(n_jobs=-1)(joblib.delayed(func)(j) for j in [df[i] for i in df.columns])
     return pd.DataFrame(results).rename_axis(index=index_name, columns=columns_name)
@@ -78,17 +65,6 @@ def convert_objects(df: pd.DataFrame, type_=str):
     return _df
 
 
-def left_merge(left_df: pd.DataFrame, right_df: pd.DataFrame, on: str, update: bool = True):
-    assert all(isinstance(i, pd.DataFrame) for i in [left_df, right_df])
-    _left_df = left_df.copy()
-    _right_df = right_df.copy()
-    if update:
-        _left_df.update(_right_df)
-    df1_unique_columns = [i for i in _right_df.columns if i not in _left_df.columns]
-
-    return _left_df.merge(_right_df.loc[:, [on] + df1_unique_columns], on=on, how="left")
-
-
 def find_duplicated_rows(df: pd.DataFrame, on: str):
     return df.loc[df[on].duplicated(keep=False)].sort_values(on)
 
@@ -100,17 +76,42 @@ def find_notna_rows(df: pd.DataFrame, on: str):
 def deduplicate_df_by_row_merging(df: pd.DataFrame, on: str, sep: str = ";"):
     def _deduplicate(series: pd.Series):
         return sep.join(sorted(set([str(i) for i in series.values])))
-
     _df = convert_objects(df)
     duplicated_df = find_duplicated_rows(_df, on)
-
     out_series = []
     for duplicated_value in sorted(set(duplicated_df[on].values)):
         out_series.append(
             duplicated_df.loc[duplicated_df[on] == duplicated_value].apply(_deduplicate, axis=0)
         )
-
     return pd.concat(
         [pd.DataFrame(out_series), _df.drop(index=duplicated_df.index)],
         axis=0
     ).sort_values(on)
+
+
+def concat(dfs: list, on: str, axis: int = 0, how: str = "outer", columns_name: str = "",
+           set_index: bool = True, reset_index: bool = True, **kwargs):
+    assert all(isinstance(i, pd.DataFrame) for i in dfs)
+    _dfs = list(dfs)
+    if set_index:
+        _dfs = [i.set_index(on) for i in _dfs]
+    out = pd.concat(
+        _dfs, join=how, axis=axis, **kwargs
+    ).rename_axis(index=on, columns=columns_name).sort_index()
+    if reset_index:
+        return out.reset_index()
+    return out
+
+
+def merge(left_df: pd.DataFrame, right_df: pd.DataFrame, on: str, how: str = "outer",
+          update: bool = True, deduplicate: bool = False, **kwarg):
+    assert all(isinstance(i, pd.DataFrame) for i in [left_df, right_df])
+    _left_df = left_df.copy()
+    _right_df = right_df.copy()
+    if update:
+        _left_df.update(_right_df)
+    df1_unique_columns = [i for i in _right_df.columns if i not in _left_df.columns]
+    out = _left_df.merge(_right_df.loc[:, [on] + df1_unique_columns], on=on, how=how, **kwarg)
+    if deduplicate:
+        out = deduplicate_df_by_row_merging(out, on)
+    return out
