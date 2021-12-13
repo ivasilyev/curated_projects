@@ -132,14 +132,14 @@ if __name__ == '__main__':
             geninfo_accession = blast_result["geninfo_id"]
             genbank_file = os.path.join(sequence_directory, "{}.gbk".format(geninfo_accession))
             if is_file_valid(genbank_file):
-                genbank_report = load_sequences(genbank_file, "genbank")[0]
+                genbank_report = load_sequences(genbank_file, "genbank")
             else:
                 if is_chromosomes_only and " chromosome" not in blast_result_title:
                     continue
-                genbank_report = download_reference_genbank(geninfo_accession)[0]
-                dump_sequences([genbank_report], genbank_file, "genbank")
+                genbank_report = download_reference_genbank(geninfo_accession)
+                dump_sequences(genbank_report, genbank_file, "genbank")
 
-            genbank_description = describe_genbank(genbank_report)
+            genbank_description = describe_genbank(genbank_report)[0]
             genbank_description.update(dict(
                 geninfo_id=geninfo_accession,
                 genbank_file=genbank_file
@@ -150,9 +150,11 @@ if __name__ == '__main__':
         dump_dict(genbank_descriptions, genbank_description_file)
         print(f"{len(genbank_descriptions.keys())} GenBank descriptions were saved into {genbank_description_file}")
 
-        combined_blast_result_df = left_merge(
-            *[pd.DataFrame(i.values()) for i in (blast_results, genbank_descriptions)],
-            on="geninfo_id"
+        combined_blast_result_df = concat(
+            [pd.DataFrame(i.values()) for i in (blast_results, genbank_descriptions)],
+            axis=1,
+            how="outer",
+            on="geninfo_id",
         )
         print(f"Merged {len(blast_results.keys())} BLAST results and {len(genbank_descriptions.keys())} result descriptions")
         report_dict = dict(
