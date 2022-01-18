@@ -25,11 +25,12 @@ if [[ "${RAW_DIR}" != "${SRC_DIR}" ]]
         if [ ! -s "${TGT_READ}" ]; then
             echo
             # ln -s "${SRC_READ}" "${TGT_READ}"
+        fi
         done
 fi
 
 
-echo "Decompress reads"
+echo "Unpack reads"
 
 cd "${RAW_DIR}"
 
