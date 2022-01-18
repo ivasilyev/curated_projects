@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
 
 # SRC_DIR and ROOT_DIR are exported from '0_export_variables.sh'
-ROOT_DIR="$(realpath -s "${ROOT_DIR}")/"
-SRC_DIR="$(realpath -s "${SRC_DIR}")/"
+export ROOT_DIR="$(realpath -s "${ROOT_DIR}")/"
+export SRC_DIR="$(realpath -s "${SRC_DIR}")/"
 
-RAW_DIR="${ROOT_DIR}raw/"
-SAMPLEDATA_FILE="${ROOT_DIR}sampledata.json"
+export RAW_DIR="${ROOT_DIR}raw/"
+export SAMPLEDATA_FILE="${ROOT_DIR}sampledata.json"
 
 
 
 echo "Deploy symlinks"
 
-mkdir -p "${RAW_DIR}" && chmod -R 777 "${RAW_DIR}"
+mkdir -p "${RAW_DIR}"
+chmod -R a+rw "${RAW_DIR}"
 cd "${ROOT_DIR}" || exit 1
 
 if [[ "${RAW_DIR}" != "${SRC_DIR}" ]]
@@ -23,11 +24,31 @@ if [[ "${RAW_DIR}" != "${SRC_DIR}" ]]
 
         if [ ! -s "${TGT_READ}" ]
             then
-            ln -s "${SRC_READ}" "${TGT_READ}"
+            # ln -s "${SRC_READ}" "${TGT_READ}"
+            ;
         fi
         done
 fi
 
+
+echo "Decompress reads"
+
+cd "${RAW_DIR}"
+
+find "${SRC_DIR}" \
+    -name '*.gz' \
+    -type f \
+    -print0 \
+| xargs \
+    -0 \
+    --max-procs "$(nproc)" \
+    -I "{}" \
+        bash -c '
+            FILE="{}";
+            BASENAME="$(basename "${FILE%.*}")";
+            echo "Decompress ${FILE} to ${RAW_DIR}${BASENAME}";
+            zcat "${FILE}" > "${RAW_DIR}${BASENAME}";
+        '
 
 echo "Create sampledata"
 
