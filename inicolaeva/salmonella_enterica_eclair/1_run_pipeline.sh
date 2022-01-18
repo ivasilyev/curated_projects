@@ -22,11 +22,9 @@ if [[ "${RAW_DIR}" != "${SRC_DIR}" ]]
         BASENAME="$(basename "${SRC_READ}")"
         TGT_READ="${RAW_DIR}${BASENAME}"
 
-        if [ ! -s "${TGT_READ}" ]
-            then
+        if [ ! -s "${TGT_READ}" ]; then
+            echo
             # ln -s "${SRC_READ}" "${TGT_READ}"
-            ;
-        fi
         done
 fi
 
