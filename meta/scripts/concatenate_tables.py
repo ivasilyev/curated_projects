@@ -14,7 +14,7 @@ def parse_args():
     parser = ArgumentParser(
         formatter_class=RawTextHelpFormatter,
         description="Concatenate tabular separated data which has same (or almost same) header",
-        epilog=""
+        epilog="The core method reference: https://pandas.pydata.org/docs/reference/api/pandas.concat.html"
     )
     parser.add_argument("-i", "--input", nargs="+", required=True,
                         help="Tables to concatenate")
