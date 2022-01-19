@@ -29,7 +29,10 @@ if __name__ == '__main__':
         "geninfo_id")
 
     renaming_dict = combined_blast_result_df["strain"].map(
-        lambda x: " ".join(Utilities.remove_empty_values(re.split("[ ]+", x)[2:]))).to_dict()
+        lambda x: " ".join(
+            Utilities.remove_empty_values(re.split("[ ]+", str(x))[2:])
+        )
+    ).to_dict()
 
     text_content_replaced = re.sub("\.(gbk|gff)", "", text_content)
     for renaming_key, renaming_value in renaming_dict.items():

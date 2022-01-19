@@ -12,26 +12,6 @@ DEFAULT_REGEX = "(.+).+S[0-9]+.*R[12]"
 DEFAULT_READS_EXTENSION = ".fastq.gz"
 
 
-def parse_args():
-    parser = ArgumentParser(
-        formatter_class=RawTextHelpFormatter,
-        description="Generate sampledata based on directory".strip(),
-        epilog=""
-    )
-    parser.add_argument("-i", "--input", nargs="+",
-                        help="Input directory (directories)")
-    parser.add_argument("-e", "--extension", default=DEFAULT_READS_EXTENSION,
-                        help="Extension of reads files")
-    parser.add_argument("-r", "--regex", default=DEFAULT_REGEX,
-                        help="Regular expression to extract sample name(s) from file name(s) without extension")
-    parser.add_argument("-t", "--taxa", default="",
-                        help="(Optional) Taxonomy to add to all samples")
-    parser.add_argument("-o", "--output", required=True,
-                        help="Output file")
-    _namespace = parser.parse_args()
-    return _namespace.input, _namespace.extension, _namespace.regex,  _namespace.taxa, _namespace.output
-
-
 class SampleDataLine:
     def __init__(self, sample_name: str, sample_read_files: list):
         self.state = dict()
@@ -151,6 +131,26 @@ class SampleDataArray:
 
     def dump(self, file: str):
         Utilities.dump_dict(self.export(), file)
+
+
+def parse_args():
+    parser = ArgumentParser(
+        formatter_class=RawTextHelpFormatter,
+        description="Generate sampledata based on directory".strip(),
+        epilog=""
+    )
+    parser.add_argument("-i", "--input", nargs="+",
+                        help="Input directory (directories)")
+    parser.add_argument("-e", "--extension", default=DEFAULT_READS_EXTENSION,
+                        help="Extension of reads files")
+    parser.add_argument("-r", "--regex", default=DEFAULT_REGEX,
+                        help="Regular expression to extract sample name(s) from file name(s) without extension")
+    parser.add_argument("-t", "--taxa", default="",
+                        help="(Optional) Taxonomy to add to all samples")
+    parser.add_argument("-o", "--output", required=True,
+                        help="Output file")
+    _namespace = parser.parse_args()
+    return _namespace.input, _namespace.extension, _namespace.regex,  _namespace.taxa, _namespace.output
 
 
 if __name__ == '__main__':

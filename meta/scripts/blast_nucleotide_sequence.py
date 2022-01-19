@@ -21,31 +21,6 @@ SLEEP_INTERVAL = (10, 30)
 QUERY_SIZE = 20000
 
 
-def _parse_args():
-    from argparse import ArgumentParser
-    parser = ArgumentParser(
-        description="Tool to perform BLAST using randomized slice from the largest nucleotide "
-                    "sequence and download the related GenBank reference entries",
-        epilog="Sequences must be in FASTA format")
-    parser.add_argument("-i", "--input", metavar="<file>", required=True, help="FASTA nucleotide file")
-    parser.add_argument("-b", "--blast_only", default=False, action="store_true",
-                        help="(Optional) If selected, the related GenBank reference entries won't be downloaded")
-    parser.add_argument("-c", "--chromosomes_only", default=False, action="store_true",
-                        help="(Optional) If selected, only chromosome GenBank reference entries will be downloaded")
-    parser.add_argument("-r", "--results", metavar="<int>", type=int, default=25,
-                        help="(Optional) The maximum size of GenBank entries from the BLAST report to download")
-    parser.add_argument("-s", "--sequence_dir", metavar="<directory>", default="",
-                        help="(Optional) Special dir to download sequences to ('genbank' subdirectory by default)")
-    parser.add_argument("-o", "--output", metavar="<directory>", required=True, help="Output directory")
-    _namespace = parser.parse_args()
-    return (_namespace.input,
-            _namespace.blast_only,
-            _namespace.chromosomes_only,
-            _namespace.results,
-            _namespace.sequence_dir,
-            _namespace.output)
-
-
 def parse_largest_subsequence(fasta_nt_file: str):
     """
     Parses nucleotide FASTA and chunk if it's too large for BLAST query
@@ -100,6 +75,33 @@ def download_reference_genbank(accession_id: str):
     return list(SeqIO.parse(handle, "genbank"))
 
 
+def _parse_args():
+    from argparse import ArgumentParser
+    parser = ArgumentParser(
+        description="Tool to perform BLAST using randomized slice from the largest nucleotide "
+                    "sequence and download the related GenBank reference entries",
+        epilog="Sequences must be in FASTA format")
+    parser.add_argument("-i", "--input", metavar="<file>", required=True, help="FASTA nucleotide file")
+    parser.add_argument("-b", "--blast_only", default=False, action="store_true",
+                        help="(Optional) If selected, the related GenBank reference entries won't be downloaded")
+    parser.add_argument("-c", "--chromosomes_only", default=False, action="store_true",
+                        help="(Optional) If selected, only chromosome GenBank reference entries will be downloaded")
+    parser.add_argument("-r", "--results", metavar="<int>", type=int, default=25,
+                        help="(Optional) The maximum size of GenBank entries from the BLAST report to download")
+    parser.add_argument("-s", "--sequence_dir", metavar="<directory>", default="",
+                        help="(Optional) Special dir to download sequences to ('genbank' subdirectory by default)")
+    parser.add_argument("-o", "--output", metavar="<directory>", required=True, help="Output directory")
+    _namespace = parser.parse_args()
+    return (
+        _namespace.input,
+        _namespace.blast_only,
+        _namespace.chromosomes_only,
+        _namespace.results,
+        _namespace.sequence_dir,
+        _namespace.output
+    )
+
+
 if __name__ == '__main__':
     nt_fasta_file, is_blast_only, is_chromosomes_only, blast_result_number, sequence_directory, output_directory = _parse_args()
     out_blast_basename = os.path.join(output_directory, filename_only(nt_fasta_file))
@@ -134,7 +136,11 @@ if __name__ == '__main__':
             if is_file_valid(genbank_file):
                 genbank_reports = load_sequences(genbank_file, "genbank")
             else:
-                if is_chromosomes_only and " chromosome" not in blast_result_title:
+                if is_chromosomes_only and all(
+                        f" {i}" not in blast_result_title for i in (
+                            "chromosome", "complete", "genome"
+                        )
+                ):
                     continue
                 genbank_reports = download_reference_genbank(geninfo_accession)
                 dump_sequences(genbank_reports, genbank_file, "genbank")
@@ -145,7 +151,6 @@ if __name__ == '__main__':
                 genbank_file=genbank_file
             ))
             genbank_descriptions[blast_result_title] = genbank_description
-            print(f"Downloaded {counter + 1} of {blast_result_number} sequences")
 
         dump_dict(genbank_descriptions, genbank_description_file)
         print(f"{len(genbank_descriptions.keys())} GenBank descriptions were saved into {genbank_description_file}")
@@ -159,14 +164,21 @@ if __name__ == '__main__':
         print(f"Merged {len(blast_results.keys())} BLAST results and {len(genbank_descriptions.keys())} result descriptions")
         report_dict = dict(
             input_file=nt_fasta_file,
-            genbank_files=combined_blast_result_df["genbank_file"].values.tolist()
+            genbank_files=combined_blast_result_df.loc[
+                combined_blast_result_df["genbank_file"].notnull() &
+                combined_blast_result_df["taxonomy"].notnull(),
+                :
+            ].values.tolist()
         )
         report_json = os.path.join(output_directory, "report.json")
         dump_dict(report_dict, report_json)
         print("Saved report JSON of {} items into '{}'".format(len(report_dict["genbank_files"]), report_json))
 
-        out_blast_result_file = combined_blast_result_df.drop(["query", "genbank_file"], axis=1)
+        out_blast_result_df = combined_blast_result_df.drop(
+            ["query", "genbank_file", "match"],
+            axis=1
+        )
         combined_blast_result_file = os.path.join(output_directory, "combined_blast_results.tsv")
-        dump_tsv(out_blast_result_file, combined_blast_result_file)
-        print(f"Saved combined BLAST result table with shape of {out_blast_result_file.shape} into '{combined_blast_result_file}'")
+        dump_tsv(out_blast_result_df, combined_blast_result_file)
+        print(f"Saved combined BLAST result table with shape of {out_blast_result_df.shape} into '{combined_blast_result_file}'")
     print("Completed")
