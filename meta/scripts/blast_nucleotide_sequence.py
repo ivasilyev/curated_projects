@@ -132,14 +132,14 @@ if __name__ == '__main__':
             geninfo_accession = blast_result["geninfo_id"]
             genbank_file = os.path.join(sequence_directory, "{}.gbk".format(geninfo_accession))
             if is_file_valid(genbank_file):
-                genbank_report = load_sequences(genbank_file, "genbank")
+                genbank_reports = load_sequences(genbank_file, "genbank")
             else:
                 if is_chromosomes_only and " chromosome" not in blast_result_title:
                     continue
-                genbank_report = download_reference_genbank(geninfo_accession)
-                dump_sequences(genbank_report, genbank_file, "genbank")
+                genbank_reports = download_reference_genbank(geninfo_accession)
+                dump_sequences(genbank_reports, genbank_file, "genbank")
 
-            genbank_description = describe_genbank(genbank_report)[0]
+            genbank_description = describe_genbank(genbank_reports[0])
             genbank_description.update(dict(
                 geninfo_id=geninfo_accession,
                 genbank_file=genbank_file
