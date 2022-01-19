@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import re
-from meta.scripts.Utilities import Utilities
-from argparse import ArgumentParser, RawTextHelpFormatter
+from meta.utils.pandas import load_tsv
+from meta.utils.io import load_string, dump_string
 
 
 def parse_args():
+    from argparse import ArgumentParser
     parser = ArgumentParser(
-        formatter_class=RawTextHelpFormatter,
         description="Replace GenInfo ID with strains from given table".strip(),
         epilog=""
     )
@@ -24,19 +24,20 @@ def parse_args():
 
 if __name__ == '__main__':
     text_file, combined_blast_result_file, out_file = parse_args()
-    text_content = Utilities.load_string(text_file)
-    combined_blast_result_df = Utilities.load_tsv(combined_blast_result_file).set_index(
-        "geninfo_id")
 
-    renaming_dict = combined_blast_result_df["strain"].map(
-        lambda x: " ".join(
-            Utilities.remove_empty_values(re.split("[ ]+", str(x))[2:])
-        )
-    ).to_dict()
+    text_content = load_string(text_file)
+    combined_blast_result_df = load_tsv(combined_blast_result_file).set_index("geninfo_id")
+    print(f"Loaded replacer table with the shape {combined_blast_result_df.shape}")
+
+    renaming_dict = combined_blast_result_df["strain"].map(lambda x: str(x).strip()).to_dict()
 
     text_content_replaced = re.sub("\.(gbk|gff)", "", text_content)
+    counter = 0
     for renaming_key, renaming_value in renaming_dict.items():
         text_content_replaced = text_content_replaced.replace(
-            *(str(i) for i in [renaming_key, renaming_value]))
+            *[str(i) for i in [renaming_key, renaming_value]]
+        )
+        counter += 1
 
-    Utilities.dump_string(text_content_replaced, out_file)
+    print(f"{counter} replacements were performed")
+    dump_string(text_content_replaced, out_file)
