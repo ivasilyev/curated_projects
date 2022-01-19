@@ -168,7 +168,7 @@ if __name__ == '__main__':
                 combined_blast_result_df["genbank_file"].notnull() &
                 combined_blast_result_df["taxonomy"].notnull(),
                 :
-            ].values.tolist()
+            ]["genbank_file"].values.tolist()
         )
         report_json = os.path.join(output_directory, "report.json")
         dump_dict(report_dict, report_json)
