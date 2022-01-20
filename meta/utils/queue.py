@@ -35,15 +35,13 @@ def wrapper(d: dict):
     return d["func"](*d["args"], **d["kwargs"])
 
 
-def attempt_func(func, raised: bool = False, *args, **kwargs):
-    _ATTEMPTS = 5
-    attempt = 1
-    while attempt <= _ATTEMPTS:
+def attempt_func(func, attempts: int = 5, raised: bool = False, *args, **kwargs):
+    for _attempt in range(attempts):
+        attempt = _attempt + 1
         try:
             return func(*args, **kwargs)
         except Exception as e:
-            print("Caught exception for attempt {}: `{}`".format(attempt, e))
-            attempt += 1
+            print("Caught exception for attempt {} of {}: `{}`".format(attempt, attempts, e))
             if raised:
                 raise
     print("Exceeded number of attempts for the function: '{}'".format(func.__name__))
