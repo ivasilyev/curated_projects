@@ -17,7 +17,7 @@ from meta.utils.bio_sequence import describe_genbank, dump_sequences, load_seque
 
 
 E_VALUE_THRESH = 0.04
-SLEEP_INTERVAL = (10, 30)
+SLEEP_INTERVAL = (5, 15)
 QUERY_SIZE = 20000
 QUERY_ATTEMPTS = 5
 
