@@ -3,10 +3,10 @@
 
 import os
 import pandas as pd
-from Bio import SeqIO, Entrez
 from time import perf_counter
 from collections import OrderedDict
-from Bio.Blast import NCBIWWW, NCBIXML
+from Bio import SeqIO, SeqRecord, Entrez
+from Bio.Blast import NCBIWWW, NCBIXML, Record
 from meta.utils.queue import attempt_func
 from meta.utils.pandas import dump_tsv, concat
 from meta.utils.io import load_dict, dump_dict, dump_string
@@ -19,15 +19,7 @@ from meta.utils.bio_sequence import describe_genbank, dump_sequences, load_seque
 E_VALUE_THRESH = 0.04
 SLEEP_INTERVAL = (10, 30)
 QUERY_SIZE = 20000
-
-
-def parse_largest_subsequence(fasta_nt_file: str):
-    """
-    Parses nucleotide FASTA and chunk if it's too large for BLAST query
-    """
-    assert is_file_valid(fasta_nt_file, True)
-    records = load_sequences(fasta_nt_file, "fasta")
-    return randomize_gene_slice(records[0], size=QUERY_SIZE).format("fasta")
+QUERY_ATTEMPTS = 5
 
 
 def download_nt_blast_report(query: str, result_number: int = 50):
@@ -40,7 +32,7 @@ def download_nt_blast_report(query: str, result_number: int = 50):
     return NCBIXML.read(result_handle)
 
 
-def parse_blast_report(blast_record):
+def parse_blast_report(blast_record: Record):
     # Based on: https://biopython.org/DIST/docs/tutorial/Tutorial.html#htoc95
     high_scoring_pairs = OrderedDict()
     for alignment in blast_record.alignments:
@@ -62,6 +54,16 @@ def parse_blast_report(blast_record):
                 )
                 high_scoring_pairs[t] = {k: clear_non_printing_chars(v) for k, v in d.items()}
     return high_scoring_pairs
+
+
+def chop_and_blast(record: SeqRecord, result_number: int = 50):
+    print(f"Getting random subsequence chunk of size {QUERY_SIZE} from the sequnce of size {len(record)} bp.")
+    query_string = randomize_gene_slice(record, size=QUERY_SIZE).format("fasta")
+    print(f"Performing BLAST query from the sequence of length {len(blast_query_string)}")
+    _start = perf_counter()
+    report = download_nt_blast_report(blast_query_string, result_number)
+    print(f"BLAST query was completed after {count_elapsed_seconds(_start)}")
+    return query_string, parse_blast_report(report)
 
 
 def download_reference_genbank(accession_id: str):
@@ -105,24 +107,25 @@ def _parse_args():
 if __name__ == '__main__':
     nt_fasta_file, is_blast_only, is_chromosomes_only, blast_result_number, sequence_directory, output_directory = _parse_args()
     out_blast_basename = os.path.join(output_directory, filename_only(nt_fasta_file))
+    blast_query_file = f"{out_blast_basename}_blast_query.fna"
     blast_result_file = "{}_blast_results.json".format(out_blast_basename)
+
+    blast_results = dict()
 
     if is_file_valid(blast_result_file):
         print(f"Load results of the already performed NCBI BLAST query: '{blast_result_file}'")
         blast_results = load_dict(blast_result_file)
     else:
-        print(f"Parsing largest subsequence from {nt_fasta_file}")
-        blast_query_string = parse_largest_subsequence(nt_fasta_file)
-        blast_query_file = f"{out_blast_basename}_blast_query.fna"
-        dump_string(blast_query_string, blast_query_file)
-        print(f"Saved BLAST query to file '{blast_query_file}'")
-        print(f"Performing BLAST query from the sequence of length {len(blast_query_string)}")
-        start = perf_counter()
-        blast_report = download_nt_blast_report(blast_query_string, blast_result_number)
-        print(f"BLAST query was completed after {count_elapsed_seconds(start)}")
-        blast_results = parse_blast_report(blast_report)
-        dump_dict(blast_results, blast_result_file)
-        print(f"{len(blast_results.keys())} BLAST results were saved into {blast_result_file}")
+        fasta_record = load_sequences(nt_fasta_file, "fasta")[0]
+        for attempt in range(QUERY_ATTEMPTS):
+            blast_query_string, blast_results = chop_and_blast(fasta_record, blast_result_number)
+            if len(blast_results.keys()) > 0:
+                dump_string(blast_query_string, blast_query_file)
+                print(f"Saved BLAST query to file '{blast_query_file}'")
+                dump_dict(blast_results, blast_result_file)
+                print(f"{len(blast_results.keys())} BLAST results were saved into {blast_result_file}")
+                break
+            print(f"Empty BLAST results for attempt {attempt} of {QUERY_ATTEMPTS}")
 
     genbank_description_file = "{}_genbank_descriptions.json".format(out_blast_basename)
     if not is_blast_only:
@@ -137,9 +140,9 @@ if __name__ == '__main__':
                 genbank_reports = load_sequences(genbank_file, "genbank")
             else:
                 if is_chromosomes_only and all(
-                        f" {i}" not in blast_result_title for i in (
-                            "chromosome", "complete", "genome"
-                        )
+                    f" {i}" not in blast_result_title for i in (
+                        "chromosome", "complete", "genome"
+                    )
                 ):
                     continue
                 genbank_reports = download_reference_genbank(geninfo_accession)
