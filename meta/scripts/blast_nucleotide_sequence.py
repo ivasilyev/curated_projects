@@ -56,12 +56,12 @@ def parse_blast_report(blast_record: Record):
     return high_scoring_pairs
 
 
-def chop_and_blast(record: SeqRecord, result_number: int = 50):
-    print(f"Getting random subsequence chunk of size {QUERY_SIZE} from the sequnce of size {len(record)} bp.")
-    query_string = randomize_gene_slice(record, size=QUERY_SIZE).format("fasta")
-    print(f"Performing BLAST query from the sequence of length {len(blast_query_string)}")
+def chop_and_blast(record: SeqRecord, chunk_size: int = QUERY_SIZE, result_number: int = 50):
+    print(f"Getting random subsequence chunk of size {chunk_size} from the sequnce of size {len(record)} bp.")
+    query_string = randomize_gene_slice(record, size=chunk_size).format("fasta")
+    print(f"Performing BLAST query from the sequence of length {len(query_string)}")
     _start = perf_counter()
-    report = download_nt_blast_report(blast_query_string, result_number)
+    report = download_nt_blast_report(query_string, result_number)
     print(f"BLAST query was completed after {count_elapsed_seconds(_start)}")
     return query_string, parse_blast_report(report)
 
@@ -105,7 +105,14 @@ def _parse_args():
 
 
 if __name__ == '__main__':
-    nt_fasta_file, is_blast_only, is_chromosomes_only, blast_result_number, sequence_directory, output_directory = _parse_args()
+    (
+        nt_fasta_file,
+        is_blast_only,
+        is_chromosomes_only,
+        blast_result_number,
+        sequence_directory,
+        output_directory
+    ) = _parse_args()
     out_blast_basename = os.path.join(output_directory, filename_only(nt_fasta_file))
     blast_query_file = f"{out_blast_basename}_blast_query.fna"
     blast_result_file = "{}_blast_results.json".format(out_blast_basename)
@@ -118,7 +125,9 @@ if __name__ == '__main__':
     else:
         fasta_record = load_sequences(nt_fasta_file, "fasta")[0]
         for attempt in range(QUERY_ATTEMPTS):
-            blast_query_string, blast_results = chop_and_blast(fasta_record, blast_result_number)
+            blast_query_string, blast_results = chop_and_blast(
+                record=fasta_record, result_number=blast_result_number
+            )
             if len(blast_results.keys()) > 0:
                 dump_string(blast_query_string, blast_query_file)
                 print(f"Saved BLAST query to file '{blast_query_file}'")
