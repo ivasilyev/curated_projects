@@ -1,0 +1,30 @@
+Mutation	Nucleotide change	Amino acid change	Resistance	PMID
+ileS p.N213D	AAC -> GAC	N -> D	Unknown	-
+grlA p.S80F	TCC -> TTC	S -> F	Ciprofloxacin	15848290
+grlA p.I223V	ATT -> GTT	I -> V	Unknown	-
+grlA p.V694M	GTG -> ATG	V -> M	Unknown	-
+grlB p.D530G	GAT -> GGT	D -> G	Unknown	-
+gyrA p.E815D	GAA -> GAC	E -> D	Unknown	-
+gyrA p.D816E	GAT -> GAA	D -> E	Unknown	-
+gyrA p.E817V	GAA -> GTA	E -> V	Unknown	-
+gyrA p.T818del	ACG -> ---	T -> del	Unknown	-
+gyrA p.T825_S826del	ACTTCA -> ------	TS -> del	Unknown	-
+gyrA p.N842S	AAT -> AGT	N -> S	Unknown	-
+gyrA p.T845A	ACA -> GCA	T -> A	Unknown	-
+pbp2 p.A285P	GCT -> CCT	A -> P	Unknown	-
+pbp2 p.E315A	GAA -> GCA	E -> A	Unknown	-
+pbp2 p.A576S	GCT -> TCT	A -> S	Unknown	-
+pbp2 p.A606D	GCA -> GAC	A -> D	Unknown	-
+pbp2 p.Q629P	CAA -> CCA	Q -> P	Unknown	-
+pbp4 n.-54A>G	A -> G	Promoter mutations	Unknown	-
+pbp4 p.C12F	TGT -> TTT	C -> F	Unknown	-
+pbp4 p.T25A	ACT -> GCT	T -> A	Unknown	-
+pbp4 p.C12F	TGT -> TTT	C -> F	Unknown	-
+pbp4 p.T25A	ACT -> GCT	T -> A	Unknown	-
+pbp4 p.T101R	ACA -> AGA	T -> R	Unknown	-
+pbp4 p.T189S	ACA -> TCA	T -> S	Unknown	-
+pbp4 p.L234H	CTA -> CAT	L -> H	Unknown	-
+pbp4 p.E398A	GAA -> GCA	E -> A	Unknown	-
+pbp4 p.T409A	ACA -> GCA	T -> A	Unknown	-
+dfrB p.V72E	GTG -> GAG	V -> E	Unknown	-
+dfrB p.I97T	ATA -> ACA	I -> T	Unknown	-

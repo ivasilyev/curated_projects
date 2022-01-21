@@ -1,0 +1,29 @@
+Assembly	188staph
+# contigs (>= 0 bp)	76
+# contigs (>= 1000 bp)	11
+# contigs (>= 5000 bp)	8
+# contigs (>= 10000 bp)	7
+# contigs (>= 25000 bp)	6
+# contigs (>= 50000 bp)	5
+Total length (>= 0 bp)	2813698
+Total length (>= 1000 bp)	2785018
+Total length (>= 5000 bp)	2776324
+Total length (>= 10000 bp)	2770811
+Total length (>= 25000 bp)	2749953
+Total length (>= 50000 bp)	2711012
+# contigs	32
+Largest contig	1408563
+Total length	2797180
+GC (%)	32.83
+N50	1408563
+N75	404082
+L50	1
+L75	3
+# total reads	9746941
+# left	4867634
+# right	4867634
+Mapped (%)	99.89
+Properly paired (%)	99.6
+Avg. coverage depth	865
+Coverage >= 1x (%)	100.0
+# N's per 100 kbp	3.32

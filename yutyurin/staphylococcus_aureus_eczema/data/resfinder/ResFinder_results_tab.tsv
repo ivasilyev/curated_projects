@@ -1,0 +1,4 @@
+Resistance gene	Identity	Alignment Length/Gene Length	Coverage	Position in reference	Contig	Position in contig	Phenotype	Accession no.
+blaZ	100.0	180/846	21.27659574468085	667..846	contig07	20679..20858	Beta-lactam resistance	AP004832
+blaZ	100.0	793/846	93.73522458628841	1..793	contig07	1..793	Beta-lactam resistance	AP004832
+blaZ	100.00	793/846	93.73522458628841	1..793	contig07	1..793	Beta-lactam resistance	FQJS01000007

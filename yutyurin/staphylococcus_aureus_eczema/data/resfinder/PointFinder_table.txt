@@ -1,0 +1,98 @@
+Chromosomal point mutations - Results
+Species: staphylococcus_aureus
+Genes: 23S, dfrB, fusA, grlA, grlB, gyrA, ileS, pbp2, pbp4_promoter_size_304bp, pbp4, rpoB
+Mapping methode: blast
+
+
+Known Mutations
+
+excluded
+
+23S
+No mutations found in 23S
+
+ileS
+No known mutations found in ileS
+
+grlA
+Mutation	Nucleotide change	Amino acid change	Resistance	PMID
+grlA p.S80F	TCC -> TTC	S -> F	Ciprofloxacin	15848290
+
+grlB
+No known mutations found in grlB
+
+gyrA
+No known mutations found in gyrA
+
+fusA
+No mutations found in fusA
+
+pbp2
+No known mutations found in pbp2
+
+pbp4
+No known mutations found in pbp4
+
+pbp4
+No known mutations found in pbp4
+
+rpoB
+No mutations found in rpoB
+
+dfrB
+No known mutations found in dfrB
+
+
+Unknown Mutations 
+
+ileS
+Mutation	Nucleotide change	Amino acid change
+ileS p.N213D	AAC -> GAC	N -> D
+
+grlA
+Mutation	Nucleotide change	Amino acid change
+grlA p.I223V	ATT -> GTT	I -> V
+grlA p.V694M	GTG -> ATG	V -> M
+
+grlB
+Mutation	Nucleotide change	Amino acid change
+grlB p.D530G	GAT -> GGT	D -> G
+
+gyrA
+Mutation	Nucleotide change	Amino acid change
+gyrA p.E815D	GAA -> GAC	E -> D
+gyrA p.D816E	GAT -> GAA	D -> E
+gyrA p.E817V	GAA -> GTA	E -> V
+gyrA p.T818del	ACG -> ---	T -> del
+gyrA p.T825_S826del	ACTTCA -> ------	TS -> del
+gyrA p.N842S	AAT -> AGT	N -> S
+gyrA p.T845A	ACA -> GCA	T -> A
+
+pbp2
+Mutation	Nucleotide change	Amino acid change
+pbp2 p.A285P	GCT -> CCT	A -> P
+pbp2 p.E315A	GAA -> GCA	E -> A
+pbp2 p.A576S	GCT -> TCT	A -> S
+pbp2 p.A606D	GCA -> GAC	A -> D
+pbp2 p.Q629P	CAA -> CCA	Q -> P
+
+pbp4
+Mutation	Nucleotide change	Amino acid change
+pbp4 n.-54A>G	A -> G	Promoter mutations
+pbp4 p.C12F	TGT -> TTT	C -> F
+pbp4 p.T25A	ACT -> GCT	T -> A
+
+pbp4
+Mutation	Nucleotide change	Amino acid change
+pbp4 p.C12F	TGT -> TTT	C -> F
+pbp4 p.T25A	ACT -> GCT	T -> A
+pbp4 p.T101R	ACA -> AGA	T -> R
+pbp4 p.T189S	ACA -> TCA	T -> S
+pbp4 p.L234H	CTA -> CAT	L -> H
+pbp4 p.E398A	GAA -> GCA	E -> A
+pbp4 p.T409A	ACA -> GCA	T -> A
+
+dfrB
+Mutation	Nucleotide change	Amino acid change
+dfrB p.V72E	GTG -> GAG	V -> E
+dfrB p.I97T	ATA -> ACA	I -> T
