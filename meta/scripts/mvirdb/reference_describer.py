@@ -44,8 +44,8 @@ def mp_parse_nfasta_header(header: str):
     out["former_id"] = out.pop("source_string")
     out.update({k: safe_findall(v, out["feature_names"]) for k, v in {
         "gene_host": "\[([^\]]+)\] *$",
-        "recname_full": "[^_]*RecName:_Full=([^;]+);",
-        "subname_full": "[^_]*SubName:_Full=([^;]+);",
+        "recname_full": "[^_]*RecName:[_ ]Full=([^;]+);",
+        "subname_full": "[^_]*SubName:[_ ]Full=([^;]+);",
     }.items()})
     return out
 
