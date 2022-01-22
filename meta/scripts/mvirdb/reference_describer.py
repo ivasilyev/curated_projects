@@ -5,12 +5,12 @@ import os
 import joblib as jb
 import pandas as pd
 from time import perf_counter
+from meta.utils.pandas import merge
 from meta.utils.primitive import safe_findall
 from meta.utils.file_system import find_file_by_tail
 from meta.utils.date_time import count_elapsed_seconds
 from meta.utils.language import regex_based_tokenization
 from meta.utils.bio_sequence import load_headers_from_fasta
-from meta.utils.pandas import left_merge, deduplicate_df_by_row_merging
 from meta.scripts.reference_data import AnnotatorTemplate, ReferenceData, ReferenceDescriberTemplate, SequenceRetrieverTemplate
 
 
@@ -32,19 +32,20 @@ class SequenceRetriever(SequenceRetrieverTemplate):
 
 
 def mp_parse_nfasta_header(header: str):
+    # E.g. "10001|vfid|47953|vsiid|68790|ssid|SubName: Full=Leader peptidase PilD; SubName: Full=Type 4 prepilin peptidase VcpD; SubName: Full=Type IV-A prepilin peptidase PilD;"
     _REGEXES = {
-        "#Virulence Factor ID": ("^([^|]+)[ ]*|", "^([^|]+[ ]*\|)"),
-        "vfid": ("^vfid\|([^|]+)[ ]*\|", "^(vfid\|[^|]+[ ]*\|)"),
-        "vsiid": ("^vsiid\|([^|]+)[ ]*\|", "^(vsiid\|[^|]+[ ]*\|)"),
-        "ssid": ("^ssid\|(.+)$", "^(ssid\|.+$)"),
+        "vfid": ("^([^|]+)[ ]*\|vfid[\|]*", "^([^|]+[ ]*\|vfid[\|]*)"),
+        "vsiid": ("^([^|]+)[ ]*\|vsiid[\|]*", "^([^|]+[ ]*\|vsiid[\|]*)"),
+        "ssid": ("^([^|]+)[ ]*\|ssid[\|]*", "^([^|]+[ ]*\|ssid[\|]*)"),
+        "feature_names": ("^[ ]*([^|]+)$", "^([ ]*[^|]+)$")
     }
 
     out = regex_based_tokenization(_REGEXES, header)
     out["former_id"] = out.pop("source_string")
-    out.update({k: safe_findall(v, out["ssid"]) for k, v in {
+    out.update({k: safe_findall(v, out["feature_names"]) for k, v in {
         "gene_host": "\[([^\]]+)\] *$",
-        "recname_full": "[^_]RecName:_Full=([^;]+);",
-        "subname_full": "[^_]SubName:_Full=([^;]+);",
+        "recname_full": "[^_]*RecName:_Full=([^;]+);",
+        "subname_full": "[^_]*SubName:_Full=([^;]+);",
     }.items()})
     return out
 
@@ -72,17 +73,20 @@ class Annotator(AnnotatorTemplate):
 
         reference_file = find_file_by_tail(self.reference_dir, "completeMvirDBTable.txt")
         print(f"Use the reference description file: '{reference_file}'")
-        self.reference_df = pd.read_csv(reference_file, engine="python", header=0, sep="\t",
-                                        on_bad_lines="warn").sort_values("#Virulence Factor ID")
+        self.reference_df = pd.read_csv(
+            reference_file, engine="python", header=0, on_bad_lines="warn", sep="\t"
+        ).rename(columns={"#Virulence Factor ID": "vfid"}).sort_values("vfid")
         print(f"Loaded reference description table with shape {self.reference_df.shape}")
 
     def annotate(self):
-        annotated_header_df = left_merge(self.nucleotide_header_df, self.reference_df,
-                                         on="#Virulence Factor ID")
+        annotated_header_df = merge(
+            self.nucleotide_header_df, self.reference_df, on="vfid"
+        )
         print(f"Annotated FASTA header data into dataframe with shape {annotated_header_df.shape}")
 
-        self.annotation_df = left_merge(self.annotation_df, annotated_header_df, on="former_id")
-        self.annotation_df = deduplicate_df_by_row_merging(self.annotation_df, on="former_id")
+        self.annotation_df = merge(
+            self.annotation_df, annotated_header_df, on="former_id", deduplicate=True
+        )
         print(f"Merged final annotation dataframe with shape {self.annotation_df.shape}")
 
 
