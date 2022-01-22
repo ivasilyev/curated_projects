@@ -79,11 +79,13 @@ class Annotator(AnnotatorTemplate):
         print(f"Loaded reference description table with shape {self.reference_df.shape}")
 
     def annotate(self):
+        # Reference table is excessive
         annotated_header_df = merge(
-            self.nucleotide_header_df, self.reference_df, on="vfid"
+            self.nucleotide_header_df, self.reference_df, how="left", on="vfid", deduplicate=True
         )
         print(f"Annotated FASTA header data into dataframe with shape {annotated_header_df.shape}")
 
+        # Reference table is definitely non-excessive
         self.annotation_df = merge(
             self.annotation_df, annotated_header_df, how="left", on="former_id", deduplicate=True
         )
