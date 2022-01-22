@@ -20,7 +20,7 @@ def parse_args():
     parser = ArgumentParser(
         description="Tool to keep only rows with the values from a column which are not null",
     )
-    parser.add_argument("-i", "--input", nargs="+", required=True,
+    parser.add_argument("-i", "--input", required=True,
                         help="Tables to concatenate")
     parser.add_argument("-f", "--filter", required=True,
                         help="Column name to filter")
