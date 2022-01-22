@@ -85,7 +85,7 @@ class Annotator(AnnotatorTemplate):
         print(f"Annotated FASTA header data into dataframe with shape {annotated_header_df.shape}")
 
         self.annotation_df = merge(
-            self.annotation_df, annotated_header_df, on="former_id", deduplicate=True
+            self.annotation_df, annotated_header_df, how="left", on="former_id", deduplicate=True
         )
         print(f"Merged final annotation dataframe with shape {self.annotation_df.shape}")
 
