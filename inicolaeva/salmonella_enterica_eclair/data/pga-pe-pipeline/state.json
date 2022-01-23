@@ -1,0 +1,105 @@
+{
+    "Eclair": {
+        "software": {
+            "biocontainers": {
+                "fastqc": "quay.io/biocontainers/fastqc:0.11.9--hdfd78af_1",
+                "trimmomatic": "quay.io/biocontainers/trimmomatic:0.32--hdfd78af_4",
+                "cutadapt": "quay.io/biocontainers/cutadapt:3.5--py36hc5360cc_0",
+                "bowtie2": "quay.io/biocontainers/bowtie2:2.4.4--py39ha4319a6_1",
+                "spades": "quay.io/biocontainers/spades:3.15.3--h95f258a_1",
+                "quast": "quay.io/biocontainers/quast:5.0.2--py37pl5262hfecc14a_5",
+                "prokka": "quay.io/biocontainers/prokka:1.14.6--pl5262hdfd78af_1",
+                "rgi": "quay.io/biocontainers/rgi:5.2.1--pyhdfd78af_1",
+                "srst2": "quay.io/biocontainers/srst2:0.2.0--py27_2"
+            }
+        },
+        "run_fastqc": {
+            "Eclair_S171_R1_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "WARN",
+                "Per tile sequence quality": "FAIL",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "PASS",
+                "Per sequence GC content": "WARN",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "PASS",
+                "Adapter Content": "FAIL"
+            },
+            "Eclair_S171_R2_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "FAIL",
+                "Per tile sequence quality": "FAIL",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "PASS",
+                "Per sequence GC content": "WARN",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "PASS",
+                "Adapter Content": "FAIL"
+            }
+        },
+        "remove_hg": {
+            "were paired": "941858 (100.00%)",
+            "aligned concordantly 0 times": "941856 pairs",
+            "aligned concordantly exactly 1 time": "2 (0.00%)",
+            "aligned concordantly >1 times": "0 (0.00%)",
+            "pairs aligned concordantly 0 times": "941856",
+            "aligned discordantly 1 time": "1 (0.00%)",
+            "pairs aligned 0 times concordantly or discordantly": "941855",
+            "mates make up the pairs": "1883710",
+            "aligned 0 times": "1883709 (100.00%)",
+            "aligned exactly 1 time": "0 (0.00%)",
+            "aligned >1 times": "1 (0.00%)",
+            "overall alignment rate": "0.00%"
+        },
+        "run_blast": {
+            "top_result_name": "gi|1828388584|gb|CP050716.1| Salmonella enterica subsp. enterica serovar Enteritidis strain SE95 chromosome, complete genome",
+            "taxa": {
+                "genus": "Salmonella",
+                "species": "enterica",
+                "strain": ""
+            }
+        },
+        "run_quast": {
+            "Assembly": "Eclair",
+            "# contigs (>= 0 bp)": "50",
+            "# contigs (>= 1000 bp)": "25",
+            "# contigs (>= 5000 bp)": "18",
+            "# contigs (>= 10000 bp)": "15",
+            "# contigs (>= 25000 bp)": "15",
+            "# contigs (>= 50000 bp)": "13",
+            "Total length (>= 0 bp)": "4772685",
+            "Total length (>= 1000 bp)": "4763601",
+            "Total length (>= 5000 bp)": "4747860",
+            "Total length (>= 10000 bp)": "4730608",
+            "Total length (>= 25000 bp)": "4730608",
+            "Total length (>= 50000 bp)": "4671221",
+            "# contigs": "27",
+            "Largest contig": "1548997",
+            "Total length": "4765061",
+            "GC (%)": "52.14",
+            "N50": "490295",
+            "N75": "305573",
+            "L50": "3",
+            "L75": "6",
+            "# total reads": "2175577",
+            "# left": "1086150",
+            "# right": "1086150",
+            "Mapped (%)": "99.44",
+            "Properly paired (%)": "98.6",
+            "Avg. coverage depth": "126",
+            "Coverage >= 1x (%)": "99.99",
+            "# N's per 100 kbp": "2.06"
+        }
+    },
+    "all": {
+        "software": {
+            "biocontainers": {
+                "srst2": "quay.io/biocontainers/srst2:0.1.4.6"
+            }
+        }
+    }
+}

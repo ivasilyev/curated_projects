@@ -1,0 +1,29 @@
+Assembly	Eclair
+# contigs (>= 0 bp)	50
+# contigs (>= 1000 bp)	25
+# contigs (>= 5000 bp)	18
+# contigs (>= 10000 bp)	15
+# contigs (>= 25000 bp)	15
+# contigs (>= 50000 bp)	13
+Total length (>= 0 bp)	4772685
+Total length (>= 1000 bp)	4763601
+Total length (>= 5000 bp)	4747860
+Total length (>= 10000 bp)	4730608
+Total length (>= 25000 bp)	4730608
+Total length (>= 50000 bp)	4671221
+# contigs	27
+Largest contig	1548997
+Total length	4765061
+GC (%)	52.14
+N50	490295
+N75	305573
+L50	3
+L75	6
+# total reads	2175577
+# left	1086150
+# right	1086150
+Mapped (%)	99.44
+Properly paired (%)	98.6
+Avg. coverage depth	126
+Coverage >= 1x (%)	99.99
+# N's per 100 kbp	2.06

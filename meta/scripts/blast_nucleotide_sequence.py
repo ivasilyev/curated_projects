@@ -187,7 +187,7 @@ if __name__ == '__main__':
         print("Saved report JSON of {} items into '{}'".format(len(report_dict["genbank_files"]), report_json))
 
         out_blast_result_df = combined_blast_result_df.drop(
-            ["query", "genbank_file", "match"],
+            ["query", "genbank_file", "match", "sbjct"],
             axis=1
         )
         combined_blast_result_file = os.path.join(output_directory, "combined_blast_results.tsv")
