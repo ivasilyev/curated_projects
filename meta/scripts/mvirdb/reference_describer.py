@@ -5,7 +5,7 @@ import os
 import joblib as jb
 import pandas as pd
 from time import perf_counter
-from meta.utils.pandas import merge
+from meta.utils.pandas import merge, concat, find_duplicated_rows
 from meta.utils.primitive import safe_findall
 from meta.utils.file_system import find_file_by_tail
 from meta.utils.date_time import count_elapsed_seconds
@@ -25,7 +25,7 @@ class ReferenceDescriber(ReferenceDescriberTemplate):
 
 class SequenceRetriever(SequenceRetrieverTemplate):
     VERSION = "2012.04.28"
-    NUCLEOTIDE_FASTA = "/data/reference/MvirDB/mvirdb_v2012.04.28.fasta"
+    NUCLEOTIDE_FASTA = "/data/reference/MvirDB/virulenceDB.nucleic.fasta"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -41,6 +41,11 @@ def mp_parse_nfasta_header(header: str):
     }
 
     out = regex_based_tokenization(_REGEXES, header)
+    for key, value in out.items():
+        value = value.strip()
+        if value.isnumeric():
+            out[key] = int(value)
+
     out["former_id"] = out.pop("source_string")
     out.update({k: safe_findall(v, out["feature_names"]) for k, v in {
         "gene_host": "\[([^\]]+)\] *$",
@@ -61,12 +66,8 @@ class Annotator(AnnotatorTemplate):
     def load(self):
         super().load()
         start = perf_counter()
-        nfasta_file = find_file_by_tail(self.reference_dir, "virulenceDB.nucleic.fasta")
-        print(f"Use the nucleotide FASTA file: '{nfasta_file}'")
-        raw_nfasta_headers = load_headers_from_fasta(nfasta_file)
-        print(f"Loaded {len(raw_nfasta_headers)} nucleotide FASTA headers")
         parsed_nfasta_headers = jb.Parallel(n_jobs=-1)(
-            jb.delayed(mp_parse_nfasta_header)(i) for i in raw_nfasta_headers
+            jb.delayed(mp_parse_nfasta_header)(i) for i in self.raw_nucleotide_fasta_headers
         )
         self.nucleotide_header_df = pd.DataFrame(parsed_nfasta_headers)
         print(f"Nucleotide FASTA headers parsed into table with shape {self.nucleotide_header_df.shape} with {count_elapsed_seconds(start)}")
@@ -79,16 +80,11 @@ class Annotator(AnnotatorTemplate):
         print(f"Loaded reference description table with shape {self.reference_df.shape}")
 
     def annotate(self):
-        # Reference table is excessive
-        annotated_header_df = merge(
-            self.nucleotide_header_df, self.reference_df, how="left", on="vfid", deduplicate=True
+        self.annotation_df = concat(
+            [self.annotation_df, self.nucleotide_header_df], axis=1, how="outer", on="former_id"
         )
-        print(f"Annotated FASTA header data into dataframe with shape {annotated_header_df.shape}")
-
-        # Reference table is definitely non-excessive
-        self.annotation_df = merge(
-            self.annotation_df, annotated_header_df, how="left", on="former_id", deduplicate=True
-        )
+        # `vfid` are duplicated in `nucleotide_header_df
+        self.annotation_df = pd.merge(self.annotation_df, self.reference_df, how="left", on="vfid")
         print(f"Merged final annotation dataframe with shape {self.annotation_df.shape}")
 
 
