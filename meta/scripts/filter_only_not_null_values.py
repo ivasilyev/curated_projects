@@ -36,7 +36,7 @@ if __name__ == '__main__':
     input_df = pd.read_csv(input_file, header=0, engine="python", on_bad_lines="warn", sep="\t")
     output_df = input_df.loc[input_df[filtering_column_name].map(is_value_not_null), :].sort_values(
         by=filtering_column_name, ascending=False)
-    print(f"Filtered data from the shape {input_file.shape} to {output_file.shape}")
+    print(f"Filtered data from the shape {input_df.shape} to {output_file.shape}")
 
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     output_df.to_csv(output_file, encoding="utf-8", sep="\t", index=False, header=True)
