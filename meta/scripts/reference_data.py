@@ -72,6 +72,7 @@ class AnnotatorTemplate(ABC):
         self.annotation_file = ""
         self.annotation_df = pd.DataFrame()
         self._annotation_df = pd.DataFrame()
+        self.raw_nucleotide_fasta_headers = []
 
     def load(self):
         # Most of reference sequences are short enough to not be split
@@ -80,6 +81,7 @@ class AnnotatorTemplate(ABC):
         self.annotation_df = load_tsv(self.annotation_file)
         print(f"Loaded annotation table with shape {self.annotation_df.shape}")
         self._annotation_df = self.annotation_df.copy()
+        self.raw_nucleotide_fasta_headers = self.annotation_df["former_id"].values.tolist()
 
     def load_refdata(self, refdata_file: str):
         self.refdata.load(refdata_file)
@@ -90,7 +92,7 @@ class AnnotatorTemplate(ABC):
             raise ValueError(f"The index '{self.INDEX_COL_NAME}' is not uniquely valued!")
         _values = sorted(self._annotation_df[self.INDEX_COL_NAME].values.tolist())
         if values != _values:
-            raise ValueError(f"Excessive values: {np.setxor1d([values, _values])}")
+            raise ValueError(f"Excessive values: {np.setxor1d(values, _values)}")
 
     def dump(self):
         backup = backup_file(self.annotation_file)
