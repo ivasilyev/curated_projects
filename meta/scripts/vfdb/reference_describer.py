@@ -10,13 +10,13 @@ from bs4 import BeautifulSoup
 from time import perf_counter
 from datetime import datetime
 from urllib.parse import urljoin
+from meta.utils.pandas import merge
 from meta.utils.primitive import safe_findall
 from meta.utils.language import regex_based_tokenization
 from meta.utils.web import get_soup, download_file_to_dir
 from meta.utils.bio_sequence import load_headers_from_fasta
 from meta.utils.date_time import get_timestamp, count_elapsed_seconds
 from meta.utils.file_system import decompress_file, find_file_by_tail
-from meta.utils.pandas import left_merge, deduplicate_df_by_row_merging
 from meta.scripts.reference_data import AnnotatorTemplate, ReferenceData, ReferenceDescriberTemplate, SequenceRetrieverTemplate
 
 
@@ -104,12 +104,8 @@ class Annotator(AnnotatorTemplate):
     def load(self):
         super().load()
         start = perf_counter()
-        nfasta_file = find_file_by_tail(self.reference_dir, "VFDB_setB_nt.fas")
-        print(f"Use the nucleotide FASTA file: '{nfasta_file}'")
-        raw_nfasta_headers = load_headers_from_fasta(nfasta_file)
-        print(f"Loaded {len(raw_nfasta_headers)} protein FASTA headers")
         parsed_nfasta_headers = jb.Parallel(n_jobs=-1)(
-            jb.delayed(mp_parse_nfasta_header)(i) for i in raw_nfasta_headers
+            jb.delayed(mp_parse_nfasta_header)(i) for i in self.raw_nucleotide_fasta_headers
         )
         self.nucleotide_header_df = pd.DataFrame(parsed_nfasta_headers)
         print(f"Nucleotide FASTA headers parsed into table with shape {self.nucleotide_header_df.shape} with {count_elapsed_seconds(start)}")
@@ -132,14 +128,15 @@ class Annotator(AnnotatorTemplate):
         self.vfs_df["vfdb_number"] = self.vfs_df["VFID"].str.extract("([0-9]+)").astype(int)
 
     def annotate(self):
-        fasta_header_df = left_merge(self.nucleotide_header_df, self.protein_header_df,
-                                     on="vfdb_number")
+        fasta_header_df = merge(self.nucleotide_header_df, self.protein_header_df, how="left",
+                                on="vfdb_number")
         print(f"Merged FASTA header data into dataframe with shape {fasta_header_df.shape}")
 
-        annotated_header_df = left_merge(fasta_header_df, self.vfs_df, on="vfdb_number")
+        annotated_header_df = merge(fasta_header_df, self.vfs_df, how="left", on="vfdb_number")
         print(f"Annotated FASTA header data into dataframe with shape {annotated_header_df.shape}")
 
-        self.annotation_df = left_merge(self.annotation_df, annotated_header_df, on="former_id")
+        self.annotation_df = merge(self.annotation_df, annotated_header_df, how="left",
+                                   on="former_id")
         print(f"Merged final annotation dataframe with shape {self.annotation_df.shape}")
 
 
