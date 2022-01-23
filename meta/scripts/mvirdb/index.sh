@@ -11,6 +11,8 @@ function describe {
         '
 }
 
-describe && \
-bash "/data/reference/MvirDB/mvirdb_v2012.04.28/index/index.sh" && \
-describe
+LOG="/data/reference/MvirDB/describe.log"
+describe | tee -a "${LOG}" && \
+bash "/data/reference/MvirDB/mvirdb_v2012.04.28/index/index.sh" | tee -a "${LOG}" && \
+describe | tee -a "${LOG}"
+7

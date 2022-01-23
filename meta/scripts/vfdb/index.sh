@@ -11,6 +11,7 @@ function describe {
         '
 }
 
-describe && \
-bash "/data/reference/VFDB/vfdb_v2021.09.24/index/index.sh" && \
-describe &> "/data/reference/VFDB/vfdb_v2021.09.24/describe.log"
+LOG="/data/reference/VFDB/describe.log"
+describe | tee -a "${LOG}" && \
+bash "/data/reference/VFDB/vfdb_v2022.01.21/index/index.sh" | tee -a "${LOG}" && \
+describe | tee -a "${LOG}"
