@@ -111,7 +111,6 @@ class Annotator(AnnotatorTemplate):
         self._nfasta_file = nfasta_file
         self._pfasta_file = pfasta_file
 
-        self._nucleotide_headers = []
         self._protein_headers = []
         self.nucleotide_header_df = pd.DataFrame()
         self.protein_header_df = pd.DataFrame()
@@ -126,10 +125,9 @@ class Annotator(AnnotatorTemplate):
         super().load()
 
         start = perf_counter()
-        self._nucleotide_headers = load_headers_from_fasta(self._nfasta_file)
         parsed_nucleotide_headers = jb.Parallel(n_jobs=-1)(
             jb.delayed(Annotator.mp_parse_nfasta_header)
-            (i) for i in self._nucleotide_headers
+            (i) for i in self.raw_nucleotide_fasta_headers
         )
         self.nucleotide_header_df = pd.DataFrame(parsed_nucleotide_headers).dropna(
             axis=1, how="all").dropna(axis=0, how="all").drop_duplicates()
