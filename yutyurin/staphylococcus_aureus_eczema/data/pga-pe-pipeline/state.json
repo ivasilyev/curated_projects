@@ -57,7 +57,7 @@
         },
         "run_blast": {
             "top_result_name": "gi|1851330171|gb|CP038183.1| Staphylococcus aureus strain MJ015 chromosome, complete genome",
-            "top_result_genbank": "",
+            "top_result_genbank": "1003112629.gbk",
             "taxa": {
                 "genus": "Staphylococcus",
                 "species": "aureus",

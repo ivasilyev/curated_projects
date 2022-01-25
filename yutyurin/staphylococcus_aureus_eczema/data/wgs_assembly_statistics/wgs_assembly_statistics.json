@@ -1,0 +1,49 @@
+{
+    "raw_statistics": {
+        "188staph_S13_L001_R1_001.fastq": {
+            "reads_file": "188staph_S13_L001_R1_001.fastq",
+            "reads_number": 4867634,
+            "largest_read_bp": 251,
+            "smallest_read_bp": 32,
+            "total_reads_bp": 1216032447,
+            "mean_reads_bp": 249.82002488272536,
+            "median_reads_bp": 251.0,
+            "gc_percentage": 34.22460116312998
+        },
+        "188staph_S13_L001_R2_001.fastq": {
+            "reads_file": "188staph_S13_L001_R2_001.fastq",
+            "reads_number": 4867634,
+            "largest_read_bp": 251,
+            "smallest_read_bp": 32,
+            "total_reads_bp": 1216154074,
+            "mean_reads_bp": 249.84501176546962,
+            "median_reads_bp": 251.0,
+            "gc_percentage": 34.237713863876756
+        }
+    },
+    "assembly_statistics": {
+        "assembly_file": "188staph_genome.fna",
+        "contigs_number": 76,
+        "largest_contig_bp": 1408563,
+        "smallest_contig_bp": 210,
+        "total_contigs_bp": 2813698,
+        "mean_contigs_bp": 37022.34210526316,
+        "median_contigs_bp": 470.5,
+        "gc_percentage": 32.91401564773476,
+        "l50": 1,
+        "n50": 1408563,
+        "d50": 617856,
+        "l90": 4,
+        "n90": 170731
+    },
+    "reference_statistics": {
+        "reference_file": "1003112629.gbk",
+        "total_reference_bp": 2815416,
+        "reference_gc_percentage": 32.86416643224305
+    },
+    "coverage_statistics": {
+        "assembled_reads_rate": 0.0023138346406310984,
+        "expected_assembly_coverage": "431.92x",
+        "real_assembly_coverage": "1.00x"
+    }
+}
