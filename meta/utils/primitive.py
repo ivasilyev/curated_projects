@@ -61,3 +61,7 @@ def clear_non_printing_chars(s: str):
     if isinstance(s, str):
         return sub("[\r\n\t ]+", " ", s)
     return s
+
+
+def get_first_dict_value(d: dict):
+    return d.get(list(d.keys())[0])

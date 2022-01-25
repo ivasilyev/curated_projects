@@ -107,3 +107,8 @@ def describe_genbank(genbank_record, verbose: bool = True):
     if "db_xref" in out.keys():
         out["taxonomy_id"] = out["db_xref"].replace("taxon:", "")
     return {k: clear_non_printing_chars(v) for k, v in out.items()}
+
+
+def join_sequences(x: list):
+    return "".join([str(i.seq) for i in x])
+

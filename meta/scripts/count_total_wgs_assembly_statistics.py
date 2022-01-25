@@ -2,21 +2,21 @@
 # -*- coding: utf-8 -*-
 
 
-from meta.scripts.Utilities import Utilities
-from meta.utils.io import dump_dict
+import os
 from Bio.SeqUtils import GC
-from meta.utils.bio_sequence import load_sequences
-
-reference_sequences = load_sequences("/data1/bio/projects/inicolaeva/salmonella_enterica_eclair/pga-pe-pipeline/references/blast/1002004098.gbk", fmt="genbank")
-sum(len(i) for i in reference_sequences)
+from meta.utils.io import dump_dict
+from meta.utils.primitive import get_first_dict_value
+from meta.utils.bio_sequence import load_sequences, join_sequences
+from meta.scripts.Utilities import Utilities
 
 
 def parse_args():
     from argparse import ArgumentParser
     parser = ArgumentParser(
         description="Tool to count total WGS assembly statistics".strip(),
+        epilog="Any number of reads files may be supplied, only first will be used for coverage count"
     )
-    parser.add_argument("-r", "--raw_reads", required=True, nargs=2,
+    parser.add_argument("-r", "--raw_reads", required=True, nargs="+",
                         help="Raw rads")
     parser.add_argument("--raw_reads_format", default="fastq_gz",
                         help="(Optional) Raw rads format")
@@ -52,18 +52,22 @@ if __name__ == '__main__':
      reference_format,
      output_file) = parse_args()
 
-    raw_stats = Utilities.count_reads_statistics(raw_reads[0], raw_reads_format)
+    raw_stats = {
+        os.path.basename(i): Utilities.count_reads_statistics(i, raw_reads_format)
+        for i in raw_reads
+    }
+
     assembly_stats = Utilities.count_assembly_statistics(assembly_file, assembly_format)
 
     reference_sequences = load_sequences(reference_file, reference_format)
-    total_reference_sequence = "".join([str(i.seq) for i in reference_sequences])
+    total_reference_sequence = join_sequences(reference_sequences)
     reference_stats = dict(
         total_reference_bp=len(total_reference_sequence),
         reference_gc_percentage=GC(total_reference_sequence),
     )
 
     coverage_stats = Utilities.count_assembly_coverages(
-        raw_reads_length_sum=raw_stats["total_reads_bp"],
+        raw_reads_length_sum=get_first_dict_value(raw_stats)["total_reads_bp"],
         assembly_length=assembly_stats["total_contigs_bp"],
         reference_length=reference_stats["total_reference_bp"],
     )
