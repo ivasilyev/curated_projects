@@ -89,4 +89,4 @@ if __name__ == '__main__':
     )
 
     dump_dict(output_dict, output_file)
-    print(f"Completed in {count_elapsed_seconds}")
+    print(f"Completed in {count_elapsed_seconds()}")
