@@ -4,8 +4,10 @@
 
 import os
 from Bio.SeqUtils import GC
+from time import perf_counter
 from meta.utils.io import dump_dict
 from meta.utils.primitive import get_first_dict_value
+from meta.utils.date_time import count_elapsed_seconds
 from meta.utils.bio_sequence import load_sequences, join_sequences
 from meta.scripts.Utilities import Utilities
 
@@ -52,6 +54,8 @@ if __name__ == '__main__':
      reference_format,
      output_file) = parse_args()
 
+    start = perf_counter()
+
     print(f"Counting statistics for {len(raw_reads)} raw reads files")
     raw_stats = {
         os.path.basename(i): Utilities.count_reads_statistics(i, raw_reads_format)
@@ -65,6 +69,7 @@ if __name__ == '__main__':
     reference_sequences = load_sequences(reference_file, reference_format)
     total_reference_sequence = join_sequences(reference_sequences)
     reference_stats = dict(
+        reference_file=reference_file,
         total_reference_bp=len(total_reference_sequence),
         reference_gc_percentage=GC(total_reference_sequence),
     )
@@ -84,4 +89,4 @@ if __name__ == '__main__':
     )
 
     dump_dict(output_dict, output_file)
-    print(f"Completed")
+    print(f"Completed in {count_elapsed_seconds}")
