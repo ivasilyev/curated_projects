@@ -1,0 +1,49 @@
+{
+    "raw_statistics": {
+        "Eclair_S171_R1_001.fastq": {
+            "reads_file": "Eclair_S171_R1_001.fastq",
+            "reads_number": 1086150,
+            "largest_read_bp": 301,
+            "smallest_read_bp": 301,
+            "total_reads_bp": 326931150,
+            "mean_reads_bp": 301,
+            "median_reads_bp": 301.0,
+            "gc_percentage": 52.10709533184586
+        },
+        "Eclair_S171_R2_001.fastq": {
+            "reads_file": "Eclair_S171_R2_001.fastq",
+            "reads_number": 1086150,
+            "largest_read_bp": 301,
+            "smallest_read_bp": 301,
+            "total_reads_bp": 326931150,
+            "mean_reads_bp": 301,
+            "median_reads_bp": 301.0,
+            "gc_percentage": 52.93787545175796
+        }
+    },
+    "assembly_statistics": {
+        "assembly_file": "Eclair_genome.fna",
+        "contigs_number": 50,
+        "largest_contig_bp": 1548997,
+        "smallest_contig_bp": 205,
+        "total_contigs_bp": 4772685,
+        "mean_contigs_bp": 95453.7,
+        "median_contigs_bp": 963.0,
+        "gc_percentage": 52.13457414432337,
+        "l50": 3,
+        "n50": 490295,
+        "d50": 406667,
+        "l90": 9,
+        "n90": 153193
+    },
+    "reference_statistics": {
+        "reference_file": "1002004098.gbk",
+        "total_reference_bp": 4685840,
+        "reference_gc_percentage": 51.72206050569375
+    },
+    "coverage_statistics": {
+        "assembled_reads_rate": 0.014598440680858952,
+        "expected_assembly_coverage": "69.77x",
+        "real_assembly_coverage": "1.02x"
+    }
+}
