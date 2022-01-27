@@ -1,0 +1,1586 @@
+INPUT SEQUENCE INFO:
+Input Name ::	0_23_01_2022_050326_355793_input.fsa.translated
+Sequences ::	 2594
+Total bpp ::	 783410
+Longest seq ::	 10625
+Shortest seq ::	 30
+Avg seq lenght ::	 302.0
+
+RESULTS:
+Min Identity Threshold ::	100.0
+Z-THRESHOLD ::	3.0
+Prediction Score ::	3172.722
+Probability of being human pathogen ::	0.98
+Matches::	522
+Genome Coverage (%) ::	20.12
+Pathogenic Families Matched ::	522
+Non-Pathogenic Families Matched ::	0
+The organisms is predicted as human pathogenic ::	Yes
+
+MATCHED SEQUENCES:
+#input_seq:	contig01_910 # 984059 # 986752 # -1 # ID=1_910;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.300
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	conserved hypothetical protein	CAG43174	Yes	100.0
+
+#input_seq:	contig02_204 # 200353 # 202458 # 1 # ID=2_204;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.285
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	transcriptional regulator, AraC family	ABQ50185	Yes	100.0
+
+#input_seq:	contig01_118 # 127165 # 129207 # 1 # ID=1_118;partial=00;start_type=TTG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.320
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF66872	Yes	100.0
+
+#input_seq:	contig07_21 # 16985 # 18919 # -1 # ID=7_21;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.253
+#matched_seq:	266	BX571858	Staphylococcus aureus plasmid pSAS, complete genome.	Bacillales	hypothetical bacteriocin immunity protein	CAG43280	Yes	100.0
+
+#input_seq:	contig01_149 # 160475 # 162364 # 1 # ID=1_149;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.287
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	ABC-type transport system permease component VraG	BAF66903	Yes	100.0
+
+#input_seq:	contig02_457 # 487821 # 489680 # 1 # ID=2_457;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.326
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	putative exported protein	CAG44347	Yes	100.0
+
+#input_seq:	contig07_1 # 900 # 2657 # 1 # ID=7_1;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.261
+#matched_seq:	266	BX571858	Staphylococcus aureus plasmid pSAS, complete genome.	Bacillales	putative beta-lactamase regulatory protein	CAG43262	Yes	100.0
+
+#input_seq:	contig03_149 # 188276 # 189964 # 1 # ID=3_149;partial=00;start_type=TTG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.319
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	CDP-glycerol:poly(glycerophosphate) glycerophosphotransferase	ABQ48049	Yes	100.0
+
+#input_seq:	contig01_171 # 181619 # 183250 # 1 # ID=1_171;partial=00;start_type=GTG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.322
+#matched_seq:	306	BA000033	Staphylococcus aureus subsp. aureus MW2 DNA, complete genome.	Bacillales	UNKNOWN	BAB94511	Yes	100.0
+
+#input_seq:	contig02_427 # 446803 # 448425 # -1 # ID=2_427;partial=00;start_type=TTG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.355
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	choline/carnitine/betaine transporter	ABQ50413	Yes	100.0
+
+#input_seq:	contig05_12 # 9688 # 11271 # -1 # ID=5_12;partial=00;start_type=ATG;rbs_motif=AGGA/GGAG/GAGG;rbs_spacer=11-12bp;gc_cont=0.316
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	membrane-flanked domain	ABQ49892	Yes	100.0
+
+#input_seq:	contig03_126 # 160260 # 161765 # -1 # ID=3_126;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.373
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22585	Yes	100.0
+
+#input_seq:	contig01_1009 # 1078896 # 1080359 # -1 # ID=1_1009;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.277
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	putative membrane protein	CAG43288	Yes	100.0
+
+#input_seq:	contig01_249 # 270514 # 271953 # 1 # ID=1_249;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.296
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Tetratricopeptide TP	ABQ48590	Yes	100.0
+
+#input_seq:	contig01_56 # 70512 # 71912 # 1 # ID=1_56;partial=00;start_type=ATG;rbs_motif=AGGA/GGAG/GAGG;rbs_spacer=11-12bp;gc_cont=0.343
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	major facilitator superfamily MF	ABQ48400	Yes	100.0
+
+#input_seq:	contig01_528 # 540125 # 541525 # -1 # ID=1_528;partial=00;start_type=GTG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.333
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	ABC transporter ATP-binding protein	CAG42786	Yes	100.0
+
+#input_seq:	contig03_113 # 141197 # 142576 # 1 # ID=3_113;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.362
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	sugar phosphate transport protein	BAF66430	Yes	100.0
+
+#input_seq:	contig01_936 # 1011421 # 1012800 # -1 # ID=1_936;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.338
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD20678	Yes	100.0
+
+#input_seq:	contig02_187 # 180583 # 181956 # 1 # ID=2_187;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.314
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD20812	Yes	100.0
+
+#input_seq:	contig05_78 # 76606 # 77979 # -1 # ID=5_78;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.320
+#matched_seq:	265	BX571856	Staphylococcus aureus subsp. aureus strain MRSA252, complete genome.	Bacillales	hypothetical protein	CAG41210	Yes	100.0
+
+#input_seq:	contig01_178 # 189898 # 191271 # 1 # ID=1_178;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.341
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	putative DNA photolyase	CAG42432	Yes	100.0
+
+#input_seq:	contig01_495 # 501436 # 502797 # 1 # ID=1_495;partial=00;start_type=ATG;rbs_motif=AGxAG;rbs_spacer=5-10bp;gc_cont=0.319
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	isochorismate synthase	ABQ48901	Yes	100.0
+
+#input_seq:	contig02_544 # 590063 # 591397 # 1 # ID=2_544;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.352
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF76903	Yes	100.0
+
+#input_seq:	contig01_622 # 637577 # 638896 # 1 # ID=1_622;partial=00;start_type=ATG;rbs_motif=AGGAG/GGAGG;rbs_spacer=11-12bp;gc_cont=0.313
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21866	Yes	100.0
+
+#input_seq:	contig01_532 # 543589 # 544884 # 1 # ID=1_532;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.291
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48940	Yes	100.0
+
+#input_seq:	contig01_831 # 870374 # 871633 # 1 # ID=1_831;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.316
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Methicillin resistance protein	ABQ49230	Yes	100.0
+
+#input_seq:	contig02_161 # 154226 # 155485 # 1 # ID=2_161;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.334
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Abortive infection protein	ABQ50140	Yes	100.0
+
+#input_seq:	contig03_78 # 90299 # 91549 # 1 # ID=3_78;partial=00;start_type=ATG;rbs_motif=3Base/5BMM;rbs_spacer=13-15bp;gc_cont=0.327
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22579	Yes	100.0
+
+#input_seq:	contig03_128 # 163722 # 164951 # 1 # ID=3_128;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.342
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF66444	Yes	100.0
+
+#input_seq:	contig03_32 # 39687 # 40925 # 1 # ID=3_32;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.302
+#matched_seq:	306	BA000033	Staphylococcus aureus subsp. aureus MW2 DNA, complete genome.	Bacillales	UNKNOWN	BAB93970	Yes	100.0
+
+#input_seq:	contig02_479 # 518197 # 519435 # 1 # ID=2_479;partial=00;start_type=TTG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.344
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22205	Yes	100.0
+
+#input_seq:	contig03_60 # 72252 # 73490 # 1 # ID=3_60;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.270
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	capsular polysaccharide synthesis enzyme	CAG41902	Yes	100.0
+
+#input_seq:	contig01_1281 # 1379417 # 1380640 # -1 # ID=1_1281;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.297
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	putative transporter protein	CAG43561	Yes	100.0
+
+#input_seq:	contig01_1062 # 1129183 # 1130403 # -1 # ID=1_1062;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.268
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF78473	Yes	100.0
+
+#input_seq:	contig04_158 # 147923 # 149140 # -1 # ID=4_158;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.323
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	putative ribonuclease BN	ABQ49722	Yes	100.0
+
+#input_seq:	contig01_1289 # 1388878 # 1390074 # -1 # ID=1_1289;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.300
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	metallophosphoesterase	ABQ49682	Yes	100.0
+
+#input_seq:	contig01_509 # 519426 # 520619 # 1 # ID=1_509;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.284
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	beta-lactamase	ABQ48916	Yes	100.0
+
+#input_seq:	contig04_78 # 65234 # 66421 # 1 # ID=4_78;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.317
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22216	Yes	100.0
+
+#input_seq:	contig01_500 # 506667 # 507848 # -1 # ID=1_500;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.301
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	cysteine protease precursor	CAG42758	Yes	100.0
+
+#input_seq:	contig01_390 # 385904 # 387079 # 1 # ID=1_390;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.321
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	DltD, central domain protein	ABQ48736	Yes	100.0
+
+#input_seq:	contig01_472 # 477165 # 478340 # -1 # ID=1_472;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.326
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Monogalactosyldiacylglycerol synthase	ABQ48816	Yes	100.0
+
+#input_seq:	contig01_32 # 37035 # 38210 # -1 # ID=1_32;partial=00;start_type=GTG;rbs_motif=AGxAG;rbs_spacer=5-10bp;gc_cont=0.351
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	amidohydrolase	ABQ48376	Yes	100.0
+
+#input_seq:	contig04_80 # 67166 # 68311 # 1 # ID=4_80;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.353
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD20699	Yes	100.0
+
+#input_seq:	contig01_433 # 437463 # 437714 # 1 # ID=1_433;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.270
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	2-isopropylmalate synthase	ABQ48777	Yes	100.0
+
+#input_seq:	contig05_86 # 84996 # 86132 # -1 # ID=5_86;partial=00;start_type=GTG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.259
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22232	Yes	100.0
+
+#input_seq:	contig01_1174 # 1256926 # 1258056 # -1 # ID=1_1174;partial=00;start_type=GTG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.317
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21530	Yes	100.0
+
+#input_seq:	contig01_228 # 244579 # 245703 # 1 # ID=1_228;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.346
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF66983	Yes	100.0
+
+#input_seq:	contig01_885 # 925330 # 926454 # -1 # ID=1_885;partial=00;start_type=ATG;rbs_motif=GGxGG;rbs_spacer=5-10bp;gc_cont=0.348
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	PBS lyase HEAT domain protein repeat-containing protein	ABQ49283	Yes	100.0
+
+#input_seq:	contig01_435 # 438332 # 439450 # 1 # ID=1_435;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.237
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD20942	Yes	100.0
+
+#input_seq:	contig03_345 # 386275 # 387387 # -1 # ID=3_345;partial=00;start_type=TTG;rbs_motif=None;rbs_spacer=None;gc_cont=0.335
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	YibE/F family protein	ABQ48295	Yes	100.0
+
+#input_seq:	contig02_397 # 416825 # 417745 # -1 # ID=2_397;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.343
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	hypothetical protein	CAG44286	Yes	100.0
+
+#input_seq:	contig01_513 # 524026 # 525126 # -1 # ID=1_513;partial=00;start_type=GTG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.343
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	quinol oxidase AA3, subunit II	ABQ48920	Yes	100.0
+
+#input_seq:	contig05_84 # 82671 # 83762 # 1 # ID=5_84;partial=00;start_type=TTG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.272
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	putative membrane protein	CAG43858	Yes	100.0
+
+#input_seq:	contig02_128 # 118306 # 119388 # -1 # ID=2_128;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.334
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	NAD/NADP octopine/nopaline dehydrogenase	ABQ50105	Yes	100.0
+
+#input_seq:	contig01_236 # 253217 # 254299 # 1 # ID=1_236;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.324
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22800	Yes	100.0
+
+#input_seq:	contig03_57 # 69223 # 70302 # 1 # ID=3_57;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.272
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	capsular polysaccharide synthesis enzyme	CAG41899	Yes	100.0
+
+#input_seq:	contig01_1004 # 1074712 # 1075782 # -1 # ID=1_1004;partial=00;start_type=GTG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.274
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	type II secretion system protein	ABQ49394	Yes	100.0
+
+#input_seq:	contig01_566 # 581513 # 582583 # -1 # ID=1_566;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.335
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	cytochrome oxidase assembly	ABQ48975	Yes	100.0
+
+#input_seq:	contig04_41 # 46022 # 47059 # -1 # ID=4_41;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.307
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	phage integrase	BAF68197	Yes	100.0
+
+#input_seq:	contig01_128 # 138677 # 139738 # 1 # ID=1_128;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.321
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	glycosyltransferase tagX	BAF66882	Yes	100.0
+
+#input_seq:	contig02_185 # 178724 # 179779 # -1 # ID=2_185;partial=00;start_type=ATG;rbs_motif=AGGA/GGAG/GAGG;rbs_spacer=11-12bp;gc_cont=0.305
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	protein of unknown function DUF214	ABQ50164	Yes	100.0
+
+#input_seq:	contig01_192 # 204910 # 205965 # -1 # ID=1_192;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.304
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	integral membrane sensor signal transduction histidine kinase	ABQ48532	Yes	100.0
+
+#input_seq:	contig02_346 # 361049 # 362092 # -1 # ID=2_346;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.375
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22624	Yes	100.0
+
+#input_seq:	contig02_164 # 157299 # 158318 # -1 # ID=2_164;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.313
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22182	Yes	100.0
+
+#input_seq:	contig04_39 # 43624 # 44640 # 1 # ID=4_39;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.304
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	putative leukocidin F subunit	CAG43730	Yes	100.0
+
+#input_seq:	contig02_393 # 412497 # 413507 # 1 # ID=2_393;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.344
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21821	Yes	100.0
+
+#input_seq:	contig03_243 # 283916 # 284911 # -1 # ID=3_243;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.349
+#matched_seq:	306	BA000033	Staphylococcus aureus subsp. aureus MW2 DNA, complete genome.	Bacillales	conserved hypothetical protein	BAB94182	Yes	100.0
+
+#input_seq:	contig01_837 # 876006 # 876992 # -1 # ID=1_837;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.312
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD20380	Yes	100.0
+
+#input_seq:	contig04_172 # 159989 # 160966 # -1 # ID=4_172;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.351
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	membrane-bound metal-dependent hydrolase	ABQ49708	Yes	100.0
+
+#input_seq:	contig01_1042 # 1111628 # 1112605 # -1 # ID=1_1042;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.283
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	heat-inducible transcription repressor HrcA	ABQ49433	Yes	100.0
+
+#input_seq:	contig02_84 # 76242 # 77129 # 1 # ID=2_84;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.316
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF79122	Yes	100.0
+
+#input_seq:	contig02_536 # 578583 # 579551 # 1 # ID=2_536;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.353
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	putative hydrolase	CAG41784	Yes	100.0
+
+#input_seq:	contig03_116 # 145239 # 146207 # -1 # ID=3_116;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.345
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	ABC-type Fe3+ transport system periplasmic component-like protein	ABQ48016	Yes	100.0
+
+#input_seq:	contig03_167 # 209077 # 210024 # 1 # ID=3_167;partial=00;start_type=ATG;rbs_motif=AGGAG/GGAGG;rbs_spacer=11-12bp;gc_cont=0.399
+#matched_seq:	19489	CP000730	Staphylococcus aureus subsp. aureus USA30	Bacillales	CH1516, complete genome.	ABX28320	Yes	100.0
+
+#input_seq:	contig01_584 # 597462 # 598430 # 1 # ID=1_584;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.327
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	transport system permease protein	ABQ48993	Yes	100.0
+
+#input_seq:	contig02_243 # 240857 # 241822 # 1 # ID=2_243;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.323
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	beta-channel forming cytolysin	ABQ50222	Yes	100.0
+
+#input_seq:	contig03_69 # 82064 # 83023 # 1 # ID=3_69;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.318
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	putative cation efflux system protein	CAG41911	Yes	100.0
+
+#input_seq:	contig03_286 # 325395 # 326351 # -1 # ID=3_286;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.377
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21708	Yes	100.0
+
+#input_seq:	contig04_20 # 22922 # 23872 # 1 # ID=4_20;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.323
+#matched_seq:	265	BX571856	Staphylococcus aureus subsp. aureus strain MRSA252, complete genome.	Bacillales	sucrose operon repressor	CAG41110	Yes	100.0
+
+#input_seq:	contig02_172 # 165547 # 166494 # -1 # ID=2_172;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.296
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Mg2+ transporter protein, CorA family protein	ABQ50151	Yes	100.0
+
+#input_seq:	contig03_304 # 343630 # 343743 # 1 # ID=3_304;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.307
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	exotoxin	CAG42159	Yes	100.0
+
+#input_seq:	contig02_469 # 511270 # 511698 # 1 # ID=2_469;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.308
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	putative lipoprotein	CAG44359	Yes	100.0
+
+#input_seq:	contig05_96 # 106321 # 107253 # -1 # ID=5_96;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.301
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	YbbR family protein	ABQ49975	Yes	100.0
+
+#input_seq:	contig01_310 # 329770 # 330702 # -1 # ID=1_310;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.293
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48651	Yes	100.0
+
+#input_seq:	contig04_45 # 48415 # 49347 # -1 # ID=4_45;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.265
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21492	Yes	100.0
+
+#input_seq:	contig01_107 # 118678 # 119607 # -1 # ID=1_107;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.311
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	putative membrane protein	CAG42360	Yes	100.0
+
+#input_seq:	contig01_1125 # 1198013 # 1198942 # -1 # ID=1_1125;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.291
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49524	Yes	100.0
+
+#input_seq:	contig02_537 # 579861 # 580784 # 1 # ID=2_537;partial=00;start_type=GTG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.326
+#matched_seq:	306	BA000033	Staphylococcus aureus subsp. aureus MW2 DNA, complete genome.	Bacillales	conserved hypothetical protein	BAB93878	Yes	100.0
+
+#input_seq:	contig01_145 # 156934 # 157857 # 1 # ID=1_145;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.315
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22183	Yes	100.0
+
+#input_seq:	contig01_72 # 85869 # 86789 # 1 # ID=1_72;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.381
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	mevalonate kinase	ABQ48417	Yes	100.0
+
+#input_seq:	contig02_175 # 167606 # 168526 # -1 # ID=2_175;partial=00;start_type=TTG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.330
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22570	Yes	100.0
+
+#input_seq:	contig04_59 # 55828 # 56748 # 1 # ID=4_59;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.337
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21102	Yes	100.0
+
+#input_seq:	contig02_148 # 138551 # 139468 # -1 # ID=2_148;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.342
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Bile acid:sodium symporter	ABQ50125	Yes	100.0
+
+#input_seq:	contig01_351 # 350579 # 351493 # 1 # ID=1_351;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.377
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	phage major head protein	BAF66566	Yes	100.0
+
+#input_seq:	contig01_1233 # 1330547 # 1331455 # -1 # ID=1_1233;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.306
+#matched_seq:	265	BX571856	Staphylococcus aureus subsp. aureus strain MRSA252, complete genome.	Bacillales	putative exported protein	CAG40860	Yes	100.0
+
+#input_seq:	contig01_1179 # 1263557 # 1264462 # 1 # ID=1_1179;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.301
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	glycosyl transferase, family 51	ABQ49575	Yes	100.0
+
+#input_seq:	contig02_356 # 371751 # 372614 # -1 # ID=2_356;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.332
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22482	Yes	100.0
+
+#input_seq:	contig03_346 # 387508 # 388392 # -1 # ID=3_346;partial=00;start_type=ATG;rbs_motif=AGGAG(G)/GGAGG;rbs_spacer=13-15bp;gc_cont=0.331
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD20878	Yes	100.0
+
+#input_seq:	contig02_142 # 134087 # 134959 # 1 # ID=2_142;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.294
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21632	Yes	100.0
+
+#input_seq:	contig01_226 # 242803 # 243681 # 1 # ID=1_226;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.273
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48567	Yes	100.0
+
+#input_seq:	contig02_376 # 396227 # 397090 # -1 # ID=2_376;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.314
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21608	Yes	100.0
+
+#input_seq:	contig01_814 # 850825 # 851676 # 1 # ID=1_814;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.277
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21539	Yes	100.0
+
+#input_seq:	contig07_15 # 13282 # 14142 # -1 # ID=7_15;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.267
+#matched_seq:	264	AP003139	Staphylococcus aureus subsp. aureus N315 plasmid pN315 DNA, complete sequence.	Bacillales	replication protein Rep	BAB43896	Yes	100.0
+
+#input_seq:	contig01_783 # 812026 # 812880 # -1 # ID=1_783;partial=00;start_type=ATG;rbs_motif=AGGA/GGAG/GAGG;rbs_spacer=11-12bp;gc_cont=0.297
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21402	Yes	100.0
+
+#input_seq:	contig01_463 # 465924 # 466778 # 1 # ID=1_463;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.309
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF77885	Yes	100.0
+
+#input_seq:	contig02_121 # 110039 # 110875 # 1 # ID=2_121;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.308
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Urease accessory protein UreD	ABQ50098	Yes	100.0
+
+#input_seq:	contig01_1120 # 1191992 # 1192807 # -1 # ID=1_1120;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.279
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	HemX family protein	ABQ49519	Yes	100.0
+
+#input_seq:	contig03_323 # 362525 # 363340 # 1 # ID=3_323;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.308
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	hypothetical protein	BAF77326	Yes	100.0
+
+#input_seq:	contig04_167 # 155171 # 155980 # 1 # ID=4_167;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.307
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD20655	Yes	100.0
+
+#input_seq:	contig01_866 # 906556 # 907365 # -1 # ID=1_866;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.348
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21848	Yes	100.0
+
+#input_seq:	contig03_321 # 360745 # 361545 # 1 # ID=3_321;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.293
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	putative lipoprotein	ABQ48270	Yes	100.0
+
+#input_seq:	contig03_220 # 259117 # 259917 # -1 # ID=3_220;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.335
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	transcriptional regulator, RpiR family	ABQ48107	Yes	100.0
+
+#input_seq:	contig01_152 # 165317 # 166114 # -1 # ID=1_152;partial=00;start_type=TTG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.381
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	CHAP domain containing protein	ABQ48492	Yes	100.0
+
+#input_seq:	contig02_138 # 130006 # 130803 # -1 # ID=2_138;partial=00;start_type=ATG;rbs_motif=GGxGG;rbs_spacer=5-10bp;gc_cont=0.321
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Inositol-phosphate phosphatase	ABQ50115	Yes	100.0
+
+#input_seq:	contig01_644 # 661189 # 661986 # 1 # ID=1_644;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.321
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Glyoxalase/bleomycin resistance protein/dioxygenase	ABQ49053	Yes	100.0
+
+#input_seq:	contig04_125 # 111229 # 112023 # -1 # ID=4_125;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.331
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	prephenate dehydratase	ABQ49756	Yes	100.0
+
+#input_seq:	contig01_637 # 654049 # 654840 # 1 # ID=1_637;partial=00;start_type=GTG;rbs_motif=None;rbs_spacer=None;gc_cont=0.322
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	conserved hypothetical protein	CAG42898	Yes	100.0
+
+#input_seq:	contig01_105 # 116316 # 117104 # 1 # ID=1_105;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.298
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	alpha/beta hydrolase fold	ABQ48442	Yes	100.0
+
+#input_seq:	contig02_545 # 591398 # 592186 # 1 # ID=2_545;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.331
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	putative exported protein	CAG41793	Yes	100.0
+
+#input_seq:	contig03_322 # 361564 # 362346 # 1 # ID=3_322;partial=00;start_type=ATG;rbs_motif=AGGA/GGAG/GAGG;rbs_spacer=11-12bp;gc_cont=0.300
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	putative lipoprotein	ABQ48271	Yes	100.0
+
+#input_seq:	contig02_107 # 97266 # 98048 # -1 # ID=2_107;partial=00;start_type=ATG;rbs_motif=GGxGG;rbs_spacer=5-10bp;gc_cont=0.295
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	molybdenum ABC transporter, periplasmic molybdate-binding protein	ABQ50084	Yes	100.0
+
+#input_seq:	contig03_344 # 385496 # 386278 # -1 # ID=3_344;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.330
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	putative membrane protein	CAG42200	Yes	100.0
+
+#input_seq:	contig05_88 # 88143 # 88925 # -1 # ID=5_88;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.356
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	ABC transporter, ATP-binding protein	BAF68327	Yes	100.0
+
+#input_seq:	contig02_133 # 123637 # 124413 # -1 # ID=2_133;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.326
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Mannosyl-glycoprotein endo-beta-N-acetylglucosaminidase	ABQ50110	Yes	100.0
+
+#input_seq:	contig02_109 # 99307 # 100077 # -1 # ID=2_109;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.340
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	acetyltransferase, GNAT family protein	BAF68453	Yes	100.0
+
+#input_seq:	contig03_13 # 18526 # 19278 # -1 # ID=3_13;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.276
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	staphylococcal accessory regulator A homolog	BAF66328	Yes	100.0
+
+#input_seq:	contig03_102 # 129619 # 130392 # -1 # ID=3_102;partial=00;start_type=ATG;rbs_motif=GGxGG;rbs_spacer=5-10bp;gc_cont=0.298
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	putative membrane protein	CAG41954	Yes	100.0
+
+#input_seq:	contig02_92 # 85960 # 86724 # -1 # ID=2_92;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.299
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50069	Yes	100.0
+
+#input_seq:	contig03_25 # 33329 # 34093 # 1 # ID=3_25;partial=00;start_type=TTG;rbs_motif=AGGAGG;rbs_spacer=11-12bp;gc_cont=0.370
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	ParB domain protein nuclease	ABQ47918	Yes	100.0
+
+#input_seq:	contig02_442 # 465554 # 466315 # -1 # ID=2_442;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.336
+#matched_seq:	265	BX571856	Staphylococcus aureus subsp. aureus strain MRSA252, complete genome.	Bacillales	putative esterase	CAG41686	Yes	100.0
+
+#input_seq:	contig01_957 # 1030557 # 1031312 # -1 # ID=1_957;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.339
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	putative short chain dehydrogenase	CAG43219	Yes	100.0
+
+#input_seq:	contig01_469 # 474423 # 475181 # 1 # ID=1_469;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.319
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	putative esterase	ABQ48813	Yes	100.0
+
+#input_seq:	contig04_98 # 84379 # 85134 # 1 # ID=4_98;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.351
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	CHAP domain containing protein	ABQ49787	Yes	100.0
+
+#input_seq:	contig01_1026 # 1097472 # 1098218 # -1 # ID=1_1026;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.327
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	hypothetical protein	BAF78436	Yes	100.0
+
+#input_seq:	contig01_123 # 133712 # 134464 # -1 # ID=1_123;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.308
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21009	Yes	100.0
+
+#input_seq:	contig04_31 # 33808 # 34551 # -1 # ID=4_31;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.288
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD20720	Yes	100.0
+
+#input_seq:	contig01_104 # 115431 # 116147 # 1 # ID=1_104;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.261
+#matched_seq:	19489	CP000730	Staphylococcus aureus subsp. aureus USA30	Bacillales	CH1516, complete genome.	ABX28645	Yes	100.0
+
+#input_seq:	contig03_36 # 44496 # 45236 # -1 # ID=3_36;partial=00;start_type=GTG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.355
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	GntR family regulatory protein	CAG41877	Yes	100.0
+
+#input_seq:	contig04_111 # 96882 # 97622 # 1 # ID=4_111;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.271
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49771	Yes	100.0
+
+#input_seq:	contig02_213 # 209680 # 210420 # 1 # ID=2_213;partial=00;start_type=TTG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.279
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	putative transcriptional regulator, MerR family	ABQ50194	Yes	100.0
+
+#input_seq:	contig02_140 # 132527 # 133264 # -1 # ID=2_140;partial=00;start_type=GTG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.302
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Abortive infection protein	ABQ50117	Yes	100.0
+
+#input_seq:	contig03_333 # 374872 # 375606 # 1 # ID=3_333;partial=00;start_type=ATG;rbs_motif=AGGAG/GGAGG;rbs_spacer=11-12bp;gc_cont=0.340
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	conserved hypothetical protein	CAG42188	Yes	100.0
+
+#input_seq:	contig01_585 # 598492 # 599226 # 1 # ID=1_585;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.272
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	sortase B	CAG42843	Yes	100.0
+
+#input_seq:	contig01_829 # 868043 # 868771 # 1 # ID=1_829;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.343
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21014	Yes	100.0
+
+#input_seq:	contig01_269 # 295117 # 295845 # -1 # ID=1_269;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.273
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48611	Yes	100.0
+
+#input_seq:	contig01_311 # 330734 # 331459 # -1 # ID=1_311;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.284
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48652	Yes	100.0
+
+#input_seq:	contig01_615 # 630027 # 630752 # -1 # ID=1_615;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.302
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	toxin, beta-grasp domain protein	ABQ49026	Yes	100.0
+
+#input_seq:	contig01_101 # 113124 # 113843 # 1 # ID=1_101;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.307
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	HAD-superfamily hydrolase, subfamily IA, variant 1	ABQ48438	Yes	100.0
+
+#input_seq:	contig01_1050 # 1121431 # 1122147 # -1 # ID=1_1050;partial=00;start_type=ATG;rbs_motif=3Base/5BMM;rbs_spacer=13-15bp;gc_cont=0.300
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22601	Yes	100.0
+
+#input_seq:	contig01_1264 # 1361515 # 1361733 # -1 # ID=1_1264;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.306
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	lantibiotic ABC transporter protein	BAF67981	Yes	100.0
+
+#input_seq:	contig01_1034 # 1103349 # 1104056 # -1 # ID=1_1034;partial=00;start_type=GTG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.325
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	protein of unknown function DUF107	ABQ49425	Yes	100.0
+
+#input_seq:	contig02_444 # 469504 # 470208 # -1 # ID=2_444;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.296
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22163	Yes	100.0
+
+#input_seq:	contig02_40 # 42070 # 42774 # -1 # ID=2_40;partial=00;start_type=ATG;rbs_motif=AGGAG/GGAGG;rbs_spacer=11-12bp;gc_cont=0.340
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	conserved hypothetical protein	CAG43914	Yes	100.0
+
+#input_seq:	contig01_834 # 873729 # 874430 # -1 # ID=1_834;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.332
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	putative oligopeptide transporter ATPase	CAG43096	Yes	100.0
+
+#input_seq:	contig01_1032 # 1101627 # 1102325 # -1 # ID=1_1032;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.323
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF78442	Yes	100.0
+
+#input_seq:	contig02_139 # 131188 # 131880 # 1 # ID=2_139;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.310
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Helix-turn-helix, type 11 domain protein	ABQ50116	Yes	100.0
+
+#input_seq:	contig02_468 # 510312 # 511004 # -1 # ID=2_468;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.371
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF68826	Yes	100.0
+
+#input_seq:	contig01_162 # 175765 # 176454 # -1 # ID=1_162;partial=00;start_type=ATG;rbs_motif=AGGAG(G)/GGAGG;rbs_spacer=13-15bp;gc_cont=0.278
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48502	Yes	100.0
+
+#input_seq:	contig02_354 # 370461 # 371150 # -1 # ID=2_354;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.341
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	LrgB family protein	ABQ50340	Yes	100.0
+
+#input_seq:	contig01_625 # 639932 # 640618 # 1 # ID=1_625;partial=00;start_type=TTG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.300
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF78048	Yes	100.0
+
+#input_seq:	contig01_193 # 205965 # 206651 # -1 # ID=1_193;partial=00;start_type=ATG;rbs_motif=AGGA/GGAG/GAGG;rbs_spacer=11-12bp;gc_cont=0.328
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	two component transcriptional regulator, winged helix family	ABQ48533	Yes	100.0
+
+#input_seq:	contig01_38 # 45347 # 46030 # 1 # ID=1_38;partial=00;start_type=ATG;rbs_motif=AGGAG/GGAGG;rbs_spacer=11-12bp;gc_cont=0.345
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	HAD-superfamily hydrolase, subfamily IA, variant 1	ABQ48382	Yes	100.0
+
+#input_seq:	contig03_310 # 349539 # 350222 # 1 # ID=3_310;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.295
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Domain of unknown function DUF1954	ABQ48258	Yes	100.0
+
+#input_seq:	contig01_169 # 179670 # 180353 # -1 # ID=1_169;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.306
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48509	Yes	100.0
+
+#input_seq:	contig01_581 # 594818 # 595501 # 1 # ID=1_581;partial=00;start_type=TTG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.322
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	NEAr transporter	ABQ48990	Yes	100.0
+
+#input_seq:	contig04_109 # 95333 # 96013 # 1 # ID=4_109;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.266
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49773	Yes	100.0
+
+#input_seq:	contig03_332 # 374161 # 374835 # 1 # ID=3_332;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.342
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22126	Yes	100.0
+
+#input_seq:	contig01_312 # 331487 # 332161 # -1 # ID=1_312;partial=00;start_type=TTG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.270
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	protein of unknown function DUF955	ABQ48653	Yes	100.0
+
+#input_seq:	contig01_237 # 254292 # 254966 # 1 # ID=1_237;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.310
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	amidophosphoribosyltransferase-like protein	ABQ48578	Yes	100.0
+
+#input_seq:	contig05_68 # 66961 # 67632 # -1 # ID=5_68;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.324
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49949	Yes	100.0
+
+#input_seq:	contig03_287 # 326469 # 327131 # -1 # ID=3_287;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.306
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48238	Yes	100.0
+
+#input_seq:	contig02_256 # 256446 # 257105 # 1 # ID=2_256;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.318
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50236	Yes	100.0
+
+#input_seq:	contig02_259 # 259207 # 259863 # 1 # ID=2_259;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.356
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Uncharacterized protein-like protein	ABQ50239	Yes	100.0
+
+#input_seq:	contig04_86 # 70041 # 70685 # 1 # ID=4_86;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.371
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	phage major tail protein	BAF68162	Yes	100.0
+
+#input_seq:	contig01_158 # 172203 # 172847 # 1 # ID=1_158;partial=00;start_type=GTG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.291
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	protein of unknown function DUF402	ABQ48498	Yes	100.0
+
+#input_seq:	contig03_80 # 99184 # 99828 # 1 # ID=3_80;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.335
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21416	Yes	100.0
+
+#input_seq:	contig01_672 # 692314 # 692958 # 1 # ID=1_672;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.329
+#matched_seq:	237	CP000253	Staphylococcus aureus subsp. aureus NCTC 8325, complete genome.	Bacillales	ribulose-phosphate 3-epimerase	ABD30296	Yes	100.0
+
+#input_seq:	contig01_840 # 879798 # 880439 # -1 # ID=1_840;partial=00;start_type=ATG;rbs_motif=3Base/5BMM;rbs_spacer=13-15bp;gc_cont=0.319
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	phosphate uptake regulator, PhoU	ABQ49240	Yes	100.0
+
+#input_seq:	contig01_673 # 692965 # 693606 # 1 # ID=1_673;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.327
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	thiamine pyrophosphokinase	ABQ49081	Yes	100.0
+
+#input_seq:	contig01_434 # 437698 # 438339 # 1 # ID=1_434;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.255
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	SUA5/yciO/yrdC, N-terminal domain	ABQ48778	Yes	100.0
+
+#input_seq:	contig02_176 # 168734 # 169372 # 1 # ID=2_176;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.308
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	putative membrane protein	CAG44055	Yes	100.0
+
+#input_seq:	contig02_147 # 137841 # 138476 # -1 # ID=2_147;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.332
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	HAD-superfamily hydrolase, subfamily IA, variant 3	ABQ50124	Yes	100.0
+
+#input_seq:	contig01_1227 # 1325930 # 1326565 # 1 # ID=1_1227;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.286
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21629	Yes	100.0
+
+#input_seq:	contig02_339 # 355829 # 356464 # 1 # ID=2_339;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.248
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	ABC transporter related	ABQ50326	Yes	100.0
+
+#input_seq:	contig01_79 # 93223 # 93849 # 1 # ID=1_79;partial=00;start_type=TTG;rbs_motif=None;rbs_spacer=None;gc_cont=0.244
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	putative membrane protein	CAG42331	Yes	100.0
+
+#input_seq:	contig01_544 # 556720 # 557346 # 1 # ID=1_544;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.290
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22803	Yes	100.0
+
+#input_seq:	contig03_280 # 317163 # 317789 # -1 # ID=3_280;partial=00;start_type=ATG;rbs_motif=AGGAG/GGAGG;rbs_spacer=11-12bp;gc_cont=0.305
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48231	Yes	100.0
+
+#input_seq:	contig01_859 # 899080 # 899703 # 1 # ID=1_859;partial=00;start_type=GTG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.300
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	hypothetical protein	BAF78276	Yes	100.0
+
+#input_seq:	contig02_200 # 195159 # 195782 # 1 # ID=2_200;partial=00;start_type=TTG;rbs_motif=AGGAGG;rbs_spacer=11-12bp;gc_cont=0.309
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	transcriptional regulator, TetR family	ABQ50181	Yes	100.0
+
+#input_seq:	contig02_341 # 357361 # 357981 # -1 # ID=2_341;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.330
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22861	Yes	100.0
+
+#input_seq:	contig01_180 # 191707 # 192324 # -1 # ID=1_180;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.294
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF77573	Yes	100.0
+
+#input_seq:	contig02_326 # 341567 # 342178 # 1 # ID=2_326;partial=00;start_type=ATG;rbs_motif=AGGAG(G)/GGAGG;rbs_spacer=13-15bp;gc_cont=0.327
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	SNARE associated Golgi protein	ABQ50313	Yes	100.0
+
+#input_seq:	contig01_1126 # 1198961 # 1199569 # -1 # ID=1_1126;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.337
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	NUDIX hydrolase	ABQ49525	Yes	100.0
+
+#input_seq:	contig01_202 # 212729 # 213337 # 1 # ID=1_202;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.309
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Branched-chain amino acid aminotransferase/4-amino-4-deoxychorismate lyase-like protein	ABQ48542	Yes	100.0
+
+#input_seq:	contig02_105 # 95975 # 96580 # -1 # ID=2_105;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.327
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21729	Yes	100.0
+
+#input_seq:	contig02_385 # 407385 # 407972 # 1 # ID=2_385;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.325
+#matched_seq:	19489	CP000730	Staphylococcus aureus subsp. aureus USA30	Bacillales	CH1516, complete genome.	ABX30552	Yes	100.0
+
+#input_seq:	contig02_232 # 229755 # 230354 # -1 # ID=2_232;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.297
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Protein-disulfide isomerase-like protein	ABQ50211	Yes	100.0
+
+#input_seq:	contig02_408 # 425046 # 425642 # -1 # ID=2_408;partial=00;start_type=GTG;rbs_motif=None;rbs_spacer=None;gc_cont=0.328
+#matched_seq:	306	BA000033	Staphylococcus aureus subsp. aureus MW2 DNA, complete genome.	Bacillales	truncated hypothetical protein	BAB96380	Yes	100.0
+
+#input_seq:	contig01_1010 # 1080371 # 1080964 # -1 # ID=1_1010;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.291
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	5-formyltetrahydrofolate cyclo-ligase	ABQ49401	Yes	100.0
+
+#input_seq:	contig01_917 # 992200 # 992316 # -1 # ID=1_917;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.291
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	protein of unknown function DUF1405	ABQ49314	Yes	100.0
+
+#input_seq:	contig01_784 # 813202 # 813786 # 1 # ID=1_784;partial=00;start_type=GTG;rbs_motif=AGGAGG;rbs_spacer=11-12bp;gc_cont=0.294
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49181	Yes	100.0
+
+#input_seq:	contig01_992 # 1065808 # 1066389 # 1 # ID=1_992;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.275
+#matched_seq:	306	BA000033	Staphylococcus aureus subsp. aureus MW2 DNA, complete genome.	Bacillales	hypothetical protein	BAB95348	Yes	100.0
+
+#input_seq:	contig01_196 # 208161 # 208745 # -1 # ID=1_196;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.260
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD20565	Yes	100.0
+
+#input_seq:	contig03_104 # 131416 # 131994 # 1 # ID=3_104;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.361
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	putative peptidase	CAG41956	Yes	100.0
+
+#input_seq:	contig02_508 # 547276 # 547851 # 1 # ID=2_508;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.354
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	putative DNA-binding protein	CAG44399	Yes	100.0
+
+#input_seq:	contig01_418 # 415172 # 415747 # 1 # ID=1_418;partial=00;start_type=TTG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.307
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	SNARE associated Golgi protein	ABQ48764	Yes	100.0
+
+#input_seq:	contig01_927 # 1000735 # 1001307 # -1 # ID=1_927;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.277
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49323	Yes	100.0
+
+#input_seq:	contig01_1276 # 1374208 # 1374762 # -1 # ID=1_1276;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.339
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF67994	Yes	100.0
+
+#input_seq:	contig03_274 # 313923 # 314495 # 1 # ID=3_274;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.304
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21162	Yes	100.0
+
+#input_seq:	contig03_112 # 140470 # 140964 # -1 # ID=3_112;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.267
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21261	Yes	100.0
+
+#input_seq:	contig01_480 # 489220 # 489789 # -1 # ID=1_480;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.302
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	ComK family protein	ABQ48885	Yes	100.0
+
+#input_seq:	contig01_280 # 307483 # 308052 # -1 # ID=1_280;partial=00;start_type=GTG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.312
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21220	Yes	100.0
+
+#input_seq:	contig01_6 # 5922 # 6488 # 1 # ID=1_6;partial=00;start_type=GTG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.342
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	UvrB/UvrC protein	ABQ48349	Yes	100.0
+
+#input_seq:	contig01_43 # 48991 # 49557 # 1 # ID=1_43;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.310
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	NADPH-dependent FMN reductase	ABQ48387	Yes	100.0
+
+#input_seq:	contig01_639 # 655529 # 656092 # 1 # ID=1_639;partial=00;start_type=GTG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.351
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	protein of unknown function DUF552	ABQ49048	Yes	100.0
+
+#input_seq:	contig04_112 # 97688 # 98251 # -1 # ID=4_112;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.319
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49770	Yes	100.0
+
+#input_seq:	contig01_110 # 120411 # 120971 # 1 # ID=1_110;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.301
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	phage integrase family protein	ABQ48447	Yes	100.0
+
+#input_seq:	contig02_478 # 517473 # 518033 # -1 # ID=2_478;partial=00;start_type=TTG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.275
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	transcriptional regulator, TetR family	ABQ50465	Yes	100.0
+
+#input_seq:	contig01_1285 # 1383169 # 1383726 # 1 # ID=1_1285;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.244
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49678	Yes	100.0
+
+#input_seq:	contig04_114 # 98956 # 99513 # 1 # ID=4_114;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.289
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	protein of unknown function DUF1700	ABQ49768	Yes	100.0
+
+#input_seq:	contig01_357 # 353184 # 353741 # 1 # ID=1_357;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.384
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF66571	Yes	100.0
+
+#input_seq:	contig04_147 # 137644 # 138198 # -1 # ID=4_147;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.317
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Exonuclease, RNase T and DNA polymerase III	ABQ49733	Yes	100.0
+
+#input_seq:	contig01_493 # 499713 # 500264 # 1 # ID=1_493;partial=00;start_type=GTG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.322
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	GCN5-related N-acetyltransferase	ABQ48899	Yes	100.0
+
+#input_seq:	contig02_179 # 172330 # 172881 # 1 # ID=2_179;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.290
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22810	Yes	100.0
+
+#input_seq:	contig01_324 # 336781 # 337332 # 1 # ID=1_324;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.315
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	hypothetical protein	BAF77743	Yes	100.0
+
+#input_seq:	contig02_367 # 385213 # 385761 # 1 # ID=2_367;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.306
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	transcriptional regulator, TetR family	ABQ50352	Yes	100.0
+
+#input_seq:	contig01_939 # 1014205 # 1014750 # -1 # ID=1_939;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.315
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	membrane protein-like protein	ABQ49335	Yes	100.0
+
+#input_seq:	contig01_949 # 1025113 # 1025655 # -1 # ID=1_949;partial=00;start_type=TTG;rbs_motif=AGGAG/GGAGG;rbs_spacer=11-12bp;gc_cont=0.309
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	conserved hypothetical protein	CAG43211	Yes	100.0
+
+#input_seq:	contig05_43 # 43823 # 44362 # -1 # ID=5_43;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.300
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	ATP synthase F1, delta subunit	ABQ49924	Yes	100.0
+
+#input_seq:	contig02_19 # 20671 # 21207 # -1 # ID=2_19;partial=00;start_type=GTG;rbs_motif=AGGAGG;rbs_spacer=11-12bp;gc_cont=0.328
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49996	Yes	100.0
+
+#input_seq:	contig03_293 # 333223 # 333759 # -1 # ID=3_293;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.279
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22121	Yes	100.0
+
+#input_seq:	contig01_782 # 811350 # 811883 # 1 # ID=1_782;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.313
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD20832	Yes	100.0
+
+#input_seq:	contig02_149 # 139736 # 140266 # 1 # ID=2_149;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.296
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50126	Yes	100.0
+
+#input_seq:	contig01_1106 # 1176925 # 1177455 # -1 # ID=1_1106;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.286
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	rod shape-determining protein MreD	ABQ49495	Yes	100.0
+
+#input_seq:	contig02_451 # 478180 # 478707 # -1 # ID=2_451;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.309
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50438	Yes	100.0
+
+#input_seq:	contig04_113 # 98372 # 98896 # 1 # ID=4_113;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.278
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49769	Yes	100.0
+
+#input_seq:	contig03_352 # 399909 # 400433 # 1 # ID=3_352;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.331
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	GCN5-related N-acetyltransferase	ABQ48302	Yes	100.0
+
+#input_seq:	contig01_592 # 606611 # 607132 # 1 # ID=1_592;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.287
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Colicin V production protein	ABQ49001	Yes	100.0
+
+#input_seq:	contig01_270 # 296444 # 296965 # 1 # ID=1_270;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.276
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48612	Yes	100.0
+
+#input_seq:	contig02_194 # 189624 # 190139 # -1 # ID=2_194;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.316
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	GCN5-related N-acetyltransferase	ABQ50173	Yes	100.0
+
+#input_seq:	contig02_511 # 550211 # 550723 # -1 # ID=2_511;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.310
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	conserved hypothetical protein	ABQ50499	Yes	100.0
+
+#input_seq:	contig02_17 # 19847 # 20356 # -1 # ID=2_17;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.322
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	protein of unknown function DUF322	ABQ49994	Yes	100.0
+
+#input_seq:	contig02_173 # 166591 # 167082 # 1 # ID=2_173;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.319
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	thioesterase-like protein	ABQ50152	Yes	100.0
+
+#input_seq:	contig01_874 # 916820 # 917329 # -1 # ID=1_874;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.337
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	GCN5-related N-acetyltransferase	ABQ49273	Yes	100.0
+
+#input_seq:	contig01_470 # 475375 # 475884 # 1 # ID=1_470;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.343
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Phosphoesterase, HXTX	ABQ48814	Yes	100.0
+
+#input_seq:	contig02_152 # 143088 # 143594 # -1 # ID=2_152;partial=00;start_type=GTG;rbs_motif=GGxGG;rbs_spacer=5-10bp;gc_cont=0.339
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Activator of Hsp90 ATPase 1 family protein	ABQ50130	Yes	100.0
+
+#input_seq:	contig01_144 # 156315 # 156821 # -1 # ID=1_144;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.345
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	GCN5-related N-acetyltransferase	ABQ48483	Yes	100.0
+
+#input_seq:	contig01_605 # 621816 # 622322 # 1 # ID=1_605;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.266
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49014	Yes	100.0
+
+#input_seq:	contig01_358 # 353808 # 354314 # 1 # ID=1_358;partial=00;start_type=TTG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.363
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF66572	Yes	100.0
+
+#input_seq:	contig01_1280 # 1378790 # 1379293 # 1 # ID=1_1280;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.319
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	signal transduction protein	CAG43560	Yes	100.0
+
+#input_seq:	contig05_35 # 36395 # 36835 # 1 # ID=5_35;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.306
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF68274	Yes	100.0
+
+#input_seq:	contig02_130 # 120295 # 120795 # 1 # ID=2_130;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.379
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	CHAP domain containing protein	ABQ50107	Yes	100.0
+
+#input_seq:	contig01_1211 # 1311295 # 1311696 # -1 # ID=1_1211;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.318
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	staphylococcal accessory regulator family	ABQ49607	Yes	100.0
+
+#input_seq:	contig02_494 # 533657 # 534154 # -1 # ID=2_494;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.301
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF79549	Yes	100.0
+
+#input_seq:	contig01_606 # 622582 # 623079 # 1 # ID=1_606;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.311
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	fibrinogen-binding protein precursor	CAG42866	Yes	100.0
+
+#input_seq:	contig01_1000 # 1073262 # 1073636 # -1 # ID=1_1000;partial=00;start_type=ATG;rbs_motif=AGxAG;rbs_spacer=5-10bp;gc_cont=0.251
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Competence protein ComGF-like protein	ABQ49390	Yes	100.0
+
+#input_seq:	contig01_287 # 311143 # 311637 # -1 # ID=1_287;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.293
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD20892	Yes	100.0
+
+#input_seq:	contig05_11 # 9210 # 9704 # -1 # ID=5_11;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.339
+#matched_seq:	19489	CP000730	Staphylococcus aureus subsp. aureus USA30	Bacillales	CH1516, complete genome.	ABX30064	Yes	100.0
+
+#input_seq:	contig04_99 # 85325 # 85816 # 1 # ID=4_99;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.323
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	staphylokinase precursor	BAF78813	Yes	100.0
+
+#input_seq:	contig02_323 # 336887 # 337303 # -1 # ID=2_323;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.360
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	hypothetical protein	CAG44209	Yes	100.0
+
+#input_seq:	contig03_343 # 384842 # 385327 # 1 # ID=3_343;partial=00;start_type=ATG;rbs_motif=GGxGG;rbs_spacer=5-10bp;gc_cont=0.360
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	GCN5-related N-acetyltransferase	ABQ48293	Yes	100.0
+
+#input_seq:	contig04_60 # 56961 # 57446 # 1 # ID=4_60;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.348
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22166	Yes	100.0
+
+#input_seq:	contig01_1241 # 1339301 # 1339783 # -1 # ID=1_1241;partial=00;start_type=TTG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.290
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49636	Yes	100.0
+
+#input_seq:	contig01_1237 # 1335865 # 1336344 # -1 # ID=1_1237;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.348
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	8-oxo-dGTPase	ABQ49632	Yes	100.0
+
+#input_seq:	contig01_1108 # 1178689 # 1179162 # -1 # ID=1_1108;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.289
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49498	Yes	100.0
+
+#input_seq:	contig02_135 # 124896 # 125369 # -1 # ID=2_135;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.312
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	protein of unknown function DUF1641	ABQ50112	Yes	100.0
+
+#input_seq:	contig03_10 # 13923 # 14396 # 1 # ID=3_10;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.295
+#matched_seq:	265	BX571856	Staphylococcus aureus subsp. aureus strain MRSA252, complete genome.	Bacillales	putative membrane protein	CAG39138	Yes	100.0
+
+#input_seq:	contig01_194 # 206626 # 207099 # -1 # ID=1_194;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.340
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	DoxX family protein	ABQ48534	Yes	100.0
+
+#input_seq:	contig01_833 # 873132 # 873605 # -1 # ID=1_833;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.329
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	zinc finger, SWIM domain protein	ABQ49233	Yes	100.0
+
+#input_seq:	contig01_1266 # 1362321 # 1362461 # 1 # ID=1_1266;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.234
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49655	Yes	100.0
+
+#input_seq:	contig02_258 # 258621 # 259094 # -1 # ID=2_258;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.352
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22490	Yes	100.0
+
+#input_seq:	contig01_1224 # 1324178 # 1324648 # 1 # ID=1_1224;partial=00;start_type=TTG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.278
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	hypothetical protein	BAF78645	Yes	100.0
+
+#input_seq:	contig02_228 # 226464 # 226931 # -1 # ID=2_228;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.344
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21146	Yes	100.0
+
+#input_seq:	contig02_246 # 244367 # 244834 # -1 # ID=2_246;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.297
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD20420	Yes	100.0
+
+#input_seq:	contig04_42 # 47118 # 47582 # -1 # ID=4_42;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.331
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	hypothetical protein	BAF78870	Yes	100.0
+
+#input_seq:	contig01_263 # 288612 # 289070 # 1 # ID=1_263;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.318
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48604	Yes	100.0
+
+#input_seq:	contig03_178 # 221329 # 221787 # 1 # ID=3_178;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.329
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD20666	Yes	100.0
+
+#input_seq:	contig02_182 # 176210 # 176665 # -1 # ID=2_182;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.287
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	transcriptional regulator, MarR family	ABQ50161	Yes	100.0
+
+#input_seq:	contig01_183 # 194600 # 195052 # 1 # ID=1_183;partial=00;start_type=ATG;rbs_motif=4Base/6BMM;rbs_spacer=13-15bp;gc_cont=0.272
+#matched_seq:	306	BA000033	Staphylococcus aureus subsp. aureus MW2 DNA, complete genome.	Bacillales	hypothetical protein	BAB94523	Yes	100.0
+
+#input_seq:	contig02_216 # 212412 # 212864 # -1 # ID=2_216;partial=00;start_type=TTG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.331
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50197	Yes	100.0
+
+#input_seq:	contig01_67 # 80758 # 81210 # -1 # ID=1_67;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.338
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	conserved hypothetical protein	ABQ48412	Yes	100.0
+
+#input_seq:	contig02_449 # 475411 # 475860 # -1 # ID=2_449;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.293
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	transcriptional regulator, ArgR family	ABQ50436	Yes	100.0
+
+#input_seq:	contig01_317 # 333999 # 334448 # 1 # ID=1_317;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.367
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48658	Yes	100.0
+
+#input_seq:	contig01_335 # 341694 # 342143 # 1 # ID=1_335;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.340
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF66554	Yes	100.0
+
+#input_seq:	contig02_209 # 206051 # 206497 # 1 # ID=2_209;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.286
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	transcriptional regulator, MarR family	ABQ50190	Yes	100.0
+
+#input_seq:	contig01_1171 # 1253464 # 1253910 # 1 # ID=1_1171;partial=00;start_type=TTG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.351
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21980	Yes	100.0
+
+#input_seq:	contig02_421 # 440176 # 440619 # -1 # ID=2_421;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.302
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD20950	Yes	100.0
+
+#input_seq:	contig01_1226 # 1325191 # 1325634 # -1 # ID=1_1226;partial=00;start_type=ATG;rbs_motif=AGGAG(G)/GGAGG;rbs_spacer=13-15bp;gc_cont=0.268
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49621	Yes	100.0
+
+#input_seq:	contig02_188 # 182119 # 182562 # 1 # ID=2_188;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.282
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21363	Yes	100.0
+
+#input_seq:	contig01_1230 # 1328536 # 1328901 # 1 # ID=1_1230;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.336
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	camphor resistance protein CrcB	ABQ49625	Yes	100.0
+
+#input_seq:	contig01_77 # 90745 # 91185 # -1 # ID=1_77;partial=00;start_type=TTG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.329
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	transcriptional regulator, BadM/Rrf2 family	ABQ48422	Yes	100.0
+
+#input_seq:	contig03_238 # 279082 # 279522 # 1 # ID=3_238;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.293
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	protein of unknown function UCP032285	ABQ48190	Yes	100.0
+
+#input_seq:	contig01_195 # 207441 # 207881 # -1 # ID=1_195;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.313
+#matched_seq:	63	AJ938182	Staphylococcus aureus RF122 complete genome.	Bacillales	probable lipoprotein	CAI80345	Yes	100.0
+
+#input_seq:	contig01_117 # 126388 # 126825 # 1 # ID=1_117;partial=00;start_type=ATG;rbs_motif=GGxGG;rbs_spacer=5-10bp;gc_cont=0.338
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	monovalent cation/proton antiporter, MnhG/PhaG subunit	ABQ48454	Yes	100.0
+
+#input_seq:	contig01_1002 # 1073963 # 1074397 # -1 # ID=1_1002;partial=00;start_type=TTG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.257
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49392	Yes	100.0
+
+#input_seq:	contig01_570 # 585641 # 586075 # 1 # ID=1_570;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.352
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	protein of unknown function DUF1333	ABQ48979	Yes	100.0
+
+#input_seq:	contig02_333 # 349693 # 350127 # -1 # ID=2_333;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.354
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	transcriptional regulator, MarR family	ABQ50320	Yes	100.0
+
+#input_seq:	contig01_437 # 440260 # 440694 # 1 # ID=1_437;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.326
+#matched_seq:	265	BX571856	Staphylococcus aureus subsp. aureus strain MRSA252, complete genome.	Bacillales	putative exported protein	CAG39950	Yes	100.0
+
+#input_seq:	contig02_198 # 193083 # 193514 # -1 # ID=2_198;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.308
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50178	Yes	100.0
+
+#input_seq:	contig01_143 # 155678 # 156106 # 1 # ID=1_143;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.280
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48482	Yes	100.0
+
+#input_seq:	contig02_39 # 41271 # 41696 # 1 # ID=2_39;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.317
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	MAP domain protein	ABQ50016	Yes	100.0
+
+#input_seq:	contig02_417 # 434581 # 434997 # 1 # ID=2_417;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.278
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50403	Yes	100.0
+
+#input_seq:	contig01_155 # 170046 # 170471 # 1 # ID=1_155;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.246
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21615	Yes	100.0
+
+#input_seq:	contig01_1201 # 1293857 # 1294279 # -1 # ID=1_1201;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.300
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49597	Yes	100.0
+
+#input_seq:	contig01_181 # 192510 # 192932 # -1 # ID=1_181;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.348
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	protein of unknown function DUF296	ABQ48521	Yes	100.0
+
+#input_seq:	contig02_296 # 303543 # 303965 # -1 # ID=2_296;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.281
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	alkylhydroperoxidase like protein, AhpD family	ABQ50278	Yes	100.0
+
+#input_seq:	contig01_1297 # 1398268 # 1398663 # -1 # ID=1_1297;partial=00;start_type=ATG;rbs_motif=AGGAG/GGAGG;rbs_spacer=11-12bp;gc_cont=0.280
+#matched_seq:	63	AJ938182	Staphylococcus aureus RF122 complete genome.	Bacillales	probable membrane protein	CAI81474	Yes	100.0
+
+#input_seq:	contig03_236 # 277097 # 277516 # 1 # ID=3_236;partial=00;start_type=ATG;rbs_motif=GGxGG;rbs_spacer=5-10bp;gc_cont=0.336
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	transcriptional regulator, MarR family	ABQ48188	Yes	100.0
+
+#input_seq:	contig01_504 # 512017 # 512436 # 1 # ID=1_504;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.314
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	transcriptional regulator, MarR family	ABQ48910	Yes	100.0
+
+#input_seq:	contig01_556 # 568690 # 569109 # 1 # ID=1_556;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.290
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48964	Yes	100.0
+
+#input_seq:	contig02_174 # 167079 # 167498 # 1 # ID=2_174;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.312
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50153	Yes	100.0
+
+#input_seq:	contig01_96 # 107790 # 108206 # 1 # ID=1_96;partial=00;start_type=TTG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.321
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Domain of unknown function DUF1934	ABQ48433	Yes	100.0
+
+#input_seq:	contig04_74 # 62139 # 62555 # 1 # ID=4_74;partial=00;start_type=ATG;rbs_motif=AGGAG/GGAGG;rbs_spacer=11-12bp;gc_cont=0.348
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	phage transcriptional regulator, RinA family	ABQ49810	Yes	100.0
+
+#input_seq:	contig01_1156 # 1237828 # 1238241 # 1 # ID=1_1156;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.333
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	UspA domain protein	ABQ49552	Yes	100.0
+
+#input_seq:	contig05_77 # 75736 # 76149 # -1 # ID=5_77;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.321
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	conserved hypothetical protein	CAG43851	Yes	100.0
+
+#input_seq:	contig02_351 # 365532 # 365942 # -1 # ID=2_351;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.372
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22254	Yes	100.0
+
+#input_seq:	contig03_288 # 327274 # 327681 # -1 # ID=3_288;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.328
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22201	Yes	100.0
+
+#input_seq:	contig04_85 # 69633 # 70040 # 1 # ID=4_85;partial=00;start_type=GTG;rbs_motif=AGGA/GGAG/GAGG;rbs_spacer=11-12bp;gc_cont=0.297
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49799	Yes	100.0
+
+#input_seq:	contig03_26 # 34289 # 34696 # 1 # ID=3_26;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.297
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22231	Yes	100.0
+
+#input_seq:	contig03_342 # 384457 # 384852 # 1 # ID=3_342;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.341
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	MutT domain containing protein	CAG42198	Yes	100.0
+
+#input_seq:	contig01_630 # 644515 # 644916 # 1 # ID=1_630;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.321
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	cell division protein FtsL	ABQ49039	Yes	100.0
+
+#input_seq:	contig01_889 # 928497 # 928898 # 1 # ID=1_889;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.326
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22294	Yes	100.0
+
+#input_seq:	contig01_344 # 344858 # 345259 # 1 # ID=1_344;partial=00;start_type=ATG;rbs_motif=AGGAG/GGAGG;rbs_spacer=11-12bp;gc_cont=0.363
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF66559	Yes	100.0
+
+#input_seq:	contig03_207 # 243957 # 244355 # 1 # ID=3_207;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.313
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	putative membrane protein	CAG42052	Yes	100.0
+
+#input_seq:	contig05_34 # 35806 # 36201 # -1 # ID=5_34;partial=00;start_type=ATG;rbs_motif=3Base/5BMM;rbs_spacer=13-15bp;gc_cont=0.306
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	single-strand binding protein	ABQ49915	Yes	100.0
+
+#input_seq:	contig02_81 # 71893 # 72282 # 1 # ID=2_81;partial=00;start_type=ATG;rbs_motif=GGxGG;rbs_spacer=5-10bp;gc_cont=0.292
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF68426	Yes	100.0
+
+#input_seq:	contig02_355 # 371143 # 371538 # -1 # ID=2_355;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.326
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	LrgA family protein	ABQ50341	Yes	100.0
+
+#input_seq:	contig01_164 # 177091 # 177486 # 1 # ID=1_164;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.293
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21778	Yes	100.0
+
+#input_seq:	contig01_720 # 750118 # 750468 # 1 # ID=1_720;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.305
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	ribosome-binding factor A	ABQ49127	Yes	100.0
+
+#input_seq:	contig01_732 # 764881 # 765273 # 1 # ID=1_732;partial=00;start_type=TTG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.305
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	helix-turn-helix domain protein	ABQ49139	Yes	100.0
+
+#input_seq:	contig03_164 # 205085 # 205477 # 1 # ID=3_164;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.267
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48064	Yes	100.0
+
+#input_seq:	contig01_424 # 426046 # 426435 # 1 # ID=1_424;partial=00;start_type=ATG;rbs_motif=GGxGG;rbs_spacer=5-10bp;gc_cont=0.328
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	protein of unknown function DUF1516	ABQ48770	Yes	100.0
+
+#input_seq:	contig04_154 # 145046 # 145432 # 1 # ID=4_154;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.261
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49726	Yes	100.0
+
+#input_seq:	contig04_71 # 61379 # 61765 # 1 # ID=4_71;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.310
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD20375	Yes	100.0
+
+#input_seq:	contig02_203 # 198482 # 198865 # 1 # ID=2_203;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.307
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	conserved hypothetical protein	CAG44083	Yes	100.0
+
+#input_seq:	contig04_52 # 52024 # 52404 # -1 # ID=4_52;partial=00;start_type=ATG;rbs_motif=AGxAG;rbs_spacer=5-10bp;gc_cont=0.291
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49831	Yes	100.0
+
+#input_seq:	contig02_388 # 409479 # 409856 # -1 # ID=2_388;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.344
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Glyoxalase/bleomycin resistance protein/dioxygenase	ABQ50373	Yes	100.0
+
+#input_seq:	contig04_65 # 59491 # 59859 # 1 # ID=4_65;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.396
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21348	Yes	100.0
+
+#input_seq:	contig01_489 # 497290 # 497646 # -1 # ID=1_489;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.325
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF67179	Yes	100.0
+
+#input_seq:	contig01_106 # 117356 # 117730 # -1 # ID=1_106;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.277
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	staphylococcal accessory regulator family	ABQ48443	Yes	100.0
+
+#input_seq:	contig04_94 # 81954 # 82328 # 1 # ID=4_94;partial=00;start_type=TTG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.331
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	hypothetical protein	BAF78819	Yes	100.0
+
+#input_seq:	contig01_441 # 443683 # 444054 # -1 # ID=1_441;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.269
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF67127	Yes	100.0
+
+#input_seq:	contig01_1284 # 1382071 # 1382436 # 1 # ID=1_1284;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.366
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Gas vesicle protein-like protein	ABQ49677	Yes	100.0
+
+#input_seq:	contig01_743 # 776698 # 777063 # 1 # ID=1_743;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.295
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	membrane protein-like protein	ABQ49150	Yes	100.0
+
+#input_seq:	contig02_208 # 205288 # 205653 # -1 # ID=2_208;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.276
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50189	Yes	100.0
+
+#input_seq:	contig01_59 # 74948 # 75313 # 1 # ID=1_59;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.320
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48404	Yes	100.0
+
+#input_seq:	contig02_293 # 300216 # 300578 # -1 # ID=2_293;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.251
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	hypothetical protein	CAG44176	Yes	100.0
+
+#input_seq:	contig04_83 # 68873 # 69235 # 1 # ID=4_83;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.309
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	phage head-tail adaptor, putative	ABQ49801	Yes	100.0
+
+#input_seq:	contig02_471 # 512141 # 512500 # 1 # ID=2_471;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.347
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22765	Yes	100.0
+
+#input_seq:	contig03_76 # 88356 # 88715 # 1 # ID=3_76;partial=00;start_type=GTG;rbs_motif=None;rbs_spacer=None;gc_cont=0.328
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	conserved hypothetical protein	ABQ47968	Yes	100.0
+
+#input_seq:	contig02_206 # 203216 # 203572 # 1 # ID=2_206;partial=00;start_type=ATG;rbs_motif=AGGAG/GGAGG;rbs_spacer=11-12bp;gc_cont=0.277
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50187	Yes	100.0
+
+#input_seq:	contig02_350 # 365146 # 365490 # -1 # ID=2_350;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.362
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50336	Yes	100.0
+
+#input_seq:	contig05_47 # 46084 # 46437 # -1 # ID=5_47;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.302
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49928	Yes	100.0
+
+#input_seq:	contig01_75 # 89043 # 89384 # 1 # ID=1_75;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.354
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF66828	Yes	100.0
+
+#input_seq:	contig04_87 # 71001 # 71351 # 1 # ID=4_87;partial=00;start_type=ATG;rbs_motif=AGGAG/GGAGG;rbs_spacer=11-12bp;gc_cont=0.330
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49796	Yes	100.0
+
+#input_seq:	contig02_95 # 88632 # 88982 # -1 # ID=2_95;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.285
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	transcriptional regulator, SarA family	ABQ50072	Yes	100.0
+
+#input_seq:	contig01_607 # 623233 # 623583 # 1 # ID=1_607;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.288
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49016	Yes	100.0
+
+#input_seq:	contig04_101 # 87313 # 87663 # 1 # ID=4_101;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.288
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49783	Yes	100.0
+
+#input_seq:	contig02_122 # 111064 # 111411 # -1 # ID=2_122;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.247
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	transcriptional regulator, SarA family	ABQ50099	Yes	100.0
+
+#input_seq:	contig01_838 # 877296 # 877640 # -1 # ID=1_838;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.272
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49238	Yes	100.0
+
+#input_seq:	contig04_76 # 63216 # 63560 # 1 # ID=4_76;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.336
+#matched_seq:	15758	CP000736	Staphylococcus aureus subsp. aureus JH1, complete genome.	Bacillales	conserved hypothetical protein	ABR52890	Yes	100.0
+
+#input_seq:	contig01_108 # 119808 # 120032 # -1 # ID=1_108;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.302
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF66863	Yes	100.0
+
+#input_seq:	contig04_44 # 48068 # 48409 # -1 # ID=4_44;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.260
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF68195	Yes	100.0
+
+#input_seq:	contig03_227 # 268334 # 268666 # 1 # ID=3_227;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.363
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	glycine cleavage H-protein	ABQ48179	Yes	100.0
+
+#input_seq:	contig01_313 # 332178 # 332510 # -1 # ID=1_313;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.345
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	transcriptional regulator, XRE family	ABQ48654	Yes	100.0
+
+#input_seq:	contig01_499 # 506300 # 506629 # -1 # ID=1_499;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.315
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD20764	Yes	100.0
+
+#input_seq:	contig04_49 # 50692 # 51021 # -1 # ID=4_49;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.318
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF68191	Yes	100.0
+
+#input_seq:	contig02_123 # 111839 # 112165 # -1 # ID=2_123;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.272
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50100	Yes	100.0
+
+#input_seq:	contig03_66 # 78787 # 79113 # -1 # ID=3_66;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.309
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Antibiotic biosynthesis monooxygenase	ABQ47958	Yes	100.0
+
+#input_seq:	contig04_131 # 116904 # 117230 # -1 # ID=4_131;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.257
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	conserved hypothetical protein	ABQ49750	Yes	100.0
+
+#input_seq:	contig01_586 # 599245 # 599568 # 1 # ID=1_586;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.306
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22802	Yes	100.0
+
+#input_seq:	contig04_53 # 52459 # 52782 # 1 # ID=4_53;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.343
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	protein of unknown function DUF771	ABQ49830	Yes	100.0
+
+#input_seq:	contig01_268 # 294440 # 294763 # -1 # ID=1_268;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.241
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48609	Yes	100.0
+
+#input_seq:	contig02_88 # 80278 # 80595 # 1 # ID=2_88;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.274
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50066	Yes	100.0
+
+#input_seq:	contig01_514 # 525698 # 526015 # -1 # ID=1_514;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.324
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48922	Yes	100.0
+
+#input_seq:	contig03_315 # 355911 # 356219 # -1 # ID=3_315;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.353
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF66674	Yes	100.0
+
+#input_seq:	contig01_1195 # 1287212 # 1287526 # 1 # ID=1_1195;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.283
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Propeptide, PepSY amd peptidase M4	ABQ49591	Yes	100.0
+
+#input_seq:	contig03_183 # 228247 # 228561 # 1 # ID=3_183;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.390
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21833	Yes	100.0
+
+#input_seq:	contig01_1193 # 1285676 # 1285987 # -1 # ID=1_1193;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.327
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Thioredoxin domain	ABQ49589	Yes	100.0
+
+#input_seq:	contig01_798 # 827836 # 828072 # 1 # ID=1_798;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.325
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49195	Yes	100.0
+
+#input_seq:	contig02_480 # 519399 # 519704 # 1 # ID=2_480;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.317
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50467	Yes	100.0
+
+#input_seq:	contig02_470 # 511685 # 511987 # 1 # ID=2_470;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.333
+#matched_seq:	19489	CP000730	Staphylococcus aureus subsp. aureus USA30	Bacillales	CH1516, complete genome.	ABX30643	Yes	100.0
+
+#input_seq:	contig04_55 # 53035 # 53337 # 1 # ID=4_55;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.317
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48123	Yes	100.0
+
+#input_seq:	contig01_319 # 334931 # 335233 # 1 # ID=1_319;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.323
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48661	Yes	100.0
+
+#input_seq:	contig01_1229 # 1327978 # 1328280 # 1 # ID=1_1229;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.254
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF67945	Yes	100.0
+
+#input_seq:	contig01_116 # 126111 # 126413 # 1 # ID=1_116;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.327
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	multiple resistance and pH regulation protein F	ABQ48453	Yes	100.0
+
+#input_seq:	contig01_367 # 364720 # 365019 # 1 # ID=1_367;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.320
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48168	Yes	100.0
+
+#input_seq:	contig01_165 # 177624 # 177923 # 1 # ID=1_165;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.320
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48505	Yes	100.0
+
+#input_seq:	contig01_1001 # 1073677 # 1073976 # -1 # ID=1_1001;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.287
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49391	Yes	100.0
+
+#input_seq:	contig04_75 # 62790 # 63086 # 1 # ID=4_75;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.320
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22561	Yes	100.0
+
+#input_seq:	contig01_809 # 842736 # 843032 # -1 # ID=1_809;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.337
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	HesB/YadR/YfhF-family protein	ABQ49208	Yes	100.0
+
+#input_seq:	contig01_297 # 317798 # 318094 # 1 # ID=1_297;partial=00;start_type=ATG;rbs_motif=3Base/5BMM;rbs_spacer=13-15bp;gc_cont=0.276
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48638	Yes	100.0
+
+#input_seq:	contig04_100 # 86506 # 86802 # 1 # ID=4_100;partial=00;start_type=GTG;rbs_motif=None;rbs_spacer=None;gc_cont=0.367
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	truncated amidase	BAF78811	Yes	100.0
+
+#input_seq:	contig04_82 # 68605 # 68889 # 1 # ID=4_82;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.309
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF68166	Yes	100.0
+
+#input_seq:	contig01_741 # 774726 # 775019 # 1 # ID=1_741;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.303
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	conserved hypothetical protein	CAG43002	Yes	100.0
+
+#input_seq:	contig07_22 # 18994 # 19287 # -1 # ID=7_22;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.364
+#matched_seq:	264	AP003139	Staphylococcus aureus subsp. aureus N315 plasmid pN315 DNA, complete sequence.	Bacillales	hypothetical protein	BAB43888	Yes	100.0
+
+#input_seq:	contig04_104 # 91183 # 91473 # 1 # ID=4_104;partial=00;start_type=GTG;rbs_motif=None;rbs_spacer=None;gc_cont=0.271
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	MAP domain protein	ABQ49779	Yes	100.0
+
+#input_seq:	contig01_492 # 499333 # 499548 # -1 # ID=1_492;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.273
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21669	Yes	100.0
+
+#input_seq:	contig01_801 # 830790 # 831077 # 1 # ID=1_801;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.312
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF67527	Yes	100.0
+
+#input_seq:	contig01_176 # 187689 # 187976 # 1 # ID=1_176;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.267
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48516	Yes	100.0
+
+#input_seq:	contig01_279 # 307111 # 307395 # -1 # ID=1_279;partial=00;start_type=TTG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.277
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD20663	Yes	100.0
+
+#input_seq:	contig01_179 # 191426 # 191710 # -1 # ID=1_179;partial=00;start_type=GTG;rbs_motif=AGGAG(G)/GGAGG;rbs_spacer=13-15bp;gc_cont=0.302
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48519	Yes	100.0
+
+#input_seq:	contig04_81 # 68331 # 68615 # 1 # ID=4_81;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.330
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21417	Yes	100.0
+
+#input_seq:	contig01_1109 # 1179636 # 1179920 # -1 # ID=1_1109;partial=00;start_type=GTG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.365
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22262	Yes	100.0
+
+#input_seq:	contig02_299 # 306071 # 306352 # 1 # ID=2_299;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.330
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50283	Yes	100.0
+
+#input_seq:	contig03_94 # 116733 # 117014 # -1 # ID=3_94;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.291
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ47986	Yes	100.0
+
+#input_seq:	contig01_664 # 684150 # 684353 # -1 # ID=1_664;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.309
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	TM2 domain containing protein+B7201	ABQ49072	Yes	100.0
+
+#input_seq:	contig03_341 # 384039 # 384308 # -1 # ID=3_341;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.326
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	hypothetical protein	BAF77346	Yes	100.0
+
+#input_seq:	contig04_57 # 53611 # 53874 # 1 # ID=4_57;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.326
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF68185	Yes	100.0
+
+#input_seq:	contig02_401 # 418892 # 419170 # -1 # ID=2_401;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.330
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22454	Yes	100.0
+
+#input_seq:	contig01_371 # 368737 # 369012 # 1 # ID=1_371;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.384
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	holin, SPP1 family	ABQ48713	Yes	100.0
+
+#input_seq:	contig02_404 # 421815 # 422090 # 1 # ID=2_404;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.308
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD20407	Yes	100.0
+
+#input_seq:	contig01_60 # 75316 # 75585 # 1 # ID=1_60;partial=00;start_type=ATG;rbs_motif=3Base/5BMM;rbs_spacer=13-15bp;gc_cont=0.296
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48405	Yes	100.0
+
+#input_seq:	contig01_1059 # 1127412 # 1127681 # 1 # ID=1_1059;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.274
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF67774	Yes	100.0
+
+#input_seq:	contig01_768 # 801424 # 801693 # 1 # ID=1_768;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.244
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	hypothetical protein	CAG43029	Yes	100.0
+
+#input_seq:	contig01_858 # 898786 # 899055 # 1 # ID=1_858;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.356
+#matched_seq:	29567	CP002120	Staphylococcus aureus subsp. aureus str. JKD6008, complete genome.	Bacillales	putative acylphosphatase	ADL65410	Yes	100.0
+
+#input_seq:	contig02_308 # 315721 # 315987 # 1 # ID=2_308;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.311
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50295	Yes	100.0
+
+#input_seq:	contig03_275 # 314633 # 314896 # -1 # ID=3_275;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.295
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48227	Yes	100.0
+
+#input_seq:	contig04_47 # 50209 # 50472 # 1 # ID=4_47;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.250
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	phage transcriptional regulator	BAF68192	Yes	100.0
+
+#input_seq:	contig01_282 # 308457 # 308717 # -1 # ID=1_282;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.249
+#matched_seq:	15758	CP000736	Staphylococcus aureus subsp. aureus JH1, complete genome.	Bacillales	conserved hypothetical protein	ABR51694	Yes	100.0
+
+#input_seq:	contig02_8 # 8214 # 8474 # 1 # ID=2_8;partial=00;start_type=ATG;rbs_motif=AGGA/GGAG/GAGG;rbs_spacer=11-12bp;gc_cont=0.307
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49985	Yes	100.0
+
+#input_seq:	contig01_1096 # 1169267 # 1169527 # -1 # ID=1_1096;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.314
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	protein translocase subunit yajC	ABQ49485	Yes	100.0
+
+#input_seq:	contig04_56 # 53342 # 53602 # 1 # ID=4_56;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.326
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	protein of unknown function DUF1108	ABQ48124	Yes	100.0
+
+#input_seq:	contig01_27 # 31881 # 32135 # 1 # ID=1_27;partial=00;start_type=TTG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.322
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	LSU ribosomal protein L7AE	ABQ48371	Yes	100.0
+
+#input_seq:	contig04_7 # 7382 # 7636 # -1 # ID=4_7;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.306
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	amino acid-binding ACT domain protein	ABQ49874	Yes	100.0
+
+#input_seq:	contig01_572 # 587303 # 587557 # 1 # ID=1_572;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.275
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Uncharacterized protein-like protein	ABQ48981	Yes	100.0
+
+#input_seq:	contig02_134 # 124435 # 124668 # -1 # ID=2_134;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.274
+#matched_seq:	238	CP000046	Staphylococcus aureus subsp. aureus COL, complete genome.	Bacillales	conserved hypothetical protein	AAW38519	Yes	100.0
+
+#input_seq:	contig01_886 # 926492 # 926743 # -1 # ID=1_886;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.329
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49284	Yes	100.0
+
+#input_seq:	contig01_474 # 480247 # 480498 # 1 # ID=1_474;partial=00;start_type=TTG;rbs_motif=GGxGG;rbs_spacer=5-10bp;gc_cont=0.302
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48818	Yes	100.0
+
+#input_seq:	contig02_91 # 85717 # 85968 # 1 # ID=2_91;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.278
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	putative membrane protein	CAG43964	Yes	100.0
+
+#input_seq:	contig01_764 # 799644 # 799895 # 1 # ID=1_764;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.254
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49169	Yes	100.0
+
+#input_seq:	contig01_488 # 496633 # 496878 # -1 # ID=1_488;partial=00;start_type=TTG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.260
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	hypothetical protein	BAF77912	Yes	100.0
+
+#input_seq:	contig01_340 # 343779 # 344024 # 1 # ID=1_340;partial=00;start_type=GTG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.264
+#matched_seq:	237	CP000253	Staphylococcus aureus subsp. aureus NCTC 8325, complete genome.	Bacillales	conserved hypothetical phage protein	ABD31108	Yes	100.0
+
+#input_seq:	contig01_284 # 309257 # 309493 # -1 # ID=1_284;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.270
+#matched_seq:	63	AJ938182	Staphylococcus aureus RF122 complete genome.	Bacillales	hypothetical protein	CAI80443	Yes	100.0
+
+#input_seq:	contig03_179 # 221759 # 222001 # 1 # ID=3_179;partial=00;start_type=ATG;rbs_motif=AGGA/GGAG/GAGG;rbs_spacer=11-12bp;gc_cont=0.292
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Protein of unknown function, ubiquitin-like YukD	ABQ48076	Yes	100.0
+
+#input_seq:	contig02_18 # 20419 # 20658 # -1 # ID=2_18;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.304
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Small integral membrane protein-like protein	ABQ49995	Yes	100.0
+
+#input_seq:	contig01_243 # 262175 # 262411 # 1 # ID=1_243;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.304
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Uncharacterized protein-like protein	ABQ48584	Yes	100.0
+
+#input_seq:	contig05_38 # 38745 # 38978 # -1 # ID=5_38;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.286
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	conserved hypothetical integral membrane protein	ABQ49919	Yes	100.0
+
+#input_seq:	contig01_609 # 625212 # 625445 # -1 # ID=1_609;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.303
+#matched_seq:	63	AJ938182	Staphylococcus aureus RF122 complete genome.	Bacillales	hypothetical protein	CAI80714	Yes	100.0
+
+#input_seq:	contig01_984 # 1059363 # 1059593 # -1 # ID=1_984;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.303
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	Exodeoxyribonuclease VII small subunit	ABQ49374	Yes	100.0
+
+#input_seq:	contig05_79 # 78651 # 78881 # -1 # ID=5_79;partial=00;start_type=TTG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.368
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49960	Yes	100.0
+
+#input_seq:	contig01_481 # 489999 # 490217 # 1 # ID=1_481;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.333
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	conserved hypothetical protein	CAG42735	Yes	100.0
+
+#input_seq:	contig02_365 # 382136 # 382363 # -1 # ID=2_365;partial=00;start_type=ATG;rbs_motif=AGGAG/GGAGG;rbs_spacer=11-12bp;gc_cont=0.316
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	FeoA family protein	ABQ50350	Yes	100.0
+
+#input_seq:	contig01_1223 # 1323755 # 1323979 # -1 # ID=1_1223;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.284
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49618	Yes	100.0
+
+#input_seq:	contig01_316 # 333735 # 333959 # 1 # ID=1_316;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.356
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48657	Yes	100.0
+
+#input_seq:	contig01_760 # 796764 # 796976 # 1 # ID=1_760;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.235
+#matched_seq:	237	CP000253	Staphylococcus aureus subsp. aureus NCTC 8325, complete genome.	Bacillales	conserved hypothetical protein	ABD30388	Yes	100.0
+
+#input_seq:	contig01_321 # 335508 # 335729 # 1 # ID=1_321;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.351
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48663	Yes	100.0
+
+#input_seq:	contig01_330 # 340184 # 340405 # 1 # ID=1_330;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.369
+#matched_seq:	29567	CP002120	Staphylococcus aureus subsp. aureus str. JKD6008, complete genome.	Bacillales	phage protein	ADL65903	Yes	100.0
+
+#input_seq:	contig01_283 # 309057 # 309260 # 1 # ID=1_283;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.319
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	protein of unknown function DUF1250	ABQ48624	Yes	100.0
+
+#input_seq:	contig01_318 # 334465 # 334683 # 1 # ID=1_318;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.342
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48659	Yes	100.0
+
+#input_seq:	contig01_993 # 1066403 # 1066621 # 1 # ID=1_993;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.288
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49383	Yes	100.0
+
+#input_seq:	contig04_63 # 58847 # 59065 # 1 # ID=4_63;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.301
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21699	Yes	100.0
+
+#input_seq:	contig01_737 # 770679 # 770894 # -1 # ID=1_737;partial=00;start_type=ATG;rbs_motif=AGGAG(G)/GGAGG;rbs_spacer=13-15bp;gc_cont=0.278
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49144	Yes	100.0
+
+#input_seq:	contig04_48 # 50488 # 50703 # 1 # ID=4_48;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.394
+#matched_seq:	19489	CP000730	Staphylococcus aureus subsp. aureus USA30	Bacillales	CH1516, complete genome.	ABX30001	Yes	100.0
+
+#input_seq:	contig02_422 # 440899 # 441111 # -1 # ID=2_422;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.272
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	protein of unknown function DUF1250	ABQ50409	Yes	100.0
+
+#input_seq:	contig01_767 # 801092 # 801304 # 1 # ID=1_767;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.343
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	hypothetical protein	CAG43028	Yes	100.0
+
+#input_seq:	contig01_656 # 674582 # 674794 # 1 # ID=1_656;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.258
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49064	Yes	100.0
+
+#input_seq:	contig01_645 # 662047 # 662241 # -1 # ID=1_645;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.308
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	truncated transposase	BAF78068	Yes	100.0
+
+#input_seq:	contig05_24 # 26759 # 26968 # -1 # ID=5_24;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.305
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	hypothetical protein	CAG43797	Yes	100.0
+
+#input_seq:	contig04_70 # 61176 # 61382 # 1 # ID=4_70;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.357
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	protein of unknown function DUF1381	ABQ48850	Yes	100.0
+
+#input_seq:	contig01_761 # 797270 # 797476 # 1 # ID=1_761;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.242
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49166	Yes	100.0
+
+#input_seq:	contig04_102 # 88838 # 89038 # -1 # ID=4_102;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.308
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49781	Yes	100.0
+
+#input_seq:	contig01_941 # 1016346 # 1016492 # -1 # ID=1_941;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.272
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD21399	Yes	100.0
+
+#input_seq:	contig03_70 # 83373 # 83576 # -1 # ID=3_70;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.309
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ47962	Yes	100.0
+
+#input_seq:	contig01_109 # 120049 # 120252 # -1 # ID=1_109;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.324
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22825	Yes	100.0
+
+#input_seq:	contig04_73 # 61911 # 62111 # 1 # ID=4_73;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.299
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	hypothetical protein	BAF78839	Yes	100.0
+
+#input_seq:	contig02_347 # 362643 # 362846 # 1 # ID=2_347;partial=00;start_type=GTG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.319
+#matched_seq:	15758	CP000736	Staphylococcus aureus subsp. aureus JH1, complete genome.	Bacillales	conserved hypothetical protein	ABR53432	Yes	100.0
+
+#input_seq:	contig05_85 # 84734 # 84937 # -1 # ID=5_85;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.338
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	truncated resolvase	BAF68324	Yes	100.0
+
+#input_seq:	contig02_370 # 388689 # 388880 # 1 # ID=2_370;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.307
+#matched_seq:	19489	CP000730	Staphylococcus aureus subsp. aureus USA30	Bacillales	CH1516, complete genome.	ABX30537	Yes	100.0
+
+#input_seq:	contig01_762 # 798715 # 798900 # 1 # ID=1_762;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.269
+#matched_seq:	63	AJ938182	Staphylococcus aureus RF122 complete genome.	Bacillales	hypothetical protein	CAI80862	Yes	100.0
+
+#input_seq:	contig03_327 # 365597 # 365791 # -1 # ID=3_327;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.303
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	hypothetical protein	BAF77330	Yes	100.0
+
+#input_seq:	contig02_438 # 462749 # 462949 # -1 # ID=2_438;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.313
+#matched_seq:	265	BX571856	Staphylococcus aureus subsp. aureus strain MRSA252, complete genome.	Bacillales	putative membrane protein	CAG41681	Yes	100.0
+
+#input_seq:	contig01_923 # 998096 # 998296 # -1 # ID=1_923;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.204
+#matched_seq:	15758	CP000736	Staphylococcus aureus subsp. aureus JH1, complete genome.	Bacillales	conserved hypothetical protein	ABR52404	Yes	100.0
+
+#input_seq:	contig01_871 # 914790 # 914990 # -1 # ID=1_871;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.269
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	hypothetical protein	BAF78287	Yes	100.0
+
+#input_seq:	contig01_612 # 627684 # 627881 # 1 # ID=1_612;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.278
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49023	Yes	100.0
+
+#input_seq:	contig04_51 # 51840 # 52037 # 1 # ID=4_51;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.313
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49832	Yes	100.0
+
+#input_seq:	contig01_773 # 803662 # 803859 # 1 # ID=1_773;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.237
+#matched_seq:	265	BX571856	Staphylococcus aureus subsp. aureus strain MRSA252, complete genome.	Bacillales	hypothetical protein	CAG40311	Yes	100.0
+
+#input_seq:	contig01_314 # 332773 # 332967 # 1 # ID=1_314;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.349
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	helix-turn-helix domain protein	ABQ48655	Yes	100.0
+
+#input_seq:	contig01_770 # 802556 # 802750 # 1 # ID=1_770;partial=00;start_type=TTG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.287
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22139	Yes	100.0
+
+#input_seq:	contig02_300 # 306612 # 306803 # -1 # ID=2_300;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.354
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50284	Yes	100.0
+
+#input_seq:	contig02_146 # 137639 # 137830 # -1 # ID=2_146;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.328
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50123	Yes	100.0
+
+#input_seq:	contig01_560 # 572479 # 572670 # -1 # ID=1_560;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.276
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48968	Yes	100.0
+
+#input_seq:	contig03_267 # 308678 # 308869 # -1 # ID=3_267;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.323
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22001	Yes	100.0
+
+#input_seq:	contig01_281 # 308240 # 308428 # -1 # ID=1_281;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.291
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48623	Yes	100.0
+
+#input_seq:	contig01_1060 # 1127883 # 1128071 # -1 # ID=1_1060;partial=00;start_type=TTG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.254
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	enterotoxin homolog	BAF78471	Yes	100.0
+
+#input_seq:	contig02_145 # 137358 # 137543 # 1 # ID=2_145;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.296
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50122	Yes	100.0
+
+#input_seq:	contig01_438 # 440951 # 441136 # -1 # ID=1_438;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.349
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48782	Yes	100.0
+
+#input_seq:	contig01_608 # 624405 # 624590 # -1 # ID=1_608;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.280
+#matched_seq:	18801	AP009351	Staphylococcus aureus subsp. aureus str. Newman DNA, complete genome.	Bacillales	conserved hypothetical protein	BAF67343	Yes	100.0
+
+#input_seq:	contig07_13 # 12210 # 12395 # -1 # ID=7_13;partial=00;start_type=ATG;rbs_motif=GGxGG;rbs_spacer=5-10bp;gc_cont=0.323
+#matched_seq:	266	BX571858	Staphylococcus aureus plasmid pSAS, complete genome.	Bacillales	hypothetical protein	CAG43238	Yes	100.0
+
+#input_seq:	contig01_18 # 20006 # 20188 # 1 # ID=1_18;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.290
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	preprotein translocase, SecE subunit	ABQ48362	Yes	100.0
+
+#input_seq:	contig04_43 # 47682 # 47864 # -1 # ID=4_43;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.279
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	hypothetical protein	BAF78869	Yes	100.0
+
+#input_seq:	contig01_309 # 329611 # 329790 # 1 # ID=1_309;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.250
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48650	Yes	100.0
+
+#input_seq:	contig01_974 # 1049073 # 1049165 # 1 # ID=1_974;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.237
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD22702	Yes	100.0
+
+#input_seq:	contig04_95 # 82455 # 82631 # 1 # ID=4_95;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.266
+#matched_seq:	264	BA000018	Staphylococcus aureus subsp. aureus N315 DNA, complete genome.	Bacillales	hypothetical protein	BAB43037	Yes	100.0
+
+#input_seq:	contig04_106 # 93624 # 93800 # 1 # ID=4_106;partial=00;start_type=TTG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.237
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49776	Yes	100.0
+
+#input_seq:	contig04_130 # 116440 # 116613 # 1 # ID=4_130;partial=00;start_type=ATG;rbs_motif=3Base/5BMM;rbs_spacer=13-15bp;gc_cont=0.339
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49751	Yes	100.0
+
+#input_seq:	contig04_117 # 101900 # 102073 # 1 # ID=4_117;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.241
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49765	Yes	100.0
+
+#input_seq:	contig05_8 # 7378 # 7548 # -1 # ID=5_8;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.333
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49888	Yes	100.0
+
+#input_seq:	contig02_343 # 359104 # 359274 # -1 # ID=2_343;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.310
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50330	Yes	100.0
+
+#input_seq:	contig01_61 # 75786 # 75953 # -1 # ID=1_61;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=11-12bp;gc_cont=0.292
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48406	Yes	100.0
+
+#input_seq:	contig02_87 # 79869 # 80033 # 1 # ID=2_87;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.327
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50065	Yes	100.0
+
+#input_seq:	contig04_165 # 154025 # 154186 # 1 # ID=4_165;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.315
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49715	Yes	100.0
+
+#input_seq:	contig03_295 # 335791 # 335943 # -1 # ID=3_295;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.261
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	hypothetical protein	CAG42149	Yes	100.0
+
+#input_seq:	contig04_54 # 52779 # 52940 # 1 # ID=4_54;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.346
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	protein of unknown function DUF1270	ABQ49829	Yes	100.0
+
+#input_seq:	contig04_88 # 71402 # 71539 # 1 # ID=4_88;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.283
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49795	Yes	100.0
+
+#input_seq:	contig01_1298 # 1399265 # 1399417 # -1 # ID=1_1298;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.275
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49692	Yes	100.0
+
+#input_seq:	contig01_386 # 382817 # 382969 # 1 # ID=1_386;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.261
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48732	Yes	100.0
+
+#input_seq:	contig04_72 # 61762 # 61911 # 1 # ID=4_72;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.373
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	transcriptional activator RinB	ABQ49812	Yes	100.0
+
+#input_seq:	contig01_1083 # 1152595 # 1152741 # -1 # ID=1_1083;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.245
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49472	Yes	100.0
+
+#input_seq:	contig01_611 # 627554 # 627700 # 1 # ID=1_611;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.231
+#matched_seq:	15758	CP000736	Staphylococcus aureus subsp. aureus JH1, complete genome.	Bacillales	conserved hypothetical protein	ABR52101	Yes	100.0
+
+#input_seq:	contig04_25 # 28882 # 29022 # -1 # ID=4_25;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.262
+#matched_seq:	16313	CP000255	Staphylococcus aureus subsp. aureus USA30	Bacillales	PR3757, complete genome.	ABD20919	Yes	100.0
+
+#input_seq:	contig05_23 # 26494 # 26631 # -1 # ID=5_23;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.261
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49904	Yes	100.0
+
+#input_seq:	contig04_27 # 29824 # 29958 # 1 # ID=4_27;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.274
+#matched_seq:	265	BX571856	Staphylococcus aureus subsp. aureus strain MRSA252, complete genome.	Bacillales	delta-hemolysin precursor	CAG41103	Yes	100.0
+
+#input_seq:	contig01_623 # 639474 # 639608 # 1 # ID=1_623;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.348
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	haemolytic family protein	ABQ49032	Yes	100.0
+
+#input_seq:	contig01_624 # 639665 # 639799 # 1 # ID=1_624;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.400
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	haemolytic family protein	ABQ49033	Yes	100.0
+
+#input_seq:	contig01_531 # 543303 # 543437 # -1 # ID=1_531;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.230
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48939	Yes	100.0
+
+#input_seq:	contig01_769 # 801706 # 801828 # 1 # ID=1_769;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.236
+#matched_seq:	266	BX571857	Staphylococcus aureus strain MSSA476, complete genome.	Bacillales	hypothetical protein	CAG43030	Yes	100.0
+
+#input_seq:	contig01_766 # 800810 # 800932 # 1 # ID=1_766;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.236
+#matched_seq:	306	BA000033	Staphylococcus aureus subsp. aureus MW2 DNA, complete genome.	Bacillales	hypothetical protein	BAB95063	Yes	100.0
+
+#input_seq:	contig01_900 # 975042 # 975158 # -1 # ID=1_900;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.368
+#matched_seq:	18509	AP009324	Staphylococcus aureus subsp. aureus Mu3 DNA, complete genome.	Bacillales	hypothetical protein	BAF78316	Yes	100.0
+
+#input_seq:	contig01_294 # 315516 # 315629 # 1 # ID=1_294;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.211
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ48635	Yes	100.0
+
+#input_seq:	contig02_239 # 236278 # 236382 # 1 # ID=2_239;partial=00;start_type=ATG;rbs_motif=AGGAGG;rbs_spacer=5-10bp;gc_cont=0.295
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ50218	Yes	100.0
+
+#input_seq:	contig01_763 # 799411 # 799515 # 1 # ID=1_763;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.257
+#matched_seq:	15757	CP000703	Staphylococcus aureus subsp. aureus JH9, complete genome.	Bacillales	hypothetical protein	ABQ49168	Yes	100.0
+

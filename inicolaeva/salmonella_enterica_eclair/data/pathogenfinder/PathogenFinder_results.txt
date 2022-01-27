@@ -1,0 +1,521 @@
+INPUT SEQUENCE INFO:
+Input Name ::	3_26_01_2022_204723_019117_input.fsa.translated
+Sequences ::	 4505
+Total bpp ::	 1386562
+Longest seq ::	 5560
+Shortest seq ::	 30
+Avg seq lenght ::	 307.0
+
+RESULTS:
+Min Identity Threshold ::	99.815
+Z-THRESHOLD ::	3.0
+Prediction Score ::	689.51
+Probability of being human pathogen ::	0.915
+Matches::	167
+Genome Coverage (%) ::	3.71
+Pathogenic Families Matched ::	167
+Non-Pathogenic Families Matched ::	0
+The organisms is predicted as human pathogenic ::	Yes
+
+MATCHED SEQUENCES:
+#input_seq:	contig02_27 # 25843 # 37317 # 1 # ID=2_27;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.586
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	large repetitive protein	CAR34191	Yes	100.0
+
+#input_seq:	contig04_327 # 370677 # 376448 # -1 # ID=4_327;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.571
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	putative surface-exposed virulence protein BigA	CAR34880	Yes	100.0
+
+#input_seq:	contig07_159 # 182933 # 185965 # -1 # ID=7_159;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=3-4bp;gc_cont=0.540
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	putative viral enhancing factor	CAR31804	Yes	100.0
+
+#input_seq:	contig08_38 # 40671 # 43667 # -1 # ID=8_38;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.549
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	putative chitinase	CAR31609	Yes	100.0
+
+#input_seq:	contig04_170 # 179519 # 182047 # 1 # ID=4_170;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.554
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	outer membrane usher protein (LpfC)	CAR35038	Yes	100.0
+
+#input_seq:	contig06_269 # 299852 # 302296 # 1 # ID=6_269;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.353
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH75604	Yes	100.0
+
+#input_seq:	contig01_171 # 194355 # 196703 # -1 # ID=1_171;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.475
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	secreted protein SopA	CAR33644	Yes	100.0
+
+#input_seq:	contig01_1490 # 1514249 # 1515085 # -1 # ID=1_1490;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.419
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	leucine-rich repeat protein	ACF64457	Yes	100.0
+
+#input_seq:	contig01_101 # 107507 # 109618 # -1 # ID=1_101;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.535
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	hypothetical protein	CAR33713	Yes	99.86
+
+#input_seq:	contig01_875 # 885702 # 887684 # -1 # ID=1_875;partial=00;start_type=GTG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.513
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	invasin-like protein	CAR32941	Yes	100.0
+
+#input_seq:	contig03_367 # 387208 # 389136 # 1 # ID=3_367;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.501
+#matched_seq:	20063	CP001138	Salmonella enterica subsp. enterica serovar Agona str. SL483, complete genome.	Gammaproteobacteria	putative sigma-54 dependent transcriptional regulator	ACH50577	Yes	100.0
+
+#input_seq:	contig12_28 # 20890 # 22665 # -1 # ID=12_28;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.519
+#matched_seq:	241	AE006471	Salmonella enterica subsp. enterica serovar Typhimurium str. LT2 plasmid pSLT, complete sequence.	Gammaproteobacteria	Salmonella plasmid virulence: hydrophilic protein	AAL23530	Yes	100.0
+
+#input_seq:	contig01_334 # 335979 # 337463 # 1 # ID=1_334;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.536
+#matched_seq:	27803	CP000886	Salmonella enterica subsp. enterica serovar Paratyphi B str. SPB7, complete genome.	Gammaproteobacteria	hypothetical protein	ABX67766	Yes	100.0
+
+#input_seq:	contig01_1319 # 1324421 # 1326130 # -1 # ID=1_1319;partial=00;start_type=ATG;rbs_motif=GGxGG;rbs_spacer=5-10bp;gc_cont=0.494
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	Chimeric prophage tail protein (the product of a deletion event)	CAR32496	Yes	100.0
+
+#input_seq:	contig01_658 # 659671 # 661371 # -1 # ID=1_658;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.573
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	conserved hypothetical protein	CAR33157	Yes	100.0
+
+#input_seq:	contig01_314 # 318535 # 320097 # 1 # ID=1_314;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.484
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	putative phage tail fibre protein	CAR33503	Yes	100.0
+
+#input_seq:	contig01_964 # 978252 # 979781 # -1 # ID=1_964;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.493
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH76829	Yes	100.0
+
+#input_seq:	contig05_107 # 119384 # 120811 # 1 # ID=5_107;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.522
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH73670	Yes	100.0
+
+#input_seq:	contig01_904 # 914655 # 916028 # -1 # ID=1_904;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.400
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	hypothetical protein	CAR32912	Yes	100.0
+
+#input_seq:	contig11_53 # 59126 # 60388 # -1 # ID=11_53;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.474
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH74256	Yes	100.0
+
+#input_seq:	contig02_38 # 52420 # 53664 # 1 # ID=2_38;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.623
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	ferric enterochelin esterase	CAR34201	Yes	100.0
+
+#input_seq:	contig01_1321 # 1326737 # 1327366 # -1 # ID=1_1321;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.440
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH75346	Yes	100.0
+
+#input_seq:	contig01_1241 # 1242694 # 1243836 # -1 # ID=1_1241;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.401
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	exported protein	CAR32575	Yes	100.0
+
+#input_seq:	contig01_200 # 221951 # 222745 # 1 # ID=1_200;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.507
+#matched_seq:	9618	AE017220	Salmonella enterica subsp. enterica serovar Choleraesuis str. SC-B67, complete genome.	Gammaproteobacteria	Propanediol utilization: propanediol diffusion facilitator	AAX65951	Yes	100.0
+
+#input_seq:	contig02_42 # 57880 # 58932 # -1 # ID=2_42;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.443
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH75240	Yes	100.0
+
+#input_seq:	contig08_65 # 72263 # 73348 # 1 # ID=8_65;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.521
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	putative fimbrial subunit	CAR35900	Yes	100.0
+
+#input_seq:	contig02_204 # 217171 # 218124 # 1 # ID=2_204;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.414
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH75270	Yes	100.0
+
+#input_seq:	contig02_290 # 321620 # 322696 # -1 # ID=2_290;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.398
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	hypothetical protein	CAR34448	Yes	100.0
+
+#input_seq:	contig01_733 # 736759 # 737832 # 1 # ID=1_733;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.393
+#matched_seq:	20045	CP001120	Salmonella enterica subsp. enterica serovar Heidelberg str. SL476, complete genome.	Gammaproteobacteria	putative S-adenosylmethionine/tRNA-ribosyltransferase-isomerase	ACF69408	Yes	100.0
+
+#input_seq:	contig02_401 # 434875 # 435930 # -1 # ID=2_401;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.427
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH75868	Yes	100.0
+
+#input_seq:	contig09_49 # 47686 # 48129 # -1 # ID=9_49;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.448
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	putative inner membrane lipoprotein	ACF63523	Yes	100.0
+
+#input_seq:	contig01_572 # 581390 # 582412 # -1 # ID=1_572;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.552
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH76599	Yes	100.0
+
+#input_seq:	contig13_19 # 18139 # 19149 # -1 # ID=13_19;partial=00;start_type=ATG;rbs_motif=AGGA/GGAG/GAGG;rbs_spacer=11-12bp;gc_cont=0.337
+#matched_seq:	241	AE006468	Salmonella enterica subsp. enterica serovar Typhimurium str. LT2, complete genome.	Gammaproteobacteria	putative cytoplasmic protein	AAL22985	Yes	100.0
+
+#input_seq:	contig01_317 # 320951 # 321958 # -1 # ID=1_317;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.376
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH76035	Yes	100.0
+
+#input_seq:	contig02_513 # 554186 # 555040 # 1 # ID=2_513;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=3-4bp;gc_cont=0.532
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH76566	Yes	100.0
+
+#input_seq:	contig01_279 # 292460 # 293434 # 1 # ID=1_279;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.539
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	phage protein	CAR33536	Yes	100.0
+
+#input_seq:	contig01_1317 # 1322394 # 1323362 # -1 # ID=1_1317;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.411
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	putative type III secreted protein	CAR32499	Yes	100.0
+
+#input_seq:	contig01_783 # 799541 # 800491 # 1 # ID=1_783;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.381
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	hypothetical protein	CAR33033	Yes	100.0
+
+#input_seq:	contig01_849 # 865909 # 866841 # 1 # ID=1_849;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.317
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	predicted phage protein	CAR32965	Yes	100.0
+
+#input_seq:	contig04_145 # 155618 # 156442 # 1 # ID=4_145;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.522
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	protein bax	ACF62390	Yes	100.0
+
+#input_seq:	contig01_249 # 268302 # 269147 # 1 # ID=1_249;partial=00;start_type=ATG;rbs_motif=AGGA/GGAG/GAGG;rbs_spacer=11-12bp;gc_cont=0.313
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	hypothetical protein	CAR33562	Yes	100.0
+
+#input_seq:	contig08_145 # 156415 # 157326 # -1 # ID=8_145;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=3-4bp;gc_cont=0.368
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	hypothetical protein	CAR35817	Yes	100.0
+
+#input_seq:	contig01_57 # 60363 # 61271 # -1 # ID=1_57;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.549
+#matched_seq:	20993	CP000857	Salmonella enterica subsp. enterica serovar Paratyphi C strain RKS4594, complete genome.	Gammaproteobacteria	putative transcriptional regulator	ACN45676	Yes	100.0
+
+#input_seq:	contig01_1449 # 1474307 # 1475203 # -1 # ID=1_1449;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.421
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	conserved hypothetical protein	CAR32369	Yes	100.0
+
+#input_seq:	contig01_281 # 293901 # 294782 # 1 # ID=1_281;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.529
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	putative DNA methylase	CAR33534	Yes	100.0
+
+#input_seq:	contig06_15 # 17464 # 18327 # -1 # ID=6_15;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.479
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH77983	Yes	100.0
+
+#input_seq:	contig01_283 # 295197 # 296057 # 1 # ID=1_283;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.511
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	phage protein	CAR33532	Yes	100.0
+
+#input_seq:	contig04_47 # 47837 # 48694 # 1 # ID=4_47;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.471
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	putative transcriptional regulator (MarT)	CAR35159	Yes	100.0
+
+#input_seq:	contig06_130 # 160927 # 161784 # -1 # ID=6_130;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.444
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	hypothetical protein	CAR35662	Yes	100.0
+
+#input_seq:	contig01_876 # 887759 # 888517 # -1 # ID=1_876;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.486
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH75973	Yes	100.0
+
+#input_seq:	contig03_370 # 390861 # 391568 # 1 # ID=3_370;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.527
+#matched_seq:	27803	CP000886	Salmonella enterica subsp. enterica serovar Paratyphi B str. SPB7, complete genome.	Gammaproteobacteria	hypothetical protein	ABX68259	Yes	100.0
+
+#input_seq:	contig04_92 # 94453 # 95262 # 1 # ID=4_92;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.381
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	lipopolysaccharide core biosynthesis protein RfaZ	ACF61845	Yes	100.0
+
+#input_seq:	contig01_5 # 2876 # 3340 # 1 # ID=1_5;partial=00;start_type=GTG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.555
+#matched_seq:	241	AE006468	Salmonella enterica subsp. enterica serovar Typhimurium str. LT2, complete genome.	Gammaproteobacteria	putative tail fiber protein of phage	AAL21145	Yes	100.0
+
+#input_seq:	contig01_427 # 430787 # 431467 # -1 # ID=1_427;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.398
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	EnvF	ACF63287	Yes	100.0
+
+#input_seq:	contig02_160 # 174233 # 174982 # -1 # ID=2_160;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.463
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	invasion protein	ACF62882	Yes	100.0
+
+#input_seq:	contig07_41 # 48865 # 49485 # -1 # ID=7_41;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.494
+#matched_seq:	20045	CP001120	Salmonella enterica subsp. enterica serovar Heidelberg str. SL476, complete genome.	Gammaproteobacteria	putative secreted protein	ACF67367	Yes	100.0
+
+#input_seq:	contig12_27 # 19884 # 20609 # -1 # ID=12_27;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.455
+#matched_seq:	241	AE006471	Salmonella enterica subsp. enterica serovar Typhimurium str. LT2 plasmid pSLT, complete sequence.	Gammaproteobacteria	Salmonella plasmid virulence: hydrophilic protein	AAL23529	Yes	100.0
+
+#input_seq:	contig02_293 # 326080 # 326661 # -1 # ID=2_293;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.519
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	probable fimbrial protein	CAR34451	Yes	100.0
+
+#input_seq:	contig05_208 # 225442 # 225729 # -1 # ID=5_208;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.576
+#matched_seq:	236	XXX	Salmonella enterica subsp. enterica serovar Typhi str. CT18	Gammaproteobacteria	XXX		Yes	100.0
+
+#input_seq:	contig01_1313 # 1320074 # 1320760 # 1 # ID=1_1313;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.345
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	gifsy-2 prophage protein	ACF61586	Yes	100.0
+
+#input_seq:	contig01_1423 # 1447656 # 1447817 # -1 # ID=1_1423;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.543
+#matched_seq:	19459	CP001127	Salmonella enterica subsp. enterica serovar Schwarzengrund str. CVM19633, complete genome.	Gammaproteobacteria	putative dehydrogenase	ACF90369	Yes	100.0
+
+#input_seq:	contig05_41 # 48263 # 48829 # -1 # ID=5_41;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.534
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	putative inner membrane protein	ACF62772	Yes	100.0
+
+#input_seq:	contig08_135 # 147362 # 148033 # 1 # ID=8_135;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.549
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	transporter gate domain protein	ACF63700	Yes	100.0
+
+#input_seq:	contig01_726 # 728475 # 729146 # 1 # ID=1_726;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=3-4bp;gc_cont=0.466
+#matched_seq:	19459	CP001127	Salmonella enterica subsp. enterica serovar Schwarzengrund str. CVM19633, complete genome.	Gammaproteobacteria	putative regulatory protein	ACF91607	Yes	100.0
+
+#input_seq:	contig04_23 # 21448 # 22038 # 1 # ID=4_23;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.591
+#matched_seq:	20993	CP000857	Salmonella enterica subsp. enterica serovar Paratyphi C strain RKS4594, complete genome.	Gammaproteobacteria	two-component system response regulator protein	ACN47943	Yes	100.0
+
+#input_seq:	contig06_77 # 103105 # 103671 # 1 # ID=6_77;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.540
+#matched_seq:	241	AE006468	Salmonella enterica subsp. enterica serovar Typhimurium str. LT2, complete genome.	Gammaproteobacteria	formate-dependent nitrite reductase	AAL23102	Yes	100.0
+
+#input_seq:	contig01_1315 # 1321120 # 1321746 # 1 # ID=1_1315;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.526
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	conserved hypothetical protein	ACF64625	Yes	100.0
+
+#input_seq:	contig01_1320 # 1326127 # 1326753 # -1 # ID=1_1320;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.445
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH76904	Yes	100.0
+
+#input_seq:	contig01_858 # 870881 # 871498 # 1 # ID=1_858;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.508
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	putative phage encoded exodeoxyribonuclease	CAR32958	Yes	100.0
+
+#input_seq:	contig01_12 # 10707 # 11327 # 1 # ID=1_12;partial=00;start_type=GTG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.435
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	putative membrane protein	CAR33803	Yes	100.0
+
+#input_seq:	contig14_44 # 24727 # 25194 # 1 # ID=14_44;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.526
+#matched_seq:	9618	AE017220	Salmonella enterica subsp. enterica serovar Choleraesuis str. SC-B67, complete genome.	Gammaproteobacteria	leader peptidase HopD	AAX67282	Yes	100.0
+
+#input_seq:	contig02_295 # 328059 # 328595 # -1 # ID=2_295;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.488
+#matched_seq:	27803	CP000886	Salmonella enterica subsp. enterica serovar Paratyphi B str. SPB7, complete genome.	Gammaproteobacteria	hypothetical protein	ABX69108	Yes	100.0
+
+#input_seq:	contig01_315 # 320097 # 320666 # 1 # ID=1_315;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.453
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH74860	Yes	100.0
+
+#input_seq:	contig08_140 # 151682 # 152128 # -1 # ID=8_140;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=3-4bp;gc_cont=0.497
+#matched_seq:	27803	CP000886	Salmonella enterica subsp. enterica serovar Paratyphi B str. SPB7, complete genome.	Gammaproteobacteria	hypothetical protein	ABX70941	Yes	100.0
+
+#input_seq:	contig01_1403 # 1429216 # 1429617 # -1 # ID=1_1403;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.510
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	putative membrane protein	ACF64245	Yes	100.0
+
+#input_seq:	contig05_194 # 211482 # 211907 # -1 # ID=5_194;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.533
+#matched_seq:	27803	CP000886	Salmonella enterica subsp. enterica serovar Paratyphi B str. SPB7, complete genome.	Gammaproteobacteria	hypothetical protein	ABX65938	Yes	100.0
+
+#input_seq:	contig01_873 # 884195 # 884713 # -1 # ID=1_873;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.455
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	putative thiol peroxidase	CAR32943	Yes	100.0
+
+#input_seq:	contig01_850 # 866838 # 867392 # 1 # ID=1_850;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.324
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	putative phage membrane protein	CAR32964	Yes	100.0
+
+#input_seq:	contig07_7 # 5968 # 6519 # 1 # ID=7_7;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.560
+#matched_seq:	371	AE014613	Salmonella enterica subsp. enterica serovar Typhi Ty2, complete genome.	Gammaproteobacteria	citx protein	AAO67797	Yes	100.0
+
+#input_seq:	contig05_81 # 93078 # 93572 # -1 # ID=5_81;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.525
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	YfbU domain protein	ACF63247	Yes	100.0
+
+#input_seq:	contig01_80 # 84981 # 85511 # -1 # ID=1_80;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.409
+#matched_seq:	20045	CP001120	Salmonella enterica subsp. enterica serovar Heidelberg str. SL476, complete genome.	Gammaproteobacteria	conserved hypothetical protein	ACF65987	Yes	100.0
+
+#input_seq:	contig02_548 # 589899 # 590231 # -1 # ID=2_548;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.511
+#matched_seq:	27803	CP000886	Salmonella enterica subsp. enterica serovar Paratyphi B str. SPB7, complete genome.	Gammaproteobacteria	hypothetical protein	ABX69431	Yes	100.0
+
+#input_seq:	contig12_17 # 13614 # 14135 # 1 # ID=12_17;partial=00;start_type=ATG;rbs_motif=AGGA/GGAG/GAGG;rbs_spacer=11-12bp;gc_cont=0.600
+#matched_seq:	19467	CP001143	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853 plasmid pCT0202185	ACH73553	Yes	100.0
+
+#input_seq:	contig03_14 # 12605 # 13123 # 1 # ID=3_14;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.478
+#matched_seq:	241	AE006468	Salmonella enterica subsp. enterica serovar Typhimurium str. LT2, complete genome.	Gammaproteobacteria	putative cytoplasmic protein	AAL19245	Yes	100.0
+
+#input_seq:	contig01_268 # 285836 # 286351 # -1 # ID=1_268;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.508
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	phage protein	CAR33544	Yes	100.0
+
+#input_seq:	contig02_417 # 451301 # 451804 # -1 # ID=2_417;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.431
+#matched_seq:	241	AE006468	Salmonella enterica subsp. enterica serovar Typhimurium str. LT2, complete genome.	Gammaproteobacteria	putative ATP-dependent RNA helicase-like protein	AAL22028	Yes	100.0
+
+#input_seq:	contig06_71 # 95830 # 96240 # 1 # ID=6_71;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.547
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH77658	Yes	100.0
+
+#input_seq:	contig02_289 # 320964 # 321476 # -1 # ID=2_289;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.522
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	hypothetical protein	CAR34447	Yes	100.0
+
+#input_seq:	contig12_20 # 15699 # 16187 # 1 # ID=12_20;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.656
+#matched_seq:	9618	AY509003	Salmonella enterica subsp. enterica serovar Choleraesuis str. SC-B67 plasmid pSCV50, complete sequence.	Gammaproteobacteria	hypothetical protein	AAS58885	Yes	100.0
+
+#input_seq:	contig12_21 # 16181 # 16666 # 1 # ID=12_21;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=3-4bp;gc_cont=0.687
+#matched_seq:	20993	CP000858	Salmonella enterica subsp. enterica serovar Paratyphi C strain RKS4594 plasmid pSPCV, complete sequence.	Gammaproteobacteria	putative inner membrane protein	ACN48783	Yes	100.0
+
+#input_seq:	contig01_1093 # 1106061 # 1106534 # 1 # ID=1_1093;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.435
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH75557	Yes	100.0
+
+#input_seq:	contig06_127 # 158299 # 158592 # 1 # ID=6_127;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.473
+#matched_seq:	20993	CP000857	Salmonella enterica subsp. enterica serovar Paratyphi C strain RKS4594, complete genome.	Gammaproteobacteria	co-chaperonin GroES	ACN48531	Yes	100.0
+
+#input_seq:	contig01_434 # 437994 # 438461 # 1 # ID=1_434;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.453
+#matched_seq:	27803	CP000886	Salmonella enterica subsp. enterica serovar Paratyphi B str. SPB7, complete genome.	Gammaproteobacteria	hypothetical protein	ABX67495	Yes	100.0
+
+#input_seq:	contig03_20 # 19642 # 20073 # 1 # ID=3_20;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.306
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	exported pathogenicity island protein	CAR31864	Yes	100.0
+
+#input_seq:	contig08_144 # 155749 # 156210 # -1 # ID=8_144;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.489
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	putative exported protein	CAR35818	Yes	100.0
+
+#input_seq:	contig04_224 # 254576 # 255013 # -1 # ID=4_224;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.550
+#matched_seq:	20993	CP000857	Salmonella enterica subsp. enterica serovar Paratyphi C strain RKS4594, complete genome.	Gammaproteobacteria	nickel responsive regulator	ACN47734	Yes	100.0
+
+#input_seq:	contig07_107 # 125196 # 125558 # 1 # ID=7_107;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.518
+#matched_seq:	20993	CP000857	Salmonella enterica subsp. enterica serovar Paratyphi C strain RKS4594, complete genome.	Gammaproteobacteria	hypothetical protein	ACN44363	Yes	100.0
+
+#input_seq:	contig09_38 # 38228 # 38674 # -1 # ID=9_38;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.474
+#matched_seq:	236	XXX	Salmonella enterica subsp. enterica serovar Typhi str. CT18	Gammaproteobacteria	XXX		Yes	100.0
+
+#input_seq:	contig06_231 # 265834 # 266280 # -1 # ID=6_231;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.447
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	putative membrane protein	CAR35766	Yes	100.0
+
+#input_seq:	contig03_17 # 17397 # 17843 # 1 # ID=3_17;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.282
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH76767	Yes	100.0
+
+#input_seq:	contig01_1231 # 1236563 # 1237003 # 1 # ID=1_1231;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.347
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	putative exported protein	CAR32583	Yes	100.0
+
+#input_seq:	contig01_1018 # 1037063 # 1037356 # -1 # ID=1_1018;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.452
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH74145	Yes	100.0
+
+#input_seq:	contig02_5 # 5990 # 6328 # 1 # ID=2_5;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.469
+#matched_seq:	13030	CP000880	Salmonella enterica subsp. arizonae serovar 62:z4,z23:--, complete genome.	Gammaproteobacteria	hypothetical protein	ABX20207	Yes	100.0
+
+#input_seq:	contig04_159 # 170012 # 170344 # -1 # ID=4_159;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.459
+#matched_seq:	236	XXX	Salmonella enterica subsp. enterica serovar Typhi str. CT18	Gammaproteobacteria	XXX		Yes	100.0
+
+#input_seq:	contig12_42 # 34168 # 34503 # 1 # ID=12_42;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.527
+#matched_seq:	19467	CP001143	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853 plasmid pCT0202185	ACH73540	Yes	100.0
+
+#input_seq:	contig01_391 # 392862 # 393239 # 1 # ID=1_391;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.500
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	histidine triad nucleotide-binding protein 2	ACF64355	Yes	100.0
+
+#input_seq:	contig01_872 # 883750 # 884088 # 1 # ID=1_872;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.428
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	hypothetical protein	CAR32944	Yes	100.0
+
+#input_seq:	contig01_267 # 285480 # 285839 # -1 # ID=1_267;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.447
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	phage protein	CAR33545	Yes	100.0
+
+#input_seq:	contig12_24 # 18013 # 18363 # -1 # ID=12_24;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.462
+#matched_seq:	20993	CP000858	Salmonella enterica subsp. enterica serovar Paratyphi C strain RKS4594 plasmid pSPCV, complete sequence.	Gammaproteobacteria	hypothetical protein	ACN48780	Yes	100.0
+
+#input_seq:	contig04_230 # 259476 # 259811 # 1 # ID=4_230;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.512
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	conserved hypothetical protein	ACF63492	Yes	100.0
+
+#input_seq:	contig09_90 # 87075 # 87368 # 1 # ID=9_90;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.439
+#matched_seq:	20993	CP000857	Salmonella enterica subsp. enterica serovar Paratyphi C strain RKS4594, complete genome.	Gammaproteobacteria	hypothetical protein	ACN48248	Yes	100.0
+
+#input_seq:	contig01_851 # 867554 # 867883 # -1 # ID=1_851;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.533
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	putative phage encoded DNA-binding protein	CAR32963	Yes	100.0
+
+#input_seq:	contig01_1168 # 1178704 # 1179030 # -1 # ID=1_1168;partial=00;start_type=GTG;rbs_motif=GGAGG;rbs_spacer=3-4bp;gc_cont=0.422
+#matched_seq:	13086	CP000026	Salmonella enterica subsp. enterica serovar Paratyphi A str. ATCC 9150, complete genome.	Gammaproteobacteria	putative glucose-6-phosphate dehydrogenase	AAV76906	Yes	100.0
+
+#input_seq:	contig22_1 # 111 # 365 # -1 # ID=22_1;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.537
+#matched_seq:	16259	CP000243	Escherichia coli UTI89, complete genome.	Gammaproteobacteria	hypothetical protein	ABE05727	Yes	100.0
+
+#input_seq:	contig10_33 # 35879 # 36175 # -1 # ID=10_33;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.357
+#matched_seq:	20993	CP000857	Salmonella enterica subsp. enterica serovar Paratyphi C strain RKS4594, complete genome.	Gammaproteobacteria	hypothetical protein	ACN48127	Yes	100.0
+
+#input_seq:	contig02_248 # 270513 # 270740 # -1 # ID=2_248;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.456
+#matched_seq:	27803	CP000886	Salmonella enterica subsp. enterica serovar Paratyphi B str. SPB7, complete genome.	Gammaproteobacteria	hypothetical protein	ABX69050	Yes	100.0
+
+#input_seq:	contig01_348 # 350684 # 350929 # -1 # ID=1_348;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.512
+#matched_seq:	9618	AE017220	Salmonella enterica subsp. enterica serovar Choleraesuis str. SC-B67, complete genome.	Gammaproteobacteria	DNA damage-inducible protein I, inhibits UmuD processing	AAX65016	Yes	100.0
+
+#input_seq:	contig12_10 # 7405 # 7707 # -1 # ID=12_10;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.442
+#matched_seq:	20993	CP000858	Salmonella enterica subsp. enterica serovar Paratyphi C strain RKS4594 plasmid pSPCV, complete sequence.	Gammaproteobacteria	PefB	ACN48798	Yes	100.0
+
+#input_seq:	contig01_265 # 284915 # 285208 # -1 # ID=1_265;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.476
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	phage protein	CAR33546	Yes	100.0
+
+#input_seq:	contig12_16 # 13327 # 13617 # 1 # ID=12_16;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.625
+#matched_seq:	19467	CP001143	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853 plasmid pCT0202185	ACH73549	Yes	100.0
+
+#input_seq:	contig04_2 # 1543 # 1833 # -1 # ID=4_2;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.553
+#matched_seq:	19459	CP001127	Salmonella enterica subsp. enterica serovar Schwarzengrund str. CVM19633, complete genome.	Gammaproteobacteria	conserved outer membrane protein	ACF88742	Yes	100.0
+
+#input_seq:	contig01_1076 # 1093268 # 1093498 # -1 # ID=1_1076;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.528
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH75954	Yes	100.0
+
+#input_seq:	contig01_842 # 860434 # 860715 # -1 # ID=1_842;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.578
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	putative prophage membrane protein	CAR32973	Yes	100.0
+
+#input_seq:	contig08_28 # 31281 # 31568 # -1 # ID=8_28;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.410
+#matched_seq:	13086	CP000026	Salmonella enterica subsp. enterica serovar Paratyphi A str. ATCC 9150, complete genome.	Gammaproteobacteria	putative membrane protein	AAV76065	Yes	100.0
+
+#input_seq:	contig07_53 # 62227 # 62508 # 1 # ID=7_53;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.443
+#matched_seq:	20993	CP000857	Salmonella enterica subsp. enterica serovar Paratyphi C strain RKS4594, complete genome.	Gammaproteobacteria	hypothetical protein	ACN44309	Yes	100.0
+
+#input_seq:	contig01_735 # 739005 # 739286 # -1 # ID=1_735;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.500
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH78035	Yes	100.0
+
+#input_seq:	contig01_694 # 699474 # 699677 # -1 # ID=1_694;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.505
+#matched_seq:	13030	CP000880	Salmonella enterica subsp. arizonae serovar 62:z4,z23:--, complete genome.	Gammaproteobacteria	hypothetical protein	ABX21343	Yes	100.0
+
+#input_seq:	contig01_248 # 267808 # 268071 # 1 # ID=1_248;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.439
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	membrane protein	CAR33563	Yes	100.0
+
+#input_seq:	contig07_24 # 26997 # 27227 # 1 # ID=7_24;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.485
+#matched_seq:	20993	CP000857	Salmonella enterica subsp. enterica serovar Paratyphi C strain RKS4594, complete genome.	Gammaproteobacteria	putative outer membrane lipoprotein	ACN44278	Yes	100.0
+
+#input_seq:	contig02_141 # 155059 # 155319 # -1 # ID=2_141;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.398
+#matched_seq:	241	AE006468	Salmonella enterica subsp. enterica serovar Typhimurium str. LT2, complete genome.	Gammaproteobacteria	putative cytoplasmic protein	AAL21760	Yes	100.0
+
+#input_seq:	contig03_18 # 17909 # 18166 # -1 # ID=3_18;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.539
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH74281	Yes	100.0
+
+#input_seq:	contig01_704 # 708738 # 708947 # -1 # ID=1_704;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.514
+#matched_seq:	9618	AE017220	Salmonella enterica subsp. enterica serovar Choleraesuis str. SC-B67, complete genome.	Gammaproteobacteria	multiple antibiotic resistance protein	AAX65442	Yes	100.0
+
+#input_seq:	contig05_141 # 153857 # 154111 # 1 # ID=5_141;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.318
+#matched_seq:	13086	CP000026	Salmonella enterica subsp. enterica serovar Paratyphi A str. ATCC 9150, complete genome.	Gammaproteobacteria	bactoprenol glucosyl transferase	AAV76471	Yes	100.0
+
+#input_seq:	contig03_266 # 282777 # 282989 # -1 # ID=3_266;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.563
+#matched_seq:	9618	AE017220	Salmonella enterica subsp. enterica serovar Choleraesuis str. SC-B67, complete genome.	Gammaproteobacteria	putative cytoplasmic protein	AAX64486	Yes	100.0
+
+#input_seq:	contig03_22 # 20735 # 20977 # -1 # ID=3_22;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.494
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH77375	Yes	100.0
+
+#input_seq:	contig01_262 # 283222 # 283449 # -1 # ID=1_262;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.461
+#matched_seq:	30687	AM933172	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109 complete genome.	Gammaproteobacteria	phage protein	CAR33549	Yes	100.0
+
+#input_seq:	contig01_778 # 793622 # 793795 # -1 # ID=1_778;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.431
+#matched_seq:	27803	CP000886	Salmonella enterica subsp. enterica serovar Paratyphi B str. SPB7, complete genome.	Gammaproteobacteria	hypothetical protein	ABX67085	Yes	100.0
+
+#input_seq:	contig01_1340 # 1351356 # 1351538 # -1 # ID=1_1340;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=3-4bp;gc_cont=0.459
+#matched_seq:	9618	AE017220	Salmonella enterica subsp. enterica serovar Choleraesuis str. SC-B67, complete genome.	Gammaproteobacteria	putative inner membrane protein	AAX64850	Yes	100.0
+
+#input_seq:	contig01_278 # 292239 # 292463 # 1 # ID=1_278;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.502
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH75781	Yes	100.0
+
+#input_seq:	contig05_278 # 326809 # 327033 # -1 # ID=5_278;partial=00;start_type=GTG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.427
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH74130	Yes	100.0
+
+#input_seq:	contig09_9 # 8731 # 8928 # 1 # ID=9_9;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.505
+#matched_seq:	13086	CP000026	Salmonella enterica subsp. enterica serovar Paratyphi A str. ATCC 9150, complete genome.	Gammaproteobacteria	hypothetical protein	AAV79611	Yes	100.0
+
+#input_seq:	contig01_374 # 376673 # 376897 # 1 # ID=1_374;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.489
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	conserved hypothetical protein	ACF62897	Yes	100.0
+
+#input_seq:	contig10_58 # 61345 # 61569 # -1 # ID=10_58;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=5-10bp;gc_cont=0.564
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	glucose-1-phosphate thymidylyltransferase	ACF62613	Yes	100.0
+
+#input_seq:	contig04_346 # 393433 # 393654 # -1 # ID=4_346;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.536
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH78049	Yes	100.0
+
+#input_seq:	contig01_909 # 923143 # 923322 # 1 # ID=1_909;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.500
+#matched_seq:	9618	AE017220	Salmonella enterica subsp. enterica serovar Choleraesuis str. SC-B67, complete genome.	Gammaproteobacteria	conserved hypothetical protein	AAX65604	Yes	100.0
+
+#input_seq:	contig06_272 # 304165 # 304374 # 1 # ID=6_272;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=11-12bp;gc_cont=0.519
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH77761	Yes	100.0
+
+#input_seq:	contig09_69 # 66088 # 66291 # 1 # ID=9_69;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.422
+#matched_seq:	20045	CP001120	Salmonella enterica subsp. enterica serovar Heidelberg str. SL476, complete genome.	Gammaproteobacteria	hypothetical protein	ACF66974	Yes	100.0
+
+#input_seq:	contig02_431 # 462795 # 462989 # -1 # ID=2_431;partial=00;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.349
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	hypothetical protein	ACF62403	Yes	100.0
+
+#input_seq:	contig02_645 # 685648 # 685812 # 1 # ID=2_645;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.418
+#matched_seq:	13086	CP000026	Salmonella enterica subsp. enterica serovar Paratyphi A str. ATCC 9150, complete genome.	Gammaproteobacteria	putative periplasmic protein	AAV79076	Yes	100.0
+
+#input_seq:	contig04_51 # 53837 # 54010 # 1 # ID=4_51;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.443
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH75720	Yes	100.0
+
+#input_seq:	contig01_433 # 437501 # 437674 # -1 # ID=1_433;partial=00;start_type=ATG;rbs_motif=GGAGG;rbs_spacer=3-4bp;gc_cont=0.437
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH76099	Yes	100.0
+
+#input_seq:	contig01_226 # 247484 # 247657 # -1 # ID=1_226;partial=00;start_type=ATG;rbs_motif=None;rbs_spacer=None;gc_cont=0.615
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH74751	Yes	100.0
+
+#input_seq:	contig01_303 # 309164 # 309328 # 1 # ID=1_303;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.533
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH75289	Yes	100.0
+
+#input_seq:	contig09_110 # 106526 # 106687 # 1 # ID=9_110;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.389
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH76102	Yes	100.0
+
+#input_seq:	contig03_279 # 294853 # 295011 # 1 # ID=3_279;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.478
+#matched_seq:	20045	CP001120	Salmonella enterica subsp. enterica serovar Heidelberg str. SL476, complete genome.	Gammaproteobacteria	hypothetical protein	ACF68014	Yes	100.0
+
+#input_seq:	contig01_316 # 320801 # 320950 # 1 # ID=1_316;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.433
+#matched_seq:	19467	CP001144	Salmonella enterica subsp. enterica serovar Dublin str. C	Gammaproteobacteria	2021853, complete genome.	ACH74326	Yes	100.0
+
+#input_seq:	contig07_52 # 61785 # 61907 # 1 # ID=7_52;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.569
+#matched_seq:	9618	AE017220	Salmonella enterica subsp. enterica serovar Choleraesuis str. SC-B67, complete genome.	Gammaproteobacteria	hypothetical protein	AAX64010	Yes	100.0
+
+#input_seq:	contig02_423 # 454989 # 455126 # -1 # ID=2_423;partial=00;start_type=ATG;rbs_motif=AGxAGG/AGGxGG;rbs_spacer=5-10bp;gc_cont=0.370
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	conserved hypothetical protein	ACF63650	Yes	100.0
+
+#input_seq:	contig05_8 # 6297 # 6428 # 1 # ID=5_8;partial=00;start_type=ATG;rbs_motif=AGGA;rbs_spacer=5-10bp;gc_cont=0.379
+#matched_seq:	27803	CP000886	Salmonella enterica subsp. enterica serovar Paratyphi B str. SPB7, complete genome.	Gammaproteobacteria	hypothetical protein	ABX66155	Yes	100.0
+
+#input_seq:	contig02_555 # 596507 # 596608 # -1 # ID=2_555;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.520
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	hypothetical protein	ACF64068	Yes	100.0
+
+#input_seq:	contig06_40 # 46794 # 46922 # 1 # ID=6_40;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.411
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	putative cytoplasmic protein	ACF62175	Yes	100.0
+
+#input_seq:	contig03_217 # 232400 # 232525 # 1 # ID=3_217;partial=00;start_type=ATG;rbs_motif=AGGA/GGAG/GAGG;rbs_spacer=11-12bp;gc_cont=0.397
+#matched_seq:	13030	CP000880	Salmonella enterica subsp. arizonae serovar 62:z4,z23:--, complete genome.	Gammaproteobacteria	hypothetical protein	ABX22302	Yes	100.0
+
+#input_seq:	contig03_435 # 468163 # 468288 # 1 # ID=3_435;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.405
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	hypothetical protein	ACF61150	Yes	100.0
+
+#input_seq:	contig01_814 # 831954 # 832079 # -1 # ID=1_814;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.468
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	hypothetical protein	ACF62270	Yes	100.0
+
+#input_seq:	contig05_150 # 165690 # 165803 # -1 # ID=5_150;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.316
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	hypothetical protein	ACF62423	Yes	100.0
+
+#input_seq:	contig02_45 # 62086 # 62199 # 1 # ID=2_45;partial=00;start_type=ATG;rbs_motif=GGA/GAG/AGG;rbs_spacer=5-10bp;gc_cont=0.316
+#matched_seq:	18747	CP001113	Salmonella enterica subsp. enterica serovar Newport str. SL254, complete genome.	Gammaproteobacteria	putative inner membrane protein	ACF64919	Yes	100.0
+
+#input_seq:	contig03_84 # 88660 # 88761 # 1 # ID=3_84;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.500
+#matched_seq:	13086	CP000026	Salmonella enterica subsp. enterica serovar Paratyphi A str. ATCC 9150, complete genome.	Gammaproteobacteria	hypothetical protein	AAV78247	Yes	100.0
+
