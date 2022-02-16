@@ -86,6 +86,6 @@ python3 "pipeline_handler.py" \
     --refdata \
         "/data/reference/MvirDB/mvirdb_v2012.04.28/index/mvirdb_v2012.04.28_refdata.json" \
         "/data/reference/TADB/tadb_v2017.06/index/tadb_v2017.06_refdata.json" \
-        "/data/reference/VFDB/vfdb_v2021.09.24/index/vfdb_v2021.09.24_refdata.json"
+        "/data/reference/VFDB/vfdb_v2022.01.21/index/vfdb_v2022.01.21_refdata.json"
 
 rm -f "pipeline_handler.py"
