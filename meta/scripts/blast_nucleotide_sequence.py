@@ -122,11 +122,15 @@ if __name__ == '__main__':
     if is_file_valid(blast_result_file):
         print(f"Load results of the already performed NCBI BLAST query: '{blast_result_file}'")
         blast_results = load_dict(blast_result_file)
-    else:
+    if len(blast_results.keys()) == 0:
+        print("Performing new BLAST search")
         fasta_record = load_sequences(nt_fasta_file, "fasta")[0]
-        for attempt in range(QUERY_ATTEMPTS):
-            blast_query_string, blast_results = chop_and_blast(
-                record=fasta_record, result_number=blast_result_number
+        for attempt in range(QUERY_ATTEMPTS):  # For empty results
+            blast_query_string, blast_results = attempt_func(  # For damaged results
+                func=chop_and_blast,
+                attempts=QUERY_ATTEMPTS,
+                record=fasta_record,
+                result_number=blast_result_number
             )
             if len(blast_results.keys()) > 0:
                 dump_string(blast_query_string, blast_query_file)
