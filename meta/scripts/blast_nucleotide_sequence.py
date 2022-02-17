@@ -91,7 +91,7 @@ def _parse_args():
     parser.add_argument("-r", "--results", metavar="<int>", type=int, default=25,
                         help="(Optional) The maximum size of GenBank entries from the BLAST report to download")
     parser.add_argument("-s", "--sequence_dir", metavar="<directory>", default="",
-                        help="(Optional) Special dir to download sequences to ('genbank' subdirectory by default)")
+                        help="(Optional) Directory to keep downloaded sequences ('genbank' subdirectory by default)")
     parser.add_argument("-o", "--output", metavar="<directory>", required=True, help="Output directory")
     _namespace = parser.parse_args()
     return (
