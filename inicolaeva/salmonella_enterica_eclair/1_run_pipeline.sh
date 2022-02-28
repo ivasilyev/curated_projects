@@ -83,12 +83,15 @@ cd "${ROOT_DIR}" || exit 1
 curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/pga-pe-pipeline/pipeline_handler.py"
 
 python3 "pipeline_handler.py" \
+    --blast_dir "/data/reference/GenBank" \
+    --blast_number 25 \
     --hg_dir "/data/reference/homo_sapiens/Ensembl/GRCh38/bowtie2_idx" \
     --input "${SAMPLEDATA_FILE}" \
     --output_dir "${ROOT_DIR}pga-pe-pipeline" \
     --refdata \
         "/data/reference/MvirDB/mvirdb_v2012.04.28/index/mvirdb_v2012.04.28_refdata.json" \
         "/data/reference/TADB/tadb_v2017.06/index/tadb_v2017.06_refdata.json" \
-        "/data/reference/VFDB/vfdb_v2022.01.21/index/vfdb_v2022.01.21_refdata.json"
+        "/data/reference/VFDB/vfdb_v2022.01.21/index/vfdb_v2022.01.21_refdata.json" \
+    --srst2_dir "/data/reference/SRST2"
 
 rm -f "pipeline_handler.py"
