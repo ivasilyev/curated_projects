@@ -132,7 +132,7 @@ class SampleDataArray:
     def dump(self, file: str):
         Utilities.dump_dict(self.export(), file)
 
-
+"""
 def parse_args():
     parser = ArgumentParser(
         formatter_class=RawTextHelpFormatter,
@@ -167,3 +167,69 @@ if __name__ == '__main__':
         sampleDataLine.taxa = inputTaxa
 
     sampleDataArray.dump(outputFile)
+"""
+
+
+from meta.utils.io import dump_dict
+from meta.utils.file_system import scan_whole_dir
+from meta.utils.language import regex_based_tokenization
+
+
+RAW_READS_FILE_NAME_EXTENSIONS = ["fastq", "fq", "fastq.gz", "fq.gz"]
+
+
+def tokenize_reads_file_name(s: str):
+    d = regex_based_tokenization({
+        "extension": ["\.(.{2,8})$", "(\..{2,8})$"],  # E.g. '.fastq.gz'
+        "last_segment": ["[^A-Za-z0-9]([A-Za-z0-9]+)$", "([^A-Za-z0-9][A-Za-z0-9]+)$"], # The last segment is always 001,
+        "read_index": ["[^A-Za-z0-9](R[0-9]+)$", "([^A-Za-z0-9]R[0-9]+)$"],
+        "lane_number": ["[^A-Za-z0-9](L[0-9]+)$", "([^A-Za-z0-9]L[0-9]+)$"],
+        "sample_sheet_number": ["[^A-Za-z0-9](S[0-9]+)$", "([^A-Za-z0-9]S[0-9]+)$"],
+        "sample_name": ["(.+)", "(.+)"],
+    }, os.path.basename(s))
+    d["reads_file"] = s
+    return d
+
+
+def create_sampledata_dict_from_dir(directory: str):
+    reads_files = [j for j in scan_whole_dir(directory)
+                   if any(j.endswith(f".{i}") for i in RAW_READS_FILE_NAME_EXTENSIONS)]
+    tokenized_reads_files = [tokenize_reads_file_name(i) for i in reads_files]
+
+    out = dict()
+    for token_dict in tokenized_reads_files:
+        sample_name = token_dict["sample_name"]
+        if sample_name in out.keys():
+            out[sample_name]["reads"].append(token_dict["reads_file"])
+            out[sample_name]["reads"].sort()
+        else:
+            out[sample_name] = {
+                "name": sample_name,
+                "reads": [token_dict["reads_file"], ],
+                "taxa": ""
+            }
+    return out
+
+
+def parse_args():
+    parser = ArgumentParser(
+        description="Generate sample data based on scanned raw reads files in the directory".strip(),
+        epilog=""
+    )
+    parser.add_argument("-i", "--input", nargs="+",
+                        help="Input directory (directories)")
+    parser.add_argument("-o", "--output", required=True,
+                        help="Output file")
+    _namespace = parser.parse_args()
+    return _namespace.input, _namespace.output
+
+
+if __name__ == '__main__':
+    inputDirs, outputFile = parse_args()
+
+    sampledata_dict = dict()
+    for input_dir in inputDirs:
+        sampledata_dict.update(create_sampledata_dict_from_dir(input_dir))
+
+    dump_dict(sampledata_dict, outputFile)
+    print(f"Sampledata successfully created in: '{outputFile}'")

@@ -89,4 +89,4 @@ if __name__ == '__main__':
     )
 
     dump_dict(output_dict, output_file)
-    print(f"Completed in {count_elapsed_seconds(start)}")
+    print(f"The calculation of WGS assembly statistics completed in {count_elapsed_seconds(start)}")
