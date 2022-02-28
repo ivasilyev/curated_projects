@@ -9,7 +9,7 @@ from argparse import ArgumentParser, RawTextHelpFormatter
 
 
 DEFAULT_REGEX = "(.+).+S[0-9]+.*R[12]"
-DEFAULT_READS_EXTENSION = ".fastq.gz"
+DEFAULT_READS_EXTENSION = "fastq.gz"
 
 
 class SampleDataLine:
@@ -171,11 +171,8 @@ if __name__ == '__main__':
 
 
 from meta.utils.io import dump_dict
-from meta.utils.file_system import scan_whole_dir
 from meta.utils.language import regex_based_tokenization
-
-
-RAW_READS_FILE_NAME_EXTENSIONS = ["fastq", "fq", "fastq.gz", "fq.gz"]
+from meta.utils.file_system import find_file_by_tail
 
 
 def tokenize_reads_file_name(s: str):
@@ -191,9 +188,10 @@ def tokenize_reads_file_name(s: str):
     return d
 
 
-def create_sampledata_dict_from_dir(directory: str):
-    reads_files = [j for j in scan_whole_dir(directory)
-                   if any(j.endswith(f".{i}") for i in RAW_READS_FILE_NAME_EXTENSIONS)]
+def create_sampledata_dict_from_dir(directory: str, reads_extension: str = DEFAULT_REGEX):
+    reads_files = find_file_by_tail(
+        directory, ".{}".format(reads_extension.strip(".")), multiple=True
+    )
     tokenized_reads_files = [tokenize_reads_file_name(i) for i in reads_files]
 
     out = dict()
@@ -218,18 +216,20 @@ def parse_args():
     )
     parser.add_argument("-i", "--input", nargs="+",
                         help="Input directory (directories)")
+    parser.add_argument("-e", "--extension", default=DEFAULT_READS_EXTENSION,
+                        help="Extension of reads files")
     parser.add_argument("-o", "--output", required=True,
                         help="Output file")
     _namespace = parser.parse_args()
-    return _namespace.input, _namespace.output
+    return _namespace.input, _namespace.extension, _namespace.output
 
 
 if __name__ == '__main__':
-    inputDirs, outputFile = parse_args()
+    inputDirs, inputExtension, outputFile = parse_args()
 
     sampledata_dict = dict()
     for input_dir in inputDirs:
-        sampledata_dict.update(create_sampledata_dict_from_dir(input_dir))
+        sampledata_dict.update(create_sampledata_dict_from_dir(input_dir, inputExtension))
 
     dump_dict(sampledata_dict, outputFile)
     print(f"Sampledata successfully created in: '{outputFile}'")
