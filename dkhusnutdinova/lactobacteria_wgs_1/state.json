@@ -1,0 +1,2054 @@
+{
+    "Lacto10": {
+        "software": {
+            "biocontainers": {
+                "fastqc": "quay.io/biocontainers/fastqc:0.11.9--hdfd78af_1",
+                "trimmomatic": "quay.io/biocontainers/trimmomatic:0.32--hdfd78af_4",
+                "cutadapt": "quay.io/biocontainers/cutadapt:3.5--py36hc5360cc_0",
+                "bowtie2": "quay.io/biocontainers/bowtie2:2.4.5--py37hafa4d4c_1",
+                "spades": "quay.io/biocontainers/spades:3.15.4--h95f258a_0",
+                "quast": "quay.io/biocontainers/quast:5.0.2--py27pl5321h8eb80aa_6",
+                "prokka": "quay.io/biocontainers/prokka:1.14.6--pl5262hdfd78af_1",
+                "rgi": "quay.io/biocontainers/rgi:5.2.1--pyha8f3691_2"
+            }
+        },
+        "run_fastqc": {
+            "Lacto10_S10_R1_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "FAIL",
+                "Per tile sequence quality": "PASS",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "WARN",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "WARN",
+                "Adapter Content": "FAIL"
+            },
+            "Lacto10_S10_R2_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "FAIL",
+                "Per tile sequence quality": "WARN",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "FAIL",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "PASS",
+                "Adapter Content": "FAIL"
+            }
+        },
+        "remove_hg": {
+            "were paired": "423035 (100.00%)",
+            "aligned concordantly 0 times": "423021 pairs",
+            "aligned concordantly exactly 1 time": "11 (0.00%)",
+            "aligned concordantly >1 times": "3 (0.00%)",
+            "pairs aligned concordantly 0 times": "423021",
+            "aligned discordantly 1 time": "2 (0.00%)",
+            "pairs aligned 0 times concordantly or discordantly": "423019",
+            "mates make up the pairs": "846038",
+            "aligned 0 times": "846038 (100.00%)",
+            "aligned exactly 1 time": "0 (0.00%)",
+            "aligned >1 times": "0 (0.00%)",
+            "overall alignment rate": "0.00%"
+        },
+        "run_blast": {
+            "top_result_name": "gi|1847984245|gb|CP053912.1| Lactiplantibacillus plantarum subsp. plantarum strain G1 chromosome, complete genome",
+            "top_result_genbank": "/data/reference/GenBank/1060145352.gbk",
+            "taxa": {
+                "genus": "Lactiplantibacillus",
+                "species": "plantarum",
+                "strain": "subsp"
+            }
+        },
+        "count_total_wgs_assembly_statistics": {
+            "raw_statistics": {
+                "Lacto10_S10_R1_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto10_S10_R1_001.fastq",
+                    "reads_number": 436375,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 109530125,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251,
+                    "gc_percentage": 42.48989946829696
+                },
+                "Lacto10_S10_R2_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto10_S10_R2_001.fastq",
+                    "reads_number": 436375,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 109530125,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251,
+                    "gc_percentage": 47.28360896146152
+                }
+            },
+            "assembly_statistics": {
+                "assembly_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/pga-pe-pipeline/06_plasmid_merger/Lacto10/Lacto10_genome.fna",
+                "contigs_number": 119,
+                "largest_contig_bp": 193858,
+                "smallest_contig_bp": 222,
+                "total_contigs_bp": 3234415,
+                "mean_contigs_bp": 27179.95798319328,
+                "median_contigs_bp": 11250,
+                "gc_percentage": 44.494444899618635,
+                "l50": 13,
+                "n50": 87187,
+                "d50": 83845,
+                "l90": 44,
+                "n90": 19698
+            },
+            "reference_statistics": {
+                "reference_file": "/data/reference/GenBank/1060145352.gbk",
+                "total_reference_bp": 3119435,
+                "reference_gc_percentage": 44.76663241901178
+            },
+            "coverage_statistics": {
+                "assembled_reads_rate": 0.029529912432766786,
+                "expected_assembly_coverage": "35.11x",
+                "real_assembly_coverage": "1.04x"
+            }
+        },
+        "run_quast": {
+            "Assembly": "Lacto10",
+            "# contigs (>= 0 bp)": "119",
+            "# contigs (>= 1000 bp)": "72",
+            "# contigs (>= 5000 bp)": "67",
+            "# contigs (>= 10000 bp)": "61",
+            "# contigs (>= 25000 bp)": "39",
+            "# contigs (>= 50000 bp)": "21",
+            "Total length (>= 0 bp)": "3234415",
+            "Total length (>= 1000 bp)": "3220146",
+            "Total length (>= 5000 bp)": "3208765",
+            "Total length (>= 10000 bp)": "3161970",
+            "Total length (>= 25000 bp)": "2813038",
+            "Total length (>= 50000 bp)": "2181731",
+            "# contigs": "77",
+            "Largest contig": "193858",
+            "Total length": "3222944",
+            "GC (%)": "44.50",
+            "N50": "87187",
+            "N75": "38537",
+            "L50": "13",
+            "L75": "27",
+            "# total reads": "881998",
+            "# left": "436375",
+            "# right": "436375",
+            "Mapped (%)": "99.63",
+            "Properly paired (%)": "95.7",
+            "Avg. coverage depth": "31",
+            "Coverage >= 1x (%)": "99.98",
+            "# N's per 100 kbp": "15.33"
+        }
+    },
+    "Lacto11": {
+        "software": {
+            "biocontainers": {
+                "fastqc": "quay.io/biocontainers/fastqc:0.11.9--hdfd78af_1",
+                "trimmomatic": "quay.io/biocontainers/trimmomatic:0.32--hdfd78af_4",
+                "cutadapt": "quay.io/biocontainers/cutadapt:3.5--py36hc5360cc_0",
+                "bowtie2": "quay.io/biocontainers/bowtie2:2.4.5--py37hafa4d4c_1",
+                "spades": "quay.io/biocontainers/spades:3.15.4--h95f258a_0",
+                "quast": "quay.io/biocontainers/quast:5.0.2--py27pl5321h8eb80aa_6",
+                "prokka": "quay.io/biocontainers/prokka:1.14.6--pl5262hdfd78af_1",
+                "rgi": "quay.io/biocontainers/rgi:5.2.1--pyha8f3691_2"
+            }
+        },
+        "run_fastqc": {
+            "Lacto11_S11_R1_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "WARN",
+                "Per tile sequence quality": "PASS",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "FAIL",
+                "Per sequence GC content": "WARN",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "WARN",
+                "Adapter Content": "FAIL"
+            },
+            "Lacto11_S11_R2_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "FAIL",
+                "Per tile sequence quality": "WARN",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "FAIL",
+                "Per sequence GC content": "WARN",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "PASS",
+                "Adapter Content": "FAIL"
+            }
+        },
+        "remove_hg": {
+            "were paired": "301685 (100.00%)",
+            "aligned concordantly 0 times": "301679 pairs",
+            "aligned concordantly exactly 1 time": "5 (0.00%)",
+            "aligned concordantly >1 times": "1 (0.00%)",
+            "pairs aligned concordantly 0 times": "301679",
+            "aligned discordantly 1 time": "1 (0.00%)",
+            "pairs aligned 0 times concordantly or discordantly": "301678",
+            "mates make up the pairs": "603356",
+            "aligned 0 times": "603356 (100.00%)",
+            "aligned exactly 1 time": "0 (0.00%)",
+            "aligned >1 times": "0 (0.00%)",
+            "overall alignment rate": "0.00%"
+        },
+        "run_blast": {
+            "top_result_name": "gi|299782685|gb|CP002033.1| Lactobacillus fermentum CECT 5716, complete genome",
+            "top_result_genbank": "/data/reference/GenBank/1012286139.gbk",
+            "taxa": {
+                "genus": "Lactobacillus",
+                "species": "fermentum",
+                "strain": "CECT"
+            }
+        },
+        "count_total_wgs_assembly_statistics": {
+            "raw_statistics": {
+                "Lacto11_S11_R1_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto11_S11_R1_001.fastq",
+                    "reads_number": 305530,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 76688030,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251.0,
+                    "gc_percentage": 48.58935221050795
+                },
+                "Lacto11_S11_R2_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto11_S11_R2_001.fastq",
+                    "reads_number": 305530,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 76688030,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251.0,
+                    "gc_percentage": 52.21924073417977
+                }
+            },
+            "assembly_statistics": {
+                "assembly_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/pga-pe-pipeline/06_plasmid_merger/Lacto11/Lacto11_genome.fna",
+                "contigs_number": 348,
+                "largest_contig_bp": 112500,
+                "smallest_contig_bp": 203,
+                "total_contigs_bp": 2165031,
+                "mean_contigs_bp": 6221.353448275862,
+                "median_contigs_bp": 389.0,
+                "gc_percentage": 51.63427221134478,
+                "l50": 18,
+                "n50": 41114,
+                "d50": 40360,
+                "l90": 61,
+                "n90": 7918
+            },
+            "reference_statistics": {
+                "reference_file": "/data/reference/GenBank/1012286139.gbk",
+                "total_reference_bp": 3171194,
+                "reference_gc_percentage": 51.36863276103575
+            },
+            "coverage_statistics": {
+                "assembled_reads_rate": 0.028231667966956513,
+                "expected_assembly_coverage": "24.18x",
+                "real_assembly_coverage": "0.68x"
+            }
+        },
+        "run_quast": {
+            "Assembly": "Lacto11",
+            "# contigs (>= 0 bp)": "348",
+            "# contigs (>= 1000 bp)": "107",
+            "# contigs (>= 5000 bp)": "66",
+            "# contigs (>= 10000 bp)": "53",
+            "# contigs (>= 25000 bp)": "32",
+            "# contigs (>= 50000 bp)": "10",
+            "Total length (>= 0 bp)": "2165031",
+            "Total length (>= 1000 bp)": "2077868",
+            "Total length (>= 5000 bp)": "1984152",
+            "Total length (>= 10000 bp)": "1879565",
+            "Total length (>= 25000 bp)": "1537149",
+            "Total length (>= 50000 bp)": "726133",
+            "# contigs": "146",
+            "Largest contig": "112500",
+            "Total length": "2105188",
+            "GC (%)": "51.87",
+            "N50": "41114",
+            "N75": "21592",
+            "L50": "18",
+            "L75": "34",
+            "# total reads": "615710",
+            "# left": "305530",
+            "# right": "305530",
+            "Mapped (%)": "98.89",
+            "Properly paired (%)": "92.96",
+            "Avg. coverage depth": "48",
+            "Coverage >= 1x (%)": "99.94",
+            "# N's per 100 kbp": "4.56"
+        }
+    },
+    "Lacto1": {
+        "software": {
+            "biocontainers": {
+                "fastqc": "quay.io/biocontainers/fastqc:0.11.9--hdfd78af_1",
+                "trimmomatic": "quay.io/biocontainers/trimmomatic:0.32--hdfd78af_4",
+                "cutadapt": "quay.io/biocontainers/cutadapt:3.5--py36hc5360cc_0",
+                "bowtie2": "quay.io/biocontainers/bowtie2:2.4.5--py37hafa4d4c_1",
+                "spades": "quay.io/biocontainers/spades:3.15.4--h95f258a_0",
+                "quast": "quay.io/biocontainers/quast:5.0.2--py27pl5321h8eb80aa_6",
+                "prokka": "quay.io/biocontainers/prokka:1.14.6--pl5262hdfd78af_1",
+                "rgi": "quay.io/biocontainers/rgi:5.2.1--pyha8f3691_2"
+            }
+        },
+        "run_fastqc": {
+            "Lacto1_S1_R1_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "FAIL",
+                "Per tile sequence quality": "PASS",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "WARN",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "WARN",
+                "Adapter Content": "FAIL"
+            },
+            "Lacto1_S1_R2_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "FAIL",
+                "Per tile sequence quality": "WARN",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "FAIL",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "PASS",
+                "Adapter Content": "FAIL"
+            }
+        },
+        "remove_hg": {
+            "were paired": "346505 (100.00%)",
+            "aligned concordantly 0 times": "346501 pairs",
+            "aligned concordantly exactly 1 time": "2 (0.00%)",
+            "aligned concordantly >1 times": "2 (0.00%)",
+            "pairs aligned concordantly 0 times": "346501",
+            "aligned discordantly 1 time": "0 (0.00%)",
+            "pairs aligned 0 times concordantly or discordantly": "346501",
+            "mates make up the pairs": "693002",
+            "aligned 0 times": "693001 (100.00%)",
+            "aligned exactly 1 time": "0 (0.00%)",
+            "aligned >1 times": "1 (0.00%)",
+            "overall alignment rate": "0.00%"
+        },
+        "run_blast": {
+            "top_result_name": "gi|1002340326|emb|LT220504.1| Lacticaseibacillus rhamnosus strain BPL5 chromosome I",
+            "top_result_genbank": "/data/reference/GenBank/1002340326.gbk",
+            "taxa": {
+                "genus": "Lacticaseibacillus",
+                "species": "rhamnosus",
+                "strain": "strain"
+            }
+        },
+        "count_total_wgs_assembly_statistics": {
+            "raw_statistics": {
+                "Lacto1_S1_R1_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto1_S1_R1_001.fastq",
+                    "reads_number": 352064,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 88368064,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251.0,
+                    "gc_percentage": 44.628102297228104
+                },
+                "Lacto1_S1_R2_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto1_S1_R2_001.fastq",
+                    "reads_number": 352064,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 88368064,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251.0,
+                    "gc_percentage": 48.67955690417751
+                }
+            },
+            "assembly_statistics": {
+                "assembly_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/pga-pe-pipeline/06_plasmid_merger/Lacto1/Lacto1_genome.fna",
+                "contigs_number": 160,
+                "largest_contig_bp": 243348,
+                "smallest_contig_bp": 206,
+                "total_contigs_bp": 3079884,
+                "mean_contigs_bp": 19249.275,
+                "median_contigs_bp": 674.5,
+                "gc_percentage": 46.59146253560199,
+                "l50": 13,
+                "n50": 74852,
+                "d50": 74195,
+                "l90": 45,
+                "n90": 16689
+            },
+            "reference_statistics": {
+                "reference_file": "/data/reference/GenBank/1002340326.gbk",
+                "total_reference_bp": 3024027,
+                "reference_gc_percentage": 46.72074687163838
+            },
+            "coverage_statistics": {
+                "assembled_reads_rate": 0.03485290794647261,
+                "expected_assembly_coverage": "29.22x",
+                "real_assembly_coverage": "1.02x"
+            }
+        },
+        "run_quast": {
+            "Assembly": "Lacto1",
+            "# contigs (>= 0 bp)": "160",
+            "# contigs (>= 1000 bp)": "77",
+            "# contigs (>= 5000 bp)": "67",
+            "# contigs (>= 10000 bp)": "59",
+            "# contigs (>= 25000 bp)": "33",
+            "# contigs (>= 50000 bp)": "23",
+            "Total length (>= 0 bp)": "3079884",
+            "Total length (>= 1000 bp)": "3053895",
+            "Total length (>= 5000 bp)": "3028070",
+            "Total length (>= 10000 bp)": "2972333",
+            "Total length (>= 25000 bp)": "2558729",
+            "Total length (>= 50000 bp)": "2190707",
+            "# contigs": "86",
+            "Largest contig": "243348",
+            "Total length": "3059557",
+            "GC (%)": "46.59",
+            "N50": "74852",
+            "N75": "45279",
+            "L50": "13",
+            "L75": "26",
+            "# total reads": "708981",
+            "# left": "352064",
+            "# right": "352064",
+            "Mapped (%)": "99.7",
+            "Properly paired (%)": "94.09",
+            "Avg. coverage depth": "32",
+            "Coverage >= 1x (%)": "99.95",
+            "# N's per 100 kbp": "6.54"
+        }
+    },
+    "Lacto2": {
+        "software": {
+            "biocontainers": {
+                "fastqc": "quay.io/biocontainers/fastqc:0.11.9--hdfd78af_1",
+                "trimmomatic": "quay.io/biocontainers/trimmomatic:0.32--hdfd78af_4",
+                "cutadapt": "quay.io/biocontainers/cutadapt:3.5--py36hc5360cc_0",
+                "bowtie2": "quay.io/biocontainers/bowtie2:2.4.5--py37hafa4d4c_1",
+                "spades": "quay.io/biocontainers/spades:3.15.4--h95f258a_0",
+                "quast": "quay.io/biocontainers/quast:5.0.2--py27pl5321h8eb80aa_6",
+                "prokka": "quay.io/biocontainers/prokka:1.14.6--pl5262hdfd78af_1",
+                "rgi": "quay.io/biocontainers/rgi:5.2.1--pyha8f3691_2"
+            }
+        },
+        "run_fastqc": {
+            "Lacto2_S2_R1_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "PASS",
+                "Per tile sequence quality": "PASS",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "FAIL",
+                "Per sequence GC content": "WARN",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "WARN",
+                "Adapter Content": "FAIL"
+            },
+            "Lacto2_S2_R2_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "FAIL",
+                "Per tile sequence quality": "WARN",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "FAIL",
+                "Per sequence GC content": "WARN",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "PASS",
+                "Adapter Content": "FAIL"
+            }
+        },
+        "remove_hg": {
+            "were paired": "321946 (100.00%)",
+            "aligned concordantly 0 times": "321923 pairs",
+            "aligned concordantly exactly 1 time": "21 (0.01%)",
+            "aligned concordantly >1 times": "2 (0.00%)",
+            "pairs aligned concordantly 0 times": "321923",
+            "aligned discordantly 1 time": "2 (0.00%)",
+            "pairs aligned 0 times concordantly or discordantly": "321921",
+            "mates make up the pairs": "643842",
+            "aligned 0 times": "643840 (100.00%)",
+            "aligned exactly 1 time": "2 (0.00%)",
+            "aligned >1 times": "0 (0.00%)",
+            "overall alignment rate": "0.01%"
+        },
+        "run_blast": {
+            "top_result_name": "gi|116098028|gb|CP000416.1| Lactobacillus brevis ATCC 367, complete genome",
+            "top_result_genbank": "/data/reference/GenBank/1040737847.gbk",
+            "taxa": {
+                "genus": "Lactobacillus",
+                "species": "brevis",
+                "strain": "ATCC"
+            }
+        },
+        "count_total_wgs_assembly_statistics": {
+            "raw_statistics": {
+                "Lacto2_S2_R1_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto2_S2_R1_001.fastq",
+                    "reads_number": 326026,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 81832526,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251.0,
+                    "gc_percentage": 43.9481276674754
+                },
+                "Lacto2_S2_R2_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto2_S2_R2_001.fastq",
+                    "reads_number": 326026,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 81832526,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251.0,
+                    "gc_percentage": 46.98181503037069
+                }
+            },
+            "assembly_statistics": {
+                "assembly_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/pga-pe-pipeline/06_plasmid_merger/Lacto2/Lacto2_genome.fna",
+                "contigs_number": 234,
+                "largest_contig_bp": 167524,
+                "smallest_contig_bp": 207,
+                "total_contigs_bp": 2684778,
+                "mean_contigs_bp": 11473.410256410256,
+                "median_contigs_bp": 1277.5,
+                "gc_percentage": 45.2976372720575,
+                "l50": 11,
+                "n50": 91475,
+                "d50": 80399,
+                "l90": 51,
+                "n90": 5606
+            },
+            "reference_statistics": {
+                "reference_file": "/data/reference/GenBank/1040737847.gbk",
+                "total_reference_bp": 2552671,
+                "reference_gc_percentage": 45.806098788288814
+            },
+            "coverage_statistics": {
+                "assembled_reads_rate": 0.032808201472358314,
+                "expected_assembly_coverage": "32.06x",
+                "real_assembly_coverage": "1.05x"
+            }
+        },
+        "run_quast": {
+            "Assembly": "Lacto2",
+            "# contigs (>= 0 bp)": "234",
+            "# contigs (>= 1000 bp)": "125",
+            "# contigs (>= 5000 bp)": "58",
+            "# contigs (>= 10000 bp)": "36",
+            "# contigs (>= 25000 bp)": "28",
+            "# contigs (>= 50000 bp)": "17",
+            "Total length (>= 0 bp)": "2684778",
+            "Total length (>= 1000 bp)": "2643316",
+            "Total length (>= 5000 bp)": "2456090",
+            "Total length (>= 10000 bp)": "2312550",
+            "Total length (>= 25000 bp)": "2176980",
+            "Total length (>= 50000 bp)": "1759440",
+            "# contigs": "148",
+            "Largest contig": "167524",
+            "Total length": "2659039",
+            "GC (%)": "45.33",
+            "N50": "91475",
+            "N75": "38059",
+            "L50": "11",
+            "L75": "23",
+            "# total reads": "659686",
+            "# left": "326026",
+            "# right": "326026",
+            "Mapped (%)": "99.49",
+            "Properly paired (%)": "95.7",
+            "Avg. coverage depth": "41",
+            "Coverage >= 1x (%)": "99.95",
+            "# N's per 100 kbp": "7.41"
+        }
+    },
+    "Lacto3": {
+        "software": {
+            "biocontainers": {
+                "fastqc": "quay.io/biocontainers/fastqc:0.11.9--hdfd78af_1",
+                "trimmomatic": "quay.io/biocontainers/trimmomatic:0.32--hdfd78af_4",
+                "cutadapt": "quay.io/biocontainers/cutadapt:3.5--py36hc5360cc_0",
+                "bowtie2": "quay.io/biocontainers/bowtie2:2.4.5--py37hafa4d4c_1",
+                "spades": "quay.io/biocontainers/spades:3.15.4--h95f258a_0",
+                "quast": "quay.io/biocontainers/quast:5.0.2--py27pl5321h8eb80aa_6",
+                "prokka": "quay.io/biocontainers/prokka:1.14.6--pl5262hdfd78af_1",
+                "rgi": "quay.io/biocontainers/rgi:5.2.1--pyha8f3691_2",
+                "srst2": "quay.io/biocontainers/srst2:0.2.0--py27_2"
+            }
+        },
+        "run_fastqc": {
+            "Lacto3_S3_R1_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "FAIL",
+                "Per tile sequence quality": "PASS",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "WARN",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "WARN",
+                "Adapter Content": "FAIL"
+            },
+            "Lacto3_S3_R2_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "FAIL",
+                "Per tile sequence quality": "WARN",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "FAIL",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "PASS",
+                "Adapter Content": "FAIL"
+            }
+        },
+        "remove_hg": {
+            "were paired": "335421 (100.00%)",
+            "aligned concordantly 0 times": "335409 pairs",
+            "aligned concordantly exactly 1 time": "11 (0.00%)",
+            "aligned concordantly >1 times": "1 (0.00%)",
+            "pairs aligned concordantly 0 times": "335409",
+            "aligned discordantly 1 time": "1 (0.00%)",
+            "pairs aligned 0 times concordantly or discordantly": "335408",
+            "mates make up the pairs": "670816",
+            "aligned 0 times": "670815 (100.00%)",
+            "aligned exactly 1 time": "0 (0.00%)",
+            "aligned >1 times": "1 (0.00%)",
+            "overall alignment rate": "0.00%"
+        },
+        "run_blast": {
+            "top_result_name": "gi|300213939|gb|CP002034.1| Lactobacillus salivarius CECT 5713, complete genome",
+            "top_result_genbank": "/data/reference/GenBank/1063816371.gbk",
+            "taxa": {
+                "genus": "Lactobacillus",
+                "species": "salivarius",
+                "strain": "CECT"
+            }
+        },
+        "count_total_wgs_assembly_statistics": {
+            "raw_statistics": {
+                "Lacto3_S3_R1_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto3_S3_R1_001.fastq",
+                    "reads_number": 340483,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 85461233,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251,
+                    "gc_percentage": 35.899107610581744
+                },
+                "Lacto3_S3_R2_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto3_S3_R2_001.fastq",
+                    "reads_number": 340483,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 85461233,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251,
+                    "gc_percentage": 39.14356349153071
+                }
+            },
+            "assembly_statistics": {
+                "assembly_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/pga-pe-pipeline/06_plasmid_merger/Lacto3/Lacto3_genome.fna",
+                "contigs_number": 111,
+                "largest_contig_bp": 333050,
+                "smallest_contig_bp": 216,
+                "total_contigs_bp": 2097399,
+                "mean_contigs_bp": 18895.486486486487,
+                "median_contigs_bp": 484,
+                "gc_percentage": 32.84811330605192,
+                "l50": 7,
+                "n50": 96021,
+                "d50": 84940,
+                "l90": 24,
+                "n90": 22407
+            },
+            "reference_statistics": {
+                "reference_file": "/data/reference/GenBank/1063816371.gbk",
+                "total_reference_bp": 1746897,
+                "reference_gc_percentage": 32.99524814571208
+            },
+            "coverage_statistics": {
+                "assembled_reads_rate": 0.02454211022206993,
+                "expected_assembly_coverage": "48.92x",
+                "real_assembly_coverage": "1.20x"
+            }
+        },
+        "run_quast": {
+            "Assembly": "Lacto3",
+            "# contigs (>= 0 bp)": "111",
+            "# contigs (>= 1000 bp)": "43",
+            "# contigs (>= 5000 bp)": "34",
+            "# contigs (>= 10000 bp)": "34",
+            "# contigs (>= 25000 bp)": "23",
+            "# contigs (>= 50000 bp)": "13",
+            "Total length (>= 0 bp)": "2097399",
+            "Total length (>= 1000 bp)": "2071880",
+            "Total length (>= 5000 bp)": "2054821",
+            "Total length (>= 10000 bp)": "2054821",
+            "Total length (>= 25000 bp)": "1872695",
+            "Total length (>= 50000 bp)": "1522498",
+            "# contigs": "53",
+            "Largest contig": "333050",
+            "Total length": "2079193",
+            "GC (%)": "32.79",
+            "N50": "96021",
+            "N75": "49547",
+            "L50": "7",
+            "L75": "14",
+            "# total reads": "687982",
+            "# left": "340483",
+            "# right": "340483",
+            "Mapped (%)": "99.15",
+            "Properly paired (%)": "95.67",
+            "Avg. coverage depth": "48",
+            "Coverage >= 1x (%)": "99.97",
+            "# N's per 100 kbp": "9.38"
+        }
+    },
+    "Lacto4": {
+        "software": {
+            "biocontainers": {
+                "fastqc": "quay.io/biocontainers/fastqc:0.11.9--hdfd78af_1",
+                "trimmomatic": "quay.io/biocontainers/trimmomatic:0.32--hdfd78af_4",
+                "cutadapt": "quay.io/biocontainers/cutadapt:3.5--py36hc5360cc_0",
+                "bowtie2": "quay.io/biocontainers/bowtie2:2.4.5--py37hafa4d4c_1",
+                "spades": "quay.io/biocontainers/spades:3.15.4--h95f258a_0",
+                "quast": "quay.io/biocontainers/quast:5.0.2--py27pl5321h8eb80aa_6",
+                "prokka": "quay.io/biocontainers/prokka:1.14.6--pl5262hdfd78af_1",
+                "rgi": "quay.io/biocontainers/rgi:5.2.1--pyha8f3691_2"
+            }
+        },
+        "run_fastqc": {
+            "Lacto4_S4_R1_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "PASS",
+                "Per tile sequence quality": "PASS",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "WARN",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "WARN",
+                "Adapter Content": "FAIL"
+            },
+            "Lacto4_S4_R2_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "FAIL",
+                "Per tile sequence quality": "WARN",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "FAIL",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "PASS",
+                "Adapter Content": "FAIL"
+            }
+        },
+        "remove_hg": {
+            "were paired": "325330 (100.00%)",
+            "aligned concordantly 0 times": "325313 pairs",
+            "aligned concordantly exactly 1 time": "15 (0.00%)",
+            "aligned concordantly >1 times": "2 (0.00%)",
+            "pairs aligned concordantly 0 times": "325313",
+            "aligned discordantly 1 time": "3 (0.00%)",
+            "pairs aligned 0 times concordantly or discordantly": "325310",
+            "mates make up the pairs": "650620",
+            "aligned 0 times": "650620 (100.00%)",
+            "aligned exactly 1 time": "0 (0.00%)",
+            "aligned >1 times": "0 (0.00%)",
+            "overall alignment rate": "0.01%"
+        },
+        "run_blast": {
+            "top_result_name": "gi|1779438816|gb|CP046267.1| Lacticaseibacillus rhamnosus strain BIO5326 chromosome, complete genome",
+            "top_result_genbank": "/data/reference/GenBank/1005376123.gbk",
+            "taxa": {
+                "genus": "Lacticaseibacillus",
+                "species": "rhamnosus",
+                "strain": "strain"
+            }
+        },
+        "count_total_wgs_assembly_statistics": {
+            "raw_statistics": {
+                "Lacto4_S4_R1_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto4_S4_R1_001.fastq",
+                    "reads_number": 329447,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 82691197,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251,
+                    "gc_percentage": 44.90913948192091
+                },
+                "Lacto4_S4_R2_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto4_S4_R2_001.fastq",
+                    "reads_number": 329447,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 82691197,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251,
+                    "gc_percentage": 48.26794682872954
+                }
+            },
+            "assembly_statistics": {
+                "assembly_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/pga-pe-pipeline/06_plasmid_merger/Lacto4/Lacto4_genome.fna",
+                "contigs_number": 61,
+                "largest_contig_bp": 364125,
+                "smallest_contig_bp": 202,
+                "total_contigs_bp": 2954120,
+                "mean_contigs_bp": 48428.19672131148,
+                "median_contigs_bp": 4117,
+                "gc_percentage": 46.699930943902075,
+                "l50": 7,
+                "n50": 141609,
+                "d50": 132684,
+                "l90": 19,
+                "n90": 50395
+            },
+            "reference_statistics": {
+                "reference_file": "/data/reference/GenBank/1005376123.gbk",
+                "total_reference_bp": 2903890,
+                "reference_gc_percentage": 46.68678910013809
+            },
+            "coverage_statistics": {
+                "assembled_reads_rate": 0.03572472170163409,
+                "expected_assembly_coverage": "28.48x",
+                "real_assembly_coverage": "1.02x"
+            }
+        },
+        "run_quast": {
+            "Assembly": "Lacto4",
+            "# contigs (>= 0 bp)": "61",
+            "# contigs (>= 1000 bp)": "35",
+            "# contigs (>= 5000 bp)": "30",
+            "# contigs (>= 10000 bp)": "28",
+            "# contigs (>= 25000 bp)": "23",
+            "# contigs (>= 50000 bp)": "19",
+            "Total length (>= 0 bp)": "2954120",
+            "Total length (>= 1000 bp)": "2944430",
+            "Total length (>= 5000 bp)": "2931456",
+            "Total length (>= 10000 bp)": "2913618",
+            "Total length (>= 25000 bp)": "2837200",
+            "Total length (>= 50000 bp)": "2675608",
+            "# contigs": "40",
+            "Largest contig": "364125",
+            "Total length": "2947768",
+            "GC (%)": "46.69",
+            "N50": "141609",
+            "N75": "89009",
+            "L50": "7",
+            "L75": "13",
+            "# total reads": "665098",
+            "# left": "329447",
+            "# right": "329447",
+            "Mapped (%)": "99.61",
+            "Properly paired (%)": "96.27",
+            "Avg. coverage depth": "38",
+            "Coverage >= 1x (%)": "99.99",
+            "# N's per 100 kbp": "3.36"
+        }
+    },
+    "Lacto5": {
+        "software": {
+            "biocontainers": {
+                "fastqc": "quay.io/biocontainers/fastqc:0.11.9--hdfd78af_1",
+                "trimmomatic": "quay.io/biocontainers/trimmomatic:0.32--hdfd78af_4",
+                "cutadapt": "quay.io/biocontainers/cutadapt:3.5--py36hc5360cc_0",
+                "bowtie2": "quay.io/biocontainers/bowtie2:2.4.5--py37hafa4d4c_1",
+                "spades": "quay.io/biocontainers/spades:3.15.4--h95f258a_0",
+                "quast": "quay.io/biocontainers/quast:5.0.2--py27pl5321h8eb80aa_6",
+                "prokka": "quay.io/biocontainers/prokka:1.14.6--pl5262hdfd78af_1",
+                "rgi": "quay.io/biocontainers/rgi:5.2.1--pyha8f3691_2"
+            }
+        },
+        "run_fastqc": {
+            "Lacto5_S1_R1_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "PASS",
+                "Per tile sequence quality": "PASS",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "WARN",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "WARN",
+                "Adapter Content": "FAIL"
+            },
+            "Lacto5_S1_R2_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "FAIL",
+                "Per tile sequence quality": "WARN",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "FAIL",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "PASS",
+                "Adapter Content": "FAIL"
+            }
+        },
+        "remove_hg": {
+            "were paired": "288566 (100.00%)",
+            "aligned concordantly 0 times": "288560 pairs",
+            "aligned concordantly exactly 1 time": "6 (0.00%)",
+            "aligned concordantly >1 times": "0 (0.00%)",
+            "pairs aligned concordantly 0 times": "288560",
+            "aligned discordantly 1 time": "0 (0.00%)",
+            "pairs aligned 0 times concordantly or discordantly": "288560",
+            "mates make up the pairs": "577120",
+            "aligned 0 times": "577119 (100.00%)",
+            "aligned exactly 1 time": "1 (0.00%)",
+            "aligned >1 times": "0 (0.00%)",
+            "overall alignment rate": "0.00%"
+        },
+        "run_blast": {
+            "top_result_name": "gi|1779438816|gb|CP046267.1| Lacticaseibacillus rhamnosus strain BIO5326 chromosome, complete genome",
+            "top_result_genbank": "/data/reference/GenBank/1002340326.gbk",
+            "taxa": {
+                "genus": "Lacticaseibacillus",
+                "species": "rhamnosus",
+                "strain": "strain"
+            }
+        },
+        "count_total_wgs_assembly_statistics": {
+            "raw_statistics": {
+                "Lacto5_S1_R1_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto5_S1_R1_001.fastq",
+                    "reads_number": 291214,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 73094714,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251.0,
+                    "gc_percentage": 46.026128510469306
+                },
+                "Lacto5_S1_R2_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto5_S1_R2_001.fastq",
+                    "reads_number": 291214,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 73094714,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251.0,
+                    "gc_percentage": 48.12313103790241
+                }
+            },
+            "assembly_statistics": {
+                "assembly_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/pga-pe-pipeline/06_plasmid_merger/Lacto5/Lacto5_genome.fna",
+                "contigs_number": 60,
+                "largest_contig_bp": 349042,
+                "smallest_contig_bp": 209,
+                "total_contigs_bp": 2953932,
+                "mean_contigs_bp": 49232.2,
+                "median_contigs_bp": 4179.5,
+                "gc_percentage": 46.70263228808246,
+                "l50": 8,
+                "n50": 149234,
+                "d50": 141609,
+                "l90": 18,
+                "n90": 62162
+            },
+            "reference_statistics": {
+                "reference_file": "/data/reference/GenBank/1002340326.gbk",
+                "total_reference_bp": 3024027,
+                "reference_gc_percentage": 46.72074687163838
+            },
+            "coverage_statistics": {
+                "assembled_reads_rate": 0.040412388780945226,
+                "expected_assembly_coverage": "24.17x",
+                "real_assembly_coverage": "0.98x"
+            }
+        },
+        "run_quast": {
+            "Assembly": "Lacto5",
+            "# contigs (>= 0 bp)": "60",
+            "# contigs (>= 1000 bp)": "34",
+            "# contigs (>= 5000 bp)": "29",
+            "# contigs (>= 10000 bp)": "27",
+            "# contigs (>= 25000 bp)": "23",
+            "# contigs (>= 50000 bp)": "18",
+            "Total length (>= 0 bp)": "2953932",
+            "Total length (>= 1000 bp)": "2944929",
+            "Total length (>= 5000 bp)": "2931680",
+            "Total length (>= 10000 bp)": "2913844",
+            "Total length (>= 25000 bp)": "2849642",
+            "Total length (>= 50000 bp)": "2660717",
+            "# contigs": "38",
+            "Largest contig": "349042",
+            "Total length": "2947542",
+            "GC (%)": "46.69",
+            "N50": "149234",
+            "N75": "112004",
+            "L50": "8",
+            "L75": "13",
+            "# total reads": "585767",
+            "# left": "291214",
+            "# right": "291214",
+            "Mapped (%)": "99.67",
+            "Properly paired (%)": "96.08",
+            "Avg. coverage depth": "37",
+            "Coverage >= 1x (%)": "100.0",
+            "# N's per 100 kbp": "3.29"
+        }
+    },
+    "Lacto6": {
+        "software": {
+            "biocontainers": {
+                "fastqc": "quay.io/biocontainers/fastqc:0.11.9--hdfd78af_1",
+                "trimmomatic": "quay.io/biocontainers/trimmomatic:0.32--hdfd78af_4",
+                "cutadapt": "quay.io/biocontainers/cutadapt:3.5--py36hc5360cc_0",
+                "bowtie2": "quay.io/biocontainers/bowtie2:2.4.5--py37hafa4d4c_1",
+                "spades": "quay.io/biocontainers/spades:3.15.4--h95f258a_0",
+                "quast": "quay.io/biocontainers/quast:5.0.2--py27pl5321h8eb80aa_6",
+                "prokka": "quay.io/biocontainers/prokka:1.14.6--pl5262hdfd78af_1",
+                "rgi": "quay.io/biocontainers/rgi:5.2.1--pyha8f3691_2"
+            }
+        },
+        "run_fastqc": {
+            "Lacto6_S6_R1_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "PASS",
+                "Per tile sequence quality": "PASS",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "FAIL",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "WARN",
+                "Adapter Content": "FAIL"
+            },
+            "Lacto6_S6_R2_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "FAIL",
+                "Per tile sequence quality": "WARN",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "FAIL",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "PASS",
+                "Adapter Content": "FAIL"
+            }
+        },
+        "remove_hg": {
+            "were paired": "353309 (100.00%)",
+            "aligned concordantly 0 times": "353303 pairs",
+            "aligned concordantly exactly 1 time": "5 (0.00%)",
+            "aligned concordantly >1 times": "1 (0.00%)",
+            "pairs aligned concordantly 0 times": "353303",
+            "aligned discordantly 1 time": "2 (0.00%)",
+            "pairs aligned 0 times concordantly or discordantly": "353301",
+            "mates make up the pairs": "706602",
+            "aligned 0 times": "706602 (100.00%)",
+            "aligned exactly 1 time": "0 (0.00%)",
+            "aligned >1 times": "0 (0.00%)",
+            "overall alignment rate": "0.00%"
+        },
+        "run_blast": {
+            "top_result_name": "gi|1785299055|gb|CP046726.1| Lactiplantibacillus plantarum strain 8P-A3 chromosome, complete genome",
+            "top_result_genbank": "/data/reference/GenBank/1008886419.gbk",
+            "taxa": {
+                "genus": "Lactiplantibacillus",
+                "species": "plantarum",
+                "strain": "strain"
+            }
+        },
+        "count_total_wgs_assembly_statistics": {
+            "raw_statistics": {
+                "Lacto6_S6_R1_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto6_S6_R1_001.fastq",
+                    "reads_number": 357303,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 89683053,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251,
+                    "gc_percentage": 43.839498862733855
+                },
+                "Lacto6_S6_R2_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto6_S6_R2_001.fastq",
+                    "reads_number": 357303,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 89683053,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251,
+                    "gc_percentage": 46.37384278164571
+                }
+            },
+            "assembly_statistics": {
+                "assembly_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/pga-pe-pipeline/06_plasmid_merger/Lacto6/Lacto6_genome.fna",
+                "contigs_number": 59,
+                "largest_contig_bp": 418863,
+                "smallest_contig_bp": 207,
+                "total_contigs_bp": 3313634,
+                "mean_contigs_bp": 56163.28813559322,
+                "median_contigs_bp": 9607,
+                "gc_percentage": 44.37807555089066,
+                "l50": 7,
+                "n50": 159171,
+                "d50": 134504,
+                "l90": 21,
+                "n90": 54458
+            },
+            "reference_statistics": {
+                "reference_file": "/data/reference/GenBank/1008886419.gbk",
+                "total_reference_bp": 3262611,
+                "reference_gc_percentage": 44.47827215687068
+            },
+            "coverage_statistics": {
+                "assembled_reads_rate": 0.036948273828278345,
+                "expected_assembly_coverage": "27.49x",
+                "real_assembly_coverage": "1.02x"
+            }
+        },
+        "run_quast": {
+            "Assembly": "Lacto6",
+            "# contigs (>= 0 bp)": "59",
+            "# contigs (>= 1000 bp)": "41",
+            "# contigs (>= 5000 bp)": "34",
+            "# contigs (>= 10000 bp)": "29",
+            "# contigs (>= 25000 bp)": "25",
+            "# contigs (>= 50000 bp)": "23",
+            "Total length (>= 0 bp)": "3313634",
+            "Total length (>= 1000 bp)": "3305220",
+            "Total length (>= 5000 bp)": "3287836",
+            "Total length (>= 10000 bp)": "3246896",
+            "Total length (>= 25000 bp)": "3175541",
+            "Total length (>= 50000 bp)": "3104394",
+            "# contigs": "48",
+            "Largest contig": "418863",
+            "Total length": "3310666",
+            "GC (%)": "44.38",
+            "N50": "159171",
+            "N75": "82631",
+            "L50": "7",
+            "L75": "14",
+            "# total reads": "720234",
+            "# left": "357303",
+            "# right": "357303",
+            "Mapped (%)": "99.67",
+            "Properly paired (%)": "96.53",
+            "Avg. coverage depth": "37",
+            "Coverage >= 1x (%)": "99.99",
+            "# N's per 100 kbp": "6.01"
+        }
+    },
+    "Lacto7": {
+        "software": {
+            "biocontainers": {
+                "fastqc": "quay.io/biocontainers/fastqc:0.11.9--hdfd78af_1",
+                "trimmomatic": "quay.io/biocontainers/trimmomatic:0.32--hdfd78af_4",
+                "cutadapt": "quay.io/biocontainers/cutadapt:3.5--py36hc5360cc_0",
+                "bowtie2": "quay.io/biocontainers/bowtie2:2.4.5--py37hafa4d4c_1",
+                "spades": "quay.io/biocontainers/spades:3.15.4--h95f258a_0",
+                "quast": "quay.io/biocontainers/quast:5.0.2--py27pl5321h8eb80aa_6",
+                "prokka": "quay.io/biocontainers/prokka:1.14.6--pl5262hdfd78af_1",
+                "rgi": "quay.io/biocontainers/rgi:5.2.1--pyha8f3691_2"
+            }
+        },
+        "run_fastqc": {
+            "Lacto7_S7_R1_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "PASS",
+                "Per tile sequence quality": "WARN",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "WARN",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "WARN",
+                "Adapter Content": "FAIL"
+            },
+            "Lacto7_S7_R2_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "FAIL",
+                "Per tile sequence quality": "WARN",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "FAIL",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "PASS",
+                "Adapter Content": "FAIL"
+            }
+        },
+        "remove_hg": {
+            "were paired": "274942 (100.00%)",
+            "aligned concordantly 0 times": "274936 pairs",
+            "aligned concordantly exactly 1 time": "6 (0.00%)",
+            "aligned concordantly >1 times": "0 (0.00%)",
+            "pairs aligned concordantly 0 times": "274936",
+            "aligned discordantly 1 time": "0 (0.00%)",
+            "pairs aligned 0 times concordantly or discordantly": "274936",
+            "mates make up the pairs": "549872",
+            "aligned 0 times": "549871 (100.00%)",
+            "aligned exactly 1 time": "0 (0.00%)",
+            "aligned >1 times": "1 (0.00%)",
+            "overall alignment rate": "0.00%"
+        },
+        "run_blast": {
+            "top_result_name": "gi|1785299055|gb|CP046726.1| Lactiplantibacillus plantarum strain 8P-A3 chromosome, complete genome",
+            "top_result_genbank": "/data/reference/GenBank/1008886419.gbk",
+            "taxa": {
+                "genus": "Lactiplantibacillus",
+                "species": "plantarum",
+                "strain": "strain"
+            }
+        },
+        "count_total_wgs_assembly_statistics": {
+            "raw_statistics": {
+                "Lacto7_S7_R1_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto7_S7_R1_001.fastq",
+                    "reads_number": 277394,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 69625894,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251.0,
+                    "gc_percentage": 43.95284892140846
+                },
+                "Lacto7_S7_R2_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto7_S7_R2_001.fastq",
+                    "reads_number": 277394,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 69625894,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251.0,
+                    "gc_percentage": 46.06747742441914
+                }
+            },
+            "assembly_statistics": {
+                "assembly_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/pga-pe-pipeline/06_plasmid_merger/Lacto7/Lacto7_genome.fna",
+                "contigs_number": 60,
+                "largest_contig_bp": 418863,
+                "smallest_contig_bp": 207,
+                "total_contigs_bp": 3313623,
+                "mean_contigs_bp": 55227.05,
+                "median_contigs_bp": 19498.0,
+                "gc_percentage": 44.37825304809871,
+                "l50": 7,
+                "n50": 159178,
+                "d50": 134409,
+                "l90": 24,
+                "n90": 53342
+            },
+            "reference_statistics": {
+                "reference_file": "/data/reference/GenBank/1008886419.gbk",
+                "total_reference_bp": 3262611,
+                "reference_gc_percentage": 44.47827215687068
+            },
+            "coverage_statistics": {
+                "assembled_reads_rate": 0.04759181979049346,
+                "expected_assembly_coverage": "21.34x",
+                "real_assembly_coverage": "1.02x"
+            }
+        },
+        "run_quast": {
+            "Assembly": "Lacto7",
+            "# contigs (>= 0 bp)": "60",
+            "# contigs (>= 1000 bp)": "44",
+            "# contigs (>= 5000 bp)": "39",
+            "# contigs (>= 10000 bp)": "33",
+            "# contigs (>= 25000 bp)": "28",
+            "# contigs (>= 50000 bp)": "25",
+            "Total length (>= 0 bp)": "3313623",
+            "Total length (>= 1000 bp)": "3305028",
+            "Total length (>= 5000 bp)": "3296171",
+            "Total length (>= 10000 bp)": "3249642",
+            "Total length (>= 25000 bp)": "3164260",
+            "Total length (>= 50000 bp)": "3059345",
+            "# contigs": "52",
+            "Largest contig": "418863",
+            "Total length": "3311197",
+            "GC (%)": "44.38",
+            "N50": "159178",
+            "N75": "72783",
+            "L50": "7",
+            "L75": "16",
+            "# total reads": "559761",
+            "# left": "277394",
+            "# right": "277394",
+            "Mapped (%)": "99.78",
+            "Properly paired (%)": "96.37",
+            "Avg. coverage depth": "31",
+            "Coverage >= 1x (%)": "99.99",
+            "# N's per 100 kbp": "3.02"
+        }
+    },
+    "Lacto8": {
+        "software": {
+            "biocontainers": {
+                "fastqc": "quay.io/biocontainers/fastqc:0.11.9--hdfd78af_1",
+                "trimmomatic": "quay.io/biocontainers/trimmomatic:0.32--hdfd78af_4",
+                "cutadapt": "quay.io/biocontainers/cutadapt:3.5--py36hc5360cc_0",
+                "bowtie2": "quay.io/biocontainers/bowtie2:2.4.5--py37hafa4d4c_1",
+                "spades": "quay.io/biocontainers/spades:3.15.4--h95f258a_0",
+                "quast": "quay.io/biocontainers/quast:5.0.2--py27pl5321h8eb80aa_6",
+                "prokka": "quay.io/biocontainers/prokka:1.14.6--pl5262hdfd78af_1",
+                "rgi": "quay.io/biocontainers/rgi:5.2.1--pyha8f3691_2"
+            }
+        },
+        "run_fastqc": {
+            "Lacto8_S8_R1_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "PASS",
+                "Per tile sequence quality": "PASS",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "WARN",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "WARN",
+                "Adapter Content": "FAIL"
+            },
+            "Lacto8_S8_R2_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "FAIL",
+                "Per tile sequence quality": "WARN",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "FAIL",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "PASS",
+                "Adapter Content": "FAIL"
+            }
+        },
+        "remove_hg": {
+            "were paired": "343979 (100.00%)",
+            "aligned concordantly 0 times": "343969 pairs",
+            "aligned concordantly exactly 1 time": "8 (0.00%)",
+            "aligned concordantly >1 times": "2 (0.00%)",
+            "pairs aligned concordantly 0 times": "343969",
+            "aligned discordantly 1 time": "1 (0.00%)",
+            "pairs aligned 0 times concordantly or discordantly": "343968",
+            "mates make up the pairs": "687936",
+            "aligned 0 times": "687935 (100.00%)",
+            "aligned exactly 1 time": "0 (0.00%)",
+            "aligned >1 times": "1 (0.00%)",
+            "overall alignment rate": "0.00%"
+        },
+        "run_blast": {
+            "top_result_name": "gi|1409957888|gb|CP030105.1| Lactiplantibacillus plantarum strain SK151 chromosome, complete genome",
+            "top_result_genbank": "/data/reference/GenBank/1051503533.gbk",
+            "taxa": {
+                "genus": "Lactiplantibacillus",
+                "species": "plantarum",
+                "strain": "strain"
+            }
+        },
+        "count_total_wgs_assembly_statistics": {
+            "raw_statistics": {
+                "Lacto8_S8_R1_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto8_S8_R1_001.fastq",
+                    "reads_number": 347775,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 87291525,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251,
+                    "gc_percentage": 42.51571157681115
+                },
+                "Lacto8_S8_R2_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto8_S8_R2_001.fastq",
+                    "reads_number": 347775,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 87291525,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251,
+                    "gc_percentage": 46.3267333226221
+                }
+            },
+            "assembly_statistics": {
+                "assembly_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/pga-pe-pipeline/06_plasmid_merger/Lacto8/Lacto8_genome.fna",
+                "contigs_number": 52,
+                "largest_contig_bp": 336883,
+                "smallest_contig_bp": 249,
+                "total_contigs_bp": 3198277,
+                "mean_contigs_bp": 61505.32692307692,
+                "median_contigs_bp": 30858.0,
+                "gc_percentage": 44.533603562168004,
+                "l50": 7,
+                "n50": 188651,
+                "d50": 159585,
+                "l90": 22,
+                "n90": 37802
+            },
+            "reference_statistics": {
+                "reference_file": "/data/reference/GenBank/1051503533.gbk",
+                "total_reference_bp": 3418468,
+                "reference_gc_percentage": 44.43314958630591
+            },
+            "coverage_statistics": {
+                "assembled_reads_rate": 0.03663903225427669,
+                "expected_assembly_coverage": "25.54x",
+                "real_assembly_coverage": "0.94x"
+            }
+        },
+        "run_quast": {
+            "Assembly": "Lacto8",
+            "# contigs (>= 0 bp)": "52",
+            "# contigs (>= 1000 bp)": "41",
+            "# contigs (>= 5000 bp)": "34",
+            "# contigs (>= 10000 bp)": "33",
+            "# contigs (>= 25000 bp)": "29",
+            "# contigs (>= 50000 bp)": "17",
+            "Total length (>= 0 bp)": "3198277",
+            "Total length (>= 1000 bp)": "3193288",
+            "Total length (>= 5000 bp)": "3176461",
+            "Total length (>= 10000 bp)": "3170512",
+            "Total length (>= 25000 bp)": "3099822",
+            "Total length (>= 50000 bp)": "2662227",
+            "# contigs": "45",
+            "Largest contig": "336883",
+            "Total length": "3196143",
+            "GC (%)": "44.54",
+            "N50": "188651",
+            "N75": "89334",
+            "L50": "7",
+            "L75": "14",
+            "# total reads": "701298",
+            "# left": "347775",
+            "# right": "347775",
+            "Mapped (%)": "99.53",
+            "Properly paired (%)": "95.5",
+            "Avg. coverage depth": "38",
+            "Coverage >= 1x (%)": "99.99",
+            "# N's per 100 kbp": "6.13"
+        }
+    },
+    "Lacto9": {
+        "software": {
+            "biocontainers": {
+                "fastqc": "quay.io/biocontainers/fastqc:0.11.9--hdfd78af_1",
+                "trimmomatic": "quay.io/biocontainers/trimmomatic:0.32--hdfd78af_4",
+                "cutadapt": "quay.io/biocontainers/cutadapt:3.5--py36hc5360cc_0",
+                "bowtie2": "quay.io/biocontainers/bowtie2:2.4.5--py37hafa4d4c_1",
+                "spades": "quay.io/biocontainers/spades:3.15.4--h95f258a_0",
+                "quast": "quay.io/biocontainers/quast:5.0.2--py27pl5321h8eb80aa_6",
+                "prokka": "quay.io/biocontainers/prokka:1.14.6--pl5262hdfd78af_1",
+                "rgi": "quay.io/biocontainers/rgi:5.2.1--pyha8f3691_2"
+            }
+        },
+        "run_fastqc": {
+            "Lacto9_S9_R1_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "PASS",
+                "Per tile sequence quality": "PASS",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "WARN",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "WARN",
+                "Adapter Content": "FAIL"
+            },
+            "Lacto9_S9_R2_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "FAIL",
+                "Per tile sequence quality": "WARN",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "FAIL",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "PASS",
+                "Adapter Content": "FAIL"
+            }
+        },
+        "remove_hg": {
+            "were paired": "279581 (100.00%)",
+            "aligned concordantly 0 times": "279571 pairs",
+            "aligned concordantly exactly 1 time": "10 (0.00%)",
+            "aligned concordantly >1 times": "0 (0.00%)",
+            "pairs aligned concordantly 0 times": "279571",
+            "aligned discordantly 1 time": "1 (0.00%)",
+            "pairs aligned 0 times concordantly or discordantly": "279570",
+            "mates make up the pairs": "559140",
+            "aligned 0 times": "559140 (100.00%)",
+            "aligned exactly 1 time": "0 (0.00%)",
+            "aligned >1 times": "0 (0.00%)",
+            "overall alignment rate": "0.00%"
+        },
+        "run_blast": {
+            "top_result_name": "gi|1847984245|gb|CP053912.1| Lactiplantibacillus plantarum subsp. plantarum strain G1 chromosome, complete genome",
+            "top_result_genbank": "/data/reference/GenBank/1060145352.gbk",
+            "taxa": {
+                "genus": "Lactiplantibacillus",
+                "species": "plantarum",
+                "strain": "subsp"
+            }
+        },
+        "count_total_wgs_assembly_statistics": {
+            "raw_statistics": {
+                "Lacto9_S9_R1_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto9_S9_R1_001.fastq",
+                    "reads_number": 281477,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 70650727,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251,
+                    "gc_percentage": 44.17591484939709
+                },
+                "Lacto9_S9_R2_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto9_S9_R2_001.fastq",
+                    "reads_number": 281477,
+                    "largest_read_bp": 251,
+                    "smallest_read_bp": 251,
+                    "total_reads_bp": 70650727,
+                    "mean_reads_bp": 251,
+                    "median_reads_bp": 251,
+                    "gc_percentage": 45.91825502375934
+                }
+            },
+            "assembly_statistics": {
+                "assembly_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/pga-pe-pipeline/06_plasmid_merger/Lacto9/Lacto9_genome.fna",
+                "contigs_number": 38,
+                "largest_contig_bp": 693399,
+                "smallest_contig_bp": 231,
+                "total_contigs_bp": 3216894,
+                "mean_contigs_bp": 84655.1052631579,
+                "median_contigs_bp": 17768.0,
+                "gc_percentage": 44.47998597404826,
+                "l50": 3,
+                "n50": 257885,
+                "d50": 179595,
+                "l90": 13,
+                "n90": 81175
+            },
+            "reference_statistics": {
+                "reference_file": "/data/reference/GenBank/1060145352.gbk",
+                "total_reference_bp": 3119435,
+                "reference_gc_percentage": 44.76663241901178
+            },
+            "coverage_statistics": {
+                "assembled_reads_rate": 0.04553235524384625,
+                "expected_assembly_coverage": "22.65x",
+                "real_assembly_coverage": "1.03x"
+            }
+        },
+        "run_quast": {
+            "Assembly": "Lacto9",
+            "# contigs (>= 0 bp)": "38",
+            "# contigs (>= 1000 bp)": "24",
+            "# contigs (>= 5000 bp)": "23",
+            "# contigs (>= 10000 bp)": "21",
+            "# contigs (>= 25000 bp)": "18",
+            "# contigs (>= 50000 bp)": "16",
+            "Total length (>= 0 bp)": "3216894",
+            "Total length (>= 1000 bp)": "3211859",
+            "Total length (>= 5000 bp)": "3208435",
+            "Total length (>= 10000 bp)": "3197577",
+            "Total length (>= 25000 bp)": "3148655",
+            "Total length (>= 50000 bp)": "3082605",
+            "# contigs": "27",
+            "Largest contig": "693399",
+            "Total length": "3213764",
+            "GC (%)": "44.49",
+            "N50": "257885",
+            "N75": "127358",
+            "L50": "3",
+            "L75": "9",
+            "# total reads": "567566",
+            "# left": "281477",
+            "# right": "281477",
+            "Mapped (%)": "99.74",
+            "Properly paired (%)": "96.42",
+            "Avg. coverage depth": "35",
+            "Coverage >= 1x (%)": "99.99",
+            "# N's per 100 kbp": "9.30"
+        }
+    },
+    "Lp227": {
+        "software": {
+            "biocontainers": {
+                "fastqc": "quay.io/biocontainers/fastqc:0.11.9--hdfd78af_1",
+                "trimmomatic": "quay.io/biocontainers/trimmomatic:0.32--hdfd78af_4",
+                "cutadapt": "quay.io/biocontainers/cutadapt:3.5--py36hc5360cc_0",
+                "bowtie2": "quay.io/biocontainers/bowtie2:2.4.5--py37hafa4d4c_1",
+                "spades": "quay.io/biocontainers/spades:3.15.4--h95f258a_0",
+                "quast": "quay.io/biocontainers/quast:5.0.2--py27pl5321h8eb80aa_6",
+                "prokka": "quay.io/biocontainers/prokka:1.14.6--pl5262hdfd78af_1",
+                "rgi": "quay.io/biocontainers/rgi:5.2.1--pyha8f3691_2"
+            }
+        },
+        "run_fastqc": {
+            "Lp227-5_S35_R1_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "WARN",
+                "Per tile sequence quality": "PASS",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "PASS",
+                "Per sequence GC content": "WARN",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "PASS",
+                "Adapter Content": "FAIL"
+            },
+            "Lp227-5_S35_R2_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "FAIL",
+                "Per tile sequence quality": "PASS",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "PASS",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "PASS",
+                "Adapter Content": "FAIL"
+            }
+        },
+        "remove_hg": {
+            "were paired": "456595 (100.00%)",
+            "aligned concordantly 0 times": "456565 pairs",
+            "aligned concordantly exactly 1 time": "28 (0.01%)",
+            "aligned concordantly >1 times": "2 (0.00%)",
+            "pairs aligned concordantly 0 times": "456565",
+            "aligned discordantly 1 time": "8 (0.00%)",
+            "pairs aligned 0 times concordantly or discordantly": "456557",
+            "mates make up the pairs": "913114",
+            "aligned 0 times": "913110 (100.00%)",
+            "aligned exactly 1 time": "4 (0.00%)",
+            "aligned >1 times": "0 (0.00%)",
+            "overall alignment rate": "0.01%"
+        },
+        "run_blast": {
+            "top_result_name": "gi|1201048328|gb|CP021501.1| Lactiplantibacillus plantarum strain SRCM102022 chromosome, complete genome",
+            "top_result_genbank": "/data/reference/GenBank/1039028527.gbk",
+            "taxa": {
+                "genus": "Lactiplantibacillus",
+                "species": "plantarum",
+                "strain": "strain"
+            }
+        },
+        "count_total_wgs_assembly_statistics": {
+            "raw_statistics": {
+                "Lp227-5_S35_R1_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lp227-5_S35_R1_001.fastq",
+                    "reads_number": 469976,
+                    "largest_read_bp": 301,
+                    "smallest_read_bp": 301,
+                    "total_reads_bp": 141462776,
+                    "mean_reads_bp": 301,
+                    "median_reads_bp": 301.0,
+                    "gc_percentage": 44.11220517827248
+                },
+                "Lp227-5_S35_R2_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lp227-5_S35_R2_001.fastq",
+                    "reads_number": 469976,
+                    "largest_read_bp": 301,
+                    "smallest_read_bp": 301,
+                    "total_reads_bp": 141462776,
+                    "mean_reads_bp": 301,
+                    "median_reads_bp": 301.0,
+                    "gc_percentage": 44.44722617347761
+                }
+            },
+            "assembly_statistics": {
+                "assembly_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/pga-pe-pipeline/06_plasmid_merger/Lp227/Lp227_genome.fna",
+                "contigs_number": 68,
+                "largest_contig_bp": 363975,
+                "smallest_contig_bp": 239,
+                "total_contigs_bp": 3342653,
+                "mean_contigs_bp": 49156.66176470588,
+                "median_contigs_bp": 922.0,
+                "gc_percentage": 44.34582351204268,
+                "l50": 5,
+                "n50": 295882,
+                "d50": 271414,
+                "l90": 16,
+                "n90": 54246
+            },
+            "reference_statistics": {
+                "reference_file": "/data/reference/GenBank/1039028527.gbk",
+                "total_reference_bp": 3354689,
+                "reference_gc_percentage": 44.35585534158308
+            },
+            "coverage_statistics": {
+                "assembled_reads_rate": 0.023629205466744126,
+                "expected_assembly_coverage": "42.17x",
+                "real_assembly_coverage": "1.00x"
+            }
+        },
+        "run_quast": {
+            "Assembly": "Lp227",
+            "# contigs (>= 0 bp)": "68",
+            "# contigs (>= 1000 bp)": "33",
+            "# contigs (>= 5000 bp)": "27",
+            "# contigs (>= 10000 bp)": "25",
+            "# contigs (>= 25000 bp)": "20",
+            "# contigs (>= 50000 bp)": "16",
+            "Total length (>= 0 bp)": "3342653",
+            "Total length (>= 1000 bp)": "3326336",
+            "Total length (>= 5000 bp)": "3314072",
+            "Total length (>= 10000 bp)": "3299998",
+            "Total length (>= 25000 bp)": "3213815",
+            "Total length (>= 50000 bp)": "3050769",
+            "# contigs": "44",
+            "Largest contig": "363975",
+            "Total length": "3333619",
+            "GC (%)": "44.34",
+            "N50": "295882",
+            "N75": "129849",
+            "L50": "5",
+            "L75": "9",
+            "# total reads": "943294",
+            "# left": "469976",
+            "# right": "469976",
+            "Mapped (%)": "99.86",
+            "Properly paired (%)": "98.87",
+            "Avg. coverage depth": "78",
+            "Coverage >= 1x (%)": "99.99",
+            "# N's per 100 kbp": "11.82"
+        }
+    },
+    "Lp242-7": {
+        "software": {
+            "biocontainers": {
+                "fastqc": "quay.io/biocontainers/fastqc:0.11.9--hdfd78af_1",
+                "trimmomatic": "quay.io/biocontainers/trimmomatic:0.32--hdfd78af_4",
+                "cutadapt": "quay.io/biocontainers/cutadapt:3.5--py36hc5360cc_0",
+                "bowtie2": "quay.io/biocontainers/bowtie2:2.4.5--py37hafa4d4c_1",
+                "spades": "quay.io/biocontainers/spades:3.15.4--h95f258a_0",
+                "quast": "quay.io/biocontainers/quast:5.0.2--py27pl5321h8eb80aa_6",
+                "prokka": "quay.io/biocontainers/prokka:1.14.6--pl5262hdfd78af_1",
+                "rgi": "quay.io/biocontainers/rgi:5.2.1--pyha8f3691_2"
+            }
+        },
+        "run_fastqc": {
+            "Lp242-7_S34_R1_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "WARN",
+                "Per tile sequence quality": "PASS",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "PASS",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "PASS",
+                "Adapter Content": "FAIL"
+            },
+            "Lp242-7_S34_R2_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "FAIL",
+                "Per tile sequence quality": "PASS",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "PASS",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "PASS",
+                "Adapter Content": "FAIL"
+            }
+        },
+        "remove_hg": {
+            "were paired": "518139 (100.00%)",
+            "aligned concordantly 0 times": "518139 pairs",
+            "aligned concordantly exactly 1 time": "0 (0.00%)",
+            "aligned concordantly >1 times": "0 (0.00%)",
+            "pairs aligned concordantly 0 times": "518139",
+            "aligned discordantly 1 time": "1 (0.00%)",
+            "pairs aligned 0 times concordantly or discordantly": "518138",
+            "mates make up the pairs": "1036276",
+            "aligned 0 times": "1036276 (100.00%)",
+            "aligned exactly 1 time": "0 (0.00%)",
+            "aligned >1 times": "0 (0.00%)",
+            "overall alignment rate": "0.00%"
+        },
+        "run_blast": {
+            "top_result_name": "gi|1845309819|gb|CP053619.1| Lacticaseibacillus rhamnosus strain LV108 chromosome, complete genome",
+            "top_result_genbank": "/data/reference/GenBank/1062772459.gbk",
+            "taxa": {
+                "genus": "Lacticaseibacillus",
+                "species": "rhamnosus",
+                "strain": "strain"
+            }
+        },
+        "count_total_wgs_assembly_statistics": {
+            "raw_statistics": {
+                "Lp242-7_S34_R1_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lp242-7_S34_R1_001.fastq",
+                    "reads_number": 530210,
+                    "largest_read_bp": 301,
+                    "smallest_read_bp": 301,
+                    "total_reads_bp": 159593210,
+                    "mean_reads_bp": 301,
+                    "median_reads_bp": 301.0,
+                    "gc_percentage": 44.6574681967986
+                },
+                "Lp242-7_S34_R2_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lp242-7_S34_R2_001.fastq",
+                    "reads_number": 530210,
+                    "largest_read_bp": 301,
+                    "smallest_read_bp": 301,
+                    "total_reads_bp": 159593210,
+                    "mean_reads_bp": 301,
+                    "median_reads_bp": 301.0,
+                    "gc_percentage": 44.94082736978597
+                }
+            },
+            "assembly_statistics": {
+                "assembly_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/pga-pe-pipeline/06_plasmid_merger/Lp242-7/Lp242-7_genome.fna",
+                "contigs_number": 958,
+                "largest_contig_bp": 268544,
+                "smallest_contig_bp": 203,
+                "total_contigs_bp": 9211271,
+                "mean_contigs_bp": 9615.105427974948,
+                "median_contigs_bp": 756.5,
+                "gc_percentage": 45.67437001907771,
+                "l50": 71,
+                "n50": 38602,
+                "d50": 38452,
+                "l90": 269,
+                "n90": 8324
+            },
+            "reference_statistics": {
+                "reference_file": "/data/reference/GenBank/1062772459.gbk",
+                "total_reference_bp": 2934954,
+                "reference_gc_percentage": 46.78451519172021
+            },
+            "coverage_statistics": {
+                "assembled_reads_rate": 0.05771718608830539,
+                "expected_assembly_coverage": "54.38x",
+                "real_assembly_coverage": "3.14x"
+            }
+        },
+        "run_quast": {
+            "Assembly": "Lp242_7",
+            "# contigs (>= 0 bp)": "958",
+            "# contigs (>= 1000 bp)": "455",
+            "# contigs (>= 5000 bp)": "328",
+            "# contigs (>= 10000 bp)": "237",
+            "# contigs (>= 25000 bp)": "117",
+            "# contigs (>= 50000 bp)": "42",
+            "Total length (>= 0 bp)": "9211271",
+            "Total length (>= 1000 bp)": "9043425",
+            "Total length (>= 5000 bp)": "8687794",
+            "Total length (>= 10000 bp)": "8005715",
+            "Total length (>= 25000 bp)": "6071369",
+            "Total length (>= 50000 bp)": "3375524",
+            "# contigs": "528",
+            "Largest contig": "268544",
+            "Total length": "9092625",
+            "GC (%)": "45.70",
+            "N50": "38906",
+            "N75": "19107",
+            "L50": "69",
+            "L75": "152",
+            "# total reads": "1062905",
+            "# left": "530210",
+            "# right": "530210",
+            "Mapped (%)": "99.89",
+            "Properly paired (%)": "98.75",
+            "Avg. coverage depth": "32",
+            "Coverage >= 1x (%)": "98.81",
+            "# N's per 100 kbp": "30.50"
+        }
+    },
+    "LpAC": {
+        "software": {
+            "biocontainers": {
+                "fastqc": "quay.io/biocontainers/fastqc:0.11.9--hdfd78af_1",
+                "trimmomatic": "quay.io/biocontainers/trimmomatic:0.32--hdfd78af_4",
+                "cutadapt": "quay.io/biocontainers/cutadapt:3.5--py36hc5360cc_0",
+                "bowtie2": "quay.io/biocontainers/bowtie2:2.4.5--py37hafa4d4c_1",
+                "spades": "quay.io/biocontainers/spades:3.15.4--h95f258a_0",
+                "quast": "quay.io/biocontainers/quast:5.0.2--py27pl5321h8eb80aa_6",
+                "prokka": "quay.io/biocontainers/prokka:1.14.6--pl5262hdfd78af_1",
+                "rgi": "quay.io/biocontainers/rgi:5.2.1--pyha8f3691_2"
+            }
+        },
+        "run_fastqc": {
+            "LpAC_S36_R1_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "WARN",
+                "Per tile sequence quality": "PASS",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "PASS",
+                "Per sequence GC content": "WARN",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "PASS",
+                "Adapter Content": "FAIL"
+            },
+            "LpAC_S36_R2_001.fastq": {
+                "Basic Statistics": "PASS",
+                "Per base sequence quality": "FAIL",
+                "Per tile sequence quality": "PASS",
+                "Per sequence quality scores": "PASS",
+                "Per base sequence content": "PASS",
+                "Per sequence GC content": "PASS",
+                "Per base N content": "PASS",
+                "Sequence Length Distribution": "PASS",
+                "Sequence Duplication Levels": "PASS",
+                "Overrepresented sequences": "PASS",
+                "Adapter Content": "FAIL"
+            }
+        },
+        "remove_hg": {
+            "were paired": "329083 (100.00%)",
+            "aligned concordantly 0 times": "329082 pairs",
+            "aligned concordantly exactly 1 time": "1 (0.00%)",
+            "aligned concordantly >1 times": "0 (0.00%)",
+            "pairs aligned concordantly 0 times": "329082",
+            "aligned discordantly 1 time": "2 (0.00%)",
+            "pairs aligned 0 times concordantly or discordantly": "329080",
+            "mates make up the pairs": "658160",
+            "aligned 0 times": "658159 (100.00%)",
+            "aligned exactly 1 time": "0 (0.00%)",
+            "aligned >1 times": "1 (0.00%)",
+            "overall alignment rate": "0.00%"
+        },
+        "run_blast": {
+            "top_result_name": "gi|1785299055|gb|CP046726.1| Lactiplantibacillus plantarum strain 8P-A3 chromosome, complete genome",
+            "top_result_genbank": "/data/reference/GenBank/1008886419.gbk",
+            "taxa": {
+                "genus": "Lactiplantibacillus",
+                "species": "plantarum",
+                "strain": "strain"
+            }
+        },
+        "count_total_wgs_assembly_statistics": {
+            "raw_statistics": {
+                "LpAC_S36_R1_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/LpAC_S36_R1_001.fastq",
+                    "reads_number": 339499,
+                    "largest_read_bp": 301,
+                    "smallest_read_bp": 301,
+                    "total_reads_bp": 102189199,
+                    "mean_reads_bp": 301,
+                    "median_reads_bp": 301,
+                    "gc_percentage": 44.12930568131765
+                },
+                "LpAC_S36_R2_001.fastq": {
+                    "reads_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/LpAC_S36_R2_001.fastq",
+                    "reads_number": 339499,
+                    "largest_read_bp": 301,
+                    "smallest_read_bp": 301,
+                    "total_reads_bp": 102189199,
+                    "mean_reads_bp": 301,
+                    "median_reads_bp": 301,
+                    "gc_percentage": 44.38289118989963
+                }
+            },
+            "assembly_statistics": {
+                "assembly_file": "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/pga-pe-pipeline/06_plasmid_merger/LpAC/LpAC_genome.fna",
+                "contigs_number": 46,
+                "largest_contig_bp": 418856,
+                "smallest_contig_bp": 255,
+                "total_contigs_bp": 3340551,
+                "mean_contigs_bp": 72620.67391304347,
+                "median_contigs_bp": 16154.5,
+                "gc_percentage": 44.3612146618926,
+                "l50": 6,
+                "n50": 219597,
+                "d50": 173965,
+                "l90": 17,
+                "n90": 61416
+            },
+            "reference_statistics": {
+                "reference_file": "/data/reference/GenBank/1008886419.gbk",
+                "total_reference_bp": 3262611,
+                "reference_gc_percentage": 44.47827215687068
+            },
+            "coverage_statistics": {
+                "assembled_reads_rate": 0.032689863827976576,
+                "expected_assembly_coverage": "31.32x",
+                "real_assembly_coverage": "1.02x"
+            }
+        },
+        "run_quast": {
+            "Assembly": "LpAC",
+            "# contigs (>= 0 bp)": "46",
+            "# contigs (>= 1000 bp)": "32",
+            "# contigs (>= 5000 bp)": "27",
+            "# contigs (>= 10000 bp)": "24",
+            "# contigs (>= 25000 bp)": "22",
+            "# contigs (>= 50000 bp)": "21",
+            "Total length (>= 0 bp)": "3340551",
+            "Total length (>= 1000 bp)": "3334251",
+            "Total length (>= 5000 bp)": "3323394",
+            "Total length (>= 10000 bp)": "3298153",
+            "Total length (>= 25000 bp)": "3265844",
+            "Total length (>= 50000 bp)": "3235886",
+            "# contigs": "36",
+            "Largest contig": "418856",
+            "Total length": "3337210",
+            "GC (%)": "44.36",
+            "N50": "219597",
+            "N75": "105751",
+            "L50": "6",
+            "L75": "11",
+            "# total reads": "680936",
+            "# left": "339499",
+            "# right": "339499",
+            "Mapped (%)": "99.88",
+            "Properly paired (%)": "98.97",
+            "Avg. coverage depth": "57",
+            "Coverage >= 1x (%)": "99.98",
+            "# N's per 100 kbp": "11.81"
+        }
+    },
+    "remove_hg": {
+        "were paired": "329083 (100.00%)",
+        "aligned concordantly 0 times": "329082 pairs",
+        "aligned concordantly exactly 1 time": "1 (0.00%)",
+        "aligned concordantly >1 times": "0 (0.00%)",
+        "pairs aligned concordantly 0 times": "329082",
+        "aligned discordantly 1 time": "2 (0.00%)",
+        "pairs aligned 0 times concordantly or discordantly": "329080",
+        "mates make up the pairs": "658160",
+        "aligned 0 times": "658159 (100.00%)",
+        "aligned exactly 1 time": "0 (0.00%)",
+        "aligned >1 times": "1 (0.00%)",
+        "overall alignment rate": "0.00%"
+    },
+    "all": {
+        "software": {
+            "biocontainers": {
+                "srst2": "quay.io/biocontainers/srst2:0.1.4.6"
+            }
+        }
+    }
+}
