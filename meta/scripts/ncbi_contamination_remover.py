@@ -114,16 +114,18 @@ class ContaminationRemover:
 
         if duplicated_index:
             processed_duplicated_lines = list()
-            duplicated_lines = [i for i in self.contamination_lines[duplicated_index + 2:]
-                                if not i.startswith("# ")]
+            duplicated_lines = [i for i in self.contamination_lines[duplicated_index + 2:]]
             # Removing only the first occurrence in Duplicates
             for duplicated_line in duplicated_lines:
-                processed_duplicated_lines.append(duplicated_line.strip().split(" ")[0])
+                duplicated_str = duplicated_line[0]
+                if duplicated_str.startswith("# "):
+                    continue
+                processed_duplicated_lines.append(duplicated_str.strip().split(" ")[0])
             headers_to_remove.extend(processed_duplicated_lines)
 
         self.seq_records = list(SeqIO.parse(self.sequence_file, "fasta"))
         print(f"Imported {len(self.seq_records)} raw records from '{self.sequence_file}'")
-        headers_to_remove = sorted(set(headers_to_remove))
+        headers_to_remove = sorted(set(Utilities.remove_empty_values(headers_to_remove)))
         print("{} headers were marked to remove: '{}'".format(
             len(headers_to_remove), "', '".join(headers_to_remove)
         ))
