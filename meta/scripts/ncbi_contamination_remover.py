@@ -46,6 +46,7 @@ Duplicated:
 Sequence names, length
 lcl|contig099 lcl|contig153 (452 bp)
 lcl|contig053 lcl|contig136 (2978 bp)
+contig18 RC(contig45) (565 bp)
 
 """
 # Duplicated entry was taken from another file
@@ -85,10 +86,9 @@ class ContaminationRemover:
         trim_index = self.find_index(self.contamination_lines, ["Trim:"])
         duplicated_index = self.find_index(self.contamination_lines, ["Duplicated:"])
         # Issue lines order: exclude, trim, duplicated
-        exclude_lines = []
-        duplicated_lines = []
-        trim_lines_processed = dict()
+        headers_to_remove = []
         if exclude_index:
+            exclude_lines = []
             if trim_index:
                 exclude_lines = self.contamination_lines[exclude_index + 2: trim_index]
             elif duplicated_index:
@@ -96,8 +96,10 @@ class ContaminationRemover:
             else:
                 exclude_lines = self.contamination_lines[exclude_index + 2:]
             exclude_lines = Utilities.remove_empty_values([i[0] for i in exclude_lines])
+            headers_to_remove.extend(exclude_lines)
 
         if trim_index:
+            trim_lines_processed = dict()
             if duplicated_index:
                 trim_lines_raw = self.contamination_lines[trim_index + 2: duplicated_index]
             else:
@@ -108,22 +110,27 @@ class ContaminationRemover:
                     # It seems that reported sequence positions are not zero-based
                     trim_indices[0] -= 1
                     trim_lines_processed[trim_line_raw[0]] = trim_indices
+            headers_to_remove.extend(list(trim_lines_processed.keys()))
 
         if duplicated_index:
-            duplicated_lines = self.contamination_lines[duplicated_index + 2:]
-            # Leaving only the first occurrence in Duplicates
-            duplicated_lines = [Utilities.safe_findall("(.*)\(\d+ bp\)", i[0]).split("lcl|")[2:] for i in
-                                duplicated_lines]
-            duplicated_lines = sorted(Utilities.remove_empty_values(
-                [i.strip() for i in Utilities.flatten_2d_array(duplicated_lines)]))
+            processed_duplicated_lines = list()
+            duplicated_lines = [i for i in self.contamination_lines[duplicated_index + 2:]
+                                if not i.startswith("# ")]
+            # Removing only the first occurrence in Duplicates
+            for duplicated_line in duplicated_lines:
+                processed_duplicated_lines.append(duplicated_line.strip().split(" ")[0])
+            headers_to_remove.extend(processed_duplicated_lines)
 
         self.seq_records = list(SeqIO.parse(self.sequence_file, "fasta"))
         print(f"Imported {len(self.seq_records)} raw records from '{self.sequence_file}'")
-        bad_words = sorted(set(exclude_lines + list(trim_lines_processed.keys())))
+        headers_to_remove = sorted(set(headers_to_remove))
+        print("{} headers were marked to remove: '{}'".format(
+            len(headers_to_remove), "', '".join(headers_to_remove)
+        ))
         out_records = []
         for record_raw in Utilities.remove_duplicate_sequences(self.seq_records):
             record_id = record_raw.id.split(" ")[0].strip()
-            if record_id not in bad_words:
+            if record_id not in headers_to_remove:
                 out_records.append(record_raw)
             # Some positions from the "Trim" entry after NCBI processing were moved into the "Exclude" entry
             # The point is removing them instead of trimming
