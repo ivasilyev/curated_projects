@@ -50,6 +50,8 @@ lcl|contig053 lcl|contig136 (2978 bp)
 """
 # Duplicated entry was taken from another file
 
+from time import perf_counter
+from meta.utils.date_time import count_elapsed_seconds
 from meta.scripts.Utilities import Utilities
 from Bio import SeqIO
 
@@ -116,6 +118,7 @@ class ContaminationRemover:
                 [i.strip() for i in Utilities.flatten_2d_array(duplicated_lines)]))
 
         self.seq_records = list(SeqIO.parse(self.sequence_file, "fasta"))
+        print(f"Imported {len(self.seq_records)} raw records from '{self.sequence_file}'")
         bad_words = sorted(set(exclude_lines + list(trim_lines_processed.keys())))
         out_records = []
         for record_raw in Utilities.remove_duplicate_sequences(self.seq_records):
@@ -134,9 +137,12 @@ class ContaminationRemover:
 
     def export(self, output_file):
         SeqIO.write(self.valid_records, output_file, "fasta")
+        print(f"Exported {len(self.valid_records)} valid records into '{output_file}'")
 
 
 if __name__ == '__main__':
     mainParser = ArgParser()
+    start = perf_counter()
     remover = ContaminationRemover(mainParser.input, mainParser.contamination)
     remover.export(mainParser.output)
+    print(f"Decontaminated in {count_elapsed_seconds(start)}")
