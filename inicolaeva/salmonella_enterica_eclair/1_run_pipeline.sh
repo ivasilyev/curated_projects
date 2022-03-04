@@ -85,6 +85,7 @@ curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/mas
 python3 "pipeline_handler.py" \
     --blast_dir "/data/reference/GenBank" \
     --blast_number 25 \
+    --card_json "/data/reference/CARD/card_v.3.1.4/card.json" \
     --hg_dir "/data/reference/homo_sapiens/Ensembl/GRCh38/bowtie2_idx" \
     --input "${SAMPLEDATA_FILE}" \
     --output_dir "${ROOT_DIR}pga-pe-pipeline" \
