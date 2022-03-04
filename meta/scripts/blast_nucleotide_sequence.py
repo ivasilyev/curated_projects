@@ -116,7 +116,7 @@ if __name__ == '__main__':
     out_blast_basename = os.path.join(output_directory, filename_only(nt_fasta_file))
     blast_query_file = f"{out_blast_basename}_blast_query.fna"
     blast_result_file = "{}_blast_results.json".format(out_blast_basename)
-
+    blast_query_string = ""
     blast_results = dict()
 
     if is_file_valid(blast_result_file):
@@ -133,12 +133,15 @@ if __name__ == '__main__':
                 result_number=blast_result_number
             )
             if len(blast_results.keys()) > 0:
-                dump_string(blast_query_string, blast_query_file)
-                print(f"Saved BLAST query to file '{blast_query_file}'")
-                dump_dict(blast_results, blast_result_file)
-                print(f"{len(blast_results.keys())} BLAST results were saved into {blast_result_file}")
                 break
             print(f"Empty BLAST results for attempt {attempt} of {QUERY_ATTEMPTS}")
+
+    if len(blast_results.keys()) == 0:
+        raise ValueError("Empty BLAST results!")
+    dump_string(blast_query_string, blast_query_file)
+    print(f"Saved BLAST query to file '{blast_query_file}'")
+    dump_dict(blast_results, blast_result_file)
+    print(f"{len(blast_results.keys())} BLAST results were saved into {blast_result_file}")
 
     genbank_description_file = "{}_genbank_descriptions.json".format(out_blast_basename)
     if not is_blast_only:
@@ -168,6 +171,8 @@ if __name__ == '__main__':
             ))
             genbank_descriptions[blast_result_title] = genbank_description
 
+        if len(genbank_descriptions.keys()) == 0:
+            raise ValueError("Empty GenBank descriptions!")
         dump_dict(genbank_descriptions, genbank_description_file)
         print(f"{len(genbank_descriptions.keys())} GenBank descriptions were saved into {genbank_description_file}")
 
