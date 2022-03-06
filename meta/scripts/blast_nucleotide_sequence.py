@@ -136,10 +136,10 @@ if __name__ == '__main__':
                 break
             print(f"Empty BLAST results for attempt {attempt} of {QUERY_ATTEMPTS}")
 
-    if len(blast_results.keys()) == 0:
-        raise ValueError("Empty BLAST results!")
     dump_string(blast_query_string, blast_query_file)
     print(f"Saved BLAST query to file '{blast_query_file}'")
+    if len(blast_results.keys()) == 0:
+        raise ValueError("Empty BLAST results!")
     dump_dict(blast_results, blast_result_file)
     print(f"{len(blast_results.keys())} BLAST results were saved into {blast_result_file}")
 
