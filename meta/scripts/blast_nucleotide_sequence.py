@@ -58,7 +58,7 @@ def parse_blast_report(blast_record: Record):
 
 def chop_and_blast(record: SeqRecord, chunk_size: int = QUERY_SIZE, result_number: int = 50):
     print(f"Getting random subsequence chunk of size {chunk_size} from the sequnce of size {len(record)} bp.")
-    query_string = randomize_gene_slice(record, size=chunk_size).format("fasta")
+    query_string = str(randomize_gene_slice(record, size=chunk_size).seq)
     print(f"Performing BLAST query from the sequence of length {len(query_string)}")
     _start = perf_counter()
     report = download_nt_blast_report(query_string, result_number)
@@ -114,7 +114,7 @@ if __name__ == '__main__':
         output_directory
     ) = _parse_args()
     out_blast_basename = os.path.join(output_directory, filename_only(nt_fasta_file))
-    blast_query_file = f"{out_blast_basename}_blast_query.fna"
+    blast_query_file = f"{out_blast_basename}_blast_query.txt"
     blast_result_file = "{}_blast_results.json".format(out_blast_basename)
     blast_query_string = ""
     blast_results = dict()
@@ -135,7 +135,7 @@ if __name__ == '__main__':
             )
             if len(blast_results.keys()) > 0:
                 break
-            print(f"Empty BLAST results for attempt {attempt} of {QUERY_ATTEMPTS}")
+            print(f"Empty BLAST results for attempt {attempt + 1} of {QUERY_ATTEMPTS}")
 
     dump_string(blast_query_string, blast_query_file)
     print(f"Saved BLAST query to file '{blast_query_file}'")
