@@ -129,6 +129,7 @@ if __name__ == '__main__':
             blast_query_string, blast_results = attempt_func(  # For damaged results
                 func=chop_and_blast,
                 attempts=QUERY_ATTEMPTS,
+                chunk_size=QUERY_SIZE - (attempt * 4000),  # Reducing the query size and specificity down to 4 kbp
                 record=fasta_record,
                 result_number=blast_result_number
             )
