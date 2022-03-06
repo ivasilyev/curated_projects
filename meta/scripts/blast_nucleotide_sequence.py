@@ -32,7 +32,7 @@ def download_nt_blast_report(query: str, result_number: int = 50):
     return NCBIXML.read(result_handle)
 
 
-def parse_blast_report(blast_record: Record):
+def parse_blast_record(blast_record: Record):
     # Based on: https://biopython.org/DIST/docs/tutorial/Tutorial.html#htoc95
     high_scoring_pairs = OrderedDict()
     for alignment in blast_record.alignments:
@@ -61,9 +61,11 @@ def chop_and_blast(record: SeqRecord, chunk_size: int = QUERY_SIZE, result_numbe
     query_string = str(randomize_gene_slice(record, size=chunk_size).seq)
     print(f"Performing BLAST query from the sequence of length {len(query_string)}")
     _start = perf_counter()
-    report = download_nt_blast_report(query_string, result_number)
+    blast_record = download_nt_blast_report(query_string, result_number)
     print(f"BLAST query was completed after {count_elapsed_seconds(_start)}")
-    return query_string, parse_blast_report(report)
+    parsed_report_dict = parse_blast_record(blast_record)
+    parsed_report_dict["query_bp"] = chunk_size
+    return query_string, parsed_report_dict
 
 
 def download_reference_genbank(accession_id: str):
@@ -126,10 +128,11 @@ if __name__ == '__main__':
         print("Performing new BLAST search")
         fasta_record = load_sequences(nt_fasta_file, "fasta")[0]
         for attempt in range(QUERY_ATTEMPTS):  # For empty results
+            chunk_size = QUERY_SIZE - (attempt * 4000)  # Reducing the query size and specificity down to 4 kbp
             blast_query_string, blast_results = attempt_func(  # For damaged results
                 func=chop_and_blast,
                 attempts=QUERY_ATTEMPTS,
-                chunk_size=QUERY_SIZE - (attempt * 4000),  # Reducing the query size and specificity down to 4 kbp
+                chunk_size=chunk_size,
                 record=fasta_record,
                 result_number=blast_result_number
             )
