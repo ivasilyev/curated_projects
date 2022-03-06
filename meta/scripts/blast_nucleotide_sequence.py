@@ -63,9 +63,9 @@ def chop_and_blast(record: SeqRecord, chunk_size: int = QUERY_SIZE, result_numbe
     _start = perf_counter()
     blast_record = download_nt_blast_report(query_string, result_number)
     print(f"BLAST query was completed after {count_elapsed_seconds(_start)}")
-    parsed_report_dict = parse_blast_record(blast_record)
-    parsed_report_dict["query_bp"] = chunk_size
-    return query_string, parsed_report_dict
+    parsed_report = parse_blast_record(blast_record)
+    parsed_report.update(dict(query_bp=chunk_size))
+    return query_string, parsed_report
 
 
 def download_reference_genbank(accession_id: str):
