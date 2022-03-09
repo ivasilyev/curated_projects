@@ -24,35 +24,70 @@ ORCID: 0000-0001-7799-1728
     * Java Spring Boot
     * Selenium
     * Apache JMeter
-    * Analytics / Monitoring: Zabbix, Grafana, InfluxDB, Elasticsearch
+    * Analytics / Monitoring
+      * Zabbix
+      * Grafana
+      * InfluxDB
+      * Elasticsearch
     * WebRTC (Web-P2P), SIP/VoIP
 
 * 2021 - Data Scientist at IBS Soft, Moscow, Russia
-  * The development of AI-based technology process automation management for the RUSAL's Achinsk Combined Aluminun Refinery, 1st iteration
+  * The development of AI-based technology process automation management for the RUSAL's Achinsk Combined Aluminun Refinery, the 1st iteration
     * Stack:
       * Python, Jupyter Notebook, VSCode
       * Machine Learning
         * Supervised 
-          * Regression: Linear, kNN, Random Forest, XGBoost
+          * Regression
+            * Linear
+            * kNN
+            * Random Forest
+            * XGBoost
         * Unsupervised
-          * Classification: PCA, Clustering (k-Means, DBSCAN)
+          * Classification: 
+            * PCA
+            * Clustering
+            * k-Means
+            * DBSCAN
 
 * 2017 - 2021
   * Data Engineer / DataOps at Kazan Federal University
     * Stack:
       * Data Science
         * Python, JetBrains PyCharm, Jupyter Notebook
-        * Base data processing: Biopython, Pandas, NumPy, SciPy, Matplotlib, Seaborn, Plotly
-        * Web scraping, API query automation: Requests, BeautifulSoup, Selenium, SQLAlchemy
+        * Base data processing: 
+          * Biopython
+          * Pandas
+          * NumPy
+          * SciPy
+          * Matplotlib
+          * Seaborn
+          * Plotly
+        * Web scraping, API query automation: 
+          * Requests
+          * BeautifulSoup
+          * Selenium
+          * SQLAlchemy
         * Debugging: Logging
         * Report templating: Jinja2
-      * SQL: SQLite, MySQL (MariaDB), PostgreSQL, MongoDB
+      * *SQL: 
+        * SQLite
+        * MySQL (MariaDB)
+        * PostgreSQL
+        * MongoDB
       * Automation via Linux shell, Windows CMD 
       * Advanced multi-platform automation
-        * Queing: Redis, RabbitMQ
-        * Job automation: Ansible playbooks, Kubernetes, Helm
+        * Message brokers
+          * Redis
+          * RabbitMQ
+        * Job automation
+          * Ansible playbooks 
+          * Kubernetes
+          * Helm
       * Git
-      * LaTeX, Markdown, YAML
+      * Text markup
+        * LaTeX
+        * Markdown
+        * YAML
   * Irregular / Freelance
       * Web
         * HTML5
@@ -94,17 +129,16 @@ ORCID: 0000-0001-7799-1728
   * Fate: The project discontinued due to the funding close after 2014, a year later the bacterial culture of the study strains were contaminated with Serratia spp. after unknown accident and discarded.
 
 * 2008 - 2013 Microbiology Specialist Education at Kazan Federal University
-  * Irregular / Freelance
-    * Setup and administration of various free shared servers
-    * Stack: 
-      * Java
-      * HTML 
-      * PHP
-      * MySQL
-      * Apache HTTP Server
-      * Windows
-
   * Graduate projects
+    * 2013 - A possible application of pigments produced by *Agreia bicolorata* AC1375 as fuel dyes
+      * Abstract: A coryneform actinobacteria *Agreia bicolorata* AC1375 was previously reported as a prospective producer of large amounts of red, orange and yellow pigments which have distinct optical properties. This makes it applicable for dyeing of fuels and organic liquids. 
+      * Stack: 
+        * Bacteria culturing
+        * Spectrophotometry
+        * Pigment extraction
+        * Ames test (based on the *Salmonella typhimurium* tester strain TA100)
+      * Affiliation: Kazan Federal University, the Institute of Fundamental Medicine and Biology, Kazan, Russia
+      * Fate: The project was defended successfully
     * 2011 - Bioinformatic analysis and profiling of pathogenetic propertes of Pseudomonas syringae, a plant infection agent. 
       * Abstract: A notorious human pathogen, Yersinia pestis may utilize some parts of its pathogenetic potential after activation through quorum sensing mechanics. Some of these genetic determinants were common with P. syringae responsible for infections of plants across Solanaceae family. The bacteria pathogenetic and cold resistance profiles were also reported as based on quorum sensing. 
       * Stack: 
@@ -114,16 +148,15 @@ ORCID: 0000-0001-7799-1728
         * Visual Basic and command line scripts (Windows) for simple automation
       * Affiliation: Kazan Institute of Biochemistry and Biophysics, Russian Academy of Sciences, Kazan, Russia
       * Fate: The project was defended successfully
-
-    * 2013 - A possible application of pigments produced by *Agreia bicolorata* AC1375 as fuel dyes
-      * Abstract: A coryneform actinobacteria *Agreia bicolorata* AC1375 was previously reported as a prospective producer of large amounts of red, orange and yellow pigments which have distinct optical properties. This makes it applicable for dyeing of fuels and organic liquids. 
-      * Stack: 
-        * Bacteria culturing
-        * Spectrophotometry
-        * Pigment extraction
-        * Ames test (based on Salmonella typhimurium TA100)
-      * Affiliation: Kazan Federal University, the Institute of Fundamental Medicine and Biology, Kazan, Russia
-      * Fate: The project was defended successfully
+  * Irregular / Freelance
+    * Setup and administration of various free shared servers
+    * Stack: 
+      * Java
+      * HTML 
+      * PHP
+      * MySQL
+      * Apache HTTP Server
+      * Windows
 
 * 2008 - Graduated at the Secondary Boarding School “Lyceum named after N. Lobachevsky” of Kazan (Volga region) Federal University
   * Social-economic profile class
