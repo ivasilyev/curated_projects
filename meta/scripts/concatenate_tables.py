@@ -7,12 +7,11 @@ from meta.utils.pandas import load_tsv, dump_tsv
 from meta.utils.file_system import is_file_valid
 from meta.utils.primitive import remove_empty_values
 from meta.utils.date_time import count_elapsed_seconds
-from argparse import ArgumentParser, RawTextHelpFormatter
 
 
 def parse_args():
+    from argparse import ArgumentParser
     parser = ArgumentParser(
-        formatter_class=RawTextHelpFormatter,
         description="Concatenate tabular separated data which has same (or almost same) header",
         epilog="The core method reference: https://pandas.pydata.org/docs/reference/api/pandas.concat.html"
     )
@@ -37,9 +36,14 @@ if __name__ == '__main__':
         raise ValueError("No valid tables!")
     dataframes = []
     for table_file in table_files:
-        dataframes.append(load_tsv(table_file))
+        dataframe = load_tsv(table_file)
+        if dataframe.shape[0] == 0:
+            continue
+        dataframe["source_table_file_name"] = table_file
+        dataframes.append(dataframe)
 
-    if len(index) > 0:
+    is_index = len(index) > 0
+    if is_index:
         for dataframe in dataframes:
             dataframe.set_index(index, inplace=True)
 
@@ -51,4 +55,4 @@ if __name__ == '__main__':
     ).rename_axis(index=index).sort_index()
     print(f"Concatenation completed in {count_elapsed_seconds(start)}")
 
-    dump_tsv(out_df, output_table, reset_index=True)
+    dump_tsv(out_df, output_table, reset_index=is_index)
