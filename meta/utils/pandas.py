@@ -115,3 +115,13 @@ def merge(left_df: pd.DataFrame, right_df: pd.DataFrame, on: str, how: str = "ou
     if deduplicate:
         out = deduplicate_df_by_row_merging(out, on)
     return out
+
+
+def count_column_sizes(df: pd.DataFrame):
+    return df.apply(lambda y: max(y.map(lambda x: len(str(x)))))
+
+
+def remove_longest_columns(df: pd.DataFrame, size: int = 32767):  # M$ Excel cell size limit
+    max_lengths = count_column_sizes(df)
+    return df.loc[:, max_lengths.loc[max_lengths < size].index]
+
