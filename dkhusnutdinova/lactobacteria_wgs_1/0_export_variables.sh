@@ -13,3 +13,7 @@ cd "${ROOT_DIR}" || exit 1
 curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/dkhusnutdinova/lactobacteria_wgs_1/1_run_pipeline.sh"
 bash "1_run_pipeline.sh"
 rm -f "1_run_pipeline.sh"
+
+curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/mshvydkaya/clostridia_wgs/2_combine_coverage_excel.sh"
+bash "2_combine_coverage_excel.sh"
+rm -f "2_combine_coverage_excel.sh"
