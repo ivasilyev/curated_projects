@@ -34,7 +34,12 @@ def _parse_args():
 
 
 if __name__ == '__main__':
-    rgi_dir, card_version, nbee_dir, out_file = _parse_args()
+    (
+        rgi_dir,
+        card_version,
+        nbee_dir,
+        out_file
+    ) = _parse_args()
     # RGI
     rgi_tables = find_file_by_tail(dir_name=rgi_dir, multiple=True, tail=".txt")
     merged_rgi_df = pd.DataFrame()
@@ -46,8 +51,11 @@ if __name__ == '__main__':
         columns = rgi_df.columns.tolist()
         rgi_df["sample_name"] = filename_only(rgi_table)
         rgi_df = rgi_df.loc[:, ["sample_name"] + columns]
+        print(f"Concatenate dataframes with shapes {rgi_df.shape}, {merged_rgi_df.shape}")
         merged_rgi_df = pd.concat([merged_rgi_df, rgi_df], axis=0, ignore_index=True)
-    sheets = {"_".join(remove_empty_values(["card", card_version])): merged_rgi_df}
+    reference_name = "_".join(remove_empty_values(["card", card_version]))
+    print(f"Finished concatenating tables for '{reference_name}'")
+    sheets = {reference_name: merged_rgi_df}
     # Other references
     reference_dirs = scan_top_level_directories(nbee_dir)
     for reference_dir in reference_dirs:
@@ -65,6 +73,8 @@ if __name__ == '__main__':
             columns = coverage_df.columns.tolist()
             coverage_df["sample_name"] = coverage_table.replace(tail, "")
             coverage_df = coverage_df.loc[:, ["sample_name"] + columns]
+            print(f"Concatenate dataframes with shapes {coverage_df.shape}, {merged_coverage_df.shape}")
             merged_coverage_df = pd.concat([merged_coverage_df, coverage_df], axis=0, ignore_index=True)
+        print(f"Finished concatenating tables for '{reference_name}'")
         sheets[reference_name] = merged_coverage_df
     dfs_dict_to_excel(sheets, out_file)
