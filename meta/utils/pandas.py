@@ -121,6 +121,13 @@ def count_column_sizes(df: pd.DataFrame):
     return df.apply(lambda y: max(y.map(lambda x: len(str(x)))))
 
 
+def dfs_dict_to_excel(d: dict, file: str):
+    import xlsxwriter
+    w = pd.ExcelWriter(file, engine="xlsxwriter")
+    _ = [v.to_excel(w, index=False, sheet_name=k) for k, v in d.items()]
+    w.save()
+
+
 def remove_longest_columns(df: pd.DataFrame, size: int = 32767):  # M$ Excel cell size limit
     max_lengths = count_column_sizes(df)
     return df.loc[:, max_lengths.loc[max_lengths < size].index]
