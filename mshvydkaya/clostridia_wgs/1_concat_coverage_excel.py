@@ -71,7 +71,7 @@ if __name__ == '__main__':
                 continue
             coverage_df = remove_longest_columns(coverage_df, CELL_SIZE_LIMIT)
             columns = coverage_df.columns.tolist()
-            coverage_df["sample_name"] = coverage_table.replace(tail, "")
+            coverage_df["sample_name"] = os.path.basename(coverage_table).replace(tail, "")
             coverage_df = coverage_df.loc[:, ["sample_name"] + columns]
             print(f"Concatenate dataframes with shapes {coverage_df.shape}, {merged_coverage_df.shape}")
             merged_coverage_df = pd.concat([merged_coverage_df, coverage_df], axis=0, ignore_index=True)
