@@ -46,6 +46,12 @@ def scan_whole_dir(dir_name: str):
     return sorted(out)
 
 
+def scan_top_level_directories(dir_name: str):
+    return sorted(
+        [j for j in [os.path.join(dir_name, i) for i in os.listdir(dir_name)] if os.path.isdir(j)]
+    )
+
+
 def find_file_by_tail(dir_name: str, tail: str, multiple: bool = False):
     files = [i for i in scan_whole_dir(dir_name) if i.endswith(tail)]
     if len(files) == 0:
