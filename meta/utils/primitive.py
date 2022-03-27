@@ -33,6 +33,10 @@ def flatten_2d_array(array: list):
     return [j for i in array for j in i]
 
 
+def flatten_string(s: str):
+    return re.sub("[ \r\n]+", " ", s)
+
+
 def split_lines(string: str):
     out = [i.strip() for i in re.split("[\r\n]+", string)]
     return remove_empty_values(out)

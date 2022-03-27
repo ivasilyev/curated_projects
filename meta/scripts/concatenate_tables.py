@@ -3,10 +3,12 @@
 
 import pandas as pd
 from time import perf_counter
-from meta.utils.pandas import load_tsv, dump_tsv
 from meta.utils.file_system import is_file_valid
 from meta.utils.primitive import remove_empty_values
 from meta.utils.date_time import count_elapsed_seconds
+from meta.utils.pandas import load_tsv, dump_tsv, dwell_df_on_column
+
+PATH_COL_NAME = "source_table_file_name"
 
 
 def parse_args():
@@ -39,7 +41,7 @@ if __name__ == '__main__':
         dataframe = load_tsv(table_file)
         if dataframe.shape[0] == 0:
             continue
-        dataframe["source_table_file_name"] = table_file
+        dataframe[PATH_COL_NAME] = table_file
         dataframes.append(dataframe)
 
     is_index = len(index) > 0
@@ -55,4 +57,5 @@ if __name__ == '__main__':
     ).rename_axis(index=index).sort_index()
     print(f"Concatenation completed in {count_elapsed_seconds(start)}")
 
+    out_df = dwell_df_on_column(out_df, PATH_COL_NAME)
     dump_tsv(out_df, output_table, reset_index=is_index)

@@ -132,3 +132,8 @@ def remove_longest_columns(df: pd.DataFrame, size: int = 32767):  # M$ Excel cel
     max_lengths = count_column_sizes(df)
     return df.loc[:, max_lengths.loc[max_lengths < size].index]
 
+
+def dwell_df_on_column(df: pd.DataFrame, column_name: str):
+    if column_name not in df.columns:
+        return df
+    return df.loc[:, [column_name] + [i for i in df.columns if i != column_name]]
