@@ -21,7 +21,7 @@ def _parse_args():
                         help="Column name(s) containing replacer(s)")
     parser.add_argument("--separator", default=" ",
                         help="Separator to join, the space as default")
-    parser.add_argument("o", "--output_file", required=True,
+    parser.add_argument("-o", "--output_file", required=True,
                         help="Output file")
     _namespace = parser.parse_args()
     return (
