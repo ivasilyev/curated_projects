@@ -7,10 +7,11 @@
 ## Science Identifiers
 
 ```text
-Web of Science ResearcherID: 41607305 
-Scopus Author ID: 57192962614 
-eLibrary SPIN: 5197-0221 
-ORCID: 0000-0001-7799-1728 
+eLibrary SPIN: 5197-0221
+Google Scholar ID: NWeDY5kAAAAJ
+ORCID: 0000-0001-7799-1728
+Scopus Author ID: 57192962614
+Web of Science ResearcherID: 41607305
 ```
 
 ## Experience History
