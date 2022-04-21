@@ -4,15 +4,14 @@
 
 ## Name: Vasilyev Ilya 
 
-## Science Identifiers
+## Science Identifiers:
 
-```text
-eLibrary SPIN: 5197-0221
-Google Scholar ID: NWeDY5kAAAAJ
-ORCID: 0000-0001-7799-1728
-Scopus Author ID: 57192962614
-Web of Science ResearcherID: 41607305
-```
+* eLibrary SPIN: [5197-0221](https://elibrary.ru/author_profile.asp?authorid=285801 "eLibrary SPIN")
+* Google Scholar ID: [NWeDY5kAAAAJ](https://scholar.google.com/citations?user=NWeDY5kAAAAJ&hl=en "Google Scholar ID")
+* ORCID: [0000-0001-7799-1728](https://orcid.org/0000-0001-7799-1728 "ORCID")
+* Scopus Author ID: [57192962614](https://www.scopus.com/authid/detail.uri?authorId=57192962614 "Scopus Author ID")
+* Web of Science (Clarivate) ResearcherID: [41607305](https://www.webofscience.com/wos/author/record/41607305 "Web of Science (Clarivate) ResearcherID")
+* Web of Science (Publons) ID: [2273178](https://publons.com/researcher/2273178 "Web of Science (Publons) ID")
 
 ## Experience History
 
