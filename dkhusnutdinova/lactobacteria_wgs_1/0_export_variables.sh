@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
-export ROOT_DIR="/data04/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/"
-export SRC_DIRS=(
+export ROOT_DIR="/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/"
+declare -ax SRC_DIRS=(
   "/data2/bio/Lactobacillus_Dilyara/raw/"
   "/data1/bio/220225_NB501097_0075_AHWH5YBGXF/Conversion_lactobacilli/Lactobacilli/"
+  "/data1/bio/220514_M01969_0098_000000000-JWH22/Conversion/lacto/"
 )
 
 mkdir -p "${ROOT_DIR}"
@@ -15,5 +16,6 @@ bash "1_run_pipeline.sh"
 rm -f "1_run_pipeline.sh"
 
 curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/mshvydkaya/clostridia_wgs/2_combine_coverage_excel.sh"
+sed -E -i 's|--card_version "[^"]+"|--card_version "v3.2.2" \ |g' "2_combine_coverage_excel.sh"
 bash "2_combine_coverage_excel.sh"
 rm -f "2_combine_coverage_excel.sh"

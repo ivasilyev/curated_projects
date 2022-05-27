@@ -17,7 +17,7 @@ for SRC_DIR in ${SRC_DIRS[@]}
 
         echo "Unpack reads from ${SRC_DIR}"
 
-        cd "${RAW_DIR}"
+        cd "${RAW_DIR}" || exit 1
 
         find "${SRC_DIR}" \
             -name '*.gz' \
@@ -32,6 +32,22 @@ for SRC_DIR in ${SRC_DIRS[@]}
                     BASENAME="$(basename "${FILE%.*}")";
                     echo "Decompress ${FILE} to ${RAW_DIR}${BASENAME}";
                     zcat "${FILE}" > "${RAW_DIR}${BASENAME}";
+                '
+        echo "Deploy symlinks from ${SRC_DIR}"
+
+        find "${SRC_DIR}" \
+            -name '*.fastq' \
+            -type f \
+            -print0 \
+        | xargs \
+            -0 \
+            --max-procs "$(nproc)" \
+            -I "{}" \
+                bash -c '
+                    FILE="{}";
+                    BASENAME="$(basename "${FILE}")";
+                    echo "Linking ${FILE} to ${RAW_DIR}${BASENAME}";
+                    ln -s "${FILE}" "${RAW_DIR}${BASENAME}";
                 '
     done
 
@@ -72,7 +88,7 @@ curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/mas
 python3 "pipeline_handler.py" \
     --blast_dir "/data/reference/GenBank" \
     --blast_number 25 \
-    --card_json "/data/reference/CARD/card_v.3.1.4/card.json" \
+    --card_json "/data/reference/CARD/card_v.3.2.2/card.json" \
     --hg_dir "/data/reference/homo_sapiens/Ensembl/GRCh38/bowtie2_idx" \
     --input "${SAMPLEDATA_FILE}" \
     --output_dir "${ROOT_DIR}pga-pe-pipeline" \

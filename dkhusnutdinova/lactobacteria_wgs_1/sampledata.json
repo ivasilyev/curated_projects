@@ -1,113 +1,385 @@
 {
+    "17CD": {
+        "name": "17CD",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/17CD.006.1.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/17CD.006.2.fastq"
+        ],
+        "taxa": ""
+    },
+    "184UC": {
+        "name": "184UC",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/184UC.012.1.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/184UC.012.2.fastq"
+        ],
+        "taxa": ""
+    },
+    "190CD.004": {
+        "name": "190CD.004",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/190CD.004.1.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/190CD.004.2.fastq"
+        ],
+        "taxa": ""
+    },
+    "190CD.011": {
+        "name": "190CD.011",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/190CD.011.1.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/190CD.011.2.fastq"
+        ],
+        "taxa": ""
+    },
+    "199CD": {
+        "name": "199CD",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/199CD.026.1.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/199CD.026.2.fastq"
+        ],
+        "taxa": ""
+    },
+    "208CD.004": {
+        "name": "208CD.004",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/208CD.004.1.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/208CD.004.2.fastq"
+        ],
+        "taxa": ""
+    },
+    "208CD.008": {
+        "name": "208CD.008",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/208CD.008.1.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/208CD.008.2.fastq"
+        ],
+        "taxa": ""
+    },
+    "208CD.009": {
+        "name": "208CD.009",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/208CD.009.1.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/208CD.009.2.fastq"
+        ],
+        "taxa": ""
+    },
+    "217UC": {
+        "name": "217UC",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/217UC.026.1.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/217UC.026.2.fastq"
+        ],
+        "taxa": ""
+    },
+    "218CD.001": {
+        "name": "218CD.001",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/218CD.001.1.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/218CD.001.2.fastq"
+        ],
+        "taxa": ""
+    },
+    "218CD.005": {
+        "name": "218CD.005",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/218CD.005.1.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/218CD.005.2.fastq"
+        ],
+        "taxa": ""
+    },
+    "21CTRL": {
+        "name": "21CTRL",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/21CTRL.025.1.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/21CTRL.025.2.fastq"
+        ],
+        "taxa": ""
+    },
+    "21UC": {
+        "name": "21UC",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/21UC.022.1.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/21UC.022.2.fastq"
+        ],
+        "taxa": ""
+    },
+    "33CTRL": {
+        "name": "33CTRL",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/33CTRL.011.1.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/33CTRL.011.2.fastq"
+        ],
+        "taxa": ""
+    },
+    "48CD": {
+        "name": "48CD",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/48CD.007.1.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/48CD.007.2.fastq"
+        ],
+        "taxa": ""
+    },
+    "59UC": {
+        "name": "59UC",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/59UC.009.1.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/59UC.009.2.fastq"
+        ],
+        "taxa": ""
+    },
+    "66UC": {
+        "name": "66UC",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/66UC.010.1.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/66UC.010.2.fastq"
+        ],
+        "taxa": ""
+    },
+    "70UC": {
+        "name": "70UC",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/70UC.013.1.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/70UC.013.2.fastq"
+        ],
+        "taxa": ""
+    },
+    "71UC": {
+        "name": "71UC",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/71UC.026.1.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/71UC.026.2.fastq"
+        ],
+        "taxa": ""
+    },
+    "7UC": {
+        "name": "7UC",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/7UC.021.1.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/7UC.021.2.fastq"
+        ],
+        "taxa": ""
+    },
+    "A15-1-18": {
+        "name": "A15-1-18",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/A15-1-18_S7_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/A15-1-18_S7_R2_001.fastq"
+        ],
+        "taxa": ""
+    },
+    "A4-2-12": {
+        "name": "A4-2-12",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/A4-2-12_S4_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/A4-2-12_S4_R2_001.fastq"
+        ],
+        "taxa": ""
+    },
+    "A8-1-14-17": {
+        "name": "A8-1-14-17",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/A8-1-14-17_S5_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/A8-1-14-17_S5_R2_001.fastq"
+        ],
+        "taxa": ""
+    },
+    "A8-1-17-13": {
+        "name": "A8-1-17-13",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/A8-1-17-13_S6_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/A8-1-17-13_S6_R2_001.fastq"
+        ],
+        "taxa": ""
+    },
+    "L10": {
+        "name": "L10",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/L10_S10_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/L10_S10_R2_001.fastq"
+        ],
+        "taxa": ""
+    },
+    "L1": {
+        "name": "L1",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/L1_S1_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/L1_S1_R2_001.fastq"
+        ],
+        "taxa": ""
+    },
+    "L2": {
+        "name": "L2",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/L2_S2_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/L2_S2_R2_001.fastq"
+        ],
+        "taxa": ""
+    },
+    "L3": {
+        "name": "L3",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/L3_S3_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/L3_S3_R2_001.fastq"
+        ],
+        "taxa": ""
+    },
+    "L4": {
+        "name": "L4",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/L4_S4_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/L4_S4_R2_001.fastq"
+        ],
+        "taxa": ""
+    },
+    "L5": {
+        "name": "L5",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/L5_S5_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/L5_S5_R2_001.fastq"
+        ],
+        "taxa": ""
+    },
+    "L6": {
+        "name": "L6",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/L6_S6_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/L6_S6_R2_001.fastq"
+        ],
+        "taxa": ""
+    },
+    "L7": {
+        "name": "L7",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/L7_S7_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/L7_S7_R2_001.fastq"
+        ],
+        "taxa": ""
+    },
+    "L8": {
+        "name": "L8",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/L8_S8_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/L8_S8_R2_001.fastq"
+        ],
+        "taxa": ""
+    },
+    "L9": {
+        "name": "L9",
+        "reads": [
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/L9_S9_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/L9_S9_R2_001.fastq"
+        ],
+        "taxa": ""
+    },
     "Lacto10": {
         "name": "Lacto10",
         "reads": [
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto10_S10_R1_001.fastq",
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto10_S10_R2_001.fastq"
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto10_S10_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto10_S10_R2_001.fastq"
         ],
         "taxa": ""
     },
     "Lacto11": {
         "name": "Lacto11",
         "reads": [
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto11_S11_R1_001.fastq",
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto11_S11_R2_001.fastq"
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto11_S11_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto11_S11_R2_001.fastq"
         ],
         "taxa": ""
     },
     "Lacto1": {
         "name": "Lacto1",
         "reads": [
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto1_S1_R1_001.fastq",
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto1_S1_R2_001.fastq"
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto1_S1_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto1_S1_R2_001.fastq"
         ],
         "taxa": ""
     },
     "Lacto2": {
         "name": "Lacto2",
         "reads": [
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto2_S2_R1_001.fastq",
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto2_S2_R2_001.fastq"
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto2_S2_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto2_S2_R2_001.fastq"
         ],
         "taxa": ""
     },
     "Lacto3": {
         "name": "Lacto3",
         "reads": [
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto3_S3_R1_001.fastq",
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto3_S3_R2_001.fastq"
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto3_S3_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto3_S3_R2_001.fastq"
         ],
         "taxa": ""
     },
     "Lacto4": {
         "name": "Lacto4",
         "reads": [
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto4_S4_R1_001.fastq",
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto4_S4_R2_001.fastq"
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto4_S4_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto4_S4_R2_001.fastq"
         ],
         "taxa": ""
     },
     "Lacto5": {
         "name": "Lacto5",
         "reads": [
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto5_S1_R1_001.fastq",
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto5_S1_R2_001.fastq"
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto5_S1_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto5_S1_R2_001.fastq"
         ],
         "taxa": ""
     },
     "Lacto6": {
         "name": "Lacto6",
         "reads": [
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto6_S6_R1_001.fastq",
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto6_S6_R2_001.fastq"
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto6_S6_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto6_S6_R2_001.fastq"
         ],
         "taxa": ""
     },
     "Lacto7": {
         "name": "Lacto7",
         "reads": [
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto7_S7_R1_001.fastq",
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto7_S7_R2_001.fastq"
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto7_S7_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto7_S7_R2_001.fastq"
         ],
         "taxa": ""
     },
     "Lacto8": {
         "name": "Lacto8",
         "reads": [
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto8_S8_R1_001.fastq",
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto8_S8_R2_001.fastq"
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto8_S8_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto8_S8_R2_001.fastq"
         ],
         "taxa": ""
     },
     "Lacto9": {
         "name": "Lacto9",
         "reads": [
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto9_S9_R1_001.fastq",
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto9_S9_R2_001.fastq"
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto9_S9_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lacto9_S9_R2_001.fastq"
         ],
         "taxa": ""
     },
-    "Lp227": {
-        "name": "Lp227",
+    "Lp227-5": {
+        "name": "Lp227-5",
         "reads": [
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lp227-5_S35_R1_001.fastq",
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lp227-5_S35_R2_001.fastq"
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lp227-5_S35_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lp227-5_S35_R2_001.fastq"
         ],
         "taxa": ""
     },
     "Lp242-7": {
         "name": "Lp242-7",
         "reads": [
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lp242-7_S34_R1_001.fastq",
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lp242-7_S34_R2_001.fastq"
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lp242-7_S34_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/Lp242-7_S34_R2_001.fastq"
         ],
         "taxa": ""
     },
     "LpAC": {
         "name": "LpAC",
         "reads": [
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/LpAC_S36_R1_001.fastq",
-            "/data1/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/LpAC_S36_R2_001.fastq"
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/LpAC_S36_R1_001.fastq",
+            "/data03/bio/projects/dkhusnutdinova/lactobacteria_wgs_1/raw/LpAC_S36_R2_001.fastq"
         ],
         "taxa": ""
     }
