@@ -46,9 +46,37 @@ def regex_based_tokenization(regex_dict: dict, string: str, include_source: bool
         else:
             extract_regex = regexes[0]
             excise_regex = regexes[1]
-        token = safe_findall(extract_regex, _string, verbose=verbose)
-
-
         out[key] = safe_findall(extract_regex, _string, verbose=verbose).strip()
         _string = re.sub(excise_regex, "", _string)
+    return out
+
+
+def get_most_similar_pair_for_word(word: str, words: list):
+    from difflib import SequenceMatcher
+    # For more complicated matching, use stemming algorithms
+    _words = [i for i in sorted(set(words)) if i != word]
+    sorted_ratios = sorted(
+        {i: SequenceMatcher(a=word, b=i).ratio() for i in _words}.items(),
+        key=lambda x: x[1],
+        reverse=True
+    )
+    try:
+        out = sorted_ratios[0][0]
+    except IndexError:
+        print(f"Cannot process: '{word}', '{words}'")
+        raise
+    return [word, out]
+
+
+def get_most_similar_word_pairs(words: list):
+    import joblib as jb
+    _words = sorted(set(words))
+    out = []
+    word_pairs = jb.Parallel()(
+        jb.delayed(get_most_similar_pair_for_word)(i, _words) for i in _words
+    )
+    for word_pair in word_pairs:
+        word_pair = sorted(word_pair)
+        if word_pair not in out:
+            out.append(word_pair)
     return out
