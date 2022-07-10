@@ -178,7 +178,7 @@ from meta.utils.file_system import find_file_by_tail
 def tokenize_reads_file_name(s: str):
     d = regex_based_tokenization({
         "extension": ["\.(.{2,8})$", "(\..{2,8})$"],  # E.g. '.fastq.gz'
-        "last_segment": ["[^A-Za-z0-9]([A-Za-z0-9]+)$", "([^A-Za-z0-9][A-Za-z0-9]+)$"], # The last segment is always 001,
+        "last_segment": ["[^A-Za-z0-9]([A-Za-z0-9]+)$", "([^A-Za-z0-9][A-Za-z0-9]+)$"],  # The last segment is always 001,
         "read_index": ["[^A-Za-z0-9](R[0-9]+)$", "([^A-Za-z0-9]R[0-9]+)$"],
         "lane_number": ["[^A-Za-z0-9](L[0-9]+)$", "([^A-Za-z0-9]L[0-9]+)$"],
         "sample_sheet_number": ["[^A-Za-z0-9](S[0-9]+)$", "([^A-Za-z0-9]S[0-9]+)$"],
@@ -188,12 +188,8 @@ def tokenize_reads_file_name(s: str):
     return d
 
 
-def create_sampledata_dict_from_dir(directory: str, reads_extension: str = DEFAULT_REGEX):
-    reads_files = find_file_by_tail(
-        directory, ".{}".format(reads_extension.strip(".")), multiple=True
-    )
+def create_sampledata_dict_from_list(reads_files: list):
     tokenized_reads_files = [tokenize_reads_file_name(i) for i in reads_files]
-
     out = dict()
     for token_dict in tokenized_reads_files:
         sample_name = token_dict["sample_name"]
@@ -207,6 +203,13 @@ def create_sampledata_dict_from_dir(directory: str, reads_extension: str = DEFAU
                 "taxa": ""
             }
     return out
+
+
+def create_sampledata_dict_from_dir(directory: str, reads_extension: str = DEFAULT_READS_EXTENSION):
+    reads_files = find_file_by_tail(
+        directory, ".{}".format(reads_extension.strip(".")), multiple=True
+    )
+    return create_sampledata_dict_from_list(reads_files)
 
 
 def parse_args():

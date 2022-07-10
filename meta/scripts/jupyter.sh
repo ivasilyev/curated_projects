@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/meta/scripts/jupyter.sh"
+# curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/meta/scripts/jupyter.sh"
 # bash "jupyter.sh"
 
 force_docker_pull () {
