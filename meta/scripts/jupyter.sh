@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/meta/scripts/jupyter.sh"
+# bash "jupyter.sh"
+
 force_docker_pull () {
     while true
     do
@@ -35,14 +38,13 @@ docker run \
     --volume /data2:/data2 \
     --volume /data03:/data03 \
     --volume /data04:/data04 \
-    "${IMG}" bash
-
-
-git pull --quiet && \
-jupyter lab \
-    --ip=0.0.0.0 \
-    --no-browser \
-    --NotebookApp.token=TOKEN \
-    --port=31522
+    "${IMG}" bash -c '
+        git pull --quiet && \
+        jupyter lab \
+            --ip=0.0.0.0 \
+            --no-browser \
+            --NotebookApp.token=TOKEN \
+            --port=31522
+    '
 
 # Web access: `http://<ip>:31522/?token=TOKEN`
