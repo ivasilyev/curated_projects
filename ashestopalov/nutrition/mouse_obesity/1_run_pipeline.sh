@@ -23,9 +23,10 @@ docker run \
                 --output "${SAMPLEDATA_DIR}"
         '
 
-ROOT_DIR="$(realpath "${ROOT_DIR}")"
-SAMPLEDATA_DIR="$(realpath "${SAMPLEDATA_DIR}")"
+ROOT_DIR="$(realpath "${ROOT_DIR}")/"
+SAMPLEDATA_DIR="$(realpath "${SAMPLEDATA_DIR}")/"
 
+echo "Working on ${ROOT_DIR}"
 SCRIPT_DIR="${ROOT_DIR}scripts/"
 SAMPLEDATA_CSV="${SAMPLEDATA_DIR}sample_data.csv"
 METADATA_TSV="${SAMPLEDATA_DIR}meta_data.tsv"
@@ -33,7 +34,7 @@ METADATA_TSV="${SAMPLEDATA_DIR}meta_data.tsv"
 QIIME2_DIR="${ROOT_DIR}qiime2/"
 PICRUST2_DIR="${ROOT_DIR}picrust2/"
 
-echo Run QIIME2
+echo "Run QIIME2 in ${QIIME2_DIR}"
 mkdir -p "${QIIME2_DIR}" "${SCRIPT_DIR}"
 
 cd "${SCRIPT_DIR}" || exit 1
@@ -67,10 +68,10 @@ cd "${ROOT_DIR}" || exit 1
 
 
 
-echo Run PICRUSt2
-WORK_DIR="${ROOT_DIR}picrust2"
-mkdir -p "${WORK_DIR}"
-cd "${WORK_DIR}" || exit 1
+export PICRUST2_DIR="${ROOT_DIR}picrust2"
+echo "Run PICRUSt2 in ${PICRUST2_DIR}"
+mkdir -p "${PICRUST2_DIR}"
+cd "${PICRUST2_DIR}" || exit 1
 curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/mouse_obesity/3_run_picrust2.sh" \
   -o "${SCRIPT_DIR}run_picrust2.sh"
 
@@ -82,7 +83,8 @@ docker run --rm --net=host \
     -v /data03:/data03 \
     -v /data04:/data04 \
     -e QIIME2_DIR="${QIIME2_DIR}" \
+    -e PICRUST2_DIR="${PICRUST2_DIR}" \
     --workdir="${PICRUST2_DIR}" \
     ${IMG} bash "${SCRIPT_DIR}run_picrust2.sh"
-
+PICRUST2_DIRPICRUST2_DIR
 cd "${ROOT_DIR}" || exit 1

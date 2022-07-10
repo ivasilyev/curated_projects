@@ -2,7 +2,9 @@
 
 # PICRUST2_DIR and QIIME2_DIR variables are defined externally
 
-mkdir -p "${PICRUST2_DIR}/${LOGS_DIR}"
+export LOGS_DIR="${PICRUST2_DIR}/logs"
+mkdir -p "${LOGS_DIR}"
+
 cd "${PICRUST2_DIR}" || exit 1
 
 # The output directory must not exist
