@@ -189,7 +189,9 @@ def tokenize_reads_file_name(s: str):
 
 
 def create_sampledata_dict_from_list(reads_files: list):
-    tokenized_reads_files = [tokenize_reads_file_name(i) for i in reads_files]
+    tokenized_reads_files = [
+        tokenize_reads_file_name(i) for i in sorted(sorted(reads_files), key=len, reverse=True)
+    ]
     out = dict()
     for token_dict in tokenized_reads_files:
         sample_name = token_dict["sample_name"]
