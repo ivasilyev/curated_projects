@@ -197,13 +197,13 @@ def create_sampledata_dict_from_list(reads_files: list):
         sample_name = token_dict["sample_name"]
         if sample_name in out.keys():
             out[sample_name]["reads"].append(token_dict["reads_file"])
-            out[sample_name]["reads"].sort()
         else:
             out[sample_name] = {
                 "name": sample_name,
                 "reads": [token_dict["reads_file"], ],
                 "taxa": ""
             }
+        out[sample_name]["reads"] = sorted(out[sample_name]["reads"])
     return out
 
 
@@ -212,6 +212,21 @@ def create_sampledata_dict_from_dir(directory: str, reads_extension: str = DEFAU
         directory, ".{}".format(reads_extension.strip(".")), multiple=True
     )
     return create_sampledata_dict_from_list(reads_files)
+
+
+def convert_sampledata_to_qiime2_sampledata(sampledata_dict: dict):
+    import pandas as pd
+    out = []
+    for sampledata_line in sampledata_dict.values():
+        for sampledata_reads_file, direction in zip(
+                sorted(sampledata_line["reads"]), ["forward", "reverse"]
+        ):
+            out.append({
+                "sample-id": sampledata_line["name"],
+                "absolute-filepath": sampledata_reads_file,
+                "direction": direction
+            })
+    return pd.DataFrame(out).sort_values("sample-id")
 
 
 def parse_args():
