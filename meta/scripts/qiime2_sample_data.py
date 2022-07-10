@@ -63,7 +63,7 @@ def parse_args():
                         help="Input directory")
     parser.add_argument("-e", "--extension", default=DEFAULT_READS_EXTENSION,
                         help="Extension of reads files")
-    parser.add_argument("-o", "--output_dir", required=True,
+    parser.add_argument("-o", "--output", required=True,
                         help="Output directory")
     _namespace = parser.parse_args()
     return _namespace.input, _namespace.extension, _namespace.output
