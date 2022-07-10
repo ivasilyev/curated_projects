@@ -59,12 +59,10 @@ def parse_args():
                     "input directory and dump them into the output directory".strip(),
         epilog=""
     )
-    parser.add_argument("-i", "--input", nargs="+",
-                        help="Input directory")
+    parser.add_argument("-i", "--input", help="Input directory")
     parser.add_argument("-e", "--extension", default=DEFAULT_READS_EXTENSION,
                         help="Extension of reads files")
-    parser.add_argument("-o", "--output", required=True,
-                        help="Output directory")
+    parser.add_argument("-o", "--output", required=True, help="Output directory")
     _namespace = parser.parse_args()
     return _namespace.input, _namespace.extension, _namespace.output
 
