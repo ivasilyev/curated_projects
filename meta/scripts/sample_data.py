@@ -4,7 +4,6 @@
 import os
 import re
 import json
-import pandas as pd
 from meta.scripts.Utilities import Utilities
 from argparse import ArgumentParser, RawTextHelpFormatter
 
@@ -213,56 +212,6 @@ def create_sampledata_dict_from_dir(directory: str, reads_extension: str = DEFAU
         directory, ".{}".format(reads_extension.strip(".")), multiple=True
     )
     return create_sampledata_dict_from_list(reads_files)
-
-
-def qiime2_convert_sampledata(sampledata_dict: dict):
-    sample_data_dicts = []
-    for sampledata_line in sampledata_dict.values():
-        for sampledata_reads_file, direction in zip(
-            sorted(sampledata_line["reads"]), ["forward", "reverse"]
-        ):
-            sample_data_dicts.append({
-                "sample-id": sampledata_line["name"],
-                "absolute-filepath": sampledata_reads_file,
-                "direction": direction
-            })
-    s = "categorical"
-    meta_data_dicts = [{
-        "#SampleID": "#q2:types",
-        "BarcodeSequence": s,
-        "LinkerPrimerSequence": s,
-        "Description": s,
-        "sample_source": s
-    }, ]
-    for sample_name in sorted(sampledata_dict.keys()):
-        meta_data_dicts.extend([{
-            "#SampleID": sample_name,
-            "BarcodeSequence": "",
-            "LinkerPrimerSequence": "",
-            "Description": sample_name,
-            "sample_source": ""
-        }])
-    return {
-        "sample_data": pd.DataFrame(sample_data_dicts).sort_values("absolute-filepath"),
-        "meta_data": pd.DataFrame(meta_data_dicts)
-    }
-
-
-def qiime2_convert_and_dump_sampledata(sampledata_dict: dict, directory: str):
-    dfs = qiime2_convert_sampledata(sampledata_dict)
-    for key, df in dfs.items():
-        if key == "sample_data":
-            sep = ","
-            ext = "csv"
-        else:
-            sep: "\t"
-            ext = "tsv"
-        df.to_csv(
-            os.path.join(directory, f"{key}.{ext}"),
-            sep=sep,
-            header=True,
-            index=False
-        )
 
 
 def parse_args():
