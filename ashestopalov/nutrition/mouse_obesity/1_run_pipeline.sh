@@ -1,8 +1,31 @@
 #!/usr/bin/env bash
 
+export ROOT_DIR="$(realpath "${ROOT_DIR}")/"
+export SAMPLEDATA_DIR="$(realpath "${SAMPLEDATA_DIR}")/"
+export SCRIPT_DIR="$(realpath "${SCRIPT_DIR}")/"
+
+echo "Working on ${ROOT_DIR}"
+export SAMPLEDATA_CSV="${SAMPLEDATA_DIR}sample_data.csv"
+export METADATA_TSV="${SAMPLEDATA_DIR}meta_data.tsv"
+
+export QIIME2_DIR="${ROOT_DIR}qiime2/"
+export PICRUST2_DIR="${ROOT_DIR}picrust2/"
+
+
+force_docker_pull () {
+  while true
+  do
+    if docker pull "${1}"
+    then
+      return
+    fi
+  done
+}
+
+
 echo "Create sampledata"
 export IMG=ivasilyev/curated_projects:latest && \
-docker pull "${IMG}" && \
+force_docker_pull "${IMG}"
 docker run \
     --rm \
     --volume /data:/data \
@@ -23,34 +46,14 @@ docker run \
                 --output "${SAMPLEDATA_DIR}"
         '
 
-ROOT_DIR="$(realpath "${ROOT_DIR}")/"
-SAMPLEDATA_DIR="$(realpath "${SAMPLEDATA_DIR}")/"
 
-echo "Working on ${ROOT_DIR}"
-SCRIPT_DIR="${ROOT_DIR}scripts/"
-SAMPLEDATA_CSV="${SAMPLEDATA_DIR}sample_data.csv"
-METADATA_TSV="${SAMPLEDATA_DIR}meta_data.tsv"
-
-QIIME2_DIR="${ROOT_DIR}qiime2/"
-PICRUST2_DIR="${ROOT_DIR}picrust2/"
 
 echo "Run QIIME2 in ${QIIME2_DIR}"
 mkdir -p "${QIIME2_DIR}" "${PICRUST2_DIR}" "${SCRIPT_DIR}"
-
-
-force_docker_pull () {
-  while true
-  do
-    if docker pull "${1}"
-    then
-      return
-    fi
-  done
-}
-
 cd "${SCRIPT_DIR}" || exit 1
 curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/mouse_obesity/2_run_qiime2_dada2.sh"
 cd "${QIIME2_DIR}" || exit 1
+
 export IMG="qiime2/core:latest"
 force_docker_pull "${IMG}"
 docker run --rm --net=host \
@@ -72,6 +75,7 @@ echo "Run PICRUSt2 in ${PICRUST2_DIR}"
 cd "${SCRIPT_DIR}" || exit 1
 curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/mouse_obesity/3_run_picrust2.sh"
 cd "${PICRUST2_DIR}" || exit 1
+
 export IMG="quay.io/biocontainers/picrust2:2.5.0--pyhdfd78af_0"
 force_docker_pull "${IMG}"
 docker run --rm --net=host \
