@@ -36,7 +36,6 @@ docker run \
     --volume /data2:/data2 \
     --volume /data03:/data03 \
     --volume /data04:/data04 \
-    --workdir="${SAMPLEDATA_DIR}" \
     "${IMG}" \
         bash -c '
             git pull --quiet;
