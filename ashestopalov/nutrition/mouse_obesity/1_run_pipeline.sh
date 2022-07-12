@@ -23,21 +23,21 @@ force_docker_pull () {
 }
 
 
-echo "Create sampledata"
-export IMG=ivasilyev/curated_projects:latest && \
+echo "Create sampledata in ${SAMPLEDATA_DIR}"
+export IMG="ivasilyev/curated_projects:latest"
 force_docker_pull "${IMG}"
 docker run \
+    --env RAW_DIR="${RAW_DIR}" \
+    --env SAMPLEDATA_DIR="${SAMPLEDATA_DIR}" \
+    --net=host \
     --rm \
     --volume /data:/data \
     --volume /data1:/data1 \
     --volume /data2:/data2 \
     --volume /data03:/data03 \
     --volume /data04:/data04 \
-    --env RAW_DIR="${RAW_DIR}" \
-    --env SAMPLEDATA_DIR="${SAMPLEDATA_DIR}" \
-    --net=host \
-    --interactive \
-    --tty "${IMG}" \
+    --workdir="${SAMPLEDATA_DIR}" \
+    "${IMG}" \
         bash -c '
             git pull --quiet;
             python3 ./meta/scripts/qiime2_sample_data.py \
@@ -45,6 +45,7 @@ docker run \
                 --input "${RAW_DIR}" \
                 --output "${SAMPLEDATA_DIR}"
         '
+    cd "${ROOT_DIR}" || exit 1
 
 
 
@@ -56,14 +57,16 @@ cd "${QIIME2_DIR}" || exit 1
 
 export IMG="qiime2/core:latest"
 force_docker_pull "${IMG}"
-docker run --rm --net=host \
-    -v /data:/data \
-    -v /data1:/data1 \
-    -v /data03:/data03 \
-    -v /data04:/data04 \
-    -e QIIME2_DIR="${QIIME2_DIR}" \
-    -e SAMPLEDATA_CSV="${SAMPLEDATA_CSV}" \
-    -e METADATA_TSV="${METADATA_TSV}" \
+docker run \
+    --env QIIME2_DIR="${QIIME2_DIR}" \
+    --env SAMPLEDATA_CSV="${SAMPLEDATA_CSV}" \
+    --env METADATA_TSV="${METADATA_TSV}" \
+    --net=host \
+    --rm \
+    --volume /data:/data \
+    --volume /data1:/data1 \
+    --volume /data03:/data03 \
+    --volume /data04:/data04 \
     --workdir="${QIIME2_DIR}" \
     ${IMG} bash "${SCRIPT_DIR}2_run_qiime2_dada2.sh"
 
@@ -78,13 +81,15 @@ cd "${PICRUST2_DIR}" || exit 1
 
 export IMG="quay.io/biocontainers/picrust2:2.5.0--pyhdfd78af_0"
 force_docker_pull "${IMG}"
-docker run --rm --net=host \
-    -v /data:/data \
-    -v /data1:/data1 \
-    -v /data03:/data03 \
-    -v /data04:/data04 \
-    -e QIIME2_DIR="${QIIME2_DIR}" \
-    -e PICRUST2_DIR="${PICRUST2_DIR}" \
+docker run \
+    --env QIIME2_DIR="${QIIME2_DIR}" \
+    --env PICRUST2_DIR="${PICRUST2_DIR}" \
+    --net=host \
+    --rm \
+    --volume /data:/data \
+    --volume /data1:/data1 \
+    --volume /data03:/data03 \
+    --volume /data04:/data04 \
     --workdir="${PICRUST2_DIR}" \
     ${IMG} bash "${SCRIPT_DIR}3_run_picrust2.sh"
 
