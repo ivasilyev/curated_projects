@@ -21,6 +21,15 @@ picrust2_pipeline.py --verbose --stratified --coverage --hsp_method mp \
     --output "${PIPELINE_DIR}" \
     |& tee "${LOG_DIR}picrust2_pipeline.log"
 
+echo Run the PICRUSt2 pathway pipeline
+pathway_pipeline.py \
+    --input "${PIPELINE_DIR}EC_metagenome_out/pred_metagenome_unstrat.tsv.gz" \
+    --intermediate "${PIPELINE_DIR}pathways_out/intermediate" \
+    --out_dir "${PIPELINE_DIR}pathways_out" \
+    --processes "${NPROC}" \
+    --verbose \
+    |& tee "${LOG_DIR}picrust2_pathway_pipeline.log"
+
 echo Convert tables
 mkdir -p "described/EC_metagenome_out"
 convert_table.py \
