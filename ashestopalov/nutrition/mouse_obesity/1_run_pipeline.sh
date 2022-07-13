@@ -44,14 +44,15 @@ docker run \
                 --input "${RAW_DIR}" \
                 --output "${SAMPLEDATA_DIR}"
         '
-    cd "${ROOT_DIR}" || exit 1
+
+cd "${ROOT_DIR}" || exit 1
 
 
 
-echo "Run QIIME2 in ${QIIME2_DIR}"
 mkdir -p "${QIIME2_DIR}" "${PICRUST2_DIR}" "${SCRIPT_DIR}"
-cd "${SCRIPT_DIR}" || exit 1
-curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/mouse_obesity/2_run_qiime2_dada2.sh"
+export SCRIPT_FILE="${SCRIPT_DIR}2_run_qiime2_dada2.sh"
+curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/mouse_obesity/2_run_qiime2_dada2.sh" \
+    -o "${SCRIPT_FILE}"
 cd "${QIIME2_DIR}" || exit 1
 
 export IMG="qiime2/core:latest"
@@ -67,16 +68,15 @@ docker run \
     --volume /data03:/data03 \
     --volume /data04:/data04 \
     --workdir="${QIIME2_DIR}" \
-    ${IMG} bash "${SCRIPT_DIR}2_run_qiime2_dada2.sh"
+    "${IMG}" bash "${SCRIPT_FILE}"
 
 cd "${ROOT_DIR}" || exit 1
 
 
 
-echo "Run PICRUSt2 in ${PICRUST2_DIR}"
-cd "${SCRIPT_DIR}" || exit 1
-curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/mouse_obesity/3_run_picrust2.sh"
-cd "${PICRUST2_DIR}" || exit 1
+export SCRIPT_FILE="${SCRIPT_DIR}3_run_picrust2.sh"
+curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/mouse_obesity/3_run_picrust2.sh" \
+    -o "${SCRIPT_FILE}"
 
 export IMG="quay.io/biocontainers/picrust2:2.5.0--pyhdfd78af_0"
 force_docker_pull "${IMG}"
@@ -90,6 +90,6 @@ docker run \
     --volume /data03:/data03 \
     --volume /data04:/data04 \
     --workdir="${PICRUST2_DIR}" \
-    ${IMG} bash "${SCRIPT_DIR}3_run_picrust2.sh"
+    "${IMG}" bash "${SCRIPT_FILE}"
 
 cd "${ROOT_DIR}" || exit 1
