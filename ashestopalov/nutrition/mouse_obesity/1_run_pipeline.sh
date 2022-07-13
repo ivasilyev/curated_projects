@@ -147,7 +147,7 @@ docker run \
             git pull --quiet;
             python3 ./meta/scripts/concatenate_tables.py \
                 --axis 1 \
-                --input "${OTU_TABLE}" "/data/reference/SILVA/SILVA_v138/SILVA_138_Taxonomy_headed.tsv" / \
                 --index "#OTU ID" \
+                --input "${OTU_TABLE}" "/data/reference/SILVA/SILVA_v138/SILVA_138_Taxonomy_headed.tsv" / \
                 --output "${OTU_TABLE%.*}_annotated.tsv"
         '
