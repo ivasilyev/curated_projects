@@ -93,3 +93,34 @@ docker run \
     "${IMG}" bash "${SCRIPT_FILE}"
 
 cd "${ROOT_DIR}" || exit 1
+
+
+
+export RESULT_DIR="${ROOT_DIR}results/"
+mkdir -p "${RESULT_DIR}"
+find "${ROOT_DIR}" \
+    -type f \( \
+        -name "path_abun_unstrat_described.tsv" \
+        -o -name "pred_metagenome_contrib.legacy.tsv" \
+        -o -name "OTUs.tsv" \
+    \) -print0 \
+    | xargs \
+        -0 \
+        --max-procs "$(nproc)" \
+        -I "{}" \
+            bash -c '
+                export SRC_FILE="{}";
+                cp -r "${SRC_FILE}" "${RESULT_DIR}$(basename "${SRC_FILE}")"
+            '
+find "${ROOT_DIR}" \
+    -type f \
+    -name "pred_metagenome_unstrat_described.tsv" \
+    -print0 \
+    | xargs \
+        -0 \
+        --max-procs "$(nproc)" \
+        -I "{}" \
+            bash -c '
+                export SRC_FILE="{}";
+                cp -r "${SRC_FILE}" "${RESULT_DIR}$(basename "$(dirname "${SRC_FILE}")")_$(basename "${SRC_FILE}")"
+            '
