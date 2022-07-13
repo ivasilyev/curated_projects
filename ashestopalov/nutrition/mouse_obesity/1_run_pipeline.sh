@@ -124,3 +124,30 @@ find "${ROOT_DIR}" \
                 export SRC_FILE="{}";
                 cp -r "${SRC_FILE}" "${RESULT_DIR}$(basename "$(dirname "${SRC_FILE}")")_$(basename "${SRC_FILE}")"
             '
+
+
+
+export OTU_TABLE="${RESULT_DIR}OTUs.tsv"
+# The first line of the raw file is '# Constructed from biom file'
+sed -i '1d' "${OTU_TABLE}"
+
+export IMG="ivasilyev/curated_projects:latest"
+force_docker_pull "${IMG}"
+docker run \
+    --env OTU_TABLE="${OTU_TABLE}" \
+    --net=host \
+    --rm \
+    --volume /data:/data \
+    --volume /data1:/data1 \
+    --volume /data2:/data2 \
+    --volume /data03:/data03 \
+    --volume /data04:/data04 \
+    "${IMG}" \
+        bash -c '
+            git pull --quiet;
+            python3 ./meta/scripts/concatenate_tables.py \
+                --axis 1 \
+                --input "${OTU_TABLE}" "/data/reference/SILVA/SILVA_v138/SILVA_138_Taxonomy_headed.tsv" / \
+                --index "#OTU ID" \
+                --output "${OTU_TABLE%.*}_annotated.tsv"
+        '
