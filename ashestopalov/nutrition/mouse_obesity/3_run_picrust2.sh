@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # PICRUST2_DIR and QIIME2_DIR variables are defined externally
+echo "Run PICRUSt2 in ${PICRUST2_DIR}"
 
 export LOG_DIR="${PICRUST2_DIR}logs/"
 export PIPELINE_DIR="${PICRUST2_DIR}main_pipeline/"
@@ -57,6 +58,7 @@ add_descriptions.py -m METACYC \
     --input "${PIPELINE_DIR}pathways_out/path_abun_unstrat.tsv.gz" \
     --output "described/pathways_out/path_abun_unstrat_described.tsv"
 
+echo "Completed running PICRUSt2 in ${PICRUST2_DIR}"
 chmod -R 777 "$(pwd)"
 cd ..
 exit 0

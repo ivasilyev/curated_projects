@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # QIIME2_DIR, SAMPLEDATA_CSV and METADATA_TSV variables are defined externally
+echo "Run QIIME2 in ${QIIME2_DIR}"
 
 export LOG_DIR="${QIIME2_DIR}logs/"
 mkdir -p "${LOG_DIR}"
@@ -193,6 +194,7 @@ qiime tools export \
     |& tee "${LOG_DIR}tools export fasta.log"
 # Output: 'dna-sequences.fasta'
 
+echo "Completed running QIIME2 in ${QIIME2_DIR}"
 chmod -R 777 "$(pwd)"
 cd ..
 exit 0
