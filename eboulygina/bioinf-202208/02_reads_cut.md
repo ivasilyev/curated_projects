@@ -32,7 +32,7 @@ trimmomatic \
     TRAILING:3  `# Убрать нуклеотиды с конца, если качество не удовлетворяет` \
     SLIDINGWINDOW:4:15  `# Убрать нуклеотиды с середины, если качество соседних оснований не удовлетворяет` \
     MINLEN:36  `# Убрать слишком короткие риды` \
-| tee "trimmomatic/trimmomatic.log"  # Добавить логирование
+|& tee "trimmomatic/trimmomatic.log"  # Добавить логирование
 
 # Дать права на чтение/запись остальным пользователям
 chmod -fR a+rw trimmomatic
@@ -67,7 +67,7 @@ cutadapt \
     --paired-output cutadapt/Saur_S01_L001_R2_001__cut.fastq \
     trimmomatic/Saur_S01_L001_R1_001__trimmed.fastq `# Входные файлы` \
     trimmomatic/Saur_S01_L001_R2_001__trimmed.fastq \
-| tee "cutadapt/cutadapt.log" `# Добавить логирование`
+|& tee "cutadapt/cutadapt.log" `# Добавить логирование`
 
 # Дать права на чтение/запись остальным пользователям
 chmod -fR a+rw cutadapt
