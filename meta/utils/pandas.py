@@ -3,6 +3,7 @@
 
 import os
 import joblib
+import traceback
 import numpy as np
 import pandas as pd
 from scipy import stats
@@ -121,10 +122,32 @@ def count_column_sizes(df: pd.DataFrame):
     return df.apply(lambda y: max(y.map(lambda x: len(str(x)))))
 
 
-def dfs_dict_to_excel(d: dict, file: str):
+def excel_to_dfs_dict(file: str, **kwargs):
+    sheets = pd.ExcelFile(file).sheet_names
+    out = dict()
+    for sheet in sheets:
+        try:
+            out[sheet] = pd.read_excel(file, sheet_name=sheet, **kwargs)
+        except Exception:
+            traceback.print_exc()
+            print(f"Cannot parse sheet '{sheet}' from file '{file}'")
+    return out
+
+
+def dfs_dict_to_excel(d: dict, file: str, **kwargs):
+    """
+    :param d: {sheet_name <str>: sheet_dataframe <pandas.DataFrame>}
+    :param file: table.xlx
+    :return:
+    """
     import xlsxwriter
     w = pd.ExcelWriter(file, engine="xlsxwriter")
-    _ = [v.to_excel(w, index=False, sheet_name=k) for k, v in d.items()]
+    for sheet, df in d.items():
+        try:
+            df.to_excel(w, index=False, sheet_name=sheet, **kwargs)
+        except Exception:
+            traceback.print_exc()
+            print(f"Cannot save sheet '{sheet}' to file '{file}'")
     w.save()
 
 
