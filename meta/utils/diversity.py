@@ -3,7 +3,7 @@
 
 import pandas as pd
 from skbio import TreeNode
-from skbio.diversity import alpha
+from skbio.diversity import alpha as a
 from meta.utils.pandas import dict2pd_series
 
 
@@ -38,7 +38,7 @@ def count_alpha_diversity(series: pd.Series, rooted_tree: TreeNode = None):
     d["Inverse Simpson Index"] = 1.0 / d["Simpson Index"]
     d["Gini–Simpson Index"] = 1.0 - d["Simpson Index"]
     if rooted_tree is not None:
-        d["Faith Diversity"] = alpha.faith_pd(series.values, series.index.values, rooted_tree)
+        d["Faith Diversity"] = a.faith_pd(series.values, series.index.values, rooted_tree)
     out = dict2pd_series(d)
     out.name = series.name
     return out
