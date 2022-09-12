@@ -3,8 +3,8 @@
 
 import pandas as pd
 from skbio import TreeNode
-from skbio.diversity import alpha as a
-from meta.scripts.utils.pandas_utils import dict2pd_series
+from skbio.diversity import alpha
+from meta.utils.pandas import dict2pd_series
 
 
 TAXONOMY_ORDER = "Domain, Phylum, Class, Order, Family, Genus, Species".split(", ")
@@ -38,7 +38,31 @@ def count_alpha_diversity(series: pd.Series, rooted_tree: TreeNode = None):
     d["Inverse Simpson Index"] = 1.0 / d["Simpson Index"]
     d["Gini–Simpson Index"] = 1.0 - d["Simpson Index"]
     if rooted_tree is not None:
-        d["Faith Diversity"] = a.faith_pd(series.values, series.index.values, rooted_tree)
+        d["Faith Diversity"] = alpha.faith_pd(series.values, series.index.values, rooted_tree)
     out = dict2pd_series(d)
     out.name = series.name
     return out
+
+
+def get_newick(node, parent_dist, leaf_names, newick="") -> str:
+    """
+    Convert sciply.cluster.hierarchy.to_tree()-output to Newick format.
+    From https://stackoverflow.com/questions/28222179/save-dendrogram-to-newick-format
+
+    :param node: output of sciply.cluster.hierarchy.to_tree()
+    :param parent_dist: output of sciply.cluster.hierarchy.to_tree().dist
+    :param leaf_names: list of leaf names
+    :param newick: leave empty, this variable is used in recursion.
+    :returns: tree in Newick format
+    """
+    if node.is_leaf():
+        return "%s:%.2f%s" % (leaf_names[node.id], parent_dist - node.dist, newick)
+    else:
+        if len(newick) > 0:
+            newick = "):%.2f%s" % (parent_dist - node.dist, newick)
+        else:
+            newick = ");"
+        newick = get_newick(node.get_left(), node.dist, leaf_names, newick=newick)
+        newick = get_newick(node.get_right(), node.dist, leaf_names, newick=",%s" % (newick))
+        newick = "(%s" % (newick)
+        return newick
