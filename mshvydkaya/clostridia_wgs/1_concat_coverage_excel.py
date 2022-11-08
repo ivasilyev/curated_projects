@@ -16,9 +16,9 @@ CELL_SIZE_LIMIT = 300
 def _parse_args():
     from argparse import ArgumentParser
     parser = ArgumentParser(description="")
-    parser.add_argument("-r", "--rgi_dir", metavar="<dir>", required=True,
+    parser.add_argument("-r", "--rgi_dir", metavar="<dir>", default="",
                         help="RGI stage directory")
-    parser.add_argument("-c", "--card_version", metavar="<str>", default="v.3.1.4",
+    parser.add_argument("-c", "--card_version", metavar="<str>", default="UNKNOWN",
                         help="CARD reference version")
     parser.add_argument("-n", "--nbee_dir", metavar="<dir>", required=True,
                         help="nBee stage directory")
@@ -40,23 +40,26 @@ if __name__ == '__main__':
         nbee_dir,
         out_file
     ) = _parse_args()
-    # RGI
-    rgi_tables = find_file_by_tail(dir_name=rgi_dir, multiple=True, tail=".txt")
-    merged_rgi_df = pd.DataFrame()
-    for rgi_table in rgi_tables:
-        rgi_df = load_tsv(rgi_table)
-        if rgi_df.shape[0] == 0:
-            continue
-        rgi_df = remove_longest_columns(rgi_df, CELL_SIZE_LIMIT)
-        columns = rgi_df.columns.tolist()
-        rgi_df["sample_name"] = filename_only(rgi_table)
-        rgi_df = rgi_df.loc[:, ["sample_name"] + columns]
-        print(f"Concatenate dataframes with shapes {rgi_df.shape}, {merged_rgi_df.shape}")
-        merged_rgi_df = pd.concat([merged_rgi_df, rgi_df], axis=0, ignore_index=True)
-    reference_name = "_".join(remove_empty_values(["card", card_version]))
-    print(f"Finished concatenating tables for '{reference_name}'")
-    sheets = {reference_name: merged_rgi_df}
+    sheets = dict()
+    if len(rgi_dir) > 0:
+        print("Process RGI")
+        rgi_tables = find_file_by_tail(dir_name=rgi_dir, multiple=True, tail=".txt")
+        merged_rgi_df = pd.DataFrame()
+        for rgi_table in rgi_tables:
+            rgi_df = load_tsv(rgi_table)
+            if rgi_df.shape[0] == 0:
+                continue
+            rgi_df = remove_longest_columns(rgi_df, CELL_SIZE_LIMIT)
+            columns = rgi_df.columns.tolist()
+            rgi_df["sample_name"] = filename_only(rgi_table)
+            rgi_df = rgi_df.loc[:, ["sample_name"] + columns]
+            print(f"Concatenate dataframes with shapes {rgi_df.shape}, {merged_rgi_df.shape}")
+            merged_rgi_df = pd.concat([merged_rgi_df, rgi_df], axis=0, ignore_index=True)
+        reference_name = "_".join(remove_empty_values(["card", card_version]))
+        print(f"Finished concatenating tables for '{reference_name}'")
+        sheets[reference_name] = merged_rgi_df
     # Other references
+    print("Process references")
     reference_dirs = scan_top_level_directories(nbee_dir)
     for reference_dir in reference_dirs:
         reference_name = os.path.basename(reference_dir)
