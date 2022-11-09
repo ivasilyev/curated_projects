@@ -123,16 +123,16 @@ docker run \
             git pull --quiet;
             NBEE_DIR="$(
                 find \
-                  "${PIPELINE_DIR}" \
-                  -maxdepth 1 \
-                  -name *_nbee_with_annotation* \
-                  -type d \
-                  -print0 \
+                    "${PIPELINE_DIR}" \
+                    -maxdepth 1 \
+                    -name *_nbee_with_annotation* \
+                    -type d \
+                    -print0 \
                 | xargs -0 realpath \
                 | sort \
                 | head -n 1
             )/";
             python3 ./mshvydkaya/clostridia_wgs/1_concat_coverage_excel.py \
                 --nbee_dir "${NBEE_DIR}" \
-                --output_file "${NBEE_DIR}coverages.xlsx"
+                --output_file "${NBEE_DIR}coverages.xlsx";
         '

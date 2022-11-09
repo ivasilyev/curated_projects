@@ -9,36 +9,39 @@ from meta.utils.pandas import dfs_dict_to_excel, load_tsv, remove_longest_column
 from meta.utils.file_system import find_file_by_tail, filename_only, scan_top_level_directories
 
 
-ANNOTATION_FILE_TAIL = "_coverage_annotated_filtered.tsv"
 CELL_SIZE_LIMIT = 300
 
 
 def _parse_args():
     from argparse import ArgumentParser
     parser = ArgumentParser(description="")
-    parser.add_argument("-r", "--rgi_dir", metavar="<dir>", default="",
-                        help="RGI stage directory")
+    parser.add_argument("-a", "--annotation_suffix", metavar="<str>", default="_coverage_annotated_filtered.tsv",
+                        help="Annotation file tail")
     parser.add_argument("-c", "--card_version", metavar="<str>", default="UNKNOWN",
                         help="CARD reference version")
     parser.add_argument("-n", "--nbee_dir", metavar="<dir>", required=True,
                         help="nBee stage directory")
     parser.add_argument("-o", "--output_file", metavar="<dir>", required=True,
                         help="Output file")
+    parser.add_argument("-r", "--rgi_dir", metavar="<dir>", default="",
+                        help="RGI stage directory")
     _namespace = parser.parse_args()
     return (
-        _namespace.rgi_dir,
+        _namespace.annotation_suffix,
         _namespace.card_version,
         _namespace.nbee_dir,
-        _namespace.output_file
+        _namespace.output_file,
+        _namespace.rgi_dir,
     )
 
 
 if __name__ == '__main__':
     (
-        rgi_dir,
+        annotation_suffix,
         card_version,
         nbee_dir,
-        out_file
+        out_file,
+        rgi_dir,
     ) = _parse_args()
     sheets = dict()
     if len(rgi_dir) > 0:
@@ -58,12 +61,11 @@ if __name__ == '__main__':
         reference_name = "_".join(remove_empty_values(["card", card_version]))
         print(f"Finished concatenating tables for '{reference_name}'")
         sheets[reference_name] = merged_rgi_df
-    # Other references
     print("Process references")
     reference_dirs = scan_top_level_directories(nbee_dir)
     for reference_dir in reference_dirs:
         reference_name = os.path.basename(reference_dir)
-        tail = f"_{reference_name}{ANNOTATION_FILE_TAIL}"
+        tail = f"_{reference_name}{annotation_suffix}"
         coverage_tables = find_file_by_tail(
             dir_name=os.path.join(reference_dir, "annotated_coverages"), multiple=True, tail=tail
         )
