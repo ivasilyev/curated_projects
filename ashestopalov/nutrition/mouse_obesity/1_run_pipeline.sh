@@ -11,6 +11,11 @@ export METADATA_TSV="${SAMPLEDATA_DIR}meta_data.tsv"
 export QIIME2_DIR="${ROOT_DIR}qiime2/"
 export PICRUST2_DIR="${ROOT_DIR}picrust2/"
 
+export QIIME2_SCRIPT="${QIIME2_DIR}qiime2.sh"
+export PICRUST2_SCRIPT="${PICRUST2_DIR}picrust2.sh"
+
+export RESULT_DIR="${ROOT_DIR}results/"
+export OTU_TABLE="${RESULT_DIR}OTUs.tsv"
 
 force_docker_pull () {
   while true
@@ -50,9 +55,8 @@ cd "${ROOT_DIR}" || exit 1
 
 
 mkdir -p "${QIIME2_DIR}" "${PICRUST2_DIR}" "${SCRIPT_DIR}"
-export SCRIPT_FILE="${SCRIPT_DIR}2_run_qiime2_dada2.sh"
 curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/mouse_obesity/2_run_qiime2_dada2.sh" \
-    -o "${SCRIPT_FILE}"
+    -o "${QIIME2_SCRIPT}"
 cd "${QIIME2_DIR}" || exit 1
 
 export IMG="qiime2/core:latest"
@@ -68,21 +72,25 @@ docker run \
     --volume /data03:/data03 \
     --volume /data04:/data04 \
     --workdir="${QIIME2_DIR}" \
-    "${IMG}" bash "${SCRIPT_FILE}"
+    "${IMG}" \
+    bash "${QIIME2_SCRIPT}"
+
+rm -f "${QIIME2_SCRIPT}"
 
 cd "${ROOT_DIR}" || exit 1
 
 
 
-export SCRIPT_FILE="${SCRIPT_DIR}3_run_picrust2.sh"
-curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/mouse_obesity/3_run_picrust2.sh" \
-    -o "${SCRIPT_FILE}"
+curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/mouse_obesity/3_run_picrust2.sh" \
+    -o "${PICRUST2_SCRIPT}"
+cd "${PICRUST2_DIR}" || exit 1
 
 export IMG="quay.io/biocontainers/picrust2:2.5.0--pyhdfd78af_0"
 force_docker_pull "${IMG}"
 docker run \
     --env QIIME2_DIR="${QIIME2_DIR}" \
     --env PICRUST2_DIR="${PICRUST2_DIR}" \
+    --env PICRUST2_SCRIPT="${PICRUST2_SCRIPT}" \
     --net=host \
     --rm \
     --volume /data:/data \
@@ -90,13 +98,15 @@ docker run \
     --volume /data03:/data03 \
     --volume /data04:/data04 \
     --workdir="${PICRUST2_DIR}" \
-    "${IMG}" bash "${SCRIPT_FILE}"
+    "${IMG}" \
+    bash "${PICRUST2_SCRIPT}"
+
+rm -f "${PICRUST2_SCRIPT}"
 
 cd "${ROOT_DIR}" || exit 1
 
 
 
-export RESULT_DIR="${ROOT_DIR}results/"
 mkdir -p "${RESULT_DIR}"
 find "${ROOT_DIR}" \
     -type f \( \
@@ -127,7 +137,6 @@ find "${ROOT_DIR}" \
 
 
 
-export OTU_TABLE="${RESULT_DIR}OTUs.tsv"
 # The first line of the raw file is '# Constructed from biom file'
 sed -i '1d' "${OTU_TABLE}"
 
