@@ -117,12 +117,13 @@ docker run \
     --interactive \
     --net=host \
     --rm \
+    --tty \
     --volume "/data:/data" \
     --volume "/data1:/data1" \
     --volume "/data2:/data2" \
     --volume "/data03:/data03" \
     --volume "/data04:/data04" \
-    --tty "${IMG}" \
+    "${IMG}" \
         bash -c '
             git pull --quiet;
             RGI_DIR="${PIPELINE_DIR}12_rgi/";
