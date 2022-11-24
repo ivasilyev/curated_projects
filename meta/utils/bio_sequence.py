@@ -14,8 +14,9 @@ def remove_duplicate_sequences(records: list):
 
 def load_sequences(file: str, fmt: str = "fasta", is_filter: bool = False, is_sort: bool = False):
     if fmt in ["fastq_gz", "fastq.gz"]:
-        import gzip
-        with gzip.open(file, "rt") as f:
+        import mgzip
+        from multiprocessing import cpu_count
+        with mgzip.open(file, "rt", threads=cpu_count()) as f:
             records = list(SeqIO.parse(f, "fastq"))
             f.close()
     else:
