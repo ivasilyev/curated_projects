@@ -55,7 +55,7 @@ if __name__ == '__main__':
 
     output_format = "fastq"
     start_0 = perf_counter()
-    records = load_sequences(input_file, fmt=input_format)
+    records = load_sequences(input_file, fmt=input_format, is_filter=False, is_sort=False)
     print(f"Parsed {len(records)} sequences from '{input_file}' in {count_elapsed_seconds(start_0)}")
 
     start_1 = perf_counter()

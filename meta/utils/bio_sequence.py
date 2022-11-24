@@ -12,9 +12,8 @@ def remove_duplicate_sequences(records: list):
     return out
 
 
-def load_sequences(file: str, fmt: str = "fasta", is_sort: bool = False):
-    from meta.utils.primitive import remove_empty_values
-    if fmt == "fastq_gz":
+def load_sequences(file: str, fmt: str = "fasta", is_filter: bool = False, is_sort: bool = False):
+    if fmt in ["fastq_gz", "fastq.gz"]:
         import gzip
         with gzip.open(file, "rt") as f:
             records = list(SeqIO.parse(f, "fastq"))
@@ -25,8 +24,10 @@ def load_sequences(file: str, fmt: str = "fasta", is_sort: bool = False):
             f.close()
     if is_sort:
         records = sorted(records, key=lambda x: len(x), reverse=True)
-    out = remove_empty_values(records)
-    return out
+    if is_filter:
+        from meta.utils.primitive import remove_empty_values
+        return remove_empty_values(records)
+    return records
 
 
 def string_to_sequences(s: str, fmt: str = "fasta"):
