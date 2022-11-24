@@ -16,7 +16,7 @@ def load_sequences(file: str, fmt: str = "fasta", is_filter: bool = False, is_so
     if fmt in ["fastq_gz", "fastq.gz"]:
         import mgzip
         from multiprocessing import cpu_count
-        with mgzip.open(file, "rt", threads=cpu_count()) as f:
+        with mgzip.open(file, "rt", thread=cpu_count()) as f:
             records = list(SeqIO.parse(f, "fastq"))
             f.close()
     else:
