@@ -66,9 +66,8 @@ def process_records(wrapper, output_mask):
 
 def process_sequences(file: str, output_mask: str, fmt: str = "fasta"):
     if fmt in ["fastq_gz", "fastq.gz"]:
-        import mgzip
-        from multiprocessing import cpu_count
-        with mgzip.open(file, "rt", thread=cpu_count()) as f:
+        import gzip
+        with gzip.open(file, "rt") as f:
             process_records(f, output_mask)
     else:
         with open(file, mode="r", encoding="utf-8") as f:
