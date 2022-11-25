@@ -57,7 +57,7 @@ def process_record(wrapper, output_mask):
             record = read_fastq_chunk(wrapper)
             records_dict = split_record(record)
             export_records(records_dict, output_mask)
-        except:
+        except ValueError:
             break
     wrapper.close()
 
