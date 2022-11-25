@@ -51,14 +51,14 @@ def read_fastq_chunk(wrapper):
     return record
 
 
-def process_record(wrapper, output_mask):
+def process_records(wrapper, output_mask):
     while True:
-        try:
-            record = read_fastq_chunk(wrapper)
-            records_dict = split_record(record)
-            export_records(records_dict, output_mask)
-        except ValueError:
-            break
+        #try:
+        record = read_fastq_chunk(wrapper)
+        records_dict = split_record(record)
+        export_records(records_dict, output_mask)
+        #except ValueError:
+        #    break
     wrapper.close()
 
 
@@ -67,10 +67,10 @@ def process_sequences(file: str, output_mask: str, fmt: str = "fasta"):
         import mgzip
         from multiprocessing import cpu_count
         with mgzip.open(file, "rt", thread=cpu_count()) as f:
-            process_record(f, output_mask)
+            process_records(f, output_mask)
     else:
         with open(file, mode="r", encoding="utf-8") as f:
-            process_record(f, output_mask)
+            process_records(f, output_mask)
 
 
 def _parse_args():
