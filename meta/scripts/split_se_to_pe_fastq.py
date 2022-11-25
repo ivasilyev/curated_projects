@@ -14,11 +14,13 @@ from meta.utils.bio_sequence import dump_sequences
 from meta.utils.date_time import count_elapsed_seconds
 
 
+OUTPUT_FORMAT = "fastq"
+
+
 def export_records(records: dict, output_mask: str):
-    output_format = "fastq"
-    for strand, output_record in records.values():
-        output_file = f"{output_mask}_{strand}.{output_format}"
-        dump_sequences([records[strand]], output_file, fmt=output_format, append=True)
+    for strand, output_record in records.items():
+        output_file = f"{output_mask}_{strand}.{OUTPUT_FORMAT}"
+        dump_sequences([records[strand]], output_file, fmt=OUTPUT_FORMAT, append=True)
 
 
 def split_record(record: SeqRecord):
@@ -34,7 +36,7 @@ def split_record(record: SeqRecord):
     rd1.letter_annotations["phred_quality"] = rd1_q
     rd2 = SeqRecord(seq=Seq(rd2_seq), id=rd2_id, description="")
     rd2.letter_annotations["phred_quality"] = rd2_q
-    return dict(R1=rd1.format("fastq"), R2=rd2.format("fastq"))
+    return dict(R1=rd1, R2=rd2)
 
 
 def read_fastq_chunk(wrapper):
@@ -53,12 +55,12 @@ def read_fastq_chunk(wrapper):
 
 def process_records(wrapper, output_mask):
     while True:
-        #try:
-        record = read_fastq_chunk(wrapper)
-        records_dict = split_record(record)
-        export_records(records_dict, output_mask)
-        #except ValueError:
-        #    break
+        try:
+            record = read_fastq_chunk(wrapper)
+            records_dict = split_record(record)
+            export_records(records_dict, output_mask)
+        except ValueError:
+            break
     wrapper.close()
 
 
