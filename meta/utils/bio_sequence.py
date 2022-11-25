@@ -36,10 +36,13 @@ def string_to_sequences(s: str, fmt: str = "fasta"):
     return list(SeqIO.parse(StringIO(s), fmt))
 
 
-def dump_sequences(sequences: list, file: str, fmt: str = "fasta"):
+def dump_sequences(sequences: list, file: str, fmt: str = "fasta", append: bool = False):
     import os
+    mode = "w"
+    if append:
+        mode = "a"
     os.makedirs(os.path.dirname(file), exist_ok=True)
-    with open(file, mode="w", encoding="utf-8") as f:
+    with open(file, mode=mode, encoding="utf-8") as f:
         SeqIO.write(sequences, f, fmt)
         f.close()
 

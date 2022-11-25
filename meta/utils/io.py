@@ -11,9 +11,12 @@ def load_string(file: str):
     return s
 
 
-def dump_string(string: str, file: str):
+def dump_string(string: str, file: str, append: bool = False):
     os.makedirs(os.path.dirname(file), exist_ok=True)
-    with open(file=file, mode="w", encoding="utf-8") as f:
+    mode = "w"
+    if append:
+        mode = "a"
+    with open(file=file, mode=mode, encoding="utf-8") as f:
         f.write(string)
         f.close()
 
