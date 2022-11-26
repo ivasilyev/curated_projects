@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-# SRC_DIRS and ROOT_DIR are exported from '0_export_variables.sh'
+source 0_export_variables.sh
+
 export ROOT_DIR="$(realpath -s "${ROOT_DIR}")/"
 export SRC_DIR="$(realpath -s "${SRC_DIR}")/"
 export RAW_DIR="${ROOT_DIR}raw/"
@@ -13,41 +14,82 @@ cd "${ROOT_DIR}" || exit 1
 
 
 
-echo "Unpack reads from ${SRC_DIR}"
+echo "Split SE to PE reads"
 
-cd "${RAW_DIR}" || exit 1
-
-find "${SRC_DIR}" \
-    -name '*.gz' \
-    -type f \
-    -print0 \
-| xargs \
-    -0 \
-    --max-procs "$(nproc)" \
-    -I "{}" \
+export IMG="ivasilyev/curated_projects:latest" && \
+docker pull "${IMG}" && \
+docker run \
+    --env SE_DIR="${SE_DIR}" \
+    --env PE_DIR="${PE_DIR}" \
+    --interactive \
+    --net=host \
+    --rm \
+    --tty \
+    --volume "/data:/data" \
+    --volume "/data1:/data1" \
+    --volume "/data2:/data2" \
+    --volume "/data03:/data03" \
+    --volume "/data04:/data04" \
+    "${IMG}" \
         bash -c '
-            FILE="{}";
-            BASENAME="$(basename "${FILE%.*}")";
-            echo "Decompress ${FILE} to ${RAW_DIR}${BASENAME}";
-            zcat "${FILE}" > "${RAW_DIR}${BASENAME}";
+            git pull --quiet;
+            pip install mgzip;
+            rm -rf "${PE_DIR}";
+            find "${SE_DIR}" \
+                -name '*.gz' \
+                -type f \
+                -print0 \
+            | xargs \
+                -0 \
+                --max-procs "$(nproc)" \
+                -I "{}" \
+                    bash -c "
+                        python3 "./meta/scripts/split_se_to_pe_fastq.py" \
+                            --input_file "{}" \
+                            --output_dir "${PE_DIR}"
+                    "
         '
 
-echo "Also deploy symlinks from ${SRC_DIR}"
 
-find "${SRC_DIR}" \
-    -name '*.fastq' \
-    -type f \
-    -print0 \
-| xargs \
-    -0 \
-    --max-procs "$(nproc)" \
-    -I "{}" \
-        bash -c '
-            FILE="{}";
-            BASENAME="$(basename "${FILE}")";
-            echo "Linking ${FILE} to ${RAW_DIR}${BASENAME}";
-            ln -s "${FILE}" "${RAW_DIR}${BASENAME}";
-        '
+
+for SRC_DIR in "${SRC_DIR}" "${PE_DIR}"
+    do
+        export SRC_DIR="$(realpath -s "${SRC_DIR}")/"
+        echo "Unpack reads from ${SRC_DIR}"
+
+        cd "${RAW_DIR}" || exit 1
+
+        find "${SRC_DIR}" \
+            -name '*.gz' \
+            -type f \
+            -print0 \
+        | xargs \
+            -0 \
+            --max-procs "$(nproc)" \
+            -I "{}" \
+                bash -c '
+                    FILE="{}";
+                    BASENAME="$(basename "${FILE%.*}")";
+                    echo "Decompress ${FILE} to ${RAW_DIR}${BASENAME}";
+                    zcat "${FILE}" > "${RAW_DIR}${BASENAME}";
+                '
+        echo "Deploy symlinks from ${SRC_DIR}"
+
+        find "${SRC_DIR}" \
+            -name '*.fastq' \
+            -type f \
+            -print0 \
+        | xargs \
+            -0 \
+            --max-procs "$(nproc)" \
+            -I "{}" \
+                bash -c '
+                    FILE="{}";
+                    BASENAME="$(basename "${FILE}")";
+                    echo "Linking ${FILE} to ${RAW_DIR}${BASENAME}";
+                    ln -s "${FILE}" "${RAW_DIR}${BASENAME}";
+                '
+    done
 
 
 
