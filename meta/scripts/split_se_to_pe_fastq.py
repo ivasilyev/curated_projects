@@ -45,11 +45,14 @@ def read_fastq_chunk(wrapper):
     while counter < 4:
         buffer += wrapper.readline()
         counter += 1
-    with StringIO(buffer) as f1:
-        record = list(SeqIO.parse(f1, "fastq"))[0]
-        f1.close()
     if len(buffer) == 0:
         raise ValueError
+    with StringIO(buffer) as f1:
+        record = list(SeqIO.parse(f1, "fastq"))
+        f1.close()
+        if len(record) == 0:
+            raise ValueError
+        record = record[0]
     return record
 
 
