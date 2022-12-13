@@ -80,3 +80,21 @@ def get_most_similar_word_pairs(words: list):
         if word_pair not in out:
             out.append(word_pair)
     return out
+
+
+def tokenize_reads_file_name(s: str):
+    from os.path import basename
+    d = regex_based_tokenization(
+        {
+            "extension": ["\.(.{2,8})$", "(\..{2,8})$"],  # E.g. '.fastq.gz'
+            # The last segment is always '001'
+            "last_segment": ["[^A-Za-z0-9]([A-Za-z0-9]+)$", "([^A-Za-z0-9][A-Za-z0-9]+)$"],
+            "read_index": ["[^A-Za-z0-9](R[0-9]+)$", "([^A-Za-z0-9]R[0-9]+)$"],
+            "lane_number": ["[^A-Za-z0-9](L[0-9]+)$", "([^A-Za-z0-9]L[0-9]+)$"],
+            "sample_sheet_number": ["[^A-Za-z0-9](S[0-9]+)$", "([^A-Za-z0-9]S[0-9]+)$"],
+            "sample_name": ["(.+)", "(.+)"],
+        },
+        basename(s)
+    )
+    d["reads_file"] = s
+    return d

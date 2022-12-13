@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import json
 
 
 def remove_empty_values(input_list):
@@ -69,3 +70,11 @@ def clear_non_printing_chars(s: str):
 
 def get_first_dict_value(d: dict):
     return d.get(list(d.keys())[0])
+
+
+def dicts_to_strings(x: list):
+    return [json.dumps(i) for i in x]
+
+
+def strings_to_dicts(x: list):
+    return [json.loads(i) for i in x]
