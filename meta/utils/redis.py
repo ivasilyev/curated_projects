@@ -14,9 +14,10 @@ import uuid
 import redis
 import hashlib
 from time import sleep
+from multiprocessing import cpu_count
 
 
-class RedisWorkQueue(object):
+class RedisMessageQueue:
     """Simple Finite Work Queue with Redis Backend
 
     This work queue is finite: as long as no more work is added
@@ -88,7 +89,7 @@ class RedisWorkQueue(object):
         """True if a lease on 'item' exists."""
         return self._db.exists(self._lease_key_prefix + self._itemkey(item))
 
-    def lease(self, lease_secs=60, block=True, timeout=None):
+    def lease(self, lease_secs=60, is_blocking=True, timeout=None):
         """Begin working on an item the work queue.
 
         Lease the item for lease_secs.  After that time, other
@@ -97,10 +98,21 @@ class RedisWorkQueue(object):
 
         If optional args block is true and timeout is None (the default), block
         if necessary until an item is available."""
-        if block:
-            item = self._db.brpoplpush(self._main_q_key, self._processing_q_key, timeout=timeout)
+        if is_blocking:
+            item = self._db.blmove(
+                first_list=self._main_q_key,
+                second_list=self._processing_q_key,
+                timeout=timeout,
+                src="LEFT",
+                dest="RIGHT",
+            )
         else:
-            item = self._db.rpoplpush(self._main_q_key, self._processing_q_key)
+            item = self._db.lmove(
+                first_list=self._main_q_key,
+                second_list=self._processing_q_key,
+                src="LEFT",
+                dest="RIGHT",
+            )
         if item:
             # Record that we (this session id) are working on a key.  Expire that
             # note after the lease timeout.
@@ -124,12 +136,13 @@ class RedisWorkQueue(object):
         self._db.delete(self._lease_key_prefix + itemkey)
 
     def flush(self, target: str = "db"):
+        out = ""
         if target == "db":
             out = self._db.flushdb()
         elif target == "all":
             out = self._db.flushall()
         else:
-            raise ValueError("Unknown target: '{}'".format(target))
+            print("Unknown target: '{}'".format(target))
         print("Flushed Redis DB: {}".format(out))
 
     def unleash(self, value):
@@ -145,8 +158,7 @@ class RedisWorkQueue(object):
     def push(self, value: str):
         """Sloppily insert an item in the main queue."""
         o = self._db.rpush(self._main_q_key, value)
-        print("Item '{a}' pushed to queue '{b}' with number {c}".format(
-            a=value, b=self._main_q_key, c=o))
+        print(f"Item '{value}' pushed to the queue '{self._main_q_key}' with number {o}")
 
     def insert_queue(self, value: str, queue: str):
         """Sloppily insert an item in the main queue."""
@@ -156,34 +168,59 @@ class RedisWorkQueue(object):
         self._db.connection_pool.disconnect()
 
 
-def simple_push(queue: list, queue_name: str, host_name: str = "redis", flush: bool = True):
-    # queue is a list of dicts
-    rwq = RedisWorkQueue(name=queue_name, host=host_name)
-    if flush:
-        rwq.flush("db")
+def strings_to_redis(
+        strings: list,
+        queue_name: str = "redis",
+        is_flush: bool = False,
+        **redis_kwargs
+):
+    mq = RedisMessageQueue(name=queue_name, **redis_kwargs)
+    if is_flush:
+        mq.flush("db")
     c = 0
-    for item in queue:
-        rwq.push(json.dumps(item))
+    for s in strings:
+        mq.push(s)
         c += 1
-    print("Completed filling the Redis queue '{}' with {} items".format(queue_name, c))
-    rwq.disconnect()
+    print("Uploaded {} items to the Redis queue '{}' ".format(c, queue_name))
+    mq.disconnect()
 
 
-def simple_pull(queue_name: str, host_name: str = "redis"):
-    rwq = RedisWorkQueue(name=queue_name, host=host_name)
-    max_idle_counter = 100
-    j = dict()
-    for _ in range(max_idle_counter):
-        if not rwq.empty():
-            break
-        rwq.disconnect()
-        sleep(60)
-        rwq = RedisWorkQueue(name=queue_name, host=host_name)
-    if rwq.empty():
-        return j
-    q = rwq.lease(lease_secs=10, block=True, timeout=2)
-    s = q.decode("utf-8")
-    j = json.loads(s)
-    rwq.complete(q)
-    rwq.disconnect()
-    return j
+def redis_to_strings(
+        queue_name: str = "redis",
+        content_length: int = cpu_count(),
+        pause: int = 10,
+        **redis_kwargs
+):
+    mq = RedisMessageQueue(name=queue_name, **redis_kwargs)
+    max_idle_counter = 10
+    c = 0
+    out = list()
+    while c < max_idle_counter and len(out) < content_length:
+        if mq.empty():
+            print("The queue '{}' is empty, paused for {} seconds, {} attempts left".format(
+                queue_name, pause, max_idle_counter - c)
+            )
+            mq.disconnect()
+            mq = RedisMessageQueue(name=queue_name, **redis_kwargs)
+            c += 1
+            sleep(60)
+        else:
+            c = 0
+            q = mq.lease(lease_secs=10, is_blocking=True, timeout=2)
+            mq.complete(q)
+            out.append(q.decode("utf-8"))
+        sleep(pause)
+    mq.disconnect()
+    print("Fetched {} items from the Redis queue '{}' ".format(len(out), queue_name))
+    return out
+
+
+def dicts_to_redis(dicts: list, **kwargs):
+    from meta.utils.primitive import dicts_to_strings
+    strings_to_redis(strings=dicts_to_strings(dicts), **kwargs)
+
+
+def redis_to_dicts(**kwargs):
+    from meta.utils.primitive import strings_to_dicts
+    out = redis_to_strings(**kwargs)
+    return strings_to_dicts(out)
