@@ -39,7 +39,7 @@ if __name__ == '__main__':
     sampledata_dicts = redis_to_dicts(
         queue_name=queue_name,
         content_length=sampledata_size,
-        pause=pause,
+        polling_pause=pause,
         host=host_name,
         port=host_port,
     )

@@ -188,7 +188,8 @@ def strings_to_redis(
 def redis_to_strings(
         queue_name: str = "redis",
         content_length: int = cpu_count(),
-        pause: int = 10,
+        polling_pause: int = 10,
+        waiting_pause: int = 60,
         **redis_kwargs
 ):
     mq = RedisMessageQueue(name=queue_name, **redis_kwargs)
@@ -198,12 +199,12 @@ def redis_to_strings(
     while c < max_idle_counter and len(out) < content_length:
         if mq.empty():
             print("The queue '{}' is empty, paused for {} seconds, {} attempts left".format(
-                queue_name, pause, max_idle_counter - c)
+                queue_name, waiting_pause, max_idle_counter - c)
             )
             mq.disconnect()
             mq = RedisMessageQueue(name=queue_name, **redis_kwargs)
             c += 1
-            sleep(60)
+            sleep(waiting_pause)
         else:
             c = 0
             q = mq.lease(lease_secs=10, is_blocking=True, timeout=2)
@@ -211,7 +212,7 @@ def redis_to_strings(
             s = q.decode("utf-8")
             print(f"Item '{s}' pushed from queue '{queue_name}'")
             out.append(s)
-        sleep(pause)
+        sleep(polling_pause)
     mq.disconnect()
     print(f"Fetched {len(out)} items from Redis queue '{queue_name}'")
     return out

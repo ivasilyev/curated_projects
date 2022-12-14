@@ -38,7 +38,7 @@ if __name__ == '__main__':
     output_strings = redis_to_strings(
         queue_name=queue_name,
         content_length=output_size,
-        pause=pause,
+        polling_pause=pause,
         host=host_name,
         port=host_port,
     )
