@@ -44,7 +44,7 @@ class RedisMessageQueue:
         self._processing_q_key = name + ":processing"
         self._lease_key_prefix = name + ":leased_by_session:"
         self._result_q_key = name + ":results"
-        print("Connected to Redis DB queue: {}".format(self._main_q_key))
+        print(f"Connected to Redis DB queue: '{self._main_q_key}'")
 
     def session_id(self):
         """Return the ID for this session."""
@@ -208,10 +208,12 @@ def redis_to_strings(
             c = 0
             q = mq.lease(lease_secs=10, is_blocking=True, timeout=2)
             mq.complete(q)
-            out.append(q.decode("utf-8"))
+            s = q.decode("utf-8")
+            print(f"Item '{s}' pushed from queue '{queue_name}'")
+            out.append(s)
         sleep(pause)
     mq.disconnect()
-    print("Fetched {} items from the Redis queue '{}' ".format(len(out), queue_name))
+    print(f"Fetched {len(out)} items from Redis queue '{queue_name}'")
     return out
 
 
