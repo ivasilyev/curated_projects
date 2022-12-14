@@ -16,7 +16,6 @@ class SampleDataArray:
     def __init__(self):
         self._lines = dict()
         self.is_valid = False
-        self.validate()
 
     @property
     def names(self):
@@ -36,7 +35,6 @@ class SampleDataArray:
         return self._lines[item]
 
     def __setattr__(self, key: str, value: SampleDataLine):
-        value.validate()
         self._lines[key] = value
 
     def __add__(self, other):
@@ -54,7 +52,7 @@ class SampleDataArray:
             return False
 
     def validate(self):
-        _ = [i.validate() for i in self._lines]
+        _ = [i.validate() for i in self._lines.values()]
         self._lines = {k: v for k, v in self._lines.items() if self._is_line_valid(v)}
         self.is_valid = len(self) > 0
 
