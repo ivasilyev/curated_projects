@@ -203,9 +203,9 @@ def redis_to_strings(
                 queue_name, waiting_pause, max_idle_counter - c)
             )
             mq.disconnect()
+            sleep(waiting_pause)
             mq = RedisMessageQueue(name=queue_name, **redis_kwargs)
             c += 1
-            sleep(waiting_pause)
         else:
             c = 0
             q = mq.lease(lease_secs=10, is_blocking=True, timeout=2)
