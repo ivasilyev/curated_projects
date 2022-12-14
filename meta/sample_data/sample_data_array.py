@@ -111,7 +111,7 @@ class SampleDataArray:
         self.validate()
         if self.is_valid:
             dump_dict(self.export_to_dict(), file)
-            print(f"Exported sample data to: '{file}'")
+            print(f"Exported sample data with {len(self)} items to: '{file}'")
         else:
             print("No sample data to export")
 
@@ -121,6 +121,6 @@ class SampleDataArray:
             df = self.to_dataframe()
             os.makedirs(os.path.dirname(file), exist_ok=True)
             df.to_csv(file, encoding="utf-8", sep="\t", index=False, header=False)
-            print(f"Exported sample data to: '{file}'")
+            print(f"Exported sample data with {len(self)} items to: '{file}'")
         else:
             print("No sample data to export")

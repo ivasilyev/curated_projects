@@ -165,6 +165,7 @@ class RedisMessageQueue:
         self._db.rpush(value, queue)
 
     def disconnect(self):
+        print(f"Disconnected from Redis DB queue: '{self._main_q_key}'")
         self._db.connection_pool.disconnect()
 
 
