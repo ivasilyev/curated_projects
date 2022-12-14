@@ -31,10 +31,10 @@ class SampleDataArray:
     def __repr__(self):
         return f"SampleDataArray with {len(self)} lines"
 
-    def __getattr__(self, item):
-        return self._lines[item]
+    def __get__(self, item):
+        return self._lines.get(item)
 
-    def __setattr__(self, key: str, value: SampleDataLine):
+    def __set__(self, key: str, value: SampleDataLine):
         self._lines[key] = value
 
     def __add__(self, other):
