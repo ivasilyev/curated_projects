@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     sampledata_array = SampleDataArray.load_dict(sampledata_file)
     dicts_to_redis(
-        dicts=sampledata_array.values,
+        dicts=sampledata_array.export_to_dict().values(),
         is_flush=is_flush,
         queue_name=queue_name,
         host=host_name,
