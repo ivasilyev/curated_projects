@@ -13,7 +13,7 @@ def parse_args():
     p.add_argument("-p", "--port", default=6379, type=int, help="Redis port")
     p.add_argument("-q", "--queue", default="sample_data", help="Redis queue name")
     p.add_argument("-f", "--flush", default=False, action="store_true", help="Flush all Redis queues")
-    namespace = parse_args()
+    namespace = p.parse_args()
     return (
         namespace.sampledata,
         namespace.host,
