@@ -31,17 +31,17 @@ class SampleDataArray:
     def __repr__(self):
         return f"SampleDataArray with {len(self)} lines"
 
-    def __get__(self, item):
-        return self._lines.get(item)
-
-    def __set__(self, key: str, value: SampleDataLine):
-        self._lines[key] = value
-
     def __add__(self, other):
         arr = SampleDataArray()
-        arr._lines = self._lines
-        arr._lines.update(other._lines)
+        _ = [arr._lines.update(i._lines) for i in (self, other)]
+        arr.validate()
         return arr
+
+    def get_line(self, key):
+        return self._lines.get(key)
+
+    def set_line(self, line: SampleDataLine):
+        self._lines[line.name] = line
 
     @staticmethod
     def _is_line_valid(x: SampleDataLine):
@@ -62,9 +62,7 @@ class SampleDataArray:
     @staticmethod
     def import_from_dicts(x: list):
         arr = SampleDataArray()
-        for d in x:
-            line = SampleDataLine.import_from_dict(d)
-            arr[line.name] = line
+        _ = [arr.set_line(SampleDataLine.import_from_dict(i)) for i in x]
         arr.validate()
         return arr
 
@@ -85,11 +83,11 @@ class SampleDataArray:
         for token_dict in tokenized_reads_files:
             sample_name = token_dict["sample_name"]
             if sample_name in arr.names:
-                line = arr[sample_name]
+                line = arr.get_line(sample_name)
                 line.reads.append(token_dict["reads_file"])
             else:
                 line = SampleDataLine(sample_name, [token_dict["reads_file"]])
-            arr[sample_name] = line
+            arr.set_line(line)
         return arr
 
     @staticmethod
