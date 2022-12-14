@@ -33,5 +33,5 @@ if __name__ == '__main__':
     for input_dir in dirs:
         arr = SampleDataArray.import_from_dir(input_dir, extension)
         arrays[input_dir] = arr
-    merged_array = SampleDataArray.merge_arrays(list(arrays.values()))
+    merged_array = sum(list(arrays.values()))
     merged_array.dump_dict(merged_array, sampledata)

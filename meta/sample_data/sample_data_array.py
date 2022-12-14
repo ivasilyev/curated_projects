@@ -13,26 +13,37 @@ DEFAULT_READS_EXTENSION = "fastq.gz"
 
 
 class SampleDataArray:
-    def __init__(self, lines: dict = None):
-        if lines is None:
-            lines = dict()
-        self.lines = lines
+    def __init__(self):
+        self._lines = dict()
         self.is_valid = False
         self.validate()
 
     @property
     def names(self):
-        return list(self.lines.keys())
+        return list(self._lines.keys())
 
     @property
     def values(self):
-        return list(self.lines.values())
+        return list(self._lines.values())
 
     def __len__(self):
         return len(self.names)
 
     def __repr__(self):
         return f"SampleDataArray with {len(self)} lines"
+
+    def __getattr__(self, item):
+        return self._lines[item]
+
+    def __setattr__(self, key: str, value: SampleDataLine):
+        value.validate()
+        self._lines[key] = value
+
+    def __add__(self, other):
+        arr = SampleDataArray()
+        arr._lines = self._lines
+        arr._lines.update(other._lines)
+        return arr
 
     @staticmethod
     def _is_line_valid(x: SampleDataLine):
@@ -43,27 +54,25 @@ class SampleDataArray:
             return False
 
     def validate(self):
-        self.lines = {k: v for k, v in self.lines.items() if self._is_line_valid(v)}
+        _ = [i.validate() for i in self._lines]
+        self._lines = {k: v for k, v in self._lines.items() if self._is_line_valid(v)}
         self.is_valid = len(self) > 0
 
     def update_lines_state(self, d: dict):
-        _ = [i.state.update(d) for i in self.lines.values()]
-
-    @staticmethod
-    def import_from_dict(d: dict):
-        arr = SampleDataArray({k: SampleDataLine.import_from_dict(v) for k, v in d.items()})
-        arr.validate()
-        return arr
+        _ = [i.state.update(d) for i in self._lines.values()]
 
     @staticmethod
     def import_from_dicts(x: list):
-        lines = dict()
+        arr = SampleDataArray()
         for d in x:
             line = SampleDataLine.import_from_dict(d)
-            lines[line.name] = line
-        arr = SampleDataArray()
+            arr[line.name] = line
         arr.validate()
         return arr
+
+    @staticmethod
+    def import_from_dict(d: dict):
+        return SampleDataArray.import_from_dicts(list(d.values()))
 
     @staticmethod
     def load_dict(file: str):
@@ -78,20 +87,12 @@ class SampleDataArray:
         for token_dict in tokenized_reads_files:
             sample_name = token_dict["sample_name"]
             if sample_name in arr.names:
-                line = arr.lines[sample_name]
+                line = arr[sample_name]
                 line.reads.append(token_dict["reads_file"])
             else:
                 line = SampleDataLine(sample_name, [token_dict["reads_file"]])
-            line.validate()
-            arr.lines[sample_name] = line
+            arr[sample_name] = line
         return arr
-
-    @staticmethod
-    def merge_arrays(arrays: list):
-        out = SampleDataArray()
-        for arr in arrays:
-            out.lines.update(arr.lines)
-        return out
 
     @staticmethod
     def import_from_dir(
@@ -105,7 +106,7 @@ class SampleDataArray:
         return SampleDataArray.import_from_reads_files(reads_files)
 
     def export_to_dict(self):
-        return {k: v.export_to_dict() for k, v in self.lines.items()}
+        return {k: v.export_to_dict() for k, v in self._lines.items()}
 
     def to_dataframe(self):
         return pd.DataFrame(list(self.export_to_dict().values())).loc[:, ["sample_name", "reads"]]
