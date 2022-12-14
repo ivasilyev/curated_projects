@@ -15,7 +15,7 @@ def parse_args():
     p.add_argument("-t", "--host", default="localhost", help="Redis host")
     p.add_argument("-p", "--port", default=6379, type=int, help="Redis port")
     p.add_argument("-q", "--queue", default="sample_data", help="Redis queue name")
-    p.add_argument("-u", "--pause", default=60, type=int, help="Polling pause")
+    p.add_argument("-u", "--pause", default=10, type=int, help="Polling pause")
     namespace = p.parse_args()
     return (
         namespace.sampledata,
