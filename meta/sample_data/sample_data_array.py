@@ -57,11 +57,13 @@ class SampleDataArray:
 
     @staticmethod
     def import_from_dicts(x: list):
-        out = dict()
+        lines = dict()
         for d in x:
             line = SampleDataLine.import_from_dict(d)
-            out[line.name] = line
-        return SampleDataArray.import_from_dict(out)
+            lines[line.name] = line
+        arr = SampleDataArray()
+        arr.validate()
+        return arr
 
     @staticmethod
     def load_dict(file: str):
