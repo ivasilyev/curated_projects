@@ -96,5 +96,5 @@ def tokenize_reads_file_name(s: str):
         },
         basename(s)
     )
-    d["reads_file"] = s
+    d["reads_file"] = d.pop("source_string")
     return d
