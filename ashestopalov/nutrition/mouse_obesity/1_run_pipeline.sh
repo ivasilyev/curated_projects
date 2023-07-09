@@ -5,8 +5,8 @@ export SAMPLEDATA_DIR="$(realpath "${SAMPLEDATA_DIR}")/"
 export SCRIPT_DIR="$(realpath "${SCRIPT_DIR}")/"
 
 echo "Working on ${ROOT_DIR}"
-export SAMPLEDATA_CSV="${SAMPLEDATA_DIR}sample_data.csv"
-export METADATA_TSV="${SAMPLEDATA_DIR}meta_data.tsv"
+export SAMPLEDATA_CSV="${SAMPLEDATA_DIR}qiime2_sample_data.csv"
+export METADATA_TSV="${SAMPLEDATA_DIR}qiime2_meta_data.tsv"
 
 export QIIME2_DIR="${ROOT_DIR}qiime2/"
 export PICRUST2_DIR="${ROOT_DIR}picrust2/"
