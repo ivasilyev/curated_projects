@@ -7,9 +7,9 @@ from argparse import ArgumentParser
 from meta.scripts.sample_data import create_sampledata_dict_from_dir, DEFAULT_READS_EXTENSION
 
 
-def convert_sampledata(sampledata_dict: dict):
+def convert_sampledata(sample_data_dict: dict):
     sample_data_dicts = []
-    for sampledata_line in sampledata_dict.values():
+    for sampledata_line in sample_data_dict.values():
         for sampledata_reads_file, direction in zip(
             sorted(sampledata_line["reads"]), ["forward", "reverse"]
         ):
@@ -26,7 +26,7 @@ def convert_sampledata(sampledata_dict: dict):
         "Description": s,
         "sample_source": s
     }, ]
-    for sample_name in sorted(sampledata_dict.keys()):
+    for sample_name in sorted(sample_data_dict.keys()):
         meta_data_dicts.extend([{
             "#SampleID": sample_name,
             "BarcodeSequence": "",
@@ -40,8 +40,8 @@ def convert_sampledata(sampledata_dict: dict):
     }
 
 
-def convert_and_dump_sampledata(sampledata_dict: dict, directory: str):
-    dfs = convert_sampledata(sampledata_dict)
+def convert_and_dump_sampledata(sample_data_dict: dict, directory: str):
+    dfs = convert_sampledata(sample_data_dict)
     os.makedirs(directory, exist_ok=True)
     for key, df in dfs.items():
         if key == "sample":
