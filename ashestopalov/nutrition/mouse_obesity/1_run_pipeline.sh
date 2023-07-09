@@ -59,6 +59,7 @@ curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/
     -o "${QIIME2_SCRIPT}"
 cd "${QIIME2_DIR}" || exit 1
 
+echo "Run QIIME2"
 export IMG="qiime2/core:latest"
 force_docker_pull "${IMG}"
 docker run \
@@ -85,6 +86,7 @@ curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/
     -o "${PICRUST2_SCRIPT}"
 cd "${PICRUST2_DIR}" || exit 1
 
+echo "Run PICRUSt2"
 export IMG="quay.io/biocontainers/picrust2:2.5.0--pyhdfd78af_0"
 force_docker_pull "${IMG}"
 docker run \
@@ -106,7 +108,7 @@ rm -f "${PICRUST2_SCRIPT}"
 cd "${ROOT_DIR}" || exit 1
 
 
-
+echo "Copy files"
 mkdir -p "${RESULT_DIR}"
 find "${ROOT_DIR}" \
     -type f \( \
@@ -120,6 +122,7 @@ find "${ROOT_DIR}" \
         -I "{}" \
             bash -c '
                 export SRC_FILE="{}";
+                echo Copy: "${SRC_FILE}";
                 cp -r "${SRC_FILE}" "${RESULT_DIR}$(basename "${SRC_FILE}")"
             '
 find "${ROOT_DIR}" \
@@ -132,6 +135,7 @@ find "${ROOT_DIR}" \
         -I "{}" \
             bash -c '
                 export SRC_FILE="{}";
+                echo Copy: "${SRC_FILE}";
                 cp -r "${SRC_FILE}" "${RESULT_DIR}$(basename "$(dirname "${SRC_FILE}")")_$(basename "${SRC_FILE}")"
             '
 
@@ -140,6 +144,7 @@ find "${ROOT_DIR}" \
 # The first line of the raw file is '# Constructed from biom file'
 sed -i '1d' "${OTU_TABLE}"
 
+echo "Concatenate tables"
 export IMG="ivasilyev/curated_projects:latest"
 force_docker_pull "${IMG}"
 docker run \
@@ -160,3 +165,5 @@ docker run \
                 --input "${OTU_TABLE}" "/data/reference/SILVA/SILVA_v138/SILVA_138_Taxonomy_headed.tsv" / \
                 --output "${OTU_TABLE%.*}_annotated.tsv"
         '
+
+echo "All pipeline runs ended"
