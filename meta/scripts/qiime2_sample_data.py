@@ -35,8 +35,8 @@ def convert_sampledata(sampledata_dict: dict):
             "sample_source": ""
         }])
     return {
-        "sample_data": pd.DataFrame(sample_data_dicts).sort_values("absolute-filepath"),
-        "meta_data": pd.DataFrame(meta_data_dicts)
+        "sample": pd.DataFrame(sample_data_dicts).sort_values("absolute-filepath"),
+        "meta": pd.DataFrame(meta_data_dicts)
     }
 
 
@@ -44,13 +44,13 @@ def convert_and_dump_sampledata(sampledata_dict: dict, directory: str):
     dfs = convert_sampledata(sampledata_dict)
     os.makedirs(directory, exist_ok=True)
     for key, df in dfs.items():
-        if key == "sample_data":
+        if key == "sample":
             sep = ","
             ext = "csv"
         else:
             sep = "\t"
             ext = "tsv"
-        df.to_csv(os.path.join(directory, f"{key}.{ext}"), sep=sep, header=True, index=False)
+        df.to_csv(os.path.join(directory, f"qiime2_{key}_data.{ext}"), sep=sep, header=True, index=False)
 
 
 def parse_args():
