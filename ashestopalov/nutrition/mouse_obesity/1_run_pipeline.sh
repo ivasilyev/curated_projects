@@ -27,28 +27,33 @@ force_docker_pull () {
   done
 }
 
-
-echo "Create sampledata in ${SAMPLEDATA_DIR}"
-export IMG="ivasilyev/curated_projects:latest"
-force_docker_pull "${IMG}"
-docker run \
-    --env RAW_DIR="${RAW_DIR}" \
-    --env SAMPLEDATA_DIR="${SAMPLEDATA_DIR}" \
-    --net=host \
-    --rm \
-    --volume /data:/data \
-    --volume /data1:/data1 \
-    --volume /data2:/data2 \
-    --volume /data03:/data03 \
-    --volume /data04:/data04 \
-    "${IMG}" \
-        bash -c '
-            git pull --quiet;
-            python3 ./meta/scripts/qiime2_sample_data.py \
-                --extension ".fastq.gz" \
-                --input "${RAW_DIR}" \
-                --output "${SAMPLEDATA_DIR}"
-        '
+echo "Check QIIME2 sampledata"
+if [ ! -s "${SAMPLEDATA_CSV}" ] && [ ! -s "${METADATA_TSV}" ]
+  then
+  echo "Create sampledata in ${SAMPLEDATA_DIR}"
+  export IMG="ivasilyev/curated_projects:latest"
+  force_docker_pull "${IMG}"
+  docker run \
+      --env RAW_DIR="${RAW_DIR}" \
+      --env SAMPLEDATA_DIR="${SAMPLEDATA_DIR}" \
+      --net=host \
+      --rm \
+      --volume /data:/data \
+      --volume /data1:/data1 \
+      --volume /data2:/data2 \
+      --volume /data03:/data03 \
+      --volume /data04:/data04 \
+      "${IMG}" \
+          bash -c '
+              git pull --quiet;
+              python3 ./meta/scripts/qiime2_sample_data.py \
+                  --extension ".fastq.gz" \
+                  --input "${RAW_DIR}" \
+                  --output "${SAMPLEDATA_DIR}"
+          '
+else
+    echo "QIIME2 sampledata does exist"
+fi
 
 cd "${ROOT_DIR}" || exit 1
 
