@@ -171,21 +171,8 @@ if __name__ == '__main__':
 
 
 from meta.utils.io import dump_dict
-from meta.utils.language import regex_based_tokenization
+from meta.utils.language import tokenize_reads_file_name
 from meta.utils.file_system import find_file_by_tail
-
-
-def tokenize_reads_file_name(s: str):
-    d = regex_based_tokenization({
-        "extension": ["\.(.{2,8})$", "(\..{2,8})$"],  # E.g. '.fastq.gz'
-        "last_segment": ["[^A-Za-z0-9]([A-Za-z0-9]+)$", "([^A-Za-z0-9][A-Za-z0-9]+)$"],  # The last segment is always 001,
-        "read_index": ["[^A-Za-z0-9](R[0-9]+)$", "([^A-Za-z0-9]R[0-9]+)$"],
-        "lane_number": ["[^A-Za-z0-9](L[0-9]+)$", "([^A-Za-z0-9]L[0-9]+)$"],
-        "sample_sheet_number": ["[^A-Za-z0-9](S[0-9]+)$", "([^A-Za-z0-9]S[0-9]+)$"],
-        "sample_name": ["(.+)", "(.+)"],
-    }, os.path.basename(s))
-    d["reads_file"] = s
-    return d
 
 
 def create_sampledata_dict_from_list(reads_files: list):
