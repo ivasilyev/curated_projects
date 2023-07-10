@@ -71,10 +71,10 @@ def convert_and_dump_sampledata(directory: str, *args, **kwargs):
 
 def run(
     reads_dirs: list,
-    extension: str,
     sampledata_dir: str,
-    barcode_sequence: str,
-    linker_primer_sequence: str
+    extension: str = DEFAULT_READS_EXTENSION,
+    barcode_sequence: str = "",
+    linker_primer_sequence: str = ""
 ):
     sampledata_dict = dict()
     for reads_dir in reads_dirs:
@@ -122,7 +122,7 @@ if __name__ == '__main__':
         outputDir
     ) = parse_args()
     run(
-        reads_dir=inputDirs,
+        reads_dirs=inputDirs,
         extension=inputExtension,
         sampledata_dir=outputDir,
         barcode_sequence=inputBarcode,
