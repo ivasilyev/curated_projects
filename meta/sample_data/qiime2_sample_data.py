@@ -79,11 +79,15 @@ def run(
     sampledata_dict = dict()
     for reads_dir in reads_dirs:
         sampledata_dict.update(create_sampledata_dict_from_dir(reads_dir, extension))
-    convert_and_dump_sampledata(
+    sampledata_files = convert_and_dump_sampledata(
         directory=sampledata_dir,
         sample_data_dict=sampledata_dict,
         barcode_sequence=barcode_sequence,
         linker_primer_sequence=linker_primer_sequence,
+    )
+    return dict(
+        sampledata_dict=sampledata_dict,
+        sampledata_files=sampledata_files
     )
 
 
