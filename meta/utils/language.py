@@ -96,7 +96,8 @@ def tokenize_reads_file_name(s: str):
         },
         basename(s)
     )
-    d["reads_file"] = d.pop("source_string")
+    d["reads_file"] = str(s)
+    d["reads_file_basename"] = d.pop("source_string")
     if d["read_index"].endswith("1"):
         d["direction"] = "forward"
     elif d["read_index"].endswith("2"):
