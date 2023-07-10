@@ -70,13 +70,15 @@ def convert_and_dump_sampledata(directory: str, *args, **kwargs):
 
 
 def run(
-    reads_dir: str,
+    reads_dirs: list,
     extension: str,
     sampledata_dir: str,
     barcode_sequence: str,
     linker_primer_sequence: str
 ):
-    sampledata_dict = create_sampledata_dict_from_dir(reads_dir, extension)
+    sampledata_dict = dict()
+    for reads_dir in reads_dirs:
+        sampledata_dict.update(create_sampledata_dict_from_dir(reads_dir, extension))
     convert_and_dump_sampledata(
         directory=sampledata_dir,
         sample_data_dict=sampledata_dict,
@@ -91,7 +93,7 @@ def parse_args():
                     "input directory and dump them into the output directory".strip(),
         epilog=""
     )
-    parser.add_argument("-i", "--input", help="Input directory")
+    parser.add_argument("-i", "--input", nargs="+", help="Input directories")
     parser.add_argument("-e", "--extension", default=DEFAULT_READS_EXTENSION,
                         help="Extension of reads files")
     parser.add_argument("-b", "--barcode", default="", help="Barcode sequence")
@@ -109,14 +111,14 @@ def parse_args():
 
 if __name__ == '__main__':
     (
-        inputDir,
+        inputDirs,
         inputExtension,
         inputBarcode,
         inputLinker,
         outputDir
     ) = parse_args()
     run(
-        reads_dir=inputDir,
+        reads_dir=inputDirs,
         extension=inputExtension,
         sampledata_dir=outputDir,
         barcode_sequence=inputBarcode,
