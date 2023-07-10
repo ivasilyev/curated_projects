@@ -65,7 +65,24 @@ def convert_and_dump_sampledata(directory: str, *args, **kwargs):
             index=False
         )
         out[key] = file
+    print(f"Sampledata created in: '{directory}'")
     return out
+
+
+def run(
+    reads_dir: str,
+    extension: str,
+    sampledata_dir: str,
+    barcode_sequence: str,
+    linker_primer_sequence: str
+):
+    sampledata_dict = create_sampledata_dict_from_dir(reads_dir, extension)
+    convert_and_dump_sampledata(
+        directory=sampledata_dir,
+        sample_data_dict=sampledata_dict,
+        barcode_sequence=barcode_sequence,
+        linker_primer_sequence=linker_primer_sequence,
+    )
 
 
 def parse_args():
@@ -98,11 +115,10 @@ if __name__ == '__main__':
         inputLinker,
         outputDir
     ) = parse_args()
-    sampledata_dict = create_sampledata_dict_from_dir(inputDir, inputExtension)
-    convert_and_dump_sampledata(
-        directory=outputDir,
-        sample_data_dict=parse_args,
+    run(
+        reads_dir=inputDir,
+        extension=inputExtension,
+        sampledata_dir=outputDir,
         barcode_sequence=inputBarcode,
-        linker_primer_sequence=inputLinker,
+        linker_primer_sequence=inputLinker
     )
-    print(f"Sampledata created in: '{outputDir}'")
