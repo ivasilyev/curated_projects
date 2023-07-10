@@ -7,6 +7,9 @@ from argparse import ArgumentParser
 from meta.scripts.sample_data import create_sampledata_dict_from_dir, DEFAULT_READS_EXTENSION
 
 
+_Q2_CAT_TYPE = "categorical"
+
+
 def convert_sampledata(sample_data_dict: dict):
     sample_data_dicts = []
     for sampledata_line in sample_data_dict.values():
@@ -18,13 +21,12 @@ def convert_sampledata(sample_data_dict: dict):
                 "absolute-filepath": sampledata_reads_file,
                 "direction": direction
             })
-    s = "categorical"
     meta_data_dicts = [{
         "#SampleID": "#q2:types",
-        "BarcodeSequence": s,
-        "LinkerPrimerSequence": s,
-        "Description": s,
-        "sample_source": s
+        "BarcodeSequence": _Q2_CAT_TYPE,
+        "LinkerPrimerSequence": _Q2_CAT_TYPE,
+        "Description": _Q2_CAT_TYPE,
+        "SampleSource": _Q2_CAT_TYPE
     }, ]
     for sample_name in sorted(sample_data_dict.keys()):
         meta_data_dicts.extend([{
@@ -32,7 +34,7 @@ def convert_sampledata(sample_data_dict: dict):
             "BarcodeSequence": "",
             "LinkerPrimerSequence": "",
             "Description": sample_name,
-            "sample_source": ""
+            "SampleSource": ""
         }])
     return {
         "sample": pd.DataFrame(sample_data_dicts).sort_values("absolute-filepath"),
