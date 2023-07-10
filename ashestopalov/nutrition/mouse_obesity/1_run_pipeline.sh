@@ -15,7 +15,7 @@ export QIIME2_SCRIPT="${QIIME2_DIR}qiime2.sh"
 export PICRUST2_SCRIPT="${PICRUST2_DIR}picrust2.sh"
 
 export RESULT_DIR="${ROOT_DIR}results/"
-export OTU_TABLE="${RESULT_DIR}OTUs.tsv"
+export ASV_TABLE="${RESULT_DIR}ASVs.tsv"
 
 force_docker_pull () {
   while true
@@ -119,7 +119,7 @@ find "${ROOT_DIR}" \
     -type f \( \
         -name "path_abun_unstrat_described.tsv" \
         -o -name "pred_metagenome_contrib.legacy.tsv" \
-        -o -name "OTUs.tsv" \
+        -o -name "ASVs.tsv" \
     \) -print0 \
     | xargs \
         -0 \
@@ -147,13 +147,13 @@ find "${ROOT_DIR}" \
 
 
 # The first line of the raw file is '# Constructed from biom file'
-sed -i '1d' "${OTU_TABLE}"
+sed -i '1d' "${ASV_TABLE}"
 
 echo "Concatenate tables"
 export IMG="ivasilyev/curated_projects:latest"
 force_docker_pull "${IMG}"
 docker run \
-    --env OTU_TABLE="${OTU_TABLE}" \
+    --env ASV_TABLE="${ASV_TABLE}" \
     --net=host \
     --rm \
     --volume /data:/data \
@@ -166,9 +166,11 @@ docker run \
             git pull --quiet;
             python3 ./meta/scripts/concatenate_tables.py \
                 --axis 1 \
-                --index "#OTU ID" \
-                --input "${OTU_TABLE}" "/data/reference/SILVA/SILVA_v138/SILVA_138_Taxonomy_headed.tsv" / \
-                --output "${OTU_TABLE%.*}_annotated.tsv"
+                --index "#ASV ID" \
+                --input \
+                    "${ASV_TABLE}" \
+                    "/data/reference/SILVA/SILVA_v138/SILVA_138_Taxonomy_headed.tsv" \
+                --output "${ASV_TABLE%.*}_annotated.tsv"
         '
 
 echo "All pipeline runs ended"

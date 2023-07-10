@@ -152,7 +152,7 @@ qiime vsearch cluster-features-closed-reference --verbose --p-perc-identity 0.97
     --o-unmatched-sequences "closed_reference/closed_reference_unmatched_sequences.qza" \
     |& tee "${LOG_DIR}vsearch cluster-features-closed-reference.log"
 
-echo Export an OTU table
+echo Export an ASV table
 mkdir -p "biom"
 qiime tools export \
     --input-path "closed_reference/closed_reference_clustered_table.qza" \
@@ -165,25 +165,25 @@ biom add-metadata \
     --sc-separated "taxonomy" \
     --observation-metadata-fp "/data/reference/SILVA/SILVA_v138/SILVA_138_Taxonomy_headed.tsv" \
     --input-fp "biom/feature-table.biom" \
-    --output-fp "biom/OTUs_with_taxa.biom" \
+    --output-fp "biom/ASVs_with_taxa.biom" \
     |& tee "${LOG_DIR}biom add-metadata.log"
 
 echo Convert biom to JSON
 biom convert --to-json \
-    --input-fp "biom/OTUs_with_taxa.biom" \
-    --output-fp "biom/OTUs_with_taxa.json" \
+    --input-fp "biom/ASVs_with_taxa.biom" \
+    --output-fp "biom/ASVs_with_taxa.json" \
     |& tee "${LOG_DIR}biom convert json.log"
 
 echo Convert biom to TSV
 # Base
 biom convert --to-tsv \
     --input-fp "biom/feature-table.biom" \
-    --output-fp "biom/OTUs.tsv" \
+    --output-fp "biom/ASVs.tsv" \
     |& tee "${LOG_DIR}biom convert base tsv.log"
 # With taxa
 biom convert --to-tsv \
-    --input-fp "biom/OTUs_with_taxa.biom" \
-    --output-fp "biom/OTUs_with_taxa.tsv" \
+    --input-fp "biom/ASVs_with_taxa.biom" \
+    --output-fp "biom/ASVs_with_taxa.tsv" \
     --header-key taxonomy \
     |& tee "${LOG_DIR}biom convert taxa tsv.log"
 
