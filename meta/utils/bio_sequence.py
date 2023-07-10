@@ -2,6 +2,15 @@
 from Bio import SeqIO
 
 
+SEQUENCE_FILE_EXTENSIONS = (
+    "fasta", "fna", "ffn", "faa", "frn", "fa", "fastq.gz", "fastq", "fq.gz", "fq",
+)
+
+
+def is_sequence_file(s: str):
+    return any(s.endswith(f"{i}") for i in SEQUENCE_FILE_EXTENSIONS)
+
+
 def remove_duplicate_sequences(records: list):
     out = []
     sequences = []
