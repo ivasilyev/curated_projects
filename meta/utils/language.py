@@ -97,4 +97,10 @@ def tokenize_reads_file_name(s: str):
         basename(s)
     )
     d["reads_file"] = d.pop("source_string")
+    if d["read_index"].endswith("1"):
+        d["direction"] = "forward"
+    elif d["read_index"].endswith("2"):
+        d["direction"] = "reverse"
+    else:
+        print(f"Cannot parse read direction direction from the file '{s}'")
     return d
