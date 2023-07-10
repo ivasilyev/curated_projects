@@ -4,7 +4,7 @@
 import os
 import pandas as pd
 from argparse import ArgumentParser
-from meta.scripts.sample_data import create_sampledata_dict_from_dir, DEFAULT_READS_EXTENSION
+from meta.sample_data.sample_data import create_sampledata_dict_from_dir, DEFAULT_READS_EXTENSION
 
 
 _Q2_CAT_TYPE = "categorical"
