@@ -39,8 +39,8 @@ def convert_sampledata(
             "BarcodeSequence": barcode_sequence,
             "LinkerPrimerSequence": linker_primer_sequence,
             "Description": sample_name,
-            "SampleSource": "",
-            "SubjectID": ""
+            "SampleSource": "".join([i for i in sample_name if i.isalpha()]),
+            "SubjectID": "".join([i for i in sample_name if not i.isalpha()])
         }])
     return {
         "sample": pd.DataFrame(sample_data_dicts).sort_values("absolute-filepath"),
