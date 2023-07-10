@@ -30,7 +30,8 @@ def convert_sampledata(
         "BarcodeSequence": _Q2_CAT_TYPE,
         "LinkerPrimerSequence": _Q2_CAT_TYPE,
         "Description": _Q2_CAT_TYPE,
-        "SampleSource": _Q2_CAT_TYPE
+        "SampleSource": _Q2_CAT_TYPE,
+        "SubjectID": _Q2_CAT_TYPE
     }, ]
     for sample_name in sorted(sample_data_dict.keys()):
         meta_data_dicts.extend([{
@@ -38,7 +39,8 @@ def convert_sampledata(
             "BarcodeSequence": barcode_sequence,
             "LinkerPrimerSequence": linker_primer_sequence,
             "Description": sample_name,
-            "SampleSource": ""
+            "SampleSource": "",
+            "SubjectID": ""
         }])
     return {
         "sample": pd.DataFrame(sample_data_dicts).sort_values("absolute-filepath"),
