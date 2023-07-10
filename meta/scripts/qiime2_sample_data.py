@@ -10,7 +10,11 @@ from meta.scripts.sample_data import create_sampledata_dict_from_dir, DEFAULT_RE
 _Q2_CAT_TYPE = "categorical"
 
 
-def convert_sampledata(sample_data_dict: dict):
+def convert_sampledata(
+    sample_data_dict: dict,
+    barcode_sequence: str = "",
+    linker_primer_sequence: str = "",
+):
     sample_data_dicts = []
     for sampledata_line in sample_data_dict.values():
         for sampledata_reads_file, direction in zip(
@@ -31,8 +35,8 @@ def convert_sampledata(sample_data_dict: dict):
     for sample_name in sorted(sample_data_dict.keys()):
         meta_data_dicts.extend([{
             "#SampleID": sample_name,
-            "BarcodeSequence": "",
-            "LinkerPrimerSequence": "",
+            "BarcodeSequence": barcode_sequence,
+            "LinkerPrimerSequence": linker_primer_sequence,
             "Description": sample_name,
             "SampleSource": ""
         }])
@@ -42,8 +46,8 @@ def convert_sampledata(sample_data_dict: dict):
     }
 
 
-def convert_and_dump_sampledata(sample_data_dict: dict, directory: str):
-    dfs = convert_sampledata(sample_data_dict)
+def convert_and_dump_sampledata(directory: str, *args, **kwargs):
+    dfs = convert_sampledata(*args, **kwargs)
     os.makedirs(directory, exist_ok=True)
     for key, df in dfs.items():
         if key == "sample":
@@ -52,7 +56,12 @@ def convert_and_dump_sampledata(sample_data_dict: dict, directory: str):
         else:
             sep = "\t"
             ext = "tsv"
-        df.to_csv(os.path.join(directory, f"qiime2_{key}_data.{ext}"), sep=sep, header=True, index=False)
+        df.to_csv(
+            os.path.join(directory, f"qiime2_{key}_data.{ext}"),
+            sep=sep,
+            header=True,
+            index=False
+        )
 
 
 def parse_args():
@@ -64,13 +73,32 @@ def parse_args():
     parser.add_argument("-i", "--input", help="Input directory")
     parser.add_argument("-e", "--extension", default=DEFAULT_READS_EXTENSION,
                         help="Extension of reads files")
+    parser.add_argument("-b", "--barcode", default="", help="Barcode sequence")
+    parser.add_argument("-l", "--linker", default="", help="Linker primer sequence")
     parser.add_argument("-o", "--output", required=True, help="Output directory")
     _namespace = parser.parse_args()
-    return _namespace.input, _namespace.extension, _namespace.output
+    return (
+        _namespace.input,
+        _namespace.extension,
+        _namespace.barcode,
+        _namespace.linker,
+        _namespace.output,
+    )
 
 
 if __name__ == '__main__':
-    inputDir, inputExtension, outputDir = parse_args()
+    (
+        inputDir,
+        inputExtension,
+        inputBarcode,
+        inputLinker,
+        outputDir
+    ) = parse_args()
     sampledata_dict = create_sampledata_dict_from_dir(inputDir, inputExtension)
-    convert_and_dump_sampledata(sampledata_dict, outputDir)
+    convert_and_dump_sampledata(
+        directory=outputDir,
+        sample_data_dict=parse_args,
+        barcode_sequence=inputBarcode,
+        linker_primer_sequence=inputLinker,
+    )
     print(f"Sampledata created in: '{outputDir}'")
