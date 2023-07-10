@@ -49,6 +49,7 @@ def convert_sampledata(
 def convert_and_dump_sampledata(directory: str, *args, **kwargs):
     dfs = convert_sampledata(*args, **kwargs)
     os.makedirs(directory, exist_ok=True)
+    out = dict()
     for key, df in dfs.items():
         if key == "sample":
             sep = ","
@@ -56,12 +57,15 @@ def convert_and_dump_sampledata(directory: str, *args, **kwargs):
         else:
             sep = "\t"
             ext = "tsv"
+        file = os.path.join(directory, f"qiime2_{key}_data.{ext}")
         df.to_csv(
-            os.path.join(directory, f"qiime2_{key}_data.{ext}"),
+            file,
             sep=sep,
             header=True,
             index=False
         )
+        out[key] = file
+    return out
 
 
 def parse_args():
