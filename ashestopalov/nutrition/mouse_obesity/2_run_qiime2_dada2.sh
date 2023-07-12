@@ -140,7 +140,7 @@ log Export the aligned sequences
 qiime tools export \
     --input-path "closed_references/closed_reference_clustered_sequences.qza" \
     --output-format DNASequencesDirectoryFormat \
-    --output-path "closed_reference" \
+    --output-path "closed_references/" \
     |& tee "${LOG_DIR}tools export fasta.log"
 # Output: 'dna-sequences.fasta'
 

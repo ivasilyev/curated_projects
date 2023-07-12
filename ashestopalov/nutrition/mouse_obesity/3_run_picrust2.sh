@@ -4,7 +4,11 @@ function log {
     echo "[$(date '+%d-%m-%Y %H:%M:%S')] $@"
 }
 
-# PICRUST2_DIR and QIIME2_DIR variables are defined externally
+# Required variables:
+export PICRUST2_DIR="$(realpath "${PICRUST2_DIR}")/"
+export QIME2_FEATURES_BIOM="$(realpath "${QIME2_FEATURES_BIOM}")"
+export QIME2_FEATURES_FASTA="$(realpath "${QIME2_FEATURES_FASTA}")"
+
 log "Run PICRUSt2 in ${PICRUST2_DIR}"
 
 export LOG_DIR="${PICRUST2_DIR}logs/"
@@ -20,9 +24,9 @@ log Run the PICRUSt2 pipeline
 picrust2_pipeline.py \
     --coverage \
     --hsp_method mp \
-    --input "${QIIME2_DIR}biom/feature-table.biom" \
+    --input "${QIME2_FEATURES_BIOM}" \
     --processes "${NPROC}" \
-    --study_fasta "${QIIME2_DIR}closed_reference/dna-sequences.fasta" \
+    --study_fasta "${QIME2_FEATURES_FASTA}" \
     --output "${PIPELINE_DIR}" \
     --stratified \
     --verbose \

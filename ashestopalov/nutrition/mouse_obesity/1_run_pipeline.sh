@@ -9,13 +9,15 @@ export SAMPLEDATA_CSV="${SAMPLEDATA_DIR}qiime2_sample_data.csv"
 export METADATA_TSV="${SAMPLEDATA_DIR}qiime2_meta_data.tsv"
 
 export QIIME2_DIR="${ROOT_DIR}qiime2/"
-export PICRUST2_DIR="${ROOT_DIR}picrust2/"
-
+export QIME2_FEATURES_BIOM="${QIIME2_DIR}bioms/feature-table.biom"
+export QIME2_FEATURES_FASTA="${QIIME2_DIR}closed_references/dna-sequences.fasta"
 export QIIME2_SCRIPT="${QIIME2_DIR}qiime2.sh"
-export PICRUST2_SCRIPT="${PICRUST2_DIR}picrust2.sh"
 
+export PICRUST2_DIR="${ROOT_DIR}picrust2/"
+export PICRUST2_SCRIPT="${PICRUST2_DIR}picrust2.sh"
 export RESULT_DIR="${ROOT_DIR}results/"
-export ASV_TABLE="${RESULT_DIR}ASVs.tsv"
+
+export OTU_TABLE="${RESULT_DIR}OTUs.tsv"
 
 force_docker_pull () {
   while true
@@ -96,7 +98,8 @@ export IMG="quay.io/biocontainers/picrust2:2.5.0--pyhdfd78af_0"
 force_docker_pull "${IMG}"
 docker run \
     --env QIIME2_DIR="${QIIME2_DIR}" \
-    --env PICRUST2_DIR="${PICRUST2_DIR}" \
+    --env QIME2_FEATURES_BIOM="${QIME2_FEATURES_BIOM}" \
+    --env QIME2_FEATURES_FASTA="${QIME2_FEATURES_FASTA}" \
     --env PICRUST2_SCRIPT="${PICRUST2_SCRIPT}" \
     --net=host \
     --rm \
@@ -119,7 +122,7 @@ find "${ROOT_DIR}" \
     -type f \( \
         -name "path_abun_unstrat_described.tsv" \
         -o -name "pred_metagenome_contrib.legacy.tsv" \
-        -o -name "ASVs.tsv" \
+        -o -name "OTUs.tsv" \
     \) -print0 \
     | xargs \
         -0 \
@@ -147,13 +150,13 @@ find "${ROOT_DIR}" \
 
 
 # The first line of the raw file is '# Constructed from biom file'
-sed -i '1d' "${ASV_TABLE}"
+sed -i '1d' "${OTU_TABLE}"
 
 echo "Concatenate tables"
 export IMG="ivasilyev/curated_projects:latest"
 force_docker_pull "${IMG}"
 docker run \
-    --env ASV_TABLE="${ASV_TABLE}" \
+    --env OTU_TABLE="${OTU_TABLE}" \
     --net=host \
     --rm \
     --volume /data:/data \
@@ -166,11 +169,11 @@ docker run \
             git pull --quiet;
             python3 ./meta/scripts/concatenate_tables.py \
                 --axis 1 \
-                --index "#ASV ID" \
+                --index "#OTU ID" \
                 --input \
-                    "${ASV_TABLE}" \
+                    "${OTU_TABLE}" \
                     "/data/reference/SILVA/SILVA_v138/SILVA_138_Taxonomy_headed.tsv" \
-                --output "${ASV_TABLE%.*}_annotated.tsv"
+                --output "${OTU_TABLE%.*}_annotated.tsv"
         '
 
 echo "All pipeline runs ended"
