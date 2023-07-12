@@ -77,7 +77,7 @@ qiime feature-classifier classify-sklearn \
     --verbose \
     |& tee "${LOG_DIR}feature-classifier classify-sklearn.log"
 
-log Create Amplicon Sequence Variant \(ASV\) table
+log Create Amplicon Sequence Variant table
 qiime metadata tabulate \
     --m-input-file "taxonomy/classified_taxonomy.qza" \
     --o-visualization "visualizations/classified_taxonomy.qzv" \
@@ -144,7 +144,7 @@ qiime tools export \
     |& tee "${LOG_DIR}tools export fasta.log"
 # Output: 'dna-sequences.fasta'
 
-log Export an ASV table
+log Export an OTU table
 mkdir -p "bioms/"
 qiime tools export \
     --input-path "closed_references/closed_reference_clustered_table.qza" \
@@ -159,21 +159,21 @@ biom add-metadata \
     --observation-metadata-fp "${TAXA_REFERENCE_HEADER}" \
     --sample-metadata-fp "${METADATA_TSV}" \
     --input-fp "bioms/feature-table.biom" \
-    --output-fp "bioms/ASVs_with_taxa.biom" \
+    --output-fp "bioms/OTUs_with_taxa.biom" \
     |& tee "${LOG_DIR}biom add-metadata.log"
 
 log Convert biom to JSON
 biom convert \
     --to-json \
-    --input-fp "bioms/ASVs_with_taxa.biom" \
-    --output-fp "bioms/ASVs_with_taxa.json" \
+    --input-fp "bioms/OTUs_with_taxa.biom" \
+    --output-fp "bioms/OTUs_with_taxa.json" \
     |& tee "${LOG_DIR}biom convert json.log"
 
 log Convert biom to TSV
 biom convert \
     --to-tsv \
-    --input-fp "bioms/ASVs_with_taxa.biom" \
-    --output-fp "bioms/ASVs_with_taxa.tsv" \
+    --input-fp "bioms/OTUs_with_taxa.biom" \
+    --output-fp "bioms/OTUs_with_taxa.tsv" \
     --header-key "taxonomy" \
     |& tee "${LOG_DIR}biom convert taxa tsv.log"
 
