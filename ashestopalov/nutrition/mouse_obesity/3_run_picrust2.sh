@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
+function log {
+    echo "[$(date '+%d-%m-%Y %H:%M:%S')] $@"
+}
+
 # PICRUST2_DIR and QIIME2_DIR variables are defined externally
-echo "Run PICRUSt2 in ${PICRUST2_DIR}"
+log "Run PICRUSt2 in ${PICRUST2_DIR}"
 
 export LOG_DIR="${PICRUST2_DIR}logs/"
 export PIPELINE_DIR="${PICRUST2_DIR}main_pipeline/"
@@ -9,10 +13,10 @@ export NPROC="$(grep -c '^processor' /proc/cpuinfo)"
 
 mkdir -p "${PICRUST2_DIR}" "${LOG_DIR}"
 cd "${PICRUST2_DIR}" || exit 1
-echo Ensure that the output directory does not exist
+log Ensure that the output directory does not exist
 rm -rf "${PIPELINE_DIR}"
 
-echo Run the PICRUSt2 pipeline
+log Run the PICRUSt2 pipeline
 picrust2_pipeline.py \
     --coverage \
     --hsp_method mp \
@@ -24,7 +28,7 @@ picrust2_pipeline.py \
     --verbose \
     |& tee "${LOG_DIR}picrust2_pipeline.log"
 
-echo Run the PICRUSt2 pathway pipeline
+log Run the PICRUSt2 pathway pipeline
 pathway_pipeline.py \
     --input "${PIPELINE_DIR}EC_metagenome_out/pred_metagenome_unstrat.tsv.gz" \
     --intermediate "${PIPELINE_DIR}pathways_out/intermediate" \
@@ -33,7 +37,7 @@ pathway_pipeline.py \
     --verbose \
     |& tee "${LOG_DIR}picrust2_pathway_pipeline.log"
 
-echo Convert tables
+log Convert tables
 mkdir -p "described/EC_metagenome_out"
 convert_table.py \
     "${PIPELINE_DIR}EC_metagenome_out/pred_metagenome_contrib.tsv.gz" \
@@ -41,24 +45,24 @@ convert_table.py \
     --output "described/EC_metagenome_out/pred_metagenome_contrib.legacy.tsv" \
     |& tee "${LOG_DIR}convert_table.log"
 
-echo Add KEGG ENZYME descriptions
+log Add KEGG ENZYME descriptions
 add_descriptions.py \
     --input "${PIPELINE_DIR}EC_metagenome_out/pred_metagenome_unstrat.tsv.gz" \
     --map_type EC \
     --output "described/EC_metagenome_out/pred_metagenome_unstrat_described.tsv"
 
-echo Add KEGG ORTHOLOGY descriptions
+log Add KEGG ORTHOLOGY descriptions
 add_descriptions.py \
     --input "${PIPELINE_DIR}KO_metagenome_out/pred_metagenome_unstrat.tsv.gz" \
     --map_type KO \
     --output "described/KO_metagenome_out/pred_metagenome_unstrat_described.tsv"
 
-echo Add MetaCyc descriptions
+log Add MetaCyc descriptions
 add_descriptions.py -m METACYC \
     --input "${PIPELINE_DIR}pathways_out/path_abun_unstrat.tsv.gz" \
     --output "described/pathways_out/path_abun_unstrat_described.tsv"
 
-echo "Completed running PICRUSt2 in ${PICRUST2_DIR}"
+log "Completed running PICRUSt2 in ${PICRUST2_DIR}"
 chmod -R 777 "$(pwd)"
 cd ..
 exit 0
