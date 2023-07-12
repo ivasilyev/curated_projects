@@ -4,17 +4,21 @@ function log {
     echo "[$(date '+%d-%m-%Y %H:%M:%S')] $@"
 }
 
-# QIIME2_DIR, SAMPLEDATA_CSV and METADATA_TSV variables are defined externally
+# Required variables:
+export QIIME2_DIR="$(realpath "${QIIME2_DIR}")/"
+export SAMPLEDATA_CSV="$(realpath "${SAMPLEDATA_CSV}")"
+export METADATA_TSV="$(realpath "${METADATA_TSV}")"
+
+export TAXA_REFERENCE_FEATURES="$(realpath "${TAXA_REFERENCE_FEATURES}")"
+export TAXA_REFERENCE_CLASSIFIER="$(realpath "${TAXA_REFERENCE_CLASSIFIER}")"
+export TAXA_REFERENCE_SEQUENCES="$(realpath "${TAXA_REFERENCE_SEQUENCES}")"
+export TAXA_REFERENCE_HEADER="$(realpath "${TAXA_REFERENCE_HEADER}")"
+
 log "Run QIIME2 in ${QIIME2_DIR}"
 
 export LOG_DIR="${QIIME2_DIR}logs/"
 export CONSENSUS_THRESHOLD=97
 export NPROC="$(grep -c '^processor' "/proc/cpuinfo")"
-export TAXA_REFERENCE_FEATURES="/data/reference/SILVA/SILVA_v138/Silva-v138-full-length-seq-taxonomy.qza"
-export TAXA_REFERENCE_CLASSIFIER="/data/reference/SILVA/SILVA_v138/SILVA-138-SSURef-full-length-classifier.qza"
-export TAXA_REFERENCE_SEQUENCES="/data/reference/SILVA/SILVA_v138/SILVA-138-SSURef-Full-Seqs.qza"
-export TAXA_REFERENCE_HEADER="/data/reference/SILVA/SILVA_v138/SILVA_138_Taxonomy_headed.tsv"
-
 
 mkdir -p "${LOG_DIR}"
 cd "${QIIME2_DIR}" || exit 1

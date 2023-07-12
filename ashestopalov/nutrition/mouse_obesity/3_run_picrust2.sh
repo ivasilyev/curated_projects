@@ -13,6 +13,7 @@ log "Run PICRUSt2 in ${PICRUST2_DIR}"
 
 export LOG_DIR="${PICRUST2_DIR}logs/"
 export PIPELINE_DIR="${PICRUST2_DIR}main_pipeline/"
+export TABLES_DIR="${PICRUST2_DIR}described_tables/"
 export NPROC="$(grep -c '^processor' /proc/cpuinfo)"
 
 mkdir -p "${PICRUST2_DIR}" "${LOG_DIR}"
@@ -42,29 +43,29 @@ pathway_pipeline.py \
     |& tee "${LOG_DIR}picrust2_pathway_pipeline.log"
 
 log Convert tables
-mkdir -p "described/EC_metagenome_out"
+mkdir -p "${TABLES_DIR}EC_metagenome_out/"
 convert_table.py \
     "${PIPELINE_DIR}EC_metagenome_out/pred_metagenome_contrib.tsv.gz" \
     --conversion contrib_to_legacy \
-    --output "described/EC_metagenome_out/pred_metagenome_contrib.legacy.tsv" \
+    --output "${TABLES_DIR}EC_metagenome_out/pred_metagenome_contrib.legacy.tsv" \
     |& tee "${LOG_DIR}convert_table.log"
 
 log Add KEGG ENZYME descriptions
 add_descriptions.py \
     --input "${PIPELINE_DIR}EC_metagenome_out/pred_metagenome_unstrat.tsv.gz" \
     --map_type EC \
-    --output "described/EC_metagenome_out/pred_metagenome_unstrat_described.tsv"
+    --output "${TABLES_DIR}EC_metagenome_out/pred_metagenome_unstrat_described.tsv"
 
 log Add KEGG ORTHOLOGY descriptions
 add_descriptions.py \
     --input "${PIPELINE_DIR}KO_metagenome_out/pred_metagenome_unstrat.tsv.gz" \
     --map_type KO \
-    --output "described/KO_metagenome_out/pred_metagenome_unstrat_described.tsv"
+    --output "${TABLES_DIR}KO_metagenome_out/pred_metagenome_unstrat_described.tsv"
 
 log Add MetaCyc descriptions
 add_descriptions.py -m METACYC \
     --input "${PIPELINE_DIR}pathways_out/path_abun_unstrat.tsv.gz" \
-    --output "described/pathways_out/path_abun_unstrat_described.tsv"
+    --output "${TABLES_DIR}pathways_out/path_abun_unstrat_described.tsv"
 
 log "Completed running PICRUSt2 in ${PICRUST2_DIR}"
 chmod -R 777 "$(pwd)"

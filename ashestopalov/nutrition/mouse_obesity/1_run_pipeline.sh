@@ -13,6 +13,11 @@ export QIME2_FEATURES_BIOM="${QIIME2_DIR}bioms/feature-table.biom"
 export QIME2_FEATURES_FASTA="${QIIME2_DIR}closed_references/dna-sequences.fasta"
 export QIIME2_SCRIPT="${QIIME2_DIR}qiime2.sh"
 
+export TAXA_REFERENCE_FEATURES="/data/reference/SILVA/SILVA_v138/Silva-v138-full-length-seq-taxonomy.qza"
+export TAXA_REFERENCE_CLASSIFIER="/data/reference/SILVA/SILVA_v138/SILVA-138-SSURef-full-length-classifier.qza"
+export TAXA_REFERENCE_SEQUENCES="/data/reference/SILVA/SILVA_v138/SILVA-138-SSURef-Full-Seqs.qza"
+export TAXA_REFERENCE_HEADER="/data/reference/SILVA/SILVA_v138/SILVA_138_Taxonomy_headed.tsv"
+
 export PICRUST2_DIR="${ROOT_DIR}picrust2/"
 export PICRUST2_SCRIPT="${PICRUST2_DIR}picrust2.sh"
 export RESULT_DIR="${ROOT_DIR}results/"
@@ -73,6 +78,10 @@ docker run \
     --env QIIME2_DIR="${QIIME2_DIR}" \
     --env SAMPLEDATA_CSV="${SAMPLEDATA_CSV}" \
     --env METADATA_TSV="${METADATA_TSV}" \
+    --env TAXA_REFERENCE_FEATURES="${TAXA_REFERENCE_FEATURES}" \
+    --env TAXA_REFERENCE_CLASSIFIER="${TAXA_REFERENCE_CLASSIFIER}" \
+    --env TAXA_REFERENCE_SEQUENCES="${TAXA_REFERENCE_SEQUENCES}" \
+    --env TAXA_REFERENCE_HEADER="${TAXA_REFERENCE_HEADER}" \
     --net=host \
     --rm \
     --volume /data:/data \
