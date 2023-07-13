@@ -28,7 +28,7 @@ def dump_tsv(df: pd.DataFrame, table_file: str, col_names: list = None, reset_in
 
 
 def dict2pd_series(dictionary, sort_keys: bool = False):
-    out = pd.Series()
+    out = pd.Series(dtype="object")
     keys = list(dictionary.keys())
     if sort_keys:
         keys = sorted(keys)
