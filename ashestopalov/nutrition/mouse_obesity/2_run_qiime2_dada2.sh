@@ -4,7 +4,7 @@ function log {
     echo "[$(date '+%d-%m-%Y %H:%M:%S')] $@"
 }
 
-# Required variables:
+# Required variables begin
 export QIIME2_DIR="$(realpath "${QIIME2_DIR}")/"
 export SAMPLEDATA_CSV="$(realpath "${SAMPLEDATA_CSV}")"
 export METADATA_TSV="$(realpath "${METADATA_TSV}")"
@@ -13,6 +13,7 @@ export TAXA_REFERENCE_FEATURES="$(realpath "${TAXA_REFERENCE_FEATURES}")"
 export TAXA_REFERENCE_CLASSIFIER="$(realpath "${TAXA_REFERENCE_CLASSIFIER}")"
 export TAXA_REFERENCE_SEQUENCES="$(realpath "${TAXA_REFERENCE_SEQUENCES}")"
 export TAXA_REFERENCE_HEADER="$(realpath "${TAXA_REFERENCE_HEADER}")"
+# Required variables end
 
 log "Run QIIME2 in ${QIIME2_DIR}"
 

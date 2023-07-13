@@ -4,10 +4,11 @@ function log {
     echo "[$(date '+%d-%m-%Y %H:%M:%S')] $@"
 }
 
-# Required variables:
+# Required variables begin
 export PICRUST2_DIR="$(realpath "${PICRUST2_DIR}")/"
 export QIME2_FEATURES_BIOM="$(realpath "${QIME2_FEATURES_BIOM}")"
 export QIME2_FEATURES_FASTA="$(realpath "${QIME2_FEATURES_FASTA}")"
+# Required variables end
 
 log "Run PICRUSt2 in ${PICRUST2_DIR}"
 

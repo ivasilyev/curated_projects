@@ -4,9 +4,23 @@ function log {
     echo "[$(date '+%d-%m-%Y %H:%M:%S')] $@"
 }
 
+
+force_docker_pull () {
+  while true
+  do
+    if docker pull "${1}"
+    then
+      return
+    fi
+  done
+}
+
+
+# Required variables begin
 export ROOT_DIR="$(realpath "${ROOT_DIR}")/"
 export SAMPLEDATA_DIR="$(realpath "${SAMPLEDATA_DIR}")/"
 export SCRIPT_DIR="$(realpath "${SCRIPT_DIR}")/"
+# Required variables end
 
 log "Working on ${ROOT_DIR}"
 export SAMPLEDATA_CSV="${SAMPLEDATA_DIR}qiime2_sample_data.csv"
@@ -27,16 +41,6 @@ export PICRUST2_SCRIPT="${PICRUST2_DIR}picrust2.sh"
 export RESULT_DIR="${ROOT_DIR}results/"
 
 export OTU_TABLE="${RESULT_DIR}OTUs.tsv"
-
-force_docker_pull () {
-  while true
-  do
-    if docker pull "${1}"
-    then
-      return
-    fi
-  done
-}
 
 log "Check QIIME2 sampledata"
 if [ ! -s "${SAMPLEDATA_CSV}" ] && [ ! -s "${METADATA_TSV}" ]
@@ -142,7 +146,7 @@ find "${ROOT_DIR}" \
         -I "{}" \
             bash -c '
                 export SRC_FILE="{}";
-                log Copy: "${SRC_FILE}";
+                echo Copy: "${SRC_FILE}";
                 cp -r "${SRC_FILE}" "${RESULT_DIR}$(basename "${SRC_FILE}")"
             '
 find "${ROOT_DIR}" \
@@ -155,7 +159,7 @@ find "${ROOT_DIR}" \
         -I "{}" \
             bash -c '
                 export SRC_FILE="{}";
-                log Copy: "${SRC_FILE}";
+                echo Copy: "${SRC_FILE}";
                 cp -r "${SRC_FILE}" "${RESULT_DIR}$(basename "$(dirname "${SRC_FILE}")")_$(basename "${SRC_FILE}")"
             '
 
