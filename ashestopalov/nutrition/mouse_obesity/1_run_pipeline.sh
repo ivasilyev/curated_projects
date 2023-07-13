@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 
+function log {
+    echo "[$(date '+%d-%m-%Y %H:%M:%S')] $@"
+}
+
 export ROOT_DIR="$(realpath "${ROOT_DIR}")/"
 export SAMPLEDATA_DIR="$(realpath "${SAMPLEDATA_DIR}")/"
 export SCRIPT_DIR="$(realpath "${SCRIPT_DIR}")/"
 
-echo "Working on ${ROOT_DIR}"
+log "Working on ${ROOT_DIR}"
 export SAMPLEDATA_CSV="${SAMPLEDATA_DIR}qiime2_sample_data.csv"
 export METADATA_TSV="${SAMPLEDATA_DIR}qiime2_meta_data.tsv"
 
@@ -34,32 +38,32 @@ force_docker_pull () {
   done
 }
 
-echo "Check QIIME2 sampledata"
+log "Check QIIME2 sampledata"
 if [ ! -s "${SAMPLEDATA_CSV}" ] && [ ! -s "${METADATA_TSV}" ]
-  then
-  echo "Create sampledata in ${SAMPLEDATA_DIR}"
-  export IMG="ivasilyev/curated_projects:latest"
-  force_docker_pull "${IMG}"
-  docker run \
-      --env RAW_DIR="${RAW_DIR}" \
-      --env SAMPLEDATA_DIR="${SAMPLEDATA_DIR}" \
-      --net=host \
-      --rm \
-      --volume /data:/data \
-      --volume /data1:/data1 \
-      --volume /data2:/data2 \
-      --volume /data03:/data03 \
-      --volume /data04:/data04 \
-      "${IMG}" \
-          bash -c '
-              git pull --quiet;
-              python3 ./meta/scripts/qiime2_sample_data.py \
-                  --extension ".fastq.gz" \
-                  --input "${RAW_DIR}" \
-                  --output "${SAMPLEDATA_DIR}"
-          '
+    then
+    log "Create sampledata in ${SAMPLEDATA_DIR}"
+    export IMG="ivasilyev/curated_projects:latest"
+    force_docker_pull "${IMG}"
+    docker run \
+        --env RAW_DIR="${RAW_DIR}" \
+        --env SAMPLEDATA_DIR="${SAMPLEDATA_DIR}" \
+        --net host \
+        --rm \
+        --volume /data:/data \
+        --volume /data1:/data1 \
+        --volume /data2:/data2 \
+        --volume /data03:/data03 \
+        --volume /data04:/data04 \
+        "${IMG}" \
+            bash -c '
+                git pull --quiet;
+                python3 ./meta/scripts/qiime2_sample_data.py \
+                    --extension ".fastq.gz" \
+                    --input "${RAW_DIR}" \
+                    --output "${SAMPLEDATA_DIR}"
+            '
 else
-    echo "QIIME2 sampledata does exist"
+    log "QIIME2 sampledata does exist"
 fi
 
 cd "${ROOT_DIR}" || exit 1
@@ -71,7 +75,7 @@ curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/
     -o "${QIIME2_SCRIPT}"
 cd "${QIIME2_DIR}" || exit 1
 
-echo "Run QIIME2"
+log "Run QIIME2"
 export IMG="qiime2/core:latest"
 force_docker_pull "${IMG}"
 docker run \
@@ -82,7 +86,7 @@ docker run \
     --env TAXA_REFERENCE_CLASSIFIER="${TAXA_REFERENCE_CLASSIFIER}" \
     --env TAXA_REFERENCE_SEQUENCES="${TAXA_REFERENCE_SEQUENCES}" \
     --env TAXA_REFERENCE_HEADER="${TAXA_REFERENCE_HEADER}" \
-    --net=host \
+    --net host \
     --rm \
     --volume /data:/data \
     --volume /data1:/data1 \
@@ -102,15 +106,14 @@ curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/
     -o "${PICRUST2_SCRIPT}"
 cd "${PICRUST2_DIR}" || exit 1
 
-echo "Run PICRUSt2"
+log "Run PICRUSt2"
 export IMG="quay.io/biocontainers/picrust2:2.5.0--pyhdfd78af_0"
 force_docker_pull "${IMG}"
 docker run \
-    --env QIIME2_DIR="${QIIME2_DIR}" \
     --env QIME2_FEATURES_BIOM="${QIME2_FEATURES_BIOM}" \
     --env QIME2_FEATURES_FASTA="${QIME2_FEATURES_FASTA}" \
-    --env PICRUST2_SCRIPT="${PICRUST2_SCRIPT}" \
-    --net=host \
+    --env PICRUST2_DIR="${PICRUST2_DIR}" \
+    --net host \
     --rm \
     --volume /data:/data \
     --volume /data1:/data1 \
@@ -125,7 +128,7 @@ rm -f "${PICRUST2_SCRIPT}"
 cd "${ROOT_DIR}" || exit 1
 
 
-echo "Copy files"
+log "Copy files"
 mkdir -p "${RESULT_DIR}"
 find "${ROOT_DIR}" \
     -type f \( \
@@ -139,7 +142,7 @@ find "${ROOT_DIR}" \
         -I "{}" \
             bash -c '
                 export SRC_FILE="{}";
-                echo Copy: "${SRC_FILE}";
+                log Copy: "${SRC_FILE}";
                 cp -r "${SRC_FILE}" "${RESULT_DIR}$(basename "${SRC_FILE}")"
             '
 find "${ROOT_DIR}" \
@@ -152,7 +155,7 @@ find "${ROOT_DIR}" \
         -I "{}" \
             bash -c '
                 export SRC_FILE="{}";
-                echo Copy: "${SRC_FILE}";
+                log Copy: "${SRC_FILE}";
                 cp -r "${SRC_FILE}" "${RESULT_DIR}$(basename "$(dirname "${SRC_FILE}")")_$(basename "${SRC_FILE}")"
             '
 
@@ -161,12 +164,12 @@ find "${ROOT_DIR}" \
 # The first line of the raw file is '# Constructed from biom file'
 sed -i '1d' "${OTU_TABLE}"
 
-echo "Concatenate tables"
+log "Concatenate tables"
 export IMG="ivasilyev/curated_projects:latest"
 force_docker_pull "${IMG}"
 docker run \
     --env OTU_TABLE="${OTU_TABLE}" \
-    --net=host \
+    --net host \
     --rm \
     --volume /data:/data \
     --volume /data1:/data1 \
@@ -185,4 +188,4 @@ docker run \
                 --output "${OTU_TABLE%.*}_annotated.tsv"
         '
 
-echo "All pipeline runs ended"
+log "All pipeline runs ended"
