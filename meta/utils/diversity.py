@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import joblib as jb
 import pandas as pd
+from numpy import nan
 from skbio import TreeNode
 from skbio.diversity import alpha as a
+from skbio.diversity import beta as b
+from scipy.spatial import distance as d
 from meta.utils.pandas import dict2pd_series
 
 
@@ -15,6 +19,19 @@ ALPHA_DIVERSITY_FUNCTIONS = {
     "Berger-Parker Dominance": a.berger_parker_d,
     "Chao1 Richness": a.chao1,
     "Simpson Index": a.simpson
+}
+
+BETA_DIVERSITY_FUNCTIONS = {
+    "braycurtis": d.braycurtis,
+    "canberra": d.canberra,
+    "chebyshev": d.chebyshev,
+    "cityblock": d.cityblock,
+    "correlation": d.correlation,
+    "cosine": d.cosine,
+    "euclidean": d.euclidean,
+    "jensenshannon": d.jensenshannon,
+    "minkowski": d.minkowski,
+    "sqeuclidean": d.sqeuclidean,
 }
 
 
@@ -42,6 +59,51 @@ def count_alpha_diversity(series: pd.Series, rooted_tree: TreeNode = None):
     out = dict2pd_series(d)
     out.name = series.name
     return out
+
+
+def count_alpha_diversity_df(df: pd.DataFrame, rooted_tree: TreeNode = None):
+    out_df = df.apply(lambda x: count_alpha_diversity(x, rooted_tree))
+    out_df = out_df.reindex(sorted(out_df.columns), axis=1).rename_axis(
+        index=df.index.name,
+        columns=["beta_diversity_metric"]
+    )
+    return out_df
+
+
+def wrapper_for_pairwise_function(func, x: list, **kwargs):
+    if len(x) == 2:
+        return func(*x, **kwargs)
+    else:
+        return nan
+
+
+def count_beta_diversity_df(
+    df: pd.DataFrame,  # must contain only sample values & only single `grouping_column_name`
+    grouping_column_name: str,
+    rooted_tree: TreeNode = None
+):
+    def _process(name: str, func, **kwargs):
+        _out = dfgb.apply(lambda x: wrapper_for_pairwise_function(
+            func=func,
+            x=x.drop(grouping_column_name, axis=1).values,
+            **kwargs
+        )).rename(name)
+        return _out
+    func_dict = dict(BETA_DIVERSITY_FUNCTIONS)
+    dfgb = df.groupby(grouping_column_name)
+    metric_dfs = jb.Parallel()(
+        jb.delayed(_process)(k, v) for k, v in func_dict.items()
+    )
+    if rooted_tree is not None:
+        metric_dfs.append(
+            _process("unweighted_unifrac", b.unweighted_unifrac, tree=rooted_tree)
+        )
+        metric_dfs.append(
+            _process("weighted_unifrac", b.weighted_unifrac, tree=rooted_tree)
+        )
+    out_df = pd.concat(metric_dfs, axis=1, sort=False)
+    out_df = out_df.reindex(sorted(out_df.columns), axis=1).rename_axis(index=grouping_column_name, columns=["beta_diversity_metric"])
+    return out_df
 
 
 def get_newick(node, parent_dist, leaf_names, newick="") -> str:
