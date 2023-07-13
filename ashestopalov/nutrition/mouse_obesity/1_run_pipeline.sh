@@ -40,7 +40,7 @@ export PICRUST2_DIR="${ROOT_DIR}picrust2/"
 export PICRUST2_SCRIPT="${PICRUST2_DIR}picrust2.sh"
 export RESULT_DIR="${ROOT_DIR}results/"
 
-export OTU_TABLE="${RESULT_DIR}OTUs.tsv"
+export OTU_TABLE="${RESULT_DIR}OTUs_with_taxa.tsv"
 
 log "Check QIIME2 sampledata"
 if [ ! -s "${SAMPLEDATA_CSV}" ] && [ ! -s "${METADATA_TSV}" ]
@@ -138,7 +138,7 @@ find "${ROOT_DIR}" \
     -type f \( \
         -name "path_abun_unstrat_described.tsv" \
         -o -name "pred_metagenome_contrib.legacy.tsv" \
-        -o -name "OTUs.tsv" \
+        -o -name "OTUs_with_taxa.tsv" \
     \) -print0 \
     | xargs \
         -0 \
@@ -173,6 +173,7 @@ export IMG="ivasilyev/curated_projects:latest"
 force_docker_pull "${IMG}"
 docker run \
     --env OTU_TABLE="${OTU_TABLE}" \
+    --env TAXA_REFERENCE_HEADER="${TAXA_REFERENCE_HEADER}" \
     --net host \
     --rm \
     --volume /data:/data \
@@ -182,14 +183,16 @@ docker run \
     --volume /data04:/data04 \
     "${IMG}" \
         bash -c '
-            git pull --quiet;
+            OUT_FILE="${OTU_TABLE%.*}_annotated.tsv";
+            echo Concatenate table \"${OTU_TABLE}\" and \"${TAXA_REFERENCE_HEADER}\" into \"${OUT_FILE}\";
+            git pull --quiet && \
             python3 ./meta/scripts/concatenate_tables.py \
                 --axis 1 \
                 --index "#OTU ID" \
                 --input \
+                    "${TAXA_REFERENCE_HEADER}" \
                     "${OTU_TABLE}" \
-                    "/data/reference/SILVA/SILVA_v138/SILVA_138_Taxonomy_headed.tsv" \
-                --output "${OTU_TABLE%.*}_annotated.tsv"
+                --output "${OUT_FILE}"
         '
 
 log "All pipeline runs ended"

@@ -22,16 +22,16 @@ ALPHA_DIVERSITY_FUNCTIONS = {
 }
 
 BETA_DIVERSITY_FUNCTIONS = {
-    "braycurtis": d.braycurtis,
-    "canberra": d.canberra,
-    "chebyshev": d.chebyshev,
-    "cityblock": d.cityblock,
-    "correlation": d.correlation,
-    "cosine": d.cosine,
-    "euclidean": d.euclidean,
-    "jensenshannon": d.jensenshannon,
-    "minkowski": d.minkowski,
-    "sqeuclidean": d.sqeuclidean,
+    "Bray-Curtis Distance": d.braycurtis,
+    "Canberra Distance": d.canberra,
+    "Chebyshev Distance": d.chebyshev,
+    "Manhattan Distance": d.cityblock,
+    "Correlation Distance": d.correlation,
+    "Cosine Distance": d.cosine,
+    "Euclidean Distance": d.euclidean,
+    "Jensen-Shannon Metric": d.jensenshannon,
+    "Minkowski Distance ": d.minkowski,
+    "Squared Euclidean Distance": d.sqeuclidean,
 }
 
 
@@ -62,7 +62,7 @@ def count_alpha_diversity(series: pd.Series, rooted_tree: TreeNode = None):
 
 
 def count_alpha_diversity_df(df: pd.DataFrame, rooted_tree: TreeNode = None):
-    out_df = df.apply(lambda x: count_alpha_diversity(x, rooted_tree))
+    out_df = df.apply(lambda x: count_alpha_diversity(x, rooted_tree)).transpose()
     out_df = out_df.reindex(sorted(out_df.columns), axis=1).rename_axis(
         index=df.index.name,
         columns=["beta_diversity_metric"]
