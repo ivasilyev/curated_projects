@@ -29,6 +29,9 @@ export IMG="ivasilyev/curated_projects:latest" && \
 force_docker_pull "${IMG}" && \
 docker run \
     --env force_git_pull=force_git_pull \
+    --env PORT=31522 \
+    --env TOKEN=TOKEN \
+    --env IP_ADDRESS="$(ip route | grep default | awk '{ print $3 }')" \
     --interactive \
     --net=host \
     --rm \
@@ -39,12 +42,13 @@ docker run \
     --volume /data03:/data03 \
     --volume /data04:/data04 \
     "${IMG}" bash -c '
+        echo Web access: \"http://${IP_ADDRESS}:${PORT}/?token=${TOKEN}\";
         git pull --quiet && \
         jupyter lab \
             --ip=0.0.0.0 \
             --no-browser \
-            --NotebookApp.token=TOKEN \
-            --port=31522
+            --NotebookApp.token=${TOKEN} \
+            --port=${PORT}
     '
 
 # Web access: `http://<ip>:31522/?token=TOKEN`
