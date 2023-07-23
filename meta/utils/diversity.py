@@ -8,7 +8,7 @@ from skbio import TreeNode
 from skbio.diversity import alpha as a
 from skbio.diversity import beta as b
 from scipy.spatial import distance as d
-from meta.utils.pandas import dict2pd_series
+from meta.utils.pandas import apply_mp_function_to_df, dict2pd_series
 
 
 TAXONOMY_ORDER = "Domain, Phylum, Class, Order, Family, Genus, Species".split(", ")
@@ -62,10 +62,12 @@ def count_alpha_diversity(series: pd.Series, rooted_tree: TreeNode = None):
 
 
 def count_alpha_diversity_df(df: pd.DataFrame, rooted_tree: TreeNode = None):
-    out_df = df.apply(lambda x: count_alpha_diversity(x, rooted_tree)).transpose()
-    out_df = out_df.reindex(sorted(out_df.columns), axis=1).rename_axis(
-        index=df.index.name,
-        columns=["beta_diversity_metric"]
+    out_df = apply_mp_function_to_df(
+        func=count_alpha_diversity,
+        df=df,
+        index_name=df.columns.name,
+        columns_name="alpha_diversity_metric",
+        rooted_tree=rooted_tree
     )
     return out_df
 
@@ -92,7 +94,8 @@ def count_beta_diversity_df(
     func_dict = dict(BETA_DIVERSITY_FUNCTIONS)
     dfgb = df.groupby(grouping_column_name)
     metric_dfs = jb.Parallel()(
-        jb.delayed(_process)(k, v) for k, v in func_dict.items()
+        jb.delayed(_process)(k, v)
+        for k, v in func_dict.items()
     )
     if rooted_tree is not None:
         metric_dfs.append(
@@ -102,7 +105,12 @@ def count_beta_diversity_df(
             _process("weighted_unifrac", b.weighted_unifrac, tree=rooted_tree)
         )
     out_df = pd.concat(metric_dfs, axis=1, sort=False)
-    out_df = out_df.reindex(sorted(out_df.columns), axis=1).rename_axis(index=grouping_column_name, columns=["beta_diversity_metric"])
+    out_df = out_df.reindex(
+        sorted(out_df.columns), axis=1
+    ).rename_axis(
+        index=grouping_column_name,
+        columns=["beta_diversity_metric"]
+    )
     return out_df
 
 

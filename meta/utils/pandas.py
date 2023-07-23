@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import os
-import joblib
 import traceback
 import numpy as np
 import pandas as pd
+import joblib as jb
 from scipy import stats
+from collections.abc import Callable
 
 
 def load_tsv(table, **kwargs):
@@ -16,7 +17,12 @@ def load_tsv(table, **kwargs):
     return pd.read_csv(table, **_kwargs)
 
 
-def dump_tsv(df: pd.DataFrame, table_file: str, col_names: list = None, reset_index: bool = False):
+def dump_tsv(
+    df: pd.DataFrame,
+    table_file: str,
+    col_names: list = None,
+    reset_index: bool = False
+):
     assert isinstance(df, pd.DataFrame)
     _df = df.copy()
     os.makedirs(os.path.dirname(table_file), exist_ok=True)
@@ -37,9 +43,26 @@ def dict2pd_series(dictionary, sort_keys: bool = False):
     return out
 
 
-def apply_mp_function_to_df(func, df: pd.DataFrame, index_name: str = "", columns_name: str = ""):
-    results = joblib.Parallel(n_jobs=-1)(joblib.delayed(func)(j) for j in [df[i] for i in df.columns])
-    return pd.DataFrame(results).rename_axis(index=index_name, columns=columns_name)
+def apply_mp_function_to_df(
+    func: Callable,
+    df: pd.DataFrame,
+    index_name: str = "",
+    columns_name: str = "",
+    **kwargs
+):
+    if len(index_name) == 0:
+        index_name = df.columns.name
+    results = jb.Parallel(n_jobs=-1)(
+        jb.delayed(func)(j, **kwargs)
+        for j in [df[i] for i in df.columns]
+    )
+    out_df = pd.DataFrame(results)
+    out_df = out_df.reindex(
+        sorted(out_df.columns), axis=1
+    ).rename_axis(
+        index=index_name, columns=columns_name
+    )
+    return out_df
 
 
 def corr(df: pd.DataFrame, methods: list = None):
