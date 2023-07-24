@@ -193,3 +193,48 @@ def dwell_df_on_column(df: pd.DataFrame, column_name: str):
     if column_name not in df.columns:
         return df
     return df.loc[:, [column_name] + [i for i in df.columns if i != column_name]]
+
+
+def get_major_features_df(
+    df: pd.DataFrame, n: int = 10,
+    other_column_name = "Others"
+):
+    # Input df's columns: features, indexes: samples
+    sum_series = df.sum().sort_values(ascending=False)
+    majors = sum_series[:n].index
+    others = sum_series[n:].index
+    out_df = df.loc[:, majors]
+    out_df[other_column_name] = df[others].sum(axis=1)
+    return out_df
+
+
+def split_df_into_chunks_of_size_n(
+    df: pd.DataFrame,
+    axis: int = 0,
+    chunk_size: int = 10,
+    separator: str = "_to_",
+):
+    from meta.utils.primitive import split_list_into_chunks_of_size
+    if axis >= 2:
+        raise ValueError(f"Axis must be 0 or 1 ({axis} is given)")
+    index_lists = split_list_into_chunks_of_size(
+        list(range(df.shape[axis])), chunk_size
+    )
+    out = dict()
+    for index_list in index_lists:
+        first = index_list[0]
+        last = index_list[-1]
+        # .iloc[] is primarily integer position based (from 0 to length-1 of the axis)
+        if axis == 0:
+            df_1 = df.iloc[first:last + 1, :]
+        else:
+            df_1 = df.iloc[:, first:last + 1]
+        if df_1.shape[axis] == 0:
+            continue
+        df_1.reindex(
+            sorted(df_1.axes[axis]), axis=axis
+        )
+        name = f"{df_1.axes[axis][0]}{separator}{df_1.axes[axis][-1]}"
+        df_1.name = name
+        out[name] = df_1
+    return out
