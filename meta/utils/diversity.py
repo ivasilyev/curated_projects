@@ -8,7 +8,6 @@ from skbio import TreeNode
 from skbio.diversity import alpha as a
 from skbio.diversity import beta as b
 from scipy.spatial import distance as d
-from meta.utils.pandas import apply_mp_function_to_df, dict2pd_series
 
 
 TAXONOMY_RANKS = ("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species")
@@ -83,6 +82,7 @@ def root_tree_node(tree: TreeNode):
 
 
 def count_alpha_diversity(series: pd.Series, rooted_tree: TreeNode = None):
+    from meta.utils.pandas import dict2pd_series
     d = {k: ALPHA_DIVERSITY_FUNCTIONS[k](series.values) for k in ALPHA_DIVERSITY_FUNCTIONS}
     d["Inverse Simpson Index"] = 1.0 / d["Simpson Index"]
     d["Gini–Simpson Index"] = 1.0 - d["Simpson Index"]
@@ -94,6 +94,7 @@ def count_alpha_diversity(series: pd.Series, rooted_tree: TreeNode = None):
 
 
 def count_alpha_diversity_df(df: pd.DataFrame, rooted_tree: TreeNode = None):
+    from meta.utils.pandas import apply_mp_function_to_df
     out_df = apply_mp_function_to_df(
         func=count_alpha_diversity,
         df=df,
@@ -168,3 +169,137 @@ def get_newick(node, parent_dist, leaf_names, newick="") -> str:
         newick = get_newick(node.get_right(), node.dist, leaf_names, newick=",%s" % (newick))
         newick = "(%s" % (newick)
         return newick
+
+
+def draw_taxa_plots(
+    name: str,
+    taxa_df: pd.DataFrame,
+    taxa_rank: str,
+    output_dir: str,
+):
+    """
+    :param name:
+    :param taxa_df:
+        indexes are samples,
+        columns are features
+    :param taxa_rank:
+    :param output_dir:
+    :return:
+    """
+    import os
+    import seaborn as sns
+    from matplotlib import pyplot as plt
+    from meta.utils.pandas import dump_tsv
+    # Input df's columns: features, indexes: samples
+    plt.clf()
+    plt.close()
+
+    sns.set()
+
+    plt.rcParams.update({
+        "figure.figsize": (5, 5),
+        "figure.dpi": 75
+    })
+
+    subtitle = f"per {taxa_df.shape[0]} samples (from '{name}')"
+    ax_1 = taxa_df.plot(
+        kind="barh",
+        stacked=True,
+        title=subtitle,
+        mark_right=True,
+        colormap="nipy_spectral_r",
+        legend=False,
+    )
+
+    ax_1.legend(
+        loc="upper left",
+        bbox_to_anchor=(1.0, 1.0),
+        fontsize="small",
+    )
+
+    ax_1.set(
+        xlabel="Percent in sample",
+        ylabel="Sample name",
+    )
+
+    title = f"Taxa bar charts collapsed by {taxa_rank}"
+    plt.suptitle(title)
+    # plt.show()
+
+    output_dir= os.path.join(output_dir, taxa_rank)
+    file_mask = os.path.join(
+        output_dir, f"{title} {subtitle}."
+    )
+
+    os.makedirs(output_dir, exist_ok=True, mode=0o777)
+    plt.savefig(f"{file_mask}jpg", bbox_inches="tight")
+    dump_tsv(taxa_df, f"{file_mask}tsv", reset_index=True)
+    return True
+
+
+def split_and_draw_taxa_plots(
+    collapsed_taxa_df: pd.DataFrame,
+    taxa_rank: str,
+    chunk_df_size: int,
+    output_dir: str,
+):
+    """
+    :param collapsed_taxa_df:
+        indexes are samples,
+        columns are features
+    :param taxa_rank:
+    :param chunk_df_size:
+    :param output_dir:
+    :return:
+    """
+    from meta.utils.pandas import split_df_into_chunks_of_size
+    collapsed_taxa_df_chunks = split_df_into_chunks_of_size(
+        collapsed_taxa_df,
+        axis=0,
+        chunk_size=chunk_df_size,
+        separator="' to '"
+    )
+    for name, taxa_df in collapsed_taxa_df_chunks.items():
+        draw_taxa_plots(
+            name=name,
+            taxa_df=taxa_df,
+            taxa_rank=taxa_rank,
+            output_dir=output_dir
+        )
+
+
+def collapse_split_and_draw_non_major_df(
+    taxa_sample_otu_df: pd.DataFrame,
+    major_features_number: int,
+    samples_per_time: int,
+    output_dir: str
+):
+    """
+    :param taxa_sample_otu_df:
+        indexes are features,
+        columns are samples AND 1 taxonomy column
+    :param major_features_number:
+    :param samples_per_time:
+    :param output_dir:
+    :return:
+    """
+    from meta.utils.pandas import get_major_features_df
+    for taxa_rank in TAXONOMY_RANKS[:-1]:
+        collapsed_taxa_df = collapse_taxa_df_by_rank(
+            df=taxa_sample_otu_df,
+            rank=taxa_rank,
+            taxa_column_name="taxonomy",
+        )
+
+        major_features_df = get_major_features_df(
+            df=collapsed_taxa_df.transpose(),
+            n=major_features_number,
+            other_column_name="Others",
+        )
+
+        split_and_draw_taxa_plots(
+            collapsed_taxa_df=major_features_df,
+            taxa_rank=taxa_rank,
+            chunk_df_size=samples_per_time,
+            output_dir=output_dir
+        )

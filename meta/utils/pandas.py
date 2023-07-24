@@ -196,8 +196,9 @@ def dwell_df_on_column(df: pd.DataFrame, column_name: str):
 
 
 def get_major_features_df(
-    df: pd.DataFrame, n: int = 10,
-    other_column_name = "Others"
+    df: pd.DataFrame,
+    n: int = 10,
+    other_column_name: str = "Others"
 ):
     # Input df's columns: features, indexes: samples
     sum_series = df.sum().sort_values(ascending=False)
