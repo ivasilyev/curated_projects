@@ -208,7 +208,7 @@ def get_major_features_df(
     return out_df
 
 
-def split_df_into_chunks_of_size_n(
+def split_df_into_chunks_of_size(
     df: pd.DataFrame,
     axis: int = 0,
     chunk_size: int = 10,
