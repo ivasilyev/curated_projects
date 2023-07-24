@@ -78,3 +78,14 @@ def dicts_to_strings(x: list):
 
 def strings_to_dicts(x: list):
     return [json.loads(i) for i in x]
+
+
+def split_list_into_chunks_of_size(x: list, chunk_size: int = 10):
+    out = list()
+    while len(x) > 0:
+        out.append(x[:chunk_size])
+        if chunk_size < len(x):
+            x = x[chunk_size:]
+        else:
+            break
+    return out
