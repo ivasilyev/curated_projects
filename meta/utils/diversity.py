@@ -11,8 +11,18 @@ from scipy.spatial import distance as d
 from meta.utils.pandas import apply_mp_function_to_df, dict2pd_series
 
 
-TAXONOMY_ORDER = "Domain, Phylum, Class, Order, Family, Genus, Species".split(", ")
-taxonomy_chars = {i[0].lower(): i for i in TAXONOMY_ORDER}
+TAXONOMY_RANKS = ("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+
+
+def taxa_rank_to_char(s: str):
+    s = s.strip(" _")
+    if s not in TAXONOMY_RANKS:
+        raise ValueError(f"Not a taxonomy_rank: '{s}'")
+    return s[0].lower()
+
+
+TAXONOMY_CHARS = {taxa_rank_to_char(i): i for i in TAXONOMY_RANKS}
+
 ALPHA_DIVERSITY_FUNCTIONS = {
     "Distinct OTUs": a.observed_otus,
     "Shannon Entropy": a.shannon,
@@ -38,8 +48,30 @@ BETA_DIVERSITY_FUNCTIONS = {
 def parse_taxonomy(s: str):
     # s = "d__Bacteria; p__Proteobacteria; c__Gammaproteobacteria; o__Enterobacterales; f__Enterobacteriaceae; g__Escherichia-Shigella; s__Escherichia_coli"
     out = {j[0].strip(): "__".join(j[1:]).strip() for j in [i.split("__") for i in s.split("; ")]}
-    out = {k if k not in taxonomy_chars.keys() else taxonomy_chars[k]: out[k] for k in out}
+    out = {k if k not in TAXONOMY_CHARS.keys() else TAXONOMY_CHARS[k]: out[k] for k in out}
     return out
+
+
+def collapse_taxa_df_by_rank(
+    df: pd.DataFrame,
+    rank: str,
+    taxa_column_name: str = "taxonomy",
+    is_name_df: bool = True
+):
+    from meta.utils.pandas import normalize_df
+    out_df = normalize_df(
+        df.loc[
+            :,
+            [i for i in df.columns if i != taxa_column_name]
+        ].groupby(
+            by=df[taxa_column_name].str.extract(
+                f"{taxa_rank_to_char(rank)}__([^;]+);"
+            )[0].rename(rank)
+        ).sum()
+    ).dropna(axis=0, how="all")
+    if is_name_df:
+        out_df.name = rank
+    return out_df
 
 
 def root_tree_node(tree: TreeNode):
