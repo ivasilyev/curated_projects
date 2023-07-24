@@ -52,6 +52,8 @@ def apply_mp_function_to_df(
 ):
     if len(index_name) == 0:
         index_name = df.columns.name
+    if len(columns_name) == 0:
+        columns_name = df.index.name
     results = jb.Parallel(n_jobs=-1)(
         jb.delayed(func)(j, **kwargs)
         for j in [df[i] for i in df.columns]
@@ -61,8 +63,16 @@ def apply_mp_function_to_df(
         sorted(out_df.columns), axis=1
     ).rename_axis(
         index=index_name, columns=columns_name
-    )
+    ).transpose()
     return out_df
+
+
+def normalize_series(s: pd.Series):
+    return 100 * s / s.sum()
+
+
+def normalize_df(df: pd.DataFrame):
+    return apply_mp_function_to_df(func=normalize_series, df=df)
 
 
 def corr(df: pd.DataFrame, methods: list = None):
