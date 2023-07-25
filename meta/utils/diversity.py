@@ -190,7 +190,6 @@ def draw_taxa_plots(
     import seaborn as sns
     from matplotlib import pyplot as plt
     from meta.utils.pandas import dump_tsv
-    # Input df's columns: features, indexes: samples
     plt.clf()
     plt.close()
 
@@ -226,7 +225,7 @@ def draw_taxa_plots(
     plt.suptitle(title)
     # plt.show()
 
-    output_dir= os.path.join(output_dir, taxa_rank)
+    output_dir = os.path.join(output_dir, taxa_rank)
     file_mask = os.path.join(
         output_dir, f"{title} {subtitle}."
     )
@@ -303,3 +302,65 @@ def collapse_split_and_draw_non_major_df(
             chunk_df_size=samples_per_time,
             output_dir=output_dir
         )
+
+
+def draw_dendrogram(
+    df: pd.DataFrame,
+    name: str,
+    output_dir: str,
+    metric: str = "braycurtis",
+):
+    """
+    :param df:
+        indexes are samples,
+        columns are features
+    :param output_dir:
+    :param metric:
+    :return:
+    """
+    import os
+    import seaborn as sns
+    from matplotlib import pyplot as plt
+    from scipy.spatial.distance import pdist, squareform
+    from scipy.cluster.hierarchy import linkage, dendrogram
+    from meta.utils.io import dump_dict
+    from meta.utils.pandas import dump_tsv
+
+    distance_vector = pdist(
+        df.values,
+        metric=metric,
+    )
+    distance_matrix = pd.DataFrame(
+        squareform(distance_vector),
+        index=df.index,
+        columns=df.index,
+    )
+
+    plt.clf()
+    plt.close()
+
+    sns.set()
+
+    tree_df = pd.DataFrame(
+        linkage(distance_matrix.values),
+        columns=["index_1", "index_2", "distance", "new_observations"]
+    )
+
+    ax = dendrogram(tree_df.values)
+
+    plt.rcParams.update({
+        "figure.figsize": (20,10),
+        "figure.dpi": 150
+    })
+
+    title = f"{name} dendrogram for {df.shape[0]} samples"
+    plt.suptitle(title)
+    plt.tight_layout()
+    # plt.show()
+    file_mask = os.path.join(output_dir, title)
+
+    os.makedirs(output_dir, exist_ok=True, mode=0o777)
+    plt.savefig(f"{file_mask}.jpg", bbox_inches="tight")
+    dump_dict(distance_vector.tolist(), f"{file_mask}_distance_vector.json")
+    dump_tsv(distance_matrix, f"{file_mask}_distance_matrix.tsv")
+    dump_tsv(tree_df, f"{file_mask}_tree.tsv")
