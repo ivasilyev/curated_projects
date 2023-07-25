@@ -233,6 +233,9 @@ def draw_taxa_plots(
     os.makedirs(output_dir, exist_ok=True, mode=0o777)
     plt.savefig(f"{file_mask}jpg", bbox_inches="tight")
     dump_tsv(taxa_df, f"{file_mask}tsv", reset_index=True)
+
+    plt.clf()
+    plt.close()
     return True
 
 
@@ -346,21 +349,29 @@ def draw_dendrogram(
         columns=["index_1", "index_2", "distance", "new_observations"]
     )
 
-    ax = dendrogram(tree_df.values)
-
     plt.rcParams.update({
-        "figure.figsize": (20,10),
+        "figure.figsize": (20, 5),
         "figure.dpi": 150
     })
 
-    title = f"{name} dendrogram for {df.shape[0]} samples"
+    tree_dendrogram = dendrogram(tree_df.values, labels=df.index)
+
+    plt.xlabel("Sample name")
+    plt.ylabel("Distance")
+
+    title = f"{name} dendrogram for {df.shape[0]} samples by '{metric}'"
     plt.suptitle(title)
-    plt.tight_layout()
     # plt.show()
     file_mask = os.path.join(output_dir, title)
 
     os.makedirs(output_dir, exist_ok=True, mode=0o777)
-    plt.savefig(f"{file_mask}.jpg", bbox_inches="tight")
+    plt.tight_layout()
+    plt.savefig(f"{file_mask}.jpg")
     dump_dict(distance_vector.tolist(), f"{file_mask}_distance_vector.json")
     dump_tsv(distance_matrix, f"{file_mask}_distance_matrix.tsv")
-    dump_tsv(tree_df, f"{file_mask}_tree.tsv")
+    dump_tsv(tree_df, f"{file_mask}_tree_table.tsv")
+    dump_dict(tree_dendrogram, f"{file_mask}_dendrogram.json")
+
+    plt.clf()
+    plt.close()
+    return True
