@@ -239,3 +239,123 @@ def split_df_into_chunks_of_size(
         df_1.name = name
         out[name] = df_1
     return out
+
+
+def draw_supervenn_diagram(
+    data: dict,
+    title: str,
+    output_dir: str,
+    diagram_labels: None
+):
+    """
+    :param data: dict,
+        keys are categories (e.g. sample names, sources, etc.)
+        values are sets of non-empty feature names
+    :param title:
+    :param output_dir:
+    :param x_label:
+    :param y_label:
+    :return:
+    """
+    import seaborn as sns
+    from matplotlib import pyplot as plt
+    from supervenn import supervenn
+    from meta.utils.io import dump_dict
+    plt.clf()
+    plt.close()
+
+    sns.set(style="whitegrid")
+    sns.set_palette(os.getenv("MATPLOTLIB_COLORMAP", "hsv"))
+
+    plt.rcParams.update({
+        "figure.figsize": (5, 5),
+        "figure.dpi": 75
+    })
+
+    supervenn(
+        sets=data.values(),
+        set_annotations=list(data.keys()),
+        side_plots=False,
+        widths_minmax_ratio=0.05,
+    )
+    if type(diagram_labels) in (tuple, list) and len(diagram_labels) > 1:
+        plt.xlabel(diagram_labels[0])
+        plt.ylabel(diagram_labels[1])
+
+    plt.suptitle(title)
+    # plt.show()
+    file_mask = os.path.join(output_dir, title)
+    os.makedirs(output_dir, exist_ok=True, mode=0o777)
+    plt.tight_layout()
+    plt.savefig(f"{file_mask}_supervenn_diagram.jpg")
+    plt.clf()
+    plt.close()
+    dump_dict({k: list(v) for k, v in data.items()}, f"{file_mask}_data.json")
+    return True
+
+
+def count_features_and_draw_supervenn_diagram(
+    df: pd.DataFrame,
+    title: str,
+    output_dir: str,
+    diagram_labels: None
+):
+    """
+    :param df:
+        indexes are categories (e.g. sample names, sources, etc.)
+        columns are features
+    :param title:
+    :param output_dir:
+    :param diagram_labels:
+    :return:
+    """
+    from meta.utils.primitive import remove_empty_values
+    row_count_df = df.apply(
+        lambda x: x.apply(
+            lambda y: x.name if y > 0 else ""
+        )
+    ).astype(str)
+
+    row_count_dict = {
+        k: set(remove_empty_values(v.values))
+        for k, v in row_count_df.transpose().to_dict("series").items()
+    }
+
+    column_count_dicts = list()
+    for column_name in row_count_df:
+        feature_occurrences = [
+            str(k) for k, v in row_count_dict.items() if column_name in v
+        ]
+        column_count_dicts.append(dict(
+            feature=column_name,
+            occurrences=",".join(feature_occurrences),
+            frequency=len(feature_occurrences),
+        ))
+    column_count_df = pd.DataFrame(column_count_dicts).sort_values(
+        "frequency", ascending=False
+    ).set_index("feature")
+    column_count_df = pd.concat([
+        column_count_df,
+        df.transpose(),
+    ], axis=1, sort=False)
+    column_count_df.rename_axis(
+        index=df.columns.name,
+        columns=df.index.name,
+        inplace=True
+    )
+    column_count_df.name = title
+
+    file_mask = os.path.join(output_dir, title)
+    dump_tsv(
+        column_count_df,
+        f"{file_mask}_frequencies.tsv",
+        reset_index=True
+    )
+
+    draw_supervenn_diagram(
+        data=row_count_dict,
+        title=title,
+        output_dir=output_dir,
+        diagram_labels=diagram_labels,
+    )
+    return column_count_df
