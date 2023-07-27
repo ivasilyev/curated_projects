@@ -423,3 +423,25 @@ def count_feature_based_group_relations(
                 ),
                 reset_index=True
             )
+
+
+def grouping_describe(df: pd.DataFrame):
+    """
+    :param df:
+        indexes are categories (non-unique are preferred by design)
+        columns are features
+    :return:
+    """
+    out = pd.concat(
+        [
+            df.loc[i, :].describe().rename(
+                axis=0,
+                mapper=lambda x: f"{i}-{x}"
+            ).transpose()
+            for i in sorted(set(df.index))
+        ],
+        axis=1,
+        sort=False
+    )
+    return out
+
