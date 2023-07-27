@@ -364,6 +364,28 @@ def count_features_and_draw_supervenn_diagram(
     return column_count_df
 
 
+def grouping_describe(df: pd.DataFrame):
+    """
+    :param df:
+        indexes are categories (non-unique are preferred by design)
+        columns are features
+    :return:
+    """
+    def _process(s: str):
+        return df.loc[s, :].describe().rename(
+            axis=0,
+            mapper=lambda x: f"{s}-{x}"
+        ).transpose()
+
+    dfs = jb.Parallel(n_jobs=-1)(
+        jb.delayed(_process)(i)
+        for i in sorted(set(df.index))
+    )
+
+    out = pd.concat(dfs, axis=1, sort=False)
+    return out
+
+
 def count_feature_based_group_relations(
     df: pd.DataFrame,
     grouping_column_name: str,
@@ -415,6 +437,20 @@ def count_feature_based_group_relations(
             out_dict["annotated_feature_frequency_df"]: annotated_feature_frequency_df
         return out_dict
 
+    if not isinstance(annotation_df, pd.DataFrame):
+        annotation_df = pd.DataFrame()
+
+    annotation_df = pd.concat(
+        [
+            grouping_describe(df.set_index(grouping_column_name, append=False)),
+            annotation_df,
+        ],
+        axis=1,
+        join="inner",
+        sort=False,
+        names=[feature_name]
+    )
+
     feature_value_count_series = df[grouping_column_name].value_counts()
 
     feature_grouped_df_dict = dict()
@@ -434,27 +470,4 @@ def count_feature_based_group_relations(
         for k, v in feature_grouped_df_dict.items()
     )
     return d
-
-
-
-def grouping_describe(df: pd.DataFrame):
-    """
-    :param df:
-        indexes are categories (non-unique are preferred by design)
-        columns are features
-    :return:
-    """
-    def _process(s: str):
-        return df.loc[s, :].describe().rename(
-            axis=0,
-            mapper=lambda x: f"{s}-{x}"
-        ).transpose()
-
-    dfs = jb.Parallel(n_jobs=-1)(
-        jb.delayed(_process)(i)
-        for i in sorted(set(df.index))
-    )
-
-    out = pd.concat(dfs, axis=1, sort=False)
-    return out
 
