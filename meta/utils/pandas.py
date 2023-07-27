@@ -471,3 +471,73 @@ def count_feature_based_group_relations(
     )
     return d
 
+
+def draw_pca(
+    df: pd.DataFrame,
+    name: str,
+    grouping_column_name: str,
+    output_dir: str,
+):
+    """
+    :param df:
+        indexes are categories (e.g. sample names, sources, etc.)
+        columns are features AND 1 grouping column
+    :param name:
+    :param grouping_column_name:
+    :param output_dir:
+    :return:
+    """
+    import seaborn as sns
+    from matplotlib import pyplot as plt
+    from sklearn.decomposition import PCA
+    from sklearn.preprocessing import StandardScaler
+
+    pca_components = 2
+    scaling_df = df.set_index(grouping_column_name, append=True)
+
+    scaler = StandardScaler()
+    scaled_array = scaler.fit_transform(scaling_df)
+
+    pca = PCA(n_components=pca_components)
+    pca_array = pca.fit_transform(scaled_array)
+
+    pca_column_names = [f"PCA {i + 1}" for i in range(pca_array.shape[1])]
+
+    pca_df = pd.DataFrame(
+        pca_array,
+        index=scaling_df.index,
+        columns=pca_column_names
+    ).reset_index(grouping_column_name)
+
+    plt.clf()
+    plt.close()
+
+    sns.set(style="whitegrid")
+
+    sns.set_palette(os.getenv("MATPLOTLIB_COLORMAP", "turbo"))
+
+    plt.rcParams.update({
+        "figure.figsize": (5, 5),
+        "figure.dpi": 75
+    })
+
+    sns.lmplot(
+        **{k: v for k, v in zip(["x", "y"], pca_column_names)},
+        data=pca_df,
+        hue=grouping_column_name,
+        fit_reg=False,
+        legend=True
+    )
+
+    nd = len(pca_column_names)
+    cd = len(set(df[grouping_column_name]))
+
+    title = f"{nd}D PCA for {name}  ({cd} groups)"
+    plt.title(title)
+
+    file_mask = os.path.join(output_dir, title)
+    dump_tsv(pca_df, f"{file_mask}.tsv", reset_index=True)
+    plt.savefig(f"{file_mask}.jpg")
+
+    plt.clf()
+    plt.close()
