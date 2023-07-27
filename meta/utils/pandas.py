@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import joblib as jb
 from scipy import stats
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 
 
 def load_tsv(table, **kwargs):
@@ -245,7 +245,7 @@ def draw_supervenn_diagram(
     data: dict,
     title: str,
     output_dir: str,
-    diagram_labels: None
+    diagram_labels: Iterable = None
 ):
     """
     :param data: dict,
@@ -258,8 +258,8 @@ def draw_supervenn_diagram(
     :return:
     """
     import seaborn as sns
-    from matplotlib import pyplot as plt
     from supervenn import supervenn
+    from matplotlib import pyplot as plt
     from meta.utils.io import dump_dict
     plt.clf()
     plt.close()
@@ -310,6 +310,9 @@ def count_features_and_draw_supervenn_diagram(
     :return:
     """
     from meta.utils.primitive import remove_empty_values
+
+    df = df.loc[:, df.sum() > 0]
+
     row_count_df = df.apply(
         lambda x: x.apply(
             lambda y: x.name if y > 0 else ""
@@ -359,3 +362,64 @@ def count_features_and_draw_supervenn_diagram(
         diagram_labels=diagram_labels,
     )
     return column_count_df
+
+
+def count_feature_based_group_relations(
+    df: pd.DataFrame,
+    grouping_column_name: str,
+    feature_name: str,
+    output_dir: str,
+    annotation_df: pd.DataFrame = None
+):
+    """
+    :param df:
+        indexes are categories (e.g. sample names, sources, etc.)
+        columns are features AND 1 grouping column
+    :param grouping_column_name:
+    :param feature_name:
+    :param output_dir:
+    :param annotation_df:
+    :return:
+    """
+    feature_value_count_series = df[grouping_column_name].value_counts()
+
+    feature_grouped_df_dict = dict()
+    feature_counter_df = (
+        df.set_index(grouping_column_name, append=True) > 0
+    ).astype(int).reset_index(grouping_column_name)
+    count_feature_grouped_df = feature_counter_df.groupby(grouping_column_name).sum()
+    percentage_feature_grouped_df = count_feature_grouped_df.divide(
+        feature_value_count_series, axis=0
+    ).rename_axis(index=grouping_column_name, columns=df.index.name)
+
+    feature_grouped_df_dict["at least once"] = percentage_feature_grouped_df
+    feature_grouped_df_dict["everywhere"] = percentage_feature_grouped_df.astype(int)
+    for rounding_policy, feature_grouped_df in feature_grouped_df_dict.items():
+        value_count_dir = os.path.join(
+            output_dir,
+            f"{feature_name}_value_counts"
+        )
+        unannotated_feature_frequency_df = count_features_and_draw_supervenn_diagram(
+            df=feature_grouped_df,
+            title=f"{feature_name} occurring {rounding_policy} for each sample per sample group",
+            output_dir=value_count_dir,
+            diagram_labels=(f"Distinct {feature_name}", grouping_column_name),
+        )
+        if isinstance(annotation_df, pd.DataFrame) and annotation_df.shape[0] > 0:
+            annotated_feature_frequency_df = pd.concat(
+                [
+                    unannotated_feature_frequency_df,
+                    annotation_df
+                ],
+                axis=1,
+                join="inner",
+                sort=False,
+            ).sort_values("frequency", ascending=False)
+            dump_tsv(
+                annotated_feature_frequency_df,
+                os.path.join(
+                    value_count_dir,
+                    f"{unannotated_feature_frequency_df.name}_frequencies_annotated.tsv"
+                ),
+                reset_index=True
+            )
