@@ -286,7 +286,8 @@ def collapse_split_and_draw_non_major_df(
     :return:
     """
     from meta.utils.pandas import get_major_features_df
-    for taxa_rank in TAXONOMY_RANKS[:-1]:
+
+    def _process(taxa_rank: str):
         collapsed_taxa_df = collapse_taxa_df_by_rank(
             df=taxa_sample_otu_df,
             rank=taxa_rank,
@@ -305,6 +306,11 @@ def collapse_split_and_draw_non_major_df(
             chunk_df_size=samples_per_time,
             output_dir=output_dir
         )
+
+    _ = jb.Parallel(n_jobs=-1)(
+        jb.delayed(_process)(i)
+        for i in TAXONOMY_RANKS[:-1]
+    )
 
 
 def draw_dendrogram(

@@ -381,20 +381,8 @@ def count_feature_based_group_relations(
     :param annotation_df:
     :return:
     """
-    feature_value_count_series = df[grouping_column_name].value_counts()
-
-    feature_grouped_df_dict = dict()
-    feature_counter_df = (
-        df.set_index(grouping_column_name, append=True) > 0
-    ).astype(int).reset_index(grouping_column_name)
-    count_feature_grouped_df = feature_counter_df.groupby(grouping_column_name).sum()
-    percentage_feature_grouped_df = count_feature_grouped_df.divide(
-        feature_value_count_series, axis=0
-    ).rename_axis(index=grouping_column_name, columns=df.index.name)
-
-    feature_grouped_df_dict["at least once"] = percentage_feature_grouped_df
-    feature_grouped_df_dict["everywhere"] = percentage_feature_grouped_df.astype(int)
-    for rounding_policy, feature_grouped_df in feature_grouped_df_dict.items():
+    def _process(rounding_policy: str, feature_grouped_df: pd.DataFrame):
+        out_dict = dict()
         value_count_dir = os.path.join(
             output_dir,
             f"{feature_name}_value_counts"
@@ -405,6 +393,7 @@ def count_feature_based_group_relations(
             output_dir=value_count_dir,
             diagram_labels=(f"Distinct {feature_name}", grouping_column_name),
         )
+        out_dict["unannotated_feature_frequency_df"] = unannotated_feature_frequency_df
         if isinstance(annotation_df, pd.DataFrame) and annotation_df.shape[0] > 0:
             annotated_feature_frequency_df = pd.concat(
                 [
@@ -423,6 +412,29 @@ def count_feature_based_group_relations(
                 ),
                 reset_index=True
             )
+            out_dict["annotated_feature_frequency_df"]: annotated_feature_frequency_df
+        return out_dict
+
+    feature_value_count_series = df[grouping_column_name].value_counts()
+
+    feature_grouped_df_dict = dict()
+    feature_counter_df = (
+        df.set_index(grouping_column_name, append=True) > 0
+    ).astype(int).reset_index(grouping_column_name)
+    count_feature_grouped_df = feature_counter_df.groupby(grouping_column_name).sum()
+    percentage_feature_grouped_df = count_feature_grouped_df.divide(
+        feature_value_count_series, axis=0
+    ).rename_axis(index=grouping_column_name, columns=df.index.name)
+
+    feature_grouped_df_dict["at least once"] = percentage_feature_grouped_df
+    feature_grouped_df_dict["everywhere"] = percentage_feature_grouped_df.astype(int)
+
+    d = jb.Parallel(n_jobs=-1)(
+        jb.delayed(_process)(k, v)
+        for k, v in feature_grouped_df_dict.items()
+    )
+    return d
+
 
 
 def grouping_describe(df: pd.DataFrame):
@@ -432,16 +444,17 @@ def grouping_describe(df: pd.DataFrame):
         columns are features
     :return:
     """
-    out = pd.concat(
-        [
-            df.loc[i, :].describe().rename(
-                axis=0,
-                mapper=lambda x: f"{i}-{x}"
-            ).transpose()
-            for i in sorted(set(df.index))
-        ],
-        axis=1,
-        sort=False
+    def _process(s: str):
+        return df.loc[s, :].describe().rename(
+            axis=0,
+            mapper=lambda x: f"{s}-{x}"
+        ).transpose()
+
+    dfs = jb.Parallel(n_jobs=-1)(
+        jb.delayed(_process)(i)
+        for i in sorted(set(df.index))
     )
+
+    out = pd.concat(dfs, axis=1, sort=False)
     return out
 
