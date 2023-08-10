@@ -1,6 +1,5 @@
 #%%
 
-
 import os
 import pandas as pd
 import seaborn as sns
@@ -9,16 +8,17 @@ from meta.utils.file_system import scan_whole_dir
 from meta.sample_data.qiime2_sample_data import run
 from meta.utils.file_system import find_file_by_tail
 from meta.utils.diversity import (
-    draw_dendrogram,
     count_alpha_diversity_df,
     count_beta_diversity_df,
+    draw_dendrogram,
     collapse_split_and_draw_non_major_df,
 )
 from meta.utils.pandas import (
-    dump_tsv,
-    load_tsv,
+    annotate_and_aggregate_df,
     count_feature_based_group_relations,
     draw_pca,
+    dump_tsv,
+    load_tsv,
 )
 
 
@@ -38,7 +38,9 @@ diversity_data_dir = os.path.join(processed_data_dir, "diversity")
 pivot_diversity_data_dir = os.path.join(diversity_data_dir, "pivots")
 dendrogram_dir = os.path.join(diversity_data_dir, "dendrograms")
 collapsed_diversity_data_dir = os.path.join(diversity_data_dir, "collapsed-taxa")
+aggregated_diversity_data_dir = os.path.join(diversity_data_dir, "aggregated-taxa")
 pathway_data_dir = os.path.join(processed_data_dir, "pathways")
+aggregated_pathway_data_dir = os.path.join(pathway_data_dir, "aggregated-pathways")
 
 raw_reads_files = pd.Series(scan_whole_dir(raw_dir))
 raw_reads_files
@@ -56,7 +58,6 @@ qiime2_run_dicts = run(
 )
 
 qiime2_metadata_file = qiime2_run_dicts["sampledata_files"]["meta"]
-
 qiime2_metadata_df = load_tsv(qiime2_metadata_file).iloc[1:]
 
 #%%
@@ -134,7 +135,6 @@ RAW_DIR="${RAW_DIR}" \
 SAMPLEDATA_DIR="${SAMPLEDATA_DIR}" \
 bash "${PIPELINE_SCRIPT}"
 """
-
 
 #%%
 
@@ -239,6 +239,37 @@ draw_pca(
 
 #%%
 
+pathway_reference_dir = "/data/reference/KEGG/"
+pathway_reference_table = find_file_by_tail(pathway_reference_dir, ".tsv")
+pathway_reference_df = load_tsv(pathway_reference_table).set_index("ko")
+pathway_reference_df
+
+#%%
+
+pre_aggregated_pathway_df, aggregated_pathway_dfs_dict = annotate_and_aggregate_df(
+    df=pathway_df.loc[:, sample_names].rename_axis(index="ko"),
+    annotation_df=pathway_reference_df,
+)
+
+#%%
+
+dump_tsv(
+    pre_aggregated_pathway_df,
+    os.path.join(aggregated_pathway_data_dir, "pre_aggregated_pathways.tsv"),
+    reset_index=True,
+)
+
+_ = [
+    dump_tsv(
+        v,
+        os.path.join(aggregated_pathway_data_dir, f"pathways_aggregated_by_{k}.tsv"),
+        reset_index=True,
+    )
+    for k, v in aggregated_pathway_dfs_dict.items()
+]
+
+#%%
+
 subject_column_name = "SubjectID"
 subject_otu_grouping_df = pd.concat(
     [
@@ -268,7 +299,7 @@ beta_diversity_df
 #%%
 
 draw_dendrogram(
-    df = sample_otu_df.transpose(),
+    df=sample_otu_df.transpose(),
     name="OTU-based",
     metric="braycurtis",
     output_dir=dendrogram_dir,
@@ -287,3 +318,34 @@ collapse_split_and_draw_non_major_df(
     samples_per_time=10,
     output_dir=collapsed_diversity_data_dir
 )
+
+#%%
+
+taxa_reference_dir = "/data/reference/SILVA/SILVA_v138"
+taxa_reference_table = find_file_by_tail(taxa_reference_dir, "_taxonomy_expanded.tsv")
+taxa_reference_df = load_tsv(taxa_reference_table).set_index("#OTU ID").drop("taxonomy", axis=1)
+taxa_reference_df
+
+#%%
+
+pre_aggregated_taxa_df, aggregated_taxa_dfs_dict = annotate_and_aggregate_df(
+    df=otu_df.loc[:, sample_names],
+    annotation_df=taxa_reference_df,
+)
+
+#%%
+
+dump_tsv(
+    pre_aggregated_taxa_df,
+    os.path.join(aggregated_diversity_data_dir, "pre_aggregated_taxa.tsv"),
+    reset_index=True,
+)
+
+_ = [
+    dump_tsv(
+        v,
+        os.path.join(aggregated_diversity_data_dir, f"taxa_aggregated_by_{k}.tsv"),
+        reset_index=True,
+    )
+    for k, v in aggregated_taxa_dfs_dict.items()
+]
