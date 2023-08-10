@@ -543,14 +543,14 @@ def draw_pca(
     plt.close()
 
 
-def annotate_and_collapse_df(df: pd.DataFrame, annotation_df: pd.DataFrame):
+def annotate_and_aggregate_df(df: pd.DataFrame, annotation_df: pd.DataFrame):
     """
     :param df:
         indexes are features
         columns are categories (e.g. sample names, sources, etc.)
     :param annotation_df:
         indexes are features (non-unique are preferred by design)
-        columns are grouping (collapsing) columns
+        columns are grouping / aggregation columns
     :return:
     """
     index_column_name = df.index.name
