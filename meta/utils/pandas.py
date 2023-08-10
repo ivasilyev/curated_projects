@@ -541,3 +541,39 @@ def draw_pca(
 
     plt.clf()
     plt.close()
+
+
+def annotate_and_collapse_df(df: pd.DataFrame, annotation_df: pd.DataFrame):
+    """
+    :param df:
+        indexes are features
+        columns are categories (e.g. sample names, sources, etc.)
+    :param annotation_df:
+        indexes are features (non-unique are preferred by design)
+        columns are grouping (collapsing) columns
+    :return:
+    """
+    index_column_name = df.index.name
+    annotated_df = annotation_df.reset_index().merge(
+        df.reset_index(), how="right", on=index_column_name
+    ).set_index(index_column_name)
+    value_column_names = df.columns.tolist()
+    out_dict = dict()
+    for grouping_column_name in annotation_df.columns:
+        grouped_df = annotated_df.loc[
+            :,
+            [grouping_column_name] + value_column_names
+        ].groupby(grouping_column_name).sum()
+        grouped_df = pd.concat(
+            [
+                annotated_df.loc[
+                    :,
+                    [grouping_column_name]
+                ].reset_index().groupby(grouping_column_name).apply(
+                    lambda x: ";".join(str(i) for i in sorted(set(x[index_column_name].values)))
+                ).rename(index_column_name),
+                grouped_df,
+            ], axis=1, sort=False
+        )
+        out_dict[grouping_column_name] = grouped_df
+    return annotated_df, out_dict
