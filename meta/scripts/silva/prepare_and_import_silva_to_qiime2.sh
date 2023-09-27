@@ -14,7 +14,7 @@ export _ITERATION=0
 
 function xecho () {
     _ITERATION=$((_ITERATION+1))
-    printf "\n\n${_BAR}"
+    printf "\n${_BAR}\n"
     echo "${_ITERATION}. $@"
     echo "${_BAR}"
 }
