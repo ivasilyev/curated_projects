@@ -99,13 +99,13 @@ qiime phylogeny midpoint-root \
     --verbose \
     --i-tree "trees/unrooted.qza" \
     --o-rooted-tree "trees/rooted.qza" \
-|& tee "qiime phylogeny midpoint-root.log"
+|& tee "logs/qiime phylogeny midpoint-root.log"
 
 echo Export the rooted tree
 qiime tools export \
     --input-path "trees/rooted.qza" \
     --output-path "trees" && \
-|& tee "qiime tools export rooted trees.log"
+|& tee "logs/qiime tools export rooted trees.log"
 
 mv "trees/tree.nwk" "trees/rooted.nwk"
 
