@@ -13,9 +13,8 @@ export _BAR="------------------------------------------"
 export _ITERATION=0
 
 function xecho () {
-    echo
     _ITERATION=$((_ITERATION+1))
-    echo "${_BAR}"
+    printf "\n${_BAR}"
     echo "${_ITERATION}. $@"
     echo "${_BAR}"
 }
