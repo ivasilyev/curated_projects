@@ -2,8 +2,8 @@
 
 # It is recommended to launch this script into a working QIIME2 environment
 # or an instance of the official QIIME2 Docker image, e.g.:
-# export IMG=qiime2/core:latest && docker pull ${IMG} && docker run --rm --net=host -v /data:/data -it ${IMG} bash
-# cd /tmp && curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/meta/scripts/silva/prepare_and_import_silva_to_qiime2.sh"
+# export IMG="qiime2/core:latest" && docker pull "${IMG}" && docker run --rm --net=host -v /data:/data -it "${IMG}" bash
+# cd "/tmp" && curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/meta/scripts/silva/prepare_and_import_silva_to_qiime2.sh"
 # bash "prepare_and_import_silva_to_qiime2.sh" |& tee "prepare_and_import_silva_to_qiime2.log"
 
 export REFERENCE_VERSION="138.1"
@@ -13,6 +13,7 @@ export _BAR="------------------------------------------"
 export _ITERATION=0
 
 function xecho () {
+    echo
     _ITERATION=$((_ITERATION+1))
     echo "${_BAR}"
     echo "${_ITERATION}. $@"
