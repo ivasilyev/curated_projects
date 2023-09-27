@@ -9,6 +9,17 @@
 export REFERENCE_VERSION="138.1"
 cd "/data/reference/SILVA/SILVA_v${REFERENCE_VERSION}"
 
+export _BAR="------------------------------------------"
+export _ITERATION=0
+
+function xecho () {
+    _ITERATION=$((_ITERATION+1))
+    echo "${_BAR}"
+    echo "${_ITERATION}. $@"
+    echo "${_BAR}"
+}
+
+
 echo "Import the SILVA version ${REFERENCE_VERSION} database assets into QIIME2"
 ls -la
 # Files required:
@@ -18,13 +29,13 @@ ls -la
 #    SILVA_${REFERENCE_VERSION}_SSURef_NR99_tax_silva_trunc.fasta
 #    SILVA_${REFERENCE_VERSION}_SSURef_NR99_tax_silva_full_align_trunc.fasta
 
-echo "Deploy the SILVA DB parser"
+xecho "Deploy the SILVA DB parser"
 git -C "/opt/" clone "https://github.com/mikerobeson/make_SILVA_db.git"
 export SDIR="/opt/make_SILVA_db/"
 
 mkdir -p "logs"
 
-echo "Parse the SILVA taxonomy"
+xecho "Parse the SILVA taxonomy"
 python "${SDIR}parse_silva_taxonomy.py" \
     -s \
     -t "tax_slv_ssu_${REFERENCE_VERSION}.txt" \
@@ -33,38 +44,38 @@ python "${SDIR}parse_silva_taxonomy.py" \
     -o "SILVA_${REFERENCE_VERSION}_taxonomy.txt" \
 |& tee "logs/parse_silva_taxonomy.log"
 
-echo "Add header to the SILVA taxonomy table"
+xecho "Add header to the SILVA taxonomy table"
 printf '#OTU ID\ttaxonomy\n' \
 | cat - "SILVA_${REFERENCE_VERSION}_taxonomy.txt" \
 > "SILVA_${REFERENCE_VERSION}_taxonomy_headed.tsv"
 
-echo "Remove taxonomy descriptions from FASTA headers, and convert the sequences from RNA to DNA for the unaligned FASTA"
+xecho "Remove taxonomy descriptions from FASTA headers, and convert the sequences from RNA to DNA for the unaligned FASTA"
 python "${SDIR}convert_rna_to_dna.py" \
     -i "SILVA_${REFERENCE_VERSION}_SSURef_NR99_tax_silva_trunc.fasta" \
     -o "SILVA_seqs.fasta" \
 |& tee "logs/convert_rna_to_dna_unaligned.log"
 
-echo "Remove taxonomy descriptions from FASTA headers, and convert the sequences from RNA to DNA for the aligned FASTA"
+xecho "Remove taxonomy descriptions from FASTA headers, and convert the sequences from RNA to DNA for the aligned FASTA"
 python "${SDIR}convert_rna_to_dna.py" \
     -g \
     -i "SILVA_${REFERENCE_VERSION}_SSURef_NR99_tax_silva_full_align_trunc.fasta" \
     -o "SILVA_align_seqs.fasta" \
 |& tee "logs/convert_rna_to_dna_aligned.log"
 
-echo "Remove sequences containing 5 or more ambiguous bases and/or homopolymers with 8 or more bases"
+xecho "Remove sequences containing 5 or more ambiguous bases and/or homopolymers with 8 or more bases"
 python "${SDIR}remove_seqs_with_homopolymers.py" \
     -i "SILVA_seqs.fasta" \
     -o "SILVA_seqs_polyfilt.fasta" \
 |& tee "logs/remove_seqs_with_homopolymers.log"
 
-echo "Filter sequences by length, based on taxonomy"
+xecho "Filter sequences by length, based on taxonomy"
 python "${SDIR}filter_seqs_by_length_and_taxonomy.py" \
     -i "SILVA_seqs_polyfilt.fasta" \
     -o "SILVA_seqs_polyfilt_lenfilt.fasta" \
     -t "SILVA_${REFERENCE_VERSION}_taxonomy.txt" \
 |& tee "logs/filter_seqs_by_length_and_taxonomy.log"
 
-echo "Import consensus taxonomy file for the full-length sequences"
+xecho "Import consensus taxonomy file for the full-length sequences"
 qiime tools import \
     --input-path "SILVA_${REFERENCE_VERSION}_taxonomy.txt" \
     --input-format "HeaderlessTSVTaxonomyFormat" \
@@ -72,21 +83,21 @@ qiime tools import \
     --type 'FeatureData[Taxonomy]' \
 |& tee "logs/qiime tools import Taxonomy.log"
 
-echo "Import FASTA sequences"
+xecho "Import FASTA sequences"
 qiime tools import \
     --input-path "SILVA_seqs_polyfilt_lenfilt.fasta" \
     --output-path "SILVA-${REFERENCE_VERSION}-SSURef-Full-Seqs.qza" \
     --type 'FeatureData[Sequence]' \
 |& tee "logs/qiime tools import Sequence.log"
 
-echo "Train classifiers for the full-length sequences"
+xecho "Train classifiers for the full-length sequences"
 qiime feature-classifier fit-classifier-naive-bayes \
     --i-reference-reads "SILVA-${REFERENCE_VERSION}-SSURef-Full-Seqs.qza" \
     --i-reference-taxonomy "SILVA-${REFERENCE_VERSION}-full-length-seq-taxonomy.qza" \
     --o-classifier "SILVA-${REFERENCE_VERSION}-SSURef-full-length-classifier.qza" \
 |& tee "logs/feature-classifier fit-classifier-naive-bayes.log"
 
-echo "Import the unrooted tree"
+xecho "Import the unrooted tree"
 mkdir -p "trees"
 qiime tools import \
     --input-path "tax_slv_ssu_${REFERENCE_VERSION}.tre" \
@@ -94,14 +105,14 @@ qiime tools import \
     --type 'Phylogeny[Unrooted]' \
 |& tee "logs/qiime tools import Phylogeny Unrooted.log"
 
-echo "Root the unrooted tree based on the midpoint rooting method"
+xecho "Root the unrooted tree based on the midpoint rooting method"
 qiime phylogeny midpoint-root \
     --verbose \
     --i-tree "trees/unrooted.qza" \
     --o-rooted-tree "trees/rooted.qza" \
 |& tee "logs/qiime phylogeny midpoint-root.log"
 
-echo Export the rooted tree
+xecho Export the rooted tree
 qiime tools export \
     --input-path "trees/rooted.qza" \
     --output-path "trees" && \
