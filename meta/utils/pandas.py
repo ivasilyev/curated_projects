@@ -543,6 +543,77 @@ def draw_pca(
     plt.close()
 
 
+def draw_pcoa(
+    df: pd.DataFrame,
+    name: str,
+    grouping_column_name: str,
+    output_dir: str,
+):
+    """
+    :param df:
+        indexes are categories (e.g. sample names, sources, etc.)
+        columns are features AND 1 grouping column
+    :param name:
+    :param grouping_column_name:
+    :param output_dir:
+    :return:
+    """
+    import seaborn as sns
+    from matplotlib import pyplot as plt
+    from sklearn.decomposition import PCA
+    from sklearn.preprocessing import normalize
+
+    pca_components = 2
+    scaling_df = df.set_index(grouping_column_name, append=True)
+
+    normalized_array = normalize(scaling_df).transpose()
+
+    pca = PCA(n_components=pca_components)
+    pca_array = pca.fit(normalized_array)
+    pcoa_array = pca.components_.transpose()
+
+    pcoa_column_names = [f"PCoA {i + 1}" for i in range(pcoa_array.shape[1])]
+
+    pcoa_df = pd.DataFrame(
+        pcoa_array,
+        index=scaling_df.index,
+        columns=pcoa_column_names
+    ).reset_index(grouping_column_name)
+
+    plt.clf()
+    plt.close()
+
+    sns.set(style="whitegrid")
+
+    sns.set_palette(os.getenv("MATPLOTLIB_COLORMAP", "turbo"))
+
+    plt.rcParams.update({
+        "figure.figsize": (5, 5),
+        "figure.dpi": 75
+    })
+
+    sns.lmplot(
+        **{k: v for k, v in zip(["x", "y"], pcoa_column_names)},
+        data=pcoa_df,
+        hue=grouping_column_name,
+        fit_reg=False,
+        legend=True
+    )
+
+    nd = len(pcoa_column_names)
+    cd = len(set(df[grouping_column_name]))
+
+    title = f"{nd}D PCoA for {name}  ({cd} groups)"
+    plt.title(title)
+
+    file_mask = os.path.join(output_dir, title)
+    dump_tsv(pcoa_df, f"{file_mask}.tsv", reset_index=True)
+    plt.savefig(f"{file_mask}.jpg")
+
+    plt.clf()
+    plt.close()
+
+
 def annotate_and_aggregate_df(df: pd.DataFrame, annotation_df: pd.DataFrame):
     """
     :param df:
