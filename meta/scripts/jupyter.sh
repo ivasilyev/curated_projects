@@ -42,8 +42,14 @@ docker run \
     --volume /data03:/data03 \
     --volume /data04:/data04 \
     "${IMG}" bash -c '
-        echo Web access: \"http://${IP_ADDRESS}:${PORT}/?token=${TOKEN}\";
         git pull --quiet && \
+        pip install \
+            --quiet \
+            --requirement "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/jupyter-deploy/requirements.txt" && \
+        pip install \
+            --quiet \
+            --requirement "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/jupyter-deploy/requirements-linux.txt"; \
+        echo Web access: \"http://${IP_ADDRESS}:${PORT}/?token=${TOKEN}\";
         jupyter lab \
             --ip=0.0.0.0 \
             --no-browser \
