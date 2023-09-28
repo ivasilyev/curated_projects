@@ -618,6 +618,9 @@ def draw_pcoa(
     plt.close()
 
 
+PRINCIPAL_ANALYSIS_METHODS = dict(draw_pca=draw_pca, draw_pcoa=draw_pcoa,)
+
+
 def annotate_and_aggregate_df(df: pd.DataFrame, annotation_df: pd.DataFrame):
     """
     :param df:
