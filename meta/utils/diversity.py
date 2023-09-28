@@ -318,13 +318,16 @@ def draw_dendrogram(
     name: str,
     output_dir: str,
     metric: str = "braycurtis",
+    method: str = "single",
 ):
     """
     :param df:
         indexes are samples,
         columns are features
+    :param name:
     :param output_dir:
     :param metric:
+    :param method:
     :return:
     """
     import os
@@ -345,15 +348,18 @@ def draw_dendrogram(
         columns=df.index,
     )
 
-    plt.clf()
-    plt.close()
-
-    sns.set()
-
     tree_df = pd.DataFrame(
-        linkage(distance_matrix.values),
+        linkage(
+            df.values,
+            method=method,
+            metric=metric
+        ),
         columns=["index_1", "index_2", "distance", "new_observations"]
     )
+
+    plt.clf()
+    plt.close()
+    sns.set()
 
     plt.rcParams.update({
         "figure.figsize": (20, 5),
@@ -365,7 +371,7 @@ def draw_dendrogram(
     plt.xlabel("Sample name")
     plt.ylabel("Distance")
 
-    title = f"{name} dendrogram for {df.shape[0]} samples by '{metric}'"
+    title = f"{name} dendrogram for {df.shape[0]} samples by '{method}'-'{metric}'"
     plt.suptitle(title)
     # plt.show()
     file_mask = os.path.join(output_dir, title)
@@ -374,7 +380,7 @@ def draw_dendrogram(
     plt.tight_layout()
     plt.savefig(f"{file_mask}.jpg")
     dump_dict(distance_vector.tolist(), f"{file_mask}_distance_vector.json")
-    dump_tsv(distance_matrix, f"{file_mask}_distance_matrix.tsv")
+    dump_tsv(distance_matrix, f"{file_mask}_distance_matrix.tsv", reset_index=True)
     dump_tsv(tree_df, f"{file_mask}_tree_table.tsv")
     dump_dict(tree_dendrogram, f"{file_mask}_dendrogram.json")
 
