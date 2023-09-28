@@ -112,12 +112,18 @@ qiime phylogeny midpoint-root \
     --o-rooted-tree "trees/rooted.qza" \
 |& tee "logs/qiime phylogeny midpoint-root.log"
 
-xecho Export the rooted tree
+xecho Export the unrooted trees
+qiime tools export \
+    --input-path "trees/unrooted.qza" \
+    --output-path "trees" \
+|& tee "logs/qiime tools export unrooted trees.log"
+mv "trees/tree.nwk" "trees/unrooted.nwk"
+
+xecho Export the rooted trees
 qiime tools export \
     --input-path "trees/rooted.qza" \
-    --output-path "trees" && \
+    --output-path "trees" \
 |& tee "logs/qiime tools export rooted trees.log"
-
 mv "trees/tree.nwk" "trees/rooted.nwk"
 
 chmod -R 777 .
