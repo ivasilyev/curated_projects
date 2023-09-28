@@ -487,10 +487,11 @@ def draw_pca(
     :param output_dir:
     :return:
     """
-    import seaborn as sns
     from matplotlib import pyplot as plt
+    from meta.utils.io import dump_dict
     from sklearn.decomposition import PCA
     from sklearn.preprocessing import StandardScaler
+    import seaborn as sns
 
     pca_components = 2
     scaling_df = df.set_index(grouping_column_name, append=True)
@@ -537,6 +538,7 @@ def draw_pca(
 
     file_mask = os.path.join(output_dir, title)
     dump_tsv(pca_df, f"{file_mask}.tsv", reset_index=True)
+    dump_dict(scaled_array.tolist(), f"{file_mask}_scaled_values.json")
     plt.savefig(f"{file_mask}.jpg")
 
     plt.clf()
@@ -558,10 +560,11 @@ def draw_pcoa(
     :param output_dir:
     :return:
     """
-    import seaborn as sns
     from matplotlib import pyplot as plt
     from sklearn.decomposition import PCA
     from sklearn.preprocessing import normalize
+    import seaborn as sns
+    from meta.utils.io import dump_dict
 
     pca_components = 2
     scaling_df = df.set_index(grouping_column_name, append=True)
@@ -608,6 +611,7 @@ def draw_pcoa(
 
     file_mask = os.path.join(output_dir, title)
     dump_tsv(pcoa_df, f"{file_mask}.tsv", reset_index=True)
+    dump_dict(normalized_array.tolist(), f"{file_mask}_normalized_values.json")
     plt.savefig(f"{file_mask}.jpg")
 
     plt.clf()
