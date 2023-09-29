@@ -1,22 +1,24 @@
 #%%
 
+from matplotlib import pyplot as plt
 import os
 import pandas as pd
 import seaborn as sns
-from matplotlib import pyplot as plt
-from meta.utils.file_system import scan_whole_dir
+from time import perf_counter
+
 from meta.sample_data.qiime2_sample_data import run
 from meta.utils.file_system import find_file_by_tail
+from meta.utils.file_system import scan_whole_dir
 from meta.utils.diversity import (
+    collapse_split_and_draw_non_major_df,
     count_alpha_diversity_df,
     count_beta_diversity_df,
     draw_dendrogram,
-    collapse_split_and_draw_non_major_df,
 )
 from meta.utils.pandas import (
+    PRINCIPAL_ANALYSIS_METHODS,
     annotate_and_aggregate_df,
     count_feature_based_group_relations,
-    draw_pca,
     dump_tsv,
     load_tsv,
 )
@@ -25,6 +27,8 @@ from meta.utils.pandas import (
 def print_brief_df_report(df: pd.DataFrame):
     print("Columns:", df.columns.values, "\nShape:", df.shape)
 
+
+start_timestamp = perf_counter()
 
 # Raw folder is read-only!
 raw_dir = "/data03/bio/rogachev_mice/raw_colon_and_small/"
@@ -42,11 +46,12 @@ aggregated_diversity_data_dir = os.path.join(diversity_data_dir, "aggregated-tax
 pathway_data_dir = os.path.join(processed_data_dir, "pathways")
 aggregated_pathway_data_dir = os.path.join(pathway_data_dir, "aggregated-pathways")
 
+#%%
+
 raw_reads_files = pd.Series(scan_whole_dir(raw_dir))
 raw_reads_files
 
 #%%
-
 
 qiime2_run_dicts = run(
     reads_dirs=[raw_dir,],
@@ -74,6 +79,8 @@ sample_names = qiime2_metadata_df[index_column_name]
 qiime2_metadata_df["SubjectID"] = sample_names.str.extract(
     "([0-9]+\-[0-9]+)", expand=False
 ).values.tolist()
+
+#%%
 
 qiime2_metadata_df = pd.concat([
     load_tsv(qiime2_metadata_file).iloc[:1],
@@ -114,7 +121,7 @@ plt.show()
 
 #%%
 
-"""
+_ = """
 export ROOT_DIR="/data03/bio/projects/ashestopalov/nutrition/mice_small_large_intestine/"
 export RAW_DIR="/data03/bio/rogachev_mice/raw_colon_and_small/"
 
@@ -172,6 +179,8 @@ source_otu_grouping_df = pd.concat(
     join="inner"
 )
 
+#%%
+
 os.environ["MATPLOTLIB_COLORMAP"] = "hsv_r"
 source_otu_count_df_dict = count_feature_based_group_relations(
     df=source_otu_grouping_df,
@@ -181,17 +190,25 @@ source_otu_count_df_dict = count_feature_based_group_relations(
     annotation_df=pd.DataFrame(otu_df["taxonomy"])
 )
 
+#%%
+
 os.environ["MATPLOTLIB_COLORMAP"] = "turbo_r"
-draw_pca(
-    df=source_otu_grouping_df,
-    grouping_column_name=source_column_name,
-    output_dir=os.path.join(
-        diversity_data_dir, "pca", "pca_for_{}_by_{}".format(
-            relation_feature_name, source_column_name
-        )
-    ),
-    name=f"{relation_feature_name} grouped by {source_column_name}",
-)
+
+for principal_method_name, principal_method_function in PRINCIPAL_ANALYSIS_METHODS.items():
+    principal_method_function(
+        df=source_otu_grouping_df,
+        grouping_column_name=source_column_name,
+        output_dir=os.path.join(
+            diversity_data_dir,
+            principal_method_name,
+            "{}_for_{}_by_{}".format(
+                principal_method_name,
+                relation_feature_name,
+                source_column_name
+            )
+        ),
+        name=f"{relation_feature_name} grouped by {source_column_name}",
+    )
 
 #%%
 
@@ -202,6 +219,8 @@ pathway_df = load_tsv(
     ),
     index_col="function"
 )
+
+#%%
 
 relation_feature_name = "enzyme"
 os.environ["MATPLOTLIB_COLORMAP"] = "hsv"
@@ -217,6 +236,8 @@ source_enzyme_grouping_df = pd.concat(
     sort=False
 ).rename_axis(index=index_column_name, columns=relation_feature_name)
 
+#%%
+
 source_enzyme_count_df_dict = count_feature_based_group_relations(
     df=source_enzyme_grouping_df,
     grouping_column_name=source_column_name,
@@ -225,17 +246,24 @@ source_enzyme_count_df_dict = count_feature_based_group_relations(
     annotation_df=pd.DataFrame(pathway_df["description"])
 )
 
+#%%
+
 os.environ["MATPLOTLIB_COLORMAP"] = "turbo"
-draw_pca(
-    df=source_enzyme_grouping_df,
-    grouping_column_name=source_column_name,
-    output_dir=os.path.join(
-        pathway_data_dir, "pca", "pca_for_{}_by_{}".format(
-            relation_feature_name, source_column_name
-        )
-    ),
-    name=f"{relation_feature_name} grouped by {source_column_name}",
-)
+for principal_method_name, principal_method_function in PRINCIPAL_ANALYSIS_METHODS.items():
+    principal_method_function(
+        df=source_enzyme_grouping_df,
+        grouping_column_name=source_column_name,
+        output_dir=os.path.join(
+            pathway_data_dir,
+            principal_method_name,
+            "{}_for_{}_by_{}".format(
+                principal_method_name,
+                relation_feature_name,
+                source_column_name
+            )
+        ),
+        name=f"{relation_feature_name} grouped by {source_column_name}",
+    )
 
 #%%
 
@@ -299,7 +327,13 @@ beta_diversity_df
 #%%
 
 draw_dendrogram(
-    df=sample_otu_df.transpose(),
+    df=sample_otu_df.loc[
+        :,
+        [
+            i for i in sample_otu_df
+            if all(not i.startswith(j) for j in ["7", "8",])
+        ]
+    ].transpose(),
     name="OTU-based",
     metric="braycurtis",
     output_dir=dendrogram_dir,
@@ -349,3 +383,7 @@ _ = [
     )
     for k, v in aggregated_taxa_dfs_dict.items()
 ]
+
+#%%
+
+print(f"Time passed: {perf_counter() - start_timestamp:.3f} s.")
