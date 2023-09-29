@@ -24,6 +24,16 @@ force_git_pull () {
     done
 }
 
+## Pre-setup for SSH-based hairpin control
+#cat <<EOF | tee -a "${HOME}/.ssh/config"
+#
+#Host localhost
+#    HostName localhost
+#    Port 22
+#    User ${USER}
+#EOF
+#ssh-copy-id -i ~/.ssh/id_rsa.pub -o 'StrictHostKeyChecking=no' localhost
+
 
 export IMG="ivasilyev/curated_projects:latest" && \
 force_docker_pull "${IMG}" && \
@@ -41,6 +51,7 @@ docker run \
     --volume /data2:/data2 \
     --volume /data03:/data03 \
     --volume /data04:/data04 \
+    --volume "${HOME}/.ssh:/home/docker/.ssh" \
     "${IMG}" bash -c '
         git pull --quiet && \
         pip install \
