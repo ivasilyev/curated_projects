@@ -9,6 +9,7 @@
 export REFERENCE_VERSION="138.1"
 cd "/data/reference/SILVA/SILVA_v${REFERENCE_VERSION}"
 
+_START_TIME=$(date +'%s')
 export _BAR="------------------------------------------"
 export _ITERATION=0
 
@@ -129,3 +130,4 @@ mv "trees/tree.nwk" "trees/rooted.nwk"
 chmod -R 777 .
 
 echo "The SILVA version ${REFERENCE_VERSION} database assets were imported as QIIME2 artifacts"
+echo "Elapsed time: $(($(date +'%s') - ${start})) s"
