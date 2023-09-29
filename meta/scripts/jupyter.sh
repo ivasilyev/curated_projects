@@ -33,7 +33,7 @@ force_git_pull () {
 #    User ${USER}
 #EOF
 #ssh-copy-id -i ~/.ssh/id_rsa.pub -o 'StrictHostKeyChecking=no' localhost
-
+#ssh localhost "echo \$(whoami)"
 
 export IMG="ivasilyev/curated_projects:latest" && \
 force_docker_pull "${IMG}" && \
