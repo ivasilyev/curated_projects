@@ -3,6 +3,10 @@
 # curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/meta/scripts/jupyter.sh"
 # bash "jupyter.sh"
 
+export PORT=31522
+export TOKEN=TOKEN
+
+
 force_docker_pull () {
     while true
     do
@@ -39,9 +43,10 @@ export IMG="ivasilyev/curated_projects:latest" && \
 force_docker_pull "${IMG}" && \
 docker run \
     --env force_git_pull=force_git_pull \
-    --env PORT=31522 \
-    --env TOKEN=TOKEN \
-    --env IP_ADDRESS="$(ip route | grep default | awk '{ print $3 }')" \
+    --env PORT=${PORT} \
+    --env TOKEN=${TOKEN} \
+    --env IP_ADDRESS="$(ip route | grep default | awk '{ print $9 }')" \
+    --expose "${PORT}:${PORT}" \
     --interactive \
     --net=host \
     --rm \
@@ -67,5 +72,3 @@ docker run \
             --NotebookApp.token=${TOKEN} \
             --port=${PORT}
     '
-
-# Web access: `http://<ip>:31522/?token=TOKEN`
