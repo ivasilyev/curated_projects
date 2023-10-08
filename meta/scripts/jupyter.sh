@@ -46,7 +46,7 @@ docker run \
     --env PORT=${PORT} \
     --env TOKEN=${TOKEN} \
     --env IP_ADDRESS="$(ip route | grep default | awk '{ print $9 }')" \
-    --expose "${PORT}:${PORT}" \
+    --publish "${PORT}:${PORT}" \
     --interactive \
     --net=host \
     --rm \
