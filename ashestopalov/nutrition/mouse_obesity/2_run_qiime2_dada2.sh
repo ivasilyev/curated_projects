@@ -60,12 +60,12 @@ qiime metadata tabulate \
     |& tee "${LOG_DIR} metadata tabulate.log"
 
 log Summarize statistics
-qiime feature_table summarize \
+qiime feature-table summarize \
     --i-table "${QIIME2_DIR}dada2/dada2_frequency_table.qza"\
     --o-visualization "${QIIME2_DIR}visualizations/dada2_frequency_table.qzv" \
     --m-sample-metadata-file "${METADATA_TSV}" \
     --verbose
-qiime feature_table tabulate-seqs \
+qiime feature-table tabulate-seqs \
     --i-data "${QIIME2_DIR}dada2/dada2_representative_sequences.qza" \
     --o-visualization "${QIIME2_DIR}visualizations/dada2_representative_sequences.qzv" \
     --verbose
