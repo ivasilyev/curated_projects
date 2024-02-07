@@ -6,7 +6,7 @@ export RAW_DIR="/data03/bio/rogachev_human/"
 
 
 export ROOT_DIR="$(realpath "${ROOT_DIR}")qiime2-picrust2-pipeline/"
-export ROOT_DIR="$(realpath "${RAW_DIR}")/"
+export RAW_DIR="$(realpath "${RAW_DIR}")/"
 export LOG_DIR="${ROOT_DIR}logs/"
 export SAMPLEDATA_DIR="${ROOT_DIR}sample_data/"
 export SCRIPT_DIR="${ROOT_DIR}scripts/"
