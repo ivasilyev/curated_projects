@@ -3,6 +3,7 @@
 export ROOT_DIR="/data03/bio/projects/ashestopalov/nutrition/stool_to_blood_2/"
 export RAW_DIR="/data03/bio/rogachev_human/"
 
+export LOGS_DIR="${ROOT_DIR}logs/"
 export SAMPLEDATA_DIR="${ROOT_DIR}sample_data/"
 export SCRIPT_DIR="${ROOT_DIR}scripts/"
 export PIPELINE_SCRIPT="${SCRIPT_DIR}1_run_pipeline"
@@ -29,4 +30,5 @@ curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/
 ROOT_DIR="${ROOT_DIR}" \
 RAW_DIR="${RAW_DIR}" \
 SAMPLEDATA_DIR="${SAMPLEDATA_DIR}" \
-bash "${PIPELINE_SCRIPT}"
+bash "${PIPELINE_SCRIPT}" \
+|& tee "${LOGS_DIR}$(basename "${PIPELINE_SCRIPT}").log"
