@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function log {
-    echo "[$(date '+%d-%m-%Y %H:%M:%S')] $@"
+    echo "[$(date '+%d-%m-%Y %H:%M:%S.%N')] $@"
 }
 
 # Required variables begin
