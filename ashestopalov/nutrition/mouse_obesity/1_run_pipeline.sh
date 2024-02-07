@@ -23,6 +23,7 @@ export SCRIPT_DIR="$(realpath "${SCRIPT_DIR}")/"
 # Required variables end
 
 log "Working on ${ROOT_DIR}"
+export LOG_DIR="${ROOT_DIR}logs/"
 export SAMPLEDATA_CSV="${SAMPLEDATA_DIR}qiime2_sample_data.csv"
 export METADATA_TSV="${SAMPLEDATA_DIR}qiime2_meta_data.tsv"
 
@@ -45,6 +46,19 @@ export PICRUST2_SCRIPT="${PICRUST2_DIR}picrust2.sh"
 export RESULT_DIR="${ROOT_DIR}results/"
 
 export OTU_TABLE="${RESULT_DIR}OTUs_with_taxa.tsv"
+
+cd "${ROOT_DIR}" || exit 1
+
+mkdir \
+    --mode 0777 \
+    --parents \
+    --verbose \
+    "${QIIME2_DIR}" \
+    "${PICRUST2_DIR}" \
+    "${SCRIPT_DIR}" \
+    "${LOG_DIR}"
+
+
 
 log "Check QIIME2 sampledata"
 if [ ! -s "${SAMPLEDATA_CSV}" ] && [ ! -s "${METADATA_TSV}" ]
@@ -69,16 +83,12 @@ if [ ! -s "${SAMPLEDATA_CSV}" ] && [ ! -s "${METADATA_TSV}" ]
                     --extension ".fastq.gz" \
                     --input "${RAW_DIR}" \
                     --output "${SAMPLEDATA_DIR}"
-            '
+            ' \
+    |& tee "${LOG_DIR}qiime2_sample_data.log"
 else
     log "QIIME2 sampledata does exist"
 fi
 
-cd "${ROOT_DIR}" || exit 1
-
-
-
-mkdir -p "${QIIME2_DIR}" "${PICRUST2_DIR}" "${SCRIPT_DIR}"
 curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/mouse_obesity/2_run_qiime2_dada2.sh" \
     -o "${QIIME2_SCRIPT}"
 cd "${QIIME2_DIR}" || exit 1
@@ -102,7 +112,9 @@ docker run \
     --volume /data04:/data04 \
     --workdir="${QIIME2_DIR}" \
     "${IMG}" \
-    bash "${QIIME2_SCRIPT}"
+    bash "${QIIME2_SCRIPT}" \
+|& tee "${LOGS_DIR}$(basename "${QIIME2_SCRIPT}").log"
+
 
 rm -f "${QIIME2_SCRIPT}"
 
@@ -129,7 +141,8 @@ docker run \
     --volume /data04:/data04 \
     --workdir="${PICRUST2_DIR}" \
     "${IMG}" \
-    bash "${PICRUST2_SCRIPT}"
+    bash "${PICRUST2_SCRIPT}" \
+|& tee "${LOGS_DIR}$(basename "${PICRUST2_SCRIPT}").log"
 
 rm -f "${PICRUST2_SCRIPT}"
 
@@ -150,8 +163,11 @@ find "${ROOT_DIR}" \
         -I "{}" \
             bash -c '
                 export SRC_FILE="{}";
-                echo Copy: "${SRC_FILE}";
-                cp -r "${SRC_FILE}" "${RESULT_DIR}$(basename "${SRC_FILE}")"
+                cp \
+                    --recursive \
+                    --verbose \
+                    "${SRC_FILE}" \
+                    "${RESULT_DIR}$(basename "${SRC_FILE}")"
             '
 find "${ROOT_DIR}" \
     -type f \
@@ -163,8 +179,11 @@ find "${ROOT_DIR}" \
         -I "{}" \
             bash -c '
                 export SRC_FILE="{}";
-                echo Copy: "${SRC_FILE}";
-                cp -r "${SRC_FILE}" "${RESULT_DIR}$(basename "$(dirname "${SRC_FILE}")")_$(basename "${SRC_FILE}")"
+                cp
+                    --recursive \
+                    --verbose \
+                    "${SRC_FILE}" \
+                    "${RESULT_DIR}$(basename "$(dirname "${SRC_FILE}")")_$(basename "${SRC_FILE}")"
             '
 
 
@@ -197,6 +216,8 @@ docker run \
                     "${TAXA_REFERENCE_HEADER}" \
                     "${OTU_TABLE}" \
                 --output "${OUT_FILE}"
-        '
+        ' \
+|& tee "${LOGS_DIR}concatenate_tables.log"
+
 
 log "All pipeline runs ended"
