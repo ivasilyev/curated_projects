@@ -58,18 +58,20 @@ qiime metadata tabulate \
     --m-input-file "${QIIME2_DIR}dada2/dada2_denoising_statistics.qza" \
     --o-visualization "${QIIME2_DIR}visualizations/dada2_denoising_statistics.qza" \
     --verbose \
-    |& tee "${LOG_DIR} metadata tabulate.log"
+    |& tee "${LOG_DIR}metadata tabulate.log"
 
 log Summarize statistics
 qiime feature-table summarize \
     --i-table "${QIIME2_DIR}dada2/dada2_frequency_table.qza"\
     --o-visualization "${QIIME2_DIR}visualizations/dada2_frequency_table.qzv" \
     --m-sample-metadata-file "${METADATA_TSV}" \
-    --verbose
+    --verbose \
+    |& tee "${LOG_DIR}feature-table summarize.log"
 qiime feature-table tabulate-seqs \
     --i-data "${QIIME2_DIR}dada2/dada2_representative_sequences.qza" \
     --o-visualization "${QIIME2_DIR}visualizations/dada2_representative_sequences.qzv" \
-    --verbose
+    --verbose \
+    |& tee "${LOG_DIR}tabulate-seqs.log"
 
 log Assign taxonomy
 mkdir -p "${QIIME2_DIR}taxonomy/"
