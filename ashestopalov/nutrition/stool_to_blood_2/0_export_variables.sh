@@ -3,7 +3,7 @@
 export ROOT_DIR="/data03/bio/projects/ashestopalov/nutrition/stool_to_blood_2/"
 export RAW_DIR="/data03/bio/rogachev_human/"
 
-export LOGS_DIR="${ROOT_DIR}logs/"
+export LOG_DIR="${ROOT_DIR}logs/"
 export SAMPLEDATA_DIR="${ROOT_DIR}sample_data/"
 export SCRIPT_DIR="${ROOT_DIR}scripts/"
 export PIPELINE_SCRIPT="${SCRIPT_DIR}1_run_pipeline"
@@ -11,6 +11,7 @@ export PIPELINE_SCRIPT="${SCRIPT_DIR}1_run_pipeline"
 # sudo rm -rf "${ROOT_DIR}"
 mkdir -p \
     "${ROOT_DIR}" \
+    "${LOG_DIR}" \
     "${SCRIPT_DIR}" \
     "${SAMPLEDATA_DIR}"
 chmod -R a+rw "${ROOT_DIR}"
