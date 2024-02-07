@@ -1,4 +1,4 @@
-#SampleID	BarcodeSequence	LinkerPrimerSequence	SampleSource	ReadsStrand	SamplePath	PatientID	SampleGroup1	SampleGroup2
+#SampleID	BarcodeSequence	LinkerPrimerSequence	SampleSource	ReadsStrand	SamplePath	SubjectID	SampleGroup1	SampleGroup2
 #q2:types	categorical	categorical	categorical	categorical	categorical	categorical	categorical	categorical
 002b	CTCTCTACTATCCTCT	TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG	blood	forward	/data03/bio/rogachev_human/blood/002b_S112_R1_001.fastq.gz	002	NUC_adult	NUC_adult
 002b	CTCTCTACTATCCTCT	TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG	blood	reverse	/data03/bio/rogachev_human/blood/002b_S112_R2_001.fastq.gz	002	NUC_adult	NUC_adult

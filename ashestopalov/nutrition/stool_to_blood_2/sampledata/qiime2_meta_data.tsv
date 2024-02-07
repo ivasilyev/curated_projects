@@ -1,4 +1,4 @@
-#SampleID	BarcodeSequence	LinkerPrimerSequence	SampleSource	PatientID	SampleGroup1	SampleGroup2
+#SampleID	BarcodeSequence	LinkerPrimerSequence	SampleSource	SubjectID	SampleGroup1	SampleGroup2
 #q2:types	categorical	categorical	categorical	categorical	categorical	categorical
 002b	CTCTCTACTATCCTCT	TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG	blood	002	NUC_adult	NUC_adult
 004b	CTCTCTACTATCCTCT	TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG	blood	004	NUC_adult	NUC_adult
