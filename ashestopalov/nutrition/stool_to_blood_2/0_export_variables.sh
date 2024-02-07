@@ -3,6 +3,10 @@
 export ROOT_DIR="/data03/bio/projects/ashestopalov/nutrition/stool_to_blood_2/"
 export RAW_DIR="/data03/bio/rogachev_human/"
 
+
+
+export ROOT_DIR="$(realpath "${ROOT_DIR}")qiime2-picrust2-pipeline/"
+export ROOT_DIR="$(realpath "${RAW_DIR}")/"
 export LOG_DIR="${ROOT_DIR}logs/"
 export SAMPLEDATA_DIR="${ROOT_DIR}sample_data/"
 export SCRIPT_DIR="${ROOT_DIR}scripts/"
@@ -25,8 +29,6 @@ cd "${ROOT_DIR}" || exit 1
 
 curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/mouse_obesity/1_run_pipeline.sh" \
     -o "${PIPELINE_SCRIPT}"
-
-
 
 ROOT_DIR="${ROOT_DIR}" \
 RAW_DIR="${RAW_DIR}" \
