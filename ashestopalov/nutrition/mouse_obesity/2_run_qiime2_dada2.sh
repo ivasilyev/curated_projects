@@ -19,6 +19,7 @@ log "Run QIIME2 in ${QIIME2_DIR}"
 
 export LOG_DIR="${QIIME2_DIR}logs/"
 export CONSENSUS_THRESHOLD=97
+export GROUPING_COLUMN_NAME="SubjectID"
 export NPROC="$(grep -c '^processor' "/proc/cpuinfo")"
 
 mkdir -p "${LOG_DIR}"
@@ -290,11 +291,11 @@ qiime diversity beta-group-significance \
 qiime diversity beta-group-significance \
     --i-distance-matrix "${QIIME2_DIR}phylogenetic_core_metrics/unweighted_unifrac_distance_matrix.qza" \
     --m-metadata-file "${METADATA_TSV}" \
-    --m-metadata-column "SubjectID" \
-    --o-visualization "${QIIME2_DIR}visualizations/beta_unweighted_unifrac_SubjectID_significance.qzv" \
+    --m-metadata-column "${GROUPING_COLUMN_NAME}" \
+    --o-visualization "${QIIME2_DIR}visualizations/beta_unweighted_unifrac_${GROUPING_COLUMN_NAME}_significance.qzv" \
     --p-pairwise \
     --verbose \
-    |& tee "${LOG_DIR}diversity beta-group-significance SubjectID.log"
+    |& tee "${LOG_DIR}diversity beta-group-significance ${GROUPING_COLUMN_NAME}.log"
 qiime emperor plot \
     --i-pcoa "${QIIME2_DIR}phylogenetic_core_metrics/unweighted_unifrac_pcoa_results.qza" \
     --m-metadata-file "${METADATA_TSV}" \
@@ -319,8 +320,8 @@ qiime composition add-pseudocount \
 qiime composition ancom \
     --i-table "${QIIME2_DIR}differential_abundances/pseudocounted_features_table.qza" \
     --m-metadata-file "${METADATA_TSV}" \
-    --m-metadata-column "SubjectID" \
-    --o-visualization "${QIIME2_DIR}visualizations/ancom_SubjectID.qzv" \
+    --m-metadata-column "${GROUPING_COLUMN_NAME}" \
+    --o-visualization "${QIIME2_DIR}visualizations/ancom_${GROUPING_COLUMN_NAME}.qzv" \
     --verbose \
     |& tee "${LOG_DIR}composition ancom.log"
 
@@ -343,8 +344,8 @@ qiime composition add-pseudocount \
 qiime composition ancom \
     --i-table "${QIIME2_DIR}collapsed_differential_abundances/collapsed_pseudocounted_features_table.qza" \
     --m-metadata-file "${METADATA_TSV}" \
-    --m-metadata-column "SubjectID" \
-    --o-visualization "${QIIME2_DIR}visualizations/collapsed_ancom_SubjectID.qzv" \
+    --m-metadata-column "${GROUPING_COLUMN_NAME}" \
+    --o-visualization "${QIIME2_DIR}visualizations/collapsed_ancom_${GROUPING_COLUMN_NAME}.qzv" \
     |& tee "${LOG_DIR}composition ancom collapsed.log"
 
 log "Completed running QIIME2 in ${QIIME2_DIR}"
