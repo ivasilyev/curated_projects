@@ -10,7 +10,17 @@ if [[ -z "${GROUP_NAME}" ]]
 
 
 
-export RAW_DIR="${2}"
+export ROOT_DIR_0="${2}"
+
+if [[ -z "${ROOT_DIR_0}" ]]
+    then
+    echo "No root directory provided"
+    exit 1
+    fi
+
+
+
+export RAW_DIR="${3}"
 
 if [[ -z "${RAW_DIR}" ]]
     then
@@ -20,7 +30,7 @@ if [[ -z "${RAW_DIR}" ]]
 
 
 
-export SAMPLEDATA_DIR_0="${3}"
+export SAMPLEDATA_DIR_0="${4}"
 
 if [[ -z "${SAMPLEDATA_DIR_0}" ]]
     then
