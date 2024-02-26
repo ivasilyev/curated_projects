@@ -35,3 +35,5 @@ RAW_DIR="${RAW_DIR}" \
 SAMPLEDATA_DIR="${SAMPLEDATA_DIR}" \
 bash "${PIPELINE_SCRIPT}" \
 |& tee "${LOGS_DIR}$(basename "${PIPELINE_SCRIPT}").log"
+
+# And then the whole pipeline hangs on `[09-02-2024 02:44:04.123722636] Test differential abundance with ANCOM`
