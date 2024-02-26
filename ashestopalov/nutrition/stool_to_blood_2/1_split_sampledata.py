@@ -76,7 +76,7 @@ def split_metadata_by_sample_group(
 def split_metadata(main_metadata_file: str, output_dir: str):
     main_metadata_df = load_tsv(main_metadata_file)
 
-    for sample_group in set(main_metadata_df["SampleGroup1"].values):
+    for sample_group in set(main_metadata_df.drop([0], axis=0)["SampleGroup1"].values):
         split_metadata_by_sample_group(sample_group, main_metadata_df, output_dir)
 
 #%%
