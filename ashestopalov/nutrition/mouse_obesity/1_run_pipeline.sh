@@ -163,11 +163,11 @@ find "${ROOT_DIR}" \
         -I "{}" \
             bash -c '
                 export SRC_FILE="{}";
-                cp \
-                    --recursive \
+                ln \
+                    --symbolic \
                     --verbose \
                     "${SRC_FILE}" \
-                    "${RESULT_DIR}$(basename "${SRC_FILE}")"
+                    "${RESULT_DIR}$(basename "${SRC_FILE}")";
             '
 find "${ROOT_DIR}" \
     -type f \
@@ -179,11 +179,11 @@ find "${ROOT_DIR}" \
         -I "{}" \
             bash -c '
                 export SRC_FILE="{}";
-                cp
-                    --recursive \
+                ln \
+                    --symbolic \
                     --verbose \
                     "${SRC_FILE}" \
-                    "${RESULT_DIR}$(basename "$(dirname "${SRC_FILE}")")_$(basename "${SRC_FILE}")"
+                    "${RESULT_DIR}$(basename "$(dirname "${SRC_FILE}")")_$(basename "${SRC_FILE}")";
             '
 
 
