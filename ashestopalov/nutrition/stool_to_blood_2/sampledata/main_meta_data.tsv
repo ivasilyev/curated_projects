@@ -922,10 +922,10 @@
 99b	CTCTCTACTATCCTCT	TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG	blood	reverse	/data03/bio/rogachev_human/blood/99b_S30_R2_001.fastq.gz	99	Non_obese_children	Non_obese_children
 9B	CTCTCTACTATCCTCT	TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG	blood	forward	/data03/bio/rogachev_human/blood/9B_S95_R1_001.fastq.gz	9	Non_obese_children	Non_obese_children
 9B	CTCTCTACTATCCTCT	TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG	blood	reverse	/data03/bio/rogachev_human/blood/9B_S95_R2_001.fastq.gz	9	Non_obese_children	Non_obese_children
-k-1b	CTCTCTACTATCCTCT	TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG	blood	forward	/data03/bio/rogachev_human/blood/KIb_S111_R1_001.fastq.gz	k-1	Control	Control
-k-1b	CTCTCTACTATCCTCT	TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG	blood	reverse	/data03/bio/rogachev_human/blood/KIb_S111_R2_001.fastq.gz	k-1	Control	Control
-k-2b	CTCTCTACTATCCTCT	TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG	blood	forward	/data03/bio/rogachev_human/blood/KIIb_S82_R1_001.fastq.gz	k-2	Control	Control
-k-2b	CTCTCTACTATCCTCT	TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG	blood	reverse	/data03/bio/rogachev_human/blood/KIIb_S82_R2_001.fastq.gz	k-2	Control	Control
+01kb	CTCTCTACTATCCTCT	TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG	blood	forward	/data03/bio/rogachev_human/blood/KIb_S111_R1_001.fastq.gz	k-1	Control	Control
+01kb	CTCTCTACTATCCTCT	TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG	blood	reverse	/data03/bio/rogachev_human/blood/KIb_S111_R2_001.fastq.gz	k-1	Control	Control
+02kb	CTCTCTACTATCCTCT	TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG	blood	forward	/data03/bio/rogachev_human/blood/KIIb_S82_R1_001.fastq.gz	k-2	Control	Control
+02kb	CTCTCTACTATCCTCT	TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG	blood	reverse	/data03/bio/rogachev_human/blood/KIIb_S82_R2_001.fastq.gz	k-2	Control	Control
 002	CTCTCTACTATCCTCT	TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG	stool	forward	/data03/bio/rogachev_human/stool/002_S20_R1_001.fastq.gz	002	NUC_adult	NUC_adult
 002	CTCTCTACTATCCTCT	TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG	stool	reverse	/data03/bio/rogachev_human/stool/002_S20_R2_001.fastq.gz	002	NUC_adult	NUC_adult
 004	CTCTCTACTATCCTCT	TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG	stool	forward	/data03/bio/rogachev_human/stool/004_S21_R1_001.fastq.gz	004	NUC_adult	NUC_adult
