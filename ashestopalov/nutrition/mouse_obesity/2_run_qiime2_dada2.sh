@@ -92,7 +92,7 @@ log Summarize statistics
 qiime feature-table summarize \
     --i-table "${QIIME2_DIR}dada2/dada2_frequency_table.qza"\
     --o-visualization "${QIIME2_DIR}visualizations/dada2_frequency_table.qzv" \
-    --m-sample-metadata-file "${METADATA_QZV}" \
+    --m-sample-metadata-file "${METADATA_QZA}" \
     --verbose \
     |& tee "${LOG_DIR}feature-table summarize.log"
 
@@ -133,7 +133,7 @@ qiime metadata tabulate \
 log Make prokaryotic profile
 
 qiime taxa barplot \
-    --m-metadata-file "${METADATA_QZV}" \
+    --m-metadata-file "${METADATA_TSV}" \
     --i-table "${QIIME2_DIR}dada2/dada2_frequency_table.qza" \
     --i-taxonomy "${QIIME2_DIR}taxonomy/classified_taxonomy.qza" \
     --o-visualization "${QIIME2_DIR}visualizations/taxonomy_barplots.qzv" \
@@ -230,7 +230,7 @@ log Annotate biom with taxonomy data
 biom add-metadata \
     --sc-separated "taxonomy" \
     --observation-metadata-fp "${TAXA_REFERENCE_HEADER}" \
-    --sample-metadata-fp "${METADATA_QZV}" \
+    --sample-metadata-fp "${METADATA_TSV}" \
     --input-fp "${QIIME2_DIR}bioms/feature-table.biom" \
     --output-fp "${QIIME2_DIR}bioms/OTUs_with_taxa.biom" \
     |& tee "${LOG_DIR}biom add-metadata.log"
@@ -335,7 +335,7 @@ rm -rf "${QIIME2_DIR}phylogenetic_core_metrics/"
 qiime diversity core-metrics-phylogenetic \
     --i-phylogeny "${QIIME2_DIR}rooted_trees/rooted_tree.qza" \
     --i-table "${QIIME2_DIR}dada2/dada2_frequency_table.qza" \
-    --m-metadata-file "${METADATA_QZV}" \
+    --m-metadata-file "${METADATA_TSV}" \
     --output-dir "${QIIME2_DIR}phylogenetic_core_metrics/" \
     --p-n-jobs-or-threads "${NPROC}" \
     --p-sampling-depth 10 \
@@ -360,20 +360,20 @@ log Visualize alpha diversity
 
 qiime diversity alpha-group-significance \
     --i-alpha-diversity "${QIIME2_DIR}phylogenetic_core_metrics/faith_pd_vector.qza" \
-    --m-metadata-file "${METADATA_QZV}" \
+    --m-metadata-file "${METADATA_TSV}" \
     --o-visualization "${QIIME2_DIR}visualizations/alpha_faith_pd_group_significance.qzv" \
     --verbose \
     |& tee "${LOG_DIR}diversity alpha-group-significance faith_pd_vector.log"
 
 qiime diversity alpha-group-significance \
     --i-alpha-diversity "${QIIME2_DIR}phylogenetic_core_metrics/evenness_vector.qza" \
-    --m-metadata-file "${METADATA_QZV}" \
+    --m-metadata-file "${METADATA_TSV}" \
     --o-visualization "${QIIME2_DIR}visualizations/alpha_evenness_group_significance.qzv" \
     --verbose \
     |& tee "${LOG_DIR}diversity alpha-group-significance evenness_vector.log"
 
 qiime diversity alpha-rarefaction \
-    --m-metadata-file "${METADATA_QZV}" \
+    --m-metadata-file "${METADATA_TSV}" \
     --i-table "${QIIME2_DIR}dada2/dada2_frequency_table.qza" \
     --i-phylogeny "${QIIME2_DIR}rooted_trees/rooted_tree.qza" \
     --o-visualization "${QIIME2_DIR}visualizations/alpha_rarefaction.qzv" \
@@ -387,7 +387,7 @@ log Visualize beta diversity
 
 qiime diversity beta-group-significance \
     --i-distance-matrix "${QIIME2_DIR}phylogenetic_core_metrics/unweighted_unifrac_distance_matrix.qza" \
-    --m-metadata-file "${METADATA_QZV}" \
+    --m-metadata-file "${METADATA_TSV}" \
     --m-metadata-column "SampleSource" \
     --o-visualization "${QIIME2_DIR}visualizations/beta_unweighted_unifrac_SampleSource_significance.qzv" \
     --p-pairwise \
@@ -396,7 +396,7 @@ qiime diversity beta-group-significance \
 
 qiime diversity beta-group-significance \
     --i-distance-matrix "${QIIME2_DIR}phylogenetic_core_metrics/unweighted_unifrac_distance_matrix.qza" \
-    --m-metadata-file "${METADATA_QZV}" \
+    --m-metadata-file "${METADATA_TSV}" \
     --m-metadata-column "${GROUPING_COLUMN_NAME}" \
     --o-visualization "${QIIME2_DIR}visualizations/beta_unweighted_unifrac_${GROUPING_COLUMN_NAME}_significance.qzv" \
     --p-pairwise \
@@ -405,7 +405,7 @@ qiime diversity beta-group-significance \
 
 qiime emperor plot \
     --i-pcoa "${QIIME2_DIR}phylogenetic_core_metrics/unweighted_unifrac_pcoa_results.qza" \
-    --m-metadata-file "${METADATA_QZV}" \
+    --m-metadata-file "${METADATA_TSV}" \
     --o-visualization "${QIIME2_DIR}visualizations/unweighted-unifrac-emperor.qzv" \
     --verbose \
     |& tee "${LOG_DIR}emperor plot.log"
@@ -418,7 +418,7 @@ mkdir -p "${QIIME2_DIR}differential_abundances/"
 
 qiime feature-table filter-samples \
     --i-table "${QIIME2_DIR}dada2/dada2_frequency_table.qza" \
-    --m-metadata-file "${METADATA_QZV}" \
+    --m-metadata-file "${METADATA_TSV}" \
     --o-filtered-table "${QIIME2_DIR}differential_abundances/source_features_table.qza" \
     --verbose \
     |& tee "${LOG_DIR}feature-table filter-samples.log"
@@ -431,7 +431,7 @@ qiime composition add-pseudocount \
 
 qiime composition ancom \
     --i-table "${QIIME2_DIR}differential_abundances/pseudocounted_features_table.qza" \
-    --m-metadata-file "${METADATA_QZV}" \
+    --m-metadata-file "${METADATA_TSV}" \
     --m-metadata-column "${GROUPING_COLUMN_NAME}" \
     --o-visualization "${QIIME2_DIR}visualizations/ancom_${GROUPING_COLUMN_NAME}.qzv" \
     --verbose \
@@ -461,7 +461,7 @@ qiime composition add-pseudocount \
 
 qiime composition ancom \
     --i-table "${QIIME2_DIR}collapsed_differential_abundances/collapsed_pseudocounted_features_table.qza" \
-    --m-metadata-file "${METADATA_QZV}" \
+    --m-metadata-file "${METADATA_TSV}" \
     --m-metadata-column "${GROUPING_COLUMN_NAME}" \
     --o-visualization "${QIIME2_DIR}visualizations/collapsed_ancom_${GROUPING_COLUMN_NAME}.qzv" \
     |& tee "${LOG_DIR}composition ancom collapsed.log"
