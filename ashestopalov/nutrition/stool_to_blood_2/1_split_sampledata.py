@@ -51,7 +51,7 @@ def split_metadata_by_sample_group(
         ],
         axis=0,
         sort=False
-    )
+    ).drop_duplicates("#SampleID")
     dump_tsv(
         group_meta_data_df,
         os.path.join(output_dir, f"qiime2_meta_data-{sample_group}.tsv"),
