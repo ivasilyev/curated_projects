@@ -921,10 +921,10 @@ sample-id,absolute-filepath,direction
 99b,/data03/bio/rogachev_human/blood/99b_S30_R2_001.fastq.gz,reverse
 9B,/data03/bio/rogachev_human/blood/9B_S95_R1_001.fastq.gz,forward
 9B,/data03/bio/rogachev_human/blood/9B_S95_R2_001.fastq.gz,reverse
-01kb,/data03/bio/rogachev_human/blood/KIb_S111_R1_001.fastq.gz,forward
-01kb,/data03/bio/rogachev_human/blood/KIb_S111_R2_001.fastq.gz,reverse
-02kb,/data03/bio/rogachev_human/blood/KIIb_S82_R1_001.fastq.gz,forward
-02kb,/data03/bio/rogachev_human/blood/KIIb_S82_R2_001.fastq.gz,reverse
+9998b,/data03/bio/rogachev_human/blood/KIb_S111_R1_001.fastq.gz,forward
+9998b,/data03/bio/rogachev_human/blood/KIb_S111_R2_001.fastq.gz,reverse
+9999b,/data03/bio/rogachev_human/blood/KIIb_S82_R1_001.fastq.gz,forward
+9999b,/data03/bio/rogachev_human/blood/KIIb_S82_R2_001.fastq.gz,reverse
 002,/data03/bio/rogachev_human/stool/002_S20_R1_001.fastq.gz,forward
 002,/data03/bio/rogachev_human/stool/002_S20_R2_001.fastq.gz,reverse
 004,/data03/bio/rogachev_human/stool/004_S21_R1_001.fastq.gz,forward
