@@ -92,7 +92,7 @@ log Summarize statistics
 qiime feature-table summarize \
     --i-table "${QIIME2_DIR}dada2/dada2_frequency_table.qza"\
     --o-visualization "${QIIME2_DIR}visualizations/dada2_frequency_table.qzv" \
-    --m-sample-metadata-file "${METADATA_QZA}" \
+    --m-sample-metadata-file "${METADATA_TSV}" \
     --verbose \
     |& tee "${LOG_DIR}feature-table summarize.log"
 
