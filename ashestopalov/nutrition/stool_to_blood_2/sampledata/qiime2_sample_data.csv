@@ -924,7 +924,7 @@ sample-id,absolute-filepath,direction
 KIb,/data03/bio/rogachev_human/blood/KIb_S111_R1_001.fastq.gz,forward
 KIb,/data03/bio/rogachev_human/blood/KIb_S111_R2_001.fastq.gz,reverse
 KIIb,/data03/bio/rogachev_human/blood/KIIb_S82_R1_001.fastq.gz,forward
-KIIb,/data03/bio/rogachev_human/blood/KIIb_S8KIIb2_R2_001.fastq.gz,reverse
+KIIb,/data03/bio/rogachev_human/blood/KIIb_S82_R2_001.fastq.gz,reverse
 002,/data03/bio/rogachev_human/stool/002_S20_R1_001.fastq.gz,forward
 002,/data03/bio/rogachev_human/stool/002_S20_R2_001.fastq.gz,reverse
 004,/data03/bio/rogachev_human/stool/004_S21_R1_001.fastq.gz,forward
