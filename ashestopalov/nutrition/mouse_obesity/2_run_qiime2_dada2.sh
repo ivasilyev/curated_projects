@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
+export LINE="======================================================================================"
+
 function log {
-    echo "[$(date '+%d-%m-%Y %H:%M:%S.%N')] $@"
+    printf "\n${LINE}\n\n[$(date '+%d-%m-%Y %H:%M:%S.%N')][QIIME2] $@\n\n${LINE}\n\n"
 }
 
 # Required variables begin
@@ -324,9 +326,6 @@ biom convert \
 
 
 
-# The first 2 lines are '# Constructed from biom file' and header
-export DENOISED_SAMPLES=$(( $(wc -l "${QIIME2_DIR}dada2/feature-table.tsv" | awk '{ print $1 }') - 2 ))
-
 log Analyze the core diversity using the phylogenetic pipeline
 
 # '--output-dir' must not exist!
@@ -371,6 +370,9 @@ qiime diversity alpha-group-significance \
     --o-visualization "${QIIME2_DIR}visualizations/alpha_evenness_group_significance.qzv" \
     --verbose \
     |& tee "${LOG_DIR}diversity alpha-group-significance evenness_vector.log"
+
+# The first 2 lines are '# Constructed from biom file' and header
+export DENOISED_SAMPLES=$(( $(wc -l "${QIIME2_DIR}dada2/feature-table.tsv" | awk '{ print $1 }') - 2 ))
 
 qiime diversity alpha-rarefaction \
     --m-metadata-file "${METADATA_TSV}" \

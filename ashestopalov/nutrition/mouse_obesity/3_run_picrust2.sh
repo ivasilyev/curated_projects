@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
+export LINE="======================================================================================"
+
 function log {
-    echo "[$(date '+%d-%m-%Y %H:%M:%S.%N')] $@"
+    # The PICRUSt2 docker image shell does mot have an alias for nanoseconds
+    printf "\n${LINE}\n\n[$(date '+%d-%m-%Y %H:%M:%S')][PICRUSt2] $@\n\n${LINE}\n\n"
 }
 
 # Required variables begin

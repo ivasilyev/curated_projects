@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
+export LINE="======================================================================================"
+
 function log {
-    echo "[$(date '+%d-%m-%Y %H:%M:%S.%N')] $@"
+    printf "\n${LINE}\n\n[$(date '+%d-%m-%Y %H:%M:%S.%N')][Pipeline] $@\n\n${LINE}\n\n"
 }
 
 
