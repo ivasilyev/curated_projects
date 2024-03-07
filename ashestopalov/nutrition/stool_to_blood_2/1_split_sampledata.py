@@ -27,6 +27,8 @@ def split_metadata_by_sample_group(
     :param output_dir:
     :return:
     """
+    print(sample_group)
+
     metadata_sample_df = metadata_df.drop([0], axis=0)
 
     group_sample_df = metadata_sample_df.loc[
@@ -63,14 +65,9 @@ def split_metadata_by_sample_group(
         SAMPLE_DATA_COLUMN_DICT.keys()
     ]
     group_sample_data_df = group_sample_data_df.rename(columns=SAMPLE_DATA_COLUMN_DICT)
-    group_sample_data_df.to_csv(
-        os.path.join(
-            output_dir,
-            f"qiime2_sample_data-{sample_group}.csv"
-        ),
-        sep=",",
-        index=False
-    )
+    group_sample_data_file = os.path.join(output_dir, f"qiime2_sample_data-{sample_group}.csv")
+    print(group_sample_data_file)
+    group_sample_data_df.to_csv(group_sample_data_file, sep=",", index=False)
 
 
 def split_metadata(main_metadata_file: str, output_dir: str):
