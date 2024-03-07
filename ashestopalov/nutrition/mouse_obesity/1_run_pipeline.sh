@@ -159,34 +159,35 @@ find "${ROOT_DIR}" \
         -o -name "pred_metagenome_contrib.legacy.tsv" \
         -o -name "OTUs_with_taxa.tsv" \
     \) -print0 \
-    | xargs \
-        -0 \
-        --max-procs "$(nproc)" \
-        -I "{}" \
-            bash -c '
-                export SRC_FILE="{}";
-                ln \
-                    --symbolic \
-                    --verbose \
-                    "${SRC_FILE}" \
-                    "${RESULT_DIR}$(basename "${SRC_FILE}")";
-            '
+| xargs \
+    -0 \
+    --max-procs "$(nproc)" \
+    -I "{}" \
+        bash -c '
+            export SRC_FILE="{}";
+            export DST_FILE="${RESULT_DIR}$(basename "${SRC_FILE}")";
+            echo "Copy \"${SRC_FILE}\" to \"${DST_FILE}\"";
+            cp \
+                "${SRC_FILE}" \
+                "${DST_FILE}";
+        '
+
 find "${ROOT_DIR}" \
     -type f \
     -name "pred_metagenome_unstrat_described.tsv" \
     -print0 \
-    | xargs \
-        -0 \
-        --max-procs "$(nproc)" \
-        -I "{}" \
-            bash -c '
-                export SRC_FILE="{}";
-                ln \
-                    --symbolic \
-                    --verbose \
-                    "${SRC_FILE}" \
-                    "${RESULT_DIR}$(basename "$(dirname "${SRC_FILE}")")_$(basename "${SRC_FILE}")";
-            '
+| xargs \
+    -0 \
+    --max-procs "$(nproc)" \
+    -I "{}" \
+        bash -c '
+            export SRC_FILE="{}";
+            export DST_FILE="${RESULT_DIR}$(basename "$(dirname "${SRC_FILE}")")_$(basename "${SRC_FILE}")";
+            echo "Copy \"${SRC_FILE}\" to \"${DST_FILE}\"";
+            cp \
+                "${SRC_FILE}" \
+                "${DST_FILE}";
+        '
 
 
 
