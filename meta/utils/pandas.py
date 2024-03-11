@@ -7,7 +7,11 @@ import numpy as np
 import pandas as pd
 import joblib as jb
 from scipy import stats
-from collections.abc import Callable, Iterable
+from collections.abc import (
+    Callable,
+    Iterable,
+    Mapping,
+)
 
 
 def load_tsv(table, **kwargs):
@@ -123,8 +127,17 @@ def deduplicate_df_by_row_merging(df: pd.DataFrame, on: str, sep: str = ";"):
     ).sort_values(on)
 
 
-def concat(dfs: list, on: str, axis: int = 0, how: str = "outer", columns_name: str = "",
-           set_index: bool = True, reset_index: bool = True, **kwargs):
+def concat(
+        dfs: Iterable[pd.Series | pd.DataFrame] | Mapping[pd.Series | pd.DataFrame],
+        on,
+        axis: int = 0,
+        how: str = "outer",
+        columns_name: str = "",
+        set_index: bool = True,
+        reset_index: bool = True,
+        fillna=None,
+        **kwargs
+):
     assert all(isinstance(i, pd.DataFrame) for i in dfs)
     _dfs = list(dfs)
     if set_index:
@@ -132,8 +145,10 @@ def concat(dfs: list, on: str, axis: int = 0, how: str = "outer", columns_name: 
     out = pd.concat(
         _dfs, join=how, axis=axis, **kwargs
     ).rename_axis(index=on, columns=columns_name).sort_index()
+    if fillna is not None:
+        out = out.fillna(fillna)
     if reset_index:
-        return out.reset_index()
+        out = out.reset_index()
     return out
 
 
