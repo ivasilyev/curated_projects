@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import joblib as jb
 from scipy import stats
-from collections.abc import (
+from typing import (
     Callable,
     Hashable,
     Iterable,
