@@ -2,15 +2,19 @@
 # -*- coding: utf-8 -*-
 
 
-def single_core_queue(func, queue) -> list:
+from joblib import delayed, Parallel
+from multiprocessing import cpu_count, Pool
+from typing import Callable, Iterable
+
+
+def single_core_queue(func: Callable, queue: Iterable) -> list:
     return [func(i) for i in queue]
 
 
-def multi_core_queue(func, queue: list, processes: int = 0, async_: bool = False) -> list:
-    import multiprocessing as mp
+def multi_core_queue(func: Callable, queue: Iterable, processes: int = 0, async_: bool = False) -> list:
     if processes == 0:
-        processes = mp.cpu_count()
-    pool = mp.Pool(processes=processes)
+        processes = cpu_count()
+    pool = Pool(processes=processes)
     if async_:
         result = pool.map_async(func, queue)
     else:
@@ -20,6 +24,11 @@ def multi_core_queue(func, queue: list, processes: int = 0, async_: bool = False
     if async_:
         return result.get()
     return result
+
+
+def multi_core_queue2(func: Callable, queue: Iterable):
+    out = Parallel(n_jobs=-1)(delayed(func)(i) for i in queue)
+    return out
 
 
 def wrapper(d: dict):
