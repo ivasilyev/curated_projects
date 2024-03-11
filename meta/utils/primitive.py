@@ -3,6 +3,7 @@
 
 import re
 import json
+from typing import Dict, List
 
 
 def remove_empty_values(input_list):
@@ -88,4 +89,16 @@ def split_list_into_chunks_of_size(x: list, chunk_size: int = 10):
             x = x[chunk_size:]
         else:
             break
+    return out
+
+
+def dicts_list_to_lists_dict(x: List[Dict]):
+    out = dict()
+    for d in x:
+        if d is None:
+            continue
+        for k, v in d.items():
+            if out.get(k) is None:
+                out[k] = list()
+            out[k].append(v)
     return out
