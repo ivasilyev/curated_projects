@@ -9,8 +9,8 @@ import joblib as jb
 from scipy import stats
 from collections.abc import (
     Callable,
+    Hashable,
     Iterable,
-    Mapping,
 )
 
 
@@ -128,8 +128,8 @@ def deduplicate_df_by_row_merging(df: pd.DataFrame, on: str, sep: str = ";"):
 
 
 def concat(
-        dfs: Iterable[pd.Series | pd.DataFrame] | Mapping[pd.Series | pd.DataFrame],
-        on,
+        dfs: Iterable[pd.DataFrame],
+        on: Hashable,
         axis: int = 0,
         how: str = "outer",
         columns_name: str = "",
