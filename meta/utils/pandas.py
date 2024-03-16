@@ -9,7 +9,6 @@ import joblib as jb
 from scipy import stats
 from typing import (
     Callable,
-    Hashable,
     Iterable,
     List,
 )
@@ -136,15 +135,15 @@ def deduplicate_df_by_row_merging(df: pd.DataFrame, on: str, sep: str = ";"):
 
 
 def concat(
-        dfs: Iterable[pd.DataFrame],
-        on: Hashable,
-        axis: int = 0,
-        how: str = "outer",
-        columns_name: str = "",
-        set_index: bool = True,
-        reset_index: bool = True,
-        fillna=None,
-        **kwargs
+    dfs: Iterable[pd.DataFrame],
+    on,
+    axis: int = 0,
+    how: str = "outer",
+    columns_name: str = "",
+    set_index: bool = True,
+    reset_index: bool = True,
+    fillna=None,
+    **kwargs
 ):
     assert all(isinstance(i, pd.DataFrame) for i in dfs)
     _dfs = list(dfs)
