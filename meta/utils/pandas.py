@@ -11,6 +11,7 @@ from typing import (
     Callable,
     Hashable,
     Iterable,
+    List,
 )
 
 
@@ -37,13 +38,20 @@ def dump_tsv(
     _df.to_csv(table_file, encoding="utf-8", sep="\t", index=False, header=True)
 
 
-def dict2pd_series(dictionary, sort_keys: bool = False):
-    out = pd.Series(dtype="object")
+def dict2pd_series(
+    dictionary: dict,
+    dtype: str = "object",
+    name: str = "",
+    sort_keys: bool = False
+):
+    out = pd.Series(dtype=dtype)
     keys = list(dictionary.keys())
     if sort_keys:
         keys = sorted(keys)
     for key in keys:
         out.at[key] = dictionary[key]
+    if len(name) > 0:
+        out.name = name
     return out
 
 
