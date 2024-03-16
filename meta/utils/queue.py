@@ -26,8 +26,8 @@ def multi_core_queue(func: Callable, queue: Iterable, processes: int = 0, async_
     return result
 
 
-def multi_core_queue2(func: Callable, queue: Iterable):
-    out = Parallel(n_jobs=-1)(delayed(func)(i) for i in queue)
+def multi_core_queue2(func: Callable, queue: Iterable, **kwargs):
+    out = Parallel(n_jobs=-1)(delayed(func)(i, **kwargs) for i in queue)
     return out
 
 
