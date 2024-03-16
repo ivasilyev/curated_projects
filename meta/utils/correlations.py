@@ -35,7 +35,7 @@ def mp_correlation_count(sub_df: pd.DataFrame, correlation_function = stats.spea
     d = dict()
     if sub_df.shape[1] > 2:
         raise ValueError(f"Too much columns: {sub_df.columns}")
-    d["feature_1"], d["feature_2"] = sub_df.columns
+    d["x"], d["y"] = sub_df.columns
     d.update(dict(
         is_correlation_valid=False,
         p_value=0,
