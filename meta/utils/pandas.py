@@ -78,6 +78,46 @@ def apply_mp_function_to_df(
     return out_df
 
 
+def apply_mp_pairwise_function_to_df(
+    func: Callable,
+    df: pd.DataFrame,
+    columns_name: str = "",
+    value_column: str = "value",
+    **kwargs
+):
+    from itertools import combinations
+    from warnings import catch_warnings, filterwarnings
+    from meta.utils.diversity import wrapper_for_pairwise_function
+    from meta.utils.queue import multi_core_queue2
+
+    def _mp_apply_pairwise_function(combination: List[str]):
+        # Distance functions may produce a lot of warnings
+        with catch_warnings():
+            filterwarnings("ignore")
+            value = wrapper_for_pairwise_function(
+                func=func,
+                x=df.loc[combination, :].values.tolist(),
+                **kwargs,
+            )
+        d = {
+            "sample_1": combination[0],
+            "sample_2": combination[-1],
+            value_column: value
+        }
+        return dict2pd_series(d, dtype="float64")
+
+    if len(columns_name) == 0:
+        columns_name = df.index.name
+    pairwise_out = multi_core_queue2(
+        _mp_apply_pairwise_function,
+        combinations(df.index, 2)
+    )
+    out_df = pd.DataFrame(pairwise_out).set_index(
+        ["sample_1", "sample_2"]
+    ).rename_axis(columns=columns_name)
+    return out_df
+
+
 def normalize_series(s: pd.Series):
     return 100 * s / s.sum()
 
