@@ -82,7 +82,7 @@ def apply_mp_pairwise_function_to_df(
     func: Callable,
     df: pd.DataFrame,
     columns_name: str = "",
-    value_column: str = "value",
+    value_column_name: str = "value",
     **kwargs
 ):
     from itertools import combinations
@@ -100,9 +100,9 @@ def apply_mp_pairwise_function_to_df(
                 **kwargs,
             )
         d = {
-            "sample_1": combination[0],
-            "sample_2": combination[-1],
-            value_column: value
+            "x": combination[0],
+            "y": combination[-1],
+            value_column_name: value
         }
         return dict2pd_series(d, dtype="float64")
 
@@ -113,7 +113,7 @@ def apply_mp_pairwise_function_to_df(
         combinations(df.index, 2)
     )
     out_df = pd.DataFrame(pairwise_out).set_index(
-        ["sample_1", "sample_2"]
+        ["x", "y"]
     ).rename_axis(columns=columns_name)
     return out_df
 
