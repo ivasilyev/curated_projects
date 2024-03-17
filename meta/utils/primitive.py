@@ -92,7 +92,7 @@ def split_list_into_chunks_of_size(x: list, chunk_size: int = 10):
     return out
 
 
-def dicts_list_to_lists_dict(x: List[Dict]):
+def dicts_list_to_lists_dict(x: List[Dict], truncate: int = None):
     out = dict()
     for d in x:
         if d is None:
@@ -101,4 +101,6 @@ def dicts_list_to_lists_dict(x: List[Dict]):
             if out.get(k) is None:
                 out[k] = list()
             out[k].append(v)
+    if truncate is not None and isinstance(truncate, int):
+        out = {k: v[truncate] for k, v in out.items()}
     return out
