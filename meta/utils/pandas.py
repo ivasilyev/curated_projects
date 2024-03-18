@@ -70,9 +70,13 @@ def df_to_7z(
         f.writef(df_stream, arcname=f"{table_basename}.csv")
 
 
-def z7_to_df(archive: Union[BinaryIO, str, Path], **kwargs) -> pd.DataFrame:
+def z7_to_df(archive: Union[BinaryIO, bytes, Path, str], **kwargs) -> pd.DataFrame:
+    from io import BytesIO
     from py7zr import SevenZipFile
     from meta.utils.primitive import get_first_dict_value
+
+    if isinstance(archive, bytes):
+        archive = BytesIO(archive)
 
     with SevenZipFile(archive, mode="r") as f:
         # {'basename': io.BytesIO()}
