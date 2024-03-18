@@ -6,11 +6,14 @@ import traceback
 import numpy as np
 import pandas as pd
 import joblib as jb
+from pathlib import Path
 from scipy import stats
 from typing import (
+    BinaryIO,
     Callable,
     Iterable,
     List,
+    Union,
 )
 
 
@@ -35,6 +38,51 @@ def dump_tsv(
     if reset_index:
         _df.reset_index(inplace=True)
     _df.to_csv(table_file, encoding="utf-8", sep="\t", index=False, header=True)
+
+
+def df_to_7z(df: pd.DataFrame, archive: Union[BinaryIO, str, Path], **kwargs):
+    from io import BytesIO
+    from py7zr import SevenZipFile, FILTER_LZMA2
+    from meta.utils.file_system import filename_only
+
+    os.makedirs(os.path.dirname(archive), exist_ok=True)
+    filters = [{"id": FILTER_LZMA2, "preset": 9}]
+    with SevenZipFile(archive, mode="w", filters=filters) as f:
+        df_stream = BytesIO()
+        # CSV is more space-efficient
+        df.to_csv(
+            df_stream,
+            encoding="utf-8",
+            header=True,
+            index=False,
+            quotechar='"',
+            sep=",",
+            **kwargs
+        )
+        df_stream.seek(0)
+        f.writef(df_stream, arcname="table.csv")
+
+
+def z7_to_df(archive: Union[BinaryIO, str, Path], **kwargs) -> pd.DataFrame:
+    from py7zr import SevenZipFile
+    from meta.utils.primitive import get_first_dict_value
+
+    with SevenZipFile(archive, mode="r") as f:
+        # {'basename': io.BytesIO()}
+        files_dict = f.readall()
+        df_stream = get_first_dict_value(files_dict)
+        df_stream.seek(0)
+        df = pd.read_csv(
+            df_stream,
+            encoding="utf-8",
+            engine="python",
+            header=0,
+            quotechar='"',
+            sep=",",
+            **kwargs
+        )
+        del df_stream
+    return df
 
 
 def dict2pd_series(
