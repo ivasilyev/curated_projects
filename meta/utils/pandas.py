@@ -40,13 +40,17 @@ def dump_tsv(
     _df.to_csv(table_file, encoding="utf-8", sep="\t", index=False, header=True)
 
 
-def df_to_7z(df: pd.DataFrame, archive: Union[BinaryIO, str, Path], table_name: str = "", **kwargs):
+def df_to_7z(
+    df: pd.DataFrame, archive: Union[BinaryIO, str, Path],
+    table_basename: str = "",
+    **kwargs
+):
     from io import BytesIO
     from py7zr import SevenZipFile, FILTER_LZMA2
     from meta.utils.date_time import get_timestamp
 
-    if len(table_name) == 0:
-        table_name = get_timestamp()
+    if len(table_basename) == 0:
+        table_basename = get_timestamp()
 
     os.makedirs(os.path.dirname(archive), exist_ok=True)
     filters = [{"id": FILTER_LZMA2, "preset": 9}]
@@ -63,7 +67,7 @@ def df_to_7z(df: pd.DataFrame, archive: Union[BinaryIO, str, Path], table_name: 
             **kwargs
         )
         df_stream.seek(0)
-        f.writef(df_stream, arcname=f"{table_name}.csv")
+        f.writef(df_stream, arcname=f"{table_basename}.csv")
 
 
 def z7_to_df(archive: Union[BinaryIO, str, Path], **kwargs) -> pd.DataFrame:
