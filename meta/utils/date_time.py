@@ -2,7 +2,7 @@
 from datetime import datetime
 
 
-def get_timestamp(x=None, fmt: str = "%Y-%m-%d-%H-%M-%S"):
+def get_timestamp(x=None, fmt: str = "%Y-%m-%d-%H-%M-%S-%f"):
     if x is None:
         return datetime.now().strftime(fmt)
     return datetime.strftime(x, fmt)
