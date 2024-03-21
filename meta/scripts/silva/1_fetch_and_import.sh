@@ -47,7 +47,7 @@ mkdir \
     --verbose \
     "${REFERENCE_DIR}"
 
-chmod -R "${REFERENCE_DIR}"
+chmod -R 0777 "${REFERENCE_DIR}"
 
 cd "${REFERENCE_DIR}"
 
