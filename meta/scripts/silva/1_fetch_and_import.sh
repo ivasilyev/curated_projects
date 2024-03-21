@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Required variables start
+export REFERENCE_NAME="${REFERENCE_NAME}"
 export REFERENCE_ROOT_DIR="$(realpath "${REFERENCE_ROOT_DIR}")/"
+export REFERENCE_VERSION="${REFERENCE_VERSION}"
 # Required variables end
 
-export REFERENCE_NAME="SILVA"
-export REFERENCE_VERSION="138.1"
 
 export SCRIPT_FILE="/tmp/script.sh"
 
