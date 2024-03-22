@@ -12,7 +12,6 @@ export REFERENCE_VERSION="${REFERENCE_VERSION}"
 # Required variables end
 
 export LOG_DIR="${REFERENCE_DIR}logs/import/"
-export _START_TIME=$(date +'%s')
 export _LOG_BAR="=========================================="
 export _LOG_COUNTER=1
 
@@ -197,5 +196,3 @@ chmod \
     "${REFERENCE_DIR}"
 
 echo "The SILVA version ${REFERENCE_VERSION} database assets were imported as QIIME2 artifacts into '${REFERENCE_DIR}'"
-
-echo "Elapsed time: $(($(date +'%s') - ${_START_TIME})) s"

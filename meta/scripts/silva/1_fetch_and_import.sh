@@ -7,7 +7,6 @@ export REFERENCE_VERSION="${REFERENCE_VERSION}"
 # Required variables end
 
 export LOG_DIR="${REFERENCE_DIR}logs/pipeline/"
-export _START_TIME=$(date +'%s')
 export _LOG_BAR="=========================================="
 export _LOG_COUNTER=1
 
@@ -113,5 +112,3 @@ chmod \
     --recursive \
     0777 \
     "${REFERENCE_DIR}"
-
-echo "Elapsed time: $(($(date +'%s') - ${_START_TIME})) s"
