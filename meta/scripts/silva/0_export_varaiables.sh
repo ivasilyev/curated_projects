@@ -13,4 +13,10 @@ REFERENCE_NAME="${REFERENCE_NAME}" \
 REFERENCE_VERSION="${REFERENCE_VERSION}" \
 bash "${SCRIPT_FILE}"
 
+chmod \
+    --verbose \
+    --recursive \
+    0777 \
+    "${REFERENCE_ROOT_DIR}"
+
 rm -f "${SCRIPT_FILE}"

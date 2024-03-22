@@ -8,15 +8,13 @@ export REFERENCE_VERSION="${REFERENCE_VERSION}"
 export RV="$(echo "${REFERENCE_VERSION}" | sed 's|\.|_|g')"
 export LOG_DIR="${REFERENCE_DIR}logs/fetch/"
 export _START_TIME=$(date +'%s')
-export _BAR="------------------------------------------"
-export _ITERATION=0
+export _LOG_BAR="------------------------------------------"
+export _LOG_COUNTER=1
 
 
 function log() {
-    _ITERATION=$((_ITERATION+1))
-    printf "\n\n${_BAR}\n\n"
-    echo "${_ITERATION}. $@"
-    printf "\n\n${_BAR}\n\n"
+    printf "\n${_LOG_BAR}\n\n[$(date '+%d-%m-%Y %H:%M:%S.%N')][Fetch][OP#${_LOG_COUNTER}] $@\n\n${_LOG_BAR}\n\n"
+    _LOG_COUNTER=$((_LOG_COUNTER + 1))
 }
 
 
@@ -72,6 +70,12 @@ find "${REFERENCE_DIR}" \
             rm -f "${FILE_NAME}";
         '
 
-chmod -R 0777 "${REFERENCE_DIR}";
+chmod \
+    --verbose \
+    --recursive \
+    0777 \
+    "${REFERENCE_DIR}"
 
 echo "The SILVA version ${REFERENCE_VERSION} database assets were downloaded into '${REFERENCE_DIR}'"
+
+echo "Elapsed time: $(($(date +'%s') - ${_START_TIME})) s"

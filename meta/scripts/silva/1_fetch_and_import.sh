@@ -6,6 +6,17 @@ export REFERENCE_ROOT_DIR="$(realpath "${REFERENCE_ROOT_DIR}")/"
 export REFERENCE_VERSION="${REFERENCE_VERSION}"
 # Required variables end
 
+export LOG_DIR="${REFERENCE_DIR}logs/pipeline/"
+export _START_TIME=$(date +'%s')
+export _LOG_BAR="------------------------------------------"
+export _LOG_COUNTER=1
+
+
+function log() {
+    printf "\n${_LOG_BAR}\n\n[$(date '+%d-%m-%Y %H:%M:%S.%N')][Pipeline][OP#${_LOG_COUNTER}] $@\n\n${_LOG_BAR}\n\n"
+    _LOG_COUNTER=$((_LOG_COUNTER + 1))
+}
+
 
 export SCRIPT_FILE="/tmp/script.sh"
 
@@ -96,3 +107,11 @@ docker run \
     "${IMG}" bash "${SCRIPT_FILE}"
 
 rm -f "${SCRIPT_FILE}"
+
+chmod \
+    --verbose \
+    --recursive \
+    0777 \
+    "${REFERENCE_DIR}"
+
+echo "Elapsed time: $(($(date +'%s') - ${_START_TIME})) s"
