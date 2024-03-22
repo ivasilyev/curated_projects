@@ -8,7 +8,7 @@ export REFERENCE_VERSION="${REFERENCE_VERSION}"
 export RV="$(echo "${REFERENCE_VERSION}" | sed 's|\.|_|g')"
 export LOG_DIR="${REFERENCE_DIR}logs/fetch/"
 export _START_TIME=$(date +'%s')
-export _LOG_BAR="------------------------------------------"
+export _LOG_BAR="=========================================="
 export _LOG_COUNTER=1
 
 

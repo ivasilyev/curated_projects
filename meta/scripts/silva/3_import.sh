@@ -13,7 +13,7 @@ export REFERENCE_VERSION="${REFERENCE_VERSION}"
 
 export LOG_DIR="${REFERENCE_DIR}logs/import/"
 export _START_TIME=$(date +'%s')
-export _LOG_BAR="------------------------------------------"
+export _LOG_BAR="=========================================="
 export _LOG_COUNTER=1
 
 
