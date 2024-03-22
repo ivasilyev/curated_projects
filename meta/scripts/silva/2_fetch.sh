@@ -16,7 +16,7 @@ function log() {
     _ITERATION=$((_ITERATION+1))
     printf "\n\n${_BAR}\n\n"
     echo "${_ITERATION}. $@"
-    echo "${_BAR}"
+    printf "\n\n${_BAR}\n\n"
 }
 
 
@@ -55,7 +55,7 @@ for URL in \
 
 log "Unpack '${FILE_NAME}'"
 
-find "${SRC_DIR}" \
+find "${REFERENCE_DIR}" \
     -maxdepth 1 \
     -name '*.gz' \
     -type f \
@@ -69,6 +69,7 @@ find "${SRC_DIR}" \
             export BASENAME="$(basename "${FILE_NAME%.*}")";
             echo "Decompress ${FILE_NAME} to ${REFERENCE_DIR}${BASENAME}";
             zcat "${FILE_NAME}" > "${REFERENCE_DIR}${BASENAME}";
+            rm -f "${FILE_NAME}";
         '
 
 chmod -R 0777 "${REFERENCE_DIR}";
