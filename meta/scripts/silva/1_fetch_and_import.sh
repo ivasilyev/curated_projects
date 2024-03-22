@@ -80,13 +80,13 @@ docker run \
     --env SCRIPT_FILE="${SCRIPT_FILE}" \
     --net=host \
     --rm \
-    --volume "/data:/data" \
+    --volume "${REFERENCE_DIR}":"${REFERENCE_DIR}" \
     --volume "${SCRIPT_FILE}":"${SCRIPT_FILE}" \
     "${IMG}" bash "${SCRIPT_FILE}"
 
-
-
 rm -f "${SCRIPT_FILE}"
+
+
 
 curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/meta/scripts/silva/3_import.sh" \
     -o "${SCRIPT_FILE}"
@@ -102,7 +102,7 @@ docker run \
     --env SCRIPT_FILE="${SCRIPT_FILE}" \
     --net=host \
     --rm \
-    --volume "/data:/data" \
+    --volume "${REFERENCE_DIR}":"${REFERENCE_DIR}" \
     --volume "${SCRIPT_FILE}":"${SCRIPT_FILE}" \
     "${IMG}" bash "${SCRIPT_FILE}"
 
