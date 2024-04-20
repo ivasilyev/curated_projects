@@ -27,13 +27,13 @@ curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master
 
 cd "${ROOT_DIR}" || exit 1
 
-curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/mouse_obesity/1_run_pipeline.sh" \
+curl -fsSL "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/qiime2_picrust2/shell/1_run_pipeline.sh" \
     -o "${PIPELINE_SCRIPT}"
 
 ROOT_DIR="${ROOT_DIR}" \
 RAW_DIR="${RAW_DIR}" \
 SAMPLEDATA_DIR="${SAMPLEDATA_DIR}" \
 bash "${PIPELINE_SCRIPT}" \
-|& tee "${LOGS_DIR}$(basename "${PIPELINE_SCRIPT}").log"
+|& tee "${LOG_DIR}$(basename "${PIPELINE_SCRIPT}").log"
 
 # And then the whole pipeline hangs on `[09-02-2024 02:44:04.123722636] Test differential abundance with ANCOM`

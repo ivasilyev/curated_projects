@@ -81,7 +81,7 @@ ln \
 
 cd "${ROOT_DIR}" || exit 1
 
-curl -fsSL "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/mouse_obesity/1_run_pipeline.sh" \
+curl -fsSL "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/qiime2_picrust2/shell/1_run_pipeline.sh" \
     -o "${PIPELINE_SCRIPT}"
 
 ROOT_DIR="${ROOT_DIR}" \
