@@ -3,6 +3,7 @@
 import os
 import pandas as pd
 from meta.utils.pandas import load_tsv, dump_tsv
+from meta.utils.io import dump_list
 
 
 SAMPLE_DATA_COLUMN_DICT = {
@@ -12,6 +13,8 @@ SAMPLE_DATA_COLUMN_DICT = {
         "sample-id,absolute-filepath,direction".split(",")
     )
 }
+GROUP_COLUMN_NAME = "Subgroup"
+NEGATIVE_CONTROL_GROUP_NAME = "ControlNegative"
 
 
 #%%
@@ -29,10 +32,11 @@ def split_metadata_by_sample_group(
     """
     print(sample_group)
 
+    # Remove `#q2:types` row
     metadata_sample_df = metadata_df.drop([0], axis=0)
 
     group_sample_df = metadata_sample_df.loc[
-        metadata_sample_df["SampleGroup1"] == sample_group,
+        metadata_sample_df["Subgroup"].isin([sample_group, NEGATIVE_CONTROL_GROUP_NAME]),
         :
     ]
 
@@ -45,7 +49,7 @@ def split_metadata_by_sample_group(
     ]
     group_meta_data_df = pd.concat(
         [
-            pd.DataFrame(metadata_sample_df.loc[
+            pd.DataFrame(metadata_df.loc[
                 :,
                 group_meta_data_sample_df.columns
             ].iloc[0]).transpose(),
@@ -73,8 +77,15 @@ def split_metadata_by_sample_group(
 def split_metadata(main_metadata_file: str, output_dir: str):
     main_metadata_df = load_tsv(main_metadata_file)
 
-    for sample_group in set(main_metadata_df.drop([0], axis=0)["SampleGroup1"].values):
+    sample_groups = set(
+        main_metadata_df.drop([0], axis=0)[GROUP_COLUMN_NAME].values
+    )
+    _ = sample_groups.remove(NEGATIVE_CONTROL_GROUP_NAME)
+
+    for sample_group in sample_groups:
         split_metadata_by_sample_group(sample_group, main_metadata_df, output_dir)
+
+    dump_list(sample_groups, os.path.join(output_dir, "sample_groups.txt"))
 
 #%%
 
@@ -85,4 +96,8 @@ split_metadata(
 
 #%%
 
-# ! ls /data03/bio/projects/ashestopalov/nutrition/stool_to_blood_2/qiime2-picrust2-pipeline/sample_data/split
+# ! ls -lha /data03/bio/projects/ashestopalov/nutrition/stool_to_blood_2/qiime2-picrust2-pipeline/sample_data/split
+
+#%%
+
+# ! head /data03/bio/projects/ashestopalov/nutrition/stool_to_blood_2/qiime2-picrust2-pipeline/sample_data/split/qiime2_meta_data-NucChildren.tsv
