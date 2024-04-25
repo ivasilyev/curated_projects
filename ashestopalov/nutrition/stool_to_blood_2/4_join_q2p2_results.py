@@ -43,16 +43,16 @@ def join_q2p2_results(split_results_dir: str):
             ).sort_values(index_columns[-1]).set_index(index_columns)
             return {"picrust2_pathway": df}
         elif table_file == "OTUs_with_taxa.tsv":
-            index_columns = ["#OTU ID", ]
+            index_columns = ["#OTU ID", "taxonomy"]
             df = concat(
                 dfs=split_results_tables_by_basename.get(table_file),
                 on=index_columns,
                 axis=1,
                 fillna=0,
-            ).drop(["taxonomy"], axis=1).sort_values(
-                index_columns[-1]
-            ).set_index(index_columns)
+            ).sort_values(index_columns[-1]).set_index(index_columns)
             return {"qiime2_otu": df}
+
+    # %%
 
     split_results_tables = [
         i for i in
@@ -61,10 +61,18 @@ def join_q2p2_results(split_results_dir: str):
            and not i.endswith("pred_metagenome_contrib.legacy.tsv")
     ]
 
+    # split_results_tables
+
+    # %%
+
     split_results_dfs = multi_core_queue2(
-        lambda x: {os.path.basename(x): load_tsv(x)},
+        lambda x: {os.path.basename(x): load_tsv(x).sort_index(axis=1)},
         split_results_tables
     )
+
+    # split_results_dfs
+
+    # %%
 
     split_results_tables_by_basename = dicts_list_to_lists_dict(split_results_dfs)
     split_results_tables_by_basename.keys()
@@ -91,4 +99,14 @@ def join_q2p2_results(split_results_dir: str):
         for k, v in joined_dfs_dict.items()
     ]
 
+    # %%
+
+    # queue
+    # queue[0]["df"].columns.tolist()
+
+    # %%
+
     _ = multi_core_queue2(lambda x: df_to_7z(**x), queue)
+
+
+join_q2p2_results("/data03/bio/projects/ashestopalov/nutrition/stool_to_blood_2")
