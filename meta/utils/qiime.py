@@ -15,6 +15,24 @@ def fix_sample_ids(df: pd.DataFrame):
     )
 
 
+def fix_metadata(df: pd.DataFrame, sorting_column_name: str):
+    from meta.utils.pandas import sort_df_by_values_count, split_df
+    header_df, values_df = split_df(df, 1, 0)
+
+    # Aggregating values sort
+    sorted_values_df = sort_df_by_values_count(values_df, sorting_column_name)
+
+    # Change sample ID
+    fix_sample_ids(sorted_values_df)
+    fixed_df = pd.concat(
+        [header_df, values_df],
+        axis=0,
+        ignore_index=True,
+        sort=False,
+    )
+    return fixed_df
+
+
 def convert_sampledata(
     sample_data_dict: dict,
     barcode_sequence: str = "",
