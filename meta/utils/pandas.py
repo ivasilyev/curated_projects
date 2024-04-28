@@ -74,6 +74,10 @@ def z7_to_df(archive: Union[BinaryIO, bytes, Path, str], **kwargs) -> pd.DataFra
     from io import BytesIO
     from py7zr import SevenZipFile
     from meta.utils.primitive import get_first_dict_value
+    from meta.utils.web import get_page, is_url
+
+    if isinstance(archive, str) and is_url(archive):
+        archive = get_page(archive)
 
     if isinstance(archive, bytes):
         archive = BytesIO(archive)
