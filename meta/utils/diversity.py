@@ -94,6 +94,13 @@ def count_alpha_diversity(series: pd.Series, rooted_tree: TreeNode = None):
 
 
 def count_alpha_diversity_df(df: pd.DataFrame, rooted_tree: TreeNode = None):
+    """
+    :param df:
+        indexes are features,
+        columns are samples
+    :param rooted_tree:
+    :return:
+    """
     from meta.utils.pandas import apply_mp_function_to_df
     out_df = apply_mp_function_to_df(
         func=count_alpha_diversity,
@@ -117,6 +124,14 @@ def count_beta_diversity_df(
     grouping_column_name: str,
     rooted_tree: TreeNode = None
 ):
+    """
+    :param df:
+        indexes are samples,
+        columns are features
+    :param grouping_column_name:
+    :param rooted_tree:
+    :return:
+    """
     def _process(name: str, func, **kwargs):
         _out = dfgb.apply(lambda x: wrapper_for_pairwise_function(
             func=func,
