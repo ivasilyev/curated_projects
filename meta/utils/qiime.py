@@ -25,7 +25,7 @@ def fix_metadata(df: pd.DataFrame, sorting_column_name: str):
     # Change sample ID
     fix_sample_ids(sorted_values_df)
     fixed_df = pd.concat(
-        [header_df, values_df],
+        [header_df, sorted_values_df],
         axis=0,
         ignore_index=True,
         sort=False,
