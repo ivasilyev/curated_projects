@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-export ROOT_DIR="/data03/bio/projects/ashestopalov/nutrition/stool_to_blood_2/by_group/"
+export ROOT_DIR="/data03/bio/projects/ashestopalov/nutrition/stool_to_blood_2/split/"
 export RAW_DIR="/data03/bio/rogachev_human/"
-export SCRIPT_DIR="${ROOT_DIR}qiime2-picrust2-pipeline/scripts/"
-export SPLIT_DIR="${ROOT_DIR}qiime2-picrust2-pipeline/sample_data/split/"
+export SCRIPT_DIR="${ROOT_DIR}scripts/"
+export SAMPLEDATA_DIR="${ROOT_DIR}sample_data/"
 
 # sudo rm -rf "${ROOT_DIR}/qiime2-picrust2-pipeline"
 
@@ -25,6 +25,6 @@ while read GROUP_NAME
         "${GROUP_NAME}" \
         "${ROOT_DIR}" \
         "${RAW_DIR}" \
-        "${SPLIT_DIR}"
+        "${SAMPLEDATA_DIR}"
 
-    done < "${SPLIT_DIR}sample_groups.txt"
+    done < "${SAMPLEDATA_DIR}sample_groups.txt"

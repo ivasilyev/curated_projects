@@ -85,13 +85,13 @@ def split_metadata(main_metadata_file: str, output_dir: str):
     for sample_group in sample_groups:
         split_metadata_by_sample_group(sample_group, main_metadata_df, output_dir)
 
-    dump_list(sample_groups, os.path.join(output_dir, "sample_groups.txt"))
+    dump_list(list(sample_groups), os.path.join(output_dir, "sample_groups.txt"))
 
 #%%
 
 split_metadata(
     "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/stool_to_blood_2/sampledata/main_meta_data.tsv",
-    "/data03/bio/projects/ashestopalov/nutrition/stool_to_blood_2/qiime2-picrust2-pipeline/sample_data/split"
+    "/data03/bio/projects/ashestopalov/nutrition/stool_to_blood_2/split/sample_data/"
 )
 
 #%%
