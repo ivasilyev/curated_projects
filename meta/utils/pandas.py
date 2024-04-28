@@ -780,3 +780,24 @@ def annotate_and_aggregate_df(df: pd.DataFrame, annotation_df: pd.DataFrame):
         )
         out_dict[grouping_column_name] = grouped_df
     return annotated_df, out_dict
+
+
+def sort_df_by_values_count(
+    df: pd.DataFrame,
+    counting_column_name: str,
+    ascending: bool = True
+):
+    count_df = df.groupby(counting_column_name).size().sort_values(
+        ascending=ascending
+    )
+    pd.concat(
+        [
+            df.loc[
+                df[counting_column_name] == i,
+                :
+            ]
+            for i in count_df.index
+        ],
+        axis=0,
+        sort=False
+    )
