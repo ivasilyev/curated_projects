@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export ROOT_DIR="/data03/bio/projects/ashestopalov/nutrition/stool_to_blood_2/"
+export ROOT_DIR="/data03/bio/projects/ashestopalov/nutrition/stool_to_blood_2/by_group/"
 export RAW_DIR="/data03/bio/rogachev_human/"
 export SCRIPT_DIR="${ROOT_DIR}qiime2-picrust2-pipeline/scripts/"
 export SPLIT_DIR="${ROOT_DIR}qiime2-picrust2-pipeline/sample_data/split/"
