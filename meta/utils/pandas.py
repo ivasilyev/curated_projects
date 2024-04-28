@@ -801,3 +801,7 @@ def sort_df_by_values_count(
         axis=0,
         sort=False
     )
+
+
+def split_df(df: pd.DataFrame, index_or_column_number: int, axis: int):
+    return np.split(df, [index_or_column_number], axis=axis)
