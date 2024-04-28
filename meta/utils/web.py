@@ -4,6 +4,17 @@ import os
 DEFAULT_HEADER = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.19 Safari/537.36"
 
 
+def is_url(s: str):
+    from urllib.parse import urlparse
+    if not isinstance(s, str):
+        return False
+    try:
+        result = urlparse(s)
+        return all([result.scheme, result.netloc])
+    except AttributeError:
+        return False
+
+
 def get_page(url: str, header: str = DEFAULT_HEADER, empty_content_retries: int = 5):
     from requests import get
     for retry in range(empty_content_retries):
