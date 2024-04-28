@@ -790,7 +790,7 @@ def sort_df_by_values_count(
     count_df = df.groupby(counting_column_name).size().sort_values(
         ascending=ascending
     )
-    pd.concat(
+    sorted_df = pd.concat(
         [
             df.loc[
                 df[counting_column_name] == i,
@@ -801,6 +801,7 @@ def sort_df_by_values_count(
         axis=0,
         sort=False
     )
+    return sorted_df
 
 
 def split_df(df: pd.DataFrame, index_or_column_number: int, axis: int):
