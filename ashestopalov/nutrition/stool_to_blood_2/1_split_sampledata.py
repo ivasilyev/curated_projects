@@ -4,6 +4,7 @@ import os
 import pandas as pd
 from meta.utils.pandas import load_tsv, dump_tsv
 from meta.utils.io import dump_list
+from meta.utils.qiime import split_metadata
 
 
 SAMPLE_DATA_COLUMN_DICT = {
@@ -30,7 +31,7 @@ def split_metadata_by_sample_group(
     :param output_dir:
     :return:
     """
-    print(sample_group)
+    print(f"Processing '{sample_group}'")
 
     # Remove `#q2:types` row
     metadata_sample_df = metadata_df.drop([0], axis=0)
@@ -58,11 +59,9 @@ def split_metadata_by_sample_group(
         axis=0,
         sort=False
     ).drop_duplicates("#SampleID")
-    dump_tsv(
-        group_meta_data_df,
-        os.path.join(output_dir, f"qiime2_meta_data-{sample_group}.tsv"),
-        reset_index=False
-    )
+    group_meta_data_file = os.path.join(output_dir, f"qiime2_meta_data-{sample_group}.tsv")
+    dump_tsv(group_meta_data_df, group_meta_data_file, reset_index=False)
+    print(f"Saved: '{group_meta_data_file}'")
 
     group_sample_data_df = group_sample_df.loc[
         :,
@@ -70,26 +69,32 @@ def split_metadata_by_sample_group(
     ]
     group_sample_data_df = group_sample_data_df.rename(columns=SAMPLE_DATA_COLUMN_DICT)
     group_sample_data_file = os.path.join(output_dir, f"qiime2_sample_data-{sample_group}.csv")
-    print(group_sample_data_file)
+    print(f"Saved: '{group_sample_data_file}'")
     group_sample_data_df.to_csv(group_sample_data_file, sep=",", index=False)
 
 
-def split_metadata(main_metadata_file: str, output_dir: str):
+def split_and_dump_metadata(main_metadata_file: str, output_dir: str):
     main_metadata_df = load_tsv(main_metadata_file)
 
-    sample_groups = set(
-        main_metadata_df.drop([0], axis=0)[GROUP_COLUMN_NAME].values
-    )
-    _ = sample_groups.remove(NEGATIVE_CONTROL_GROUP_NAME)
+    _, values_df = split_metadata(main_metadata_df)
+
+    sample_groups = [
+        i for i in values_df[GROUP_COLUMN_NAME].unique()
+        if i != NEGATIVE_CONTROL_GROUP_NAME
+    ]
 
     for sample_group in sample_groups:
         split_metadata_by_sample_group(sample_group, main_metadata_df, output_dir)
 
-    dump_list(list(sample_groups), os.path.join(output_dir, "sample_groups.txt"))
+    sample_groups_file = os.path.join(output_dir, "sample_groups.txt")
+
+    dump_list(list(sample_groups), sample_groups_file)
+
+    print(f"Saved sample groups: '{sample_groups_file}'")
 
 #%%
 
-split_metadata(
+split_and_dump_metadata(
     "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/stool_to_blood_2/sampledata/main_meta_data.tsv",
     "/data03/bio/projects/ashestopalov/nutrition/stool_to_blood_2/split/sample_data/"
 )
