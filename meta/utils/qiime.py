@@ -1,5 +1,6 @@
 
 import pandas as pd
+from typing import List
 
 
 _Q2_CAT_TYPE = "categorical"
@@ -15,9 +16,14 @@ def fix_sample_ids(df: pd.DataFrame):
     )
 
 
+def split_metadata(df: pd.DataFrame) -> List[pd.DataFrame]:
+    from meta.utils.pandas import split_df
+    return split_df(df, 1, 0)
+
+
 def fix_metadata(df: pd.DataFrame, sorting_column_name: str):
-    from meta.utils.pandas import sort_df_by_values_count, split_df
-    header_df, values_df = split_df(df, 1, 0)
+    from meta.utils.pandas import sort_df_by_values_count
+    header_df, values_df = split_metadata(df)
 
     # Aggregating values sort
     sorted_values_df = sort_df_by_values_count(values_df, sorting_column_name)
