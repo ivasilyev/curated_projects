@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/stool_to_blood_2/2_bind_running_commands_by_group.sh" && bash "2_bind_running_commands_by_group.sh"
+
 export ROOT_DIR="/data03/bio/projects/ashestopalov/nutrition/stool_to_blood_2/split/"
 export RAW_DIR="/data03/bio/rogachev_human/"
 export SCRIPT_DIR="${ROOT_DIR}scripts/"
@@ -13,6 +15,8 @@ cd "${SCRIPT_DIR}"
 
 curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/stool_to_blood_2/3_export_variables.sh"
 
+export SCRIPT_FILE="${SCRIPT_DIR}3_export_variables.sh"
+
 while read GROUP_NAME
     do
 
@@ -21,10 +25,12 @@ while read GROUP_NAME
     echo "Run Q2P2 pipeline for '${GROUP_NAME}'"
 
     bash \
-        "${SCRIPT_DIR}3_export_variables.sh" \
+        "${SCRIPT_FILE}" \
         "${GROUP_NAME}" \
         "${ROOT_DIR}" \
         "${RAW_DIR}" \
         "${SAMPLEDATA_DIR}"
 
     done < "${SAMPLEDATA_DIR}sample_groups.txt"
+
+rm -f "${SCRIPT_FILE}"
