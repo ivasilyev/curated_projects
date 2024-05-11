@@ -104,3 +104,7 @@ def dicts_list_to_lists_dict(x: List[Dict], truncate: int = None):
     if truncate is not None and isinstance(truncate, int):
         out = {k: v[truncate] for k, v in out.items()}
     return out
+
+
+def sorted_set(x):
+    return sorted(set(x))
