@@ -3,13 +3,15 @@ import pandas as pd
 from typing import List
 
 
+OTU_COLUMN_NAME = "#OTU ID"
+SAMPLE_ID_REGEX="[^A-Za-z0-9]+"
 _Q2_CAT_TYPE = "categorical"
 
 
 def fix_sample_ids(df: pd.DataFrame):
     # Deblur cannot operate on sample IDs that contain underscores
     df["#SampleID"].replace(
-        "[^A-Za-z0-9]+",
+        SAMPLE_ID_REGEX,
         "-",
         inplace=True,
         regex=True,
