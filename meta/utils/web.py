@@ -28,6 +28,13 @@ def get_page(url: str, header: str = DEFAULT_HEADER, empty_content_retries: int 
     return b""
 
 
+def get_dict(url: str):
+    from json import loads
+    page = get_page(url)
+    s = page.decode("utf-8")
+    return loads(s)
+
+
 def get_file(url: str, file: str = "", force: bool = True, header: str = DEFAULT_HEADER):
     from requests import get
     from meta.utils.file_system import is_file_valid
