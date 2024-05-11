@@ -30,7 +30,7 @@ def _expand_kegg_dict(d: dict, names: list = None):
             _expand_kegg_dict(child, _names)
     else:
         _name = name.split(" ")[0]
-        out_dicts.append(dict(ko=_name, **{f"L{idx + 1}": i for idx, i in enumerate(_names)}))
+        out_dicts.append(dict(function=_name, **{f"L{idx + 1}": i for idx, i in enumerate(_names)}))
 
 
 def _get_dict(ko: str):
@@ -78,9 +78,9 @@ _expand_kegg_dict(reference_dict)
 
 raw_reference_df = pd.DataFrame(out_dicts)
 reference_df = raw_reference_df.loc[
-    raw_reference_df["ko"].str.startswith("K"),
+    raw_reference_df["function"].str.startswith("K"),
     :
-].set_index("ko").sort_index().drop_duplicates()
+].set_index("function").sort_index().drop_duplicates()
 reference_df
 
 #%%
