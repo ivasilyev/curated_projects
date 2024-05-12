@@ -44,9 +44,9 @@ BETA_DIVERSITY_FUNCTIONS = {
 }
 
 
-def parse_taxonomy(s: str):
+def parse_taxonomy(s: str, prefix: str = "__", separator: str = "; " ):
     # s = "d__Bacteria; p__Proteobacteria; c__Gammaproteobacteria; o__Enterobacterales; f__Enterobacteriaceae; g__Escherichia-Shigella; s__Escherichia_coli"
-    out = {j[0].strip(): "__".join(j[1:]).strip() for j in [i.split("__") for i in s.split("; ")]}
+    out = {j[0].strip(): prefix.join(j[1:]).strip() for j in [i.split(prefix) for i in s.split(separator)]}
     out = {k if k not in TAXONOMY_CHARS.keys() else TAXONOMY_CHARS[k]: out[k] for k in out}
     return out
 
@@ -71,6 +71,26 @@ def collapse_taxa_df_by_rank(
     if is_name_df:
         out_df.name = rank
     return out_df
+
+
+def annotate_df_with_taxa_columns(
+        taxa_df: pd.DataFrame,
+        taxa_column_name: str = "taxonomy",
+        columns_to_excude: tuple = ("Unassigned",)
+):
+    from meta.utils.pandas import series_to_list_of_dicts
+    from meta.utils.queue import multi_core_queue2
+    def _mp_parse_taxa_columns(d: dict):
+        taxonomy_raw = d.get(taxa_column_name)
+        taxonomy_parsed_dict = parse_taxonomy(taxonomy_raw)
+        return {**d, **taxonomy_parsed_dict}
+
+    taxa_raw_dicts = series_to_list_of_dicts(taxa_df[taxa_column_name])
+    taxa_annotated_dicts = multi_core_queue2(_mp_parse_taxa_columns, taxa_raw_dicts)
+    annotation_df = pd.DataFrame(taxa_annotated_dicts).set_index(taxa_df.index.name).drop(taxa_column_name, axis=1)
+    annotation_df = annotation_df.loc[:, [i for i in annotation_df.columns if i not in columns_to_excude]]
+    annotated_taxa_df = pd.concat([taxa_df, annotation_df], axis=1, sort=False)
+    return annotated_taxa_df
 
 
 def root_tree_node(tree: TreeNode):
