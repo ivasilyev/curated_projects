@@ -817,3 +817,21 @@ def sort_df_by_values_count(
 
 def split_df(df: pd.DataFrame, index_or_column_number: int, axis: int):
     return np.split(df, [index_or_column_number], axis=axis)
+
+
+def reload_df(
+        df: pd.DataFrame,
+        write_xargs: dict = None,
+        read_xargs: dict = None
+):
+    from io import BytesIO
+    buffer = BytesIO()
+    if write_xargs is None:
+        write_xargs = dict()
+    df.to_csv(buffer, **write_xargs)
+    buffer.seek(0)
+    if read_xargs is None:
+        read_xargs = dict()
+    reloaded_df = pd.read_csv(buffer, **read_xargs)
+    del buffer
+    return reloaded_df
