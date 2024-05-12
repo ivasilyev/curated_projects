@@ -117,6 +117,16 @@ def dict2pd_series(
     return out
 
 
+def series_to_list_of_dicts(series: pd.Series):
+    return [
+        {
+            series.index.name: k,
+            series.name: v
+        }
+        for k, v in series.to_dict().items()
+    ]
+
+
 def apply_mp_function_to_df(
     func: Callable,
     df: pd.DataFrame,
