@@ -1,6 +1,7 @@
 
 import pandas as pd
-from typing import List
+from typing import Callable, List
+from meta.sample_data.sample_data import create_sampledata_dict_from_dir
 
 
 OTU_COLUMN_NAME = "#OTU ID"
@@ -41,6 +42,57 @@ def fix_metadata(df: pd.DataFrame, sorting_column_name: str):
     return fixed_df
 
 
+def create_main_metadata_df(
+        directory: str,
+        barcode_sequence: str = "",
+        linker_primer_sequence: str = "",
+        sample_source_extraction_function: Callable = None,
+        subject_id_extraction_function: Callable = None,
+        group_extraction_function: Callable = None,
+        subgroup_extraction_function: Callable = None
+):
+    sample_data_dict = create_sampledata_dict_from_dir(directory)
+    sample_data_dicts = list()
+    for sampledata_line in sample_data_dict.values():
+        sample_name = sampledata_line["name"]
+        for sampledata_reads_file, direction in zip(
+            sorted(sampledata_line["reads"]),
+            ["forward", "reverse"]
+        ):
+            sample_data_dict = {
+                "#SampleID": sample_name,
+                "BarcodeSequence": barcode_sequence,
+                "LinkerPrimerSequence": linker_primer_sequence,
+                "SampleSource": "",
+                "ReadsStrand": direction,
+                "SamplePath": sampledata_reads_file,
+                "SubjectID": "",
+                "Group": "",
+                "Subgroup": ""
+            }
+            for func, key in zip([
+                sample_source_extraction_function,
+                subject_id_extraction_function,
+                group_extraction_function,
+                subgroup_extraction_function
+            ], [
+                "SampleSource",
+                "SubjectID",
+                "Group",
+                "Subgroup"
+            ]):
+                if func is not None:
+                    sample_data_dict[key] = func(sample_name)
+            sample_data_dicts.append(sample_data_dict)
+    meta_data_dict = {
+        i: "#q2:types"
+        if i == "#SampleID"
+        else _Q2_CAT_TYPE
+        for i in sample_data_dicts[0].keys()
+    }
+    return pd.DataFrame([meta_data_dict] + sample_data_dicts)
+
+
 def convert_sampledata(
     sample_data_dict: dict,
     barcode_sequence: str = "",
@@ -52,7 +104,7 @@ def convert_sampledata(
             sorted(sampledata_line["reads"]), ["forward", "reverse"]
         ):
             sample_data_dicts.append({
-                "sample-id": sampledata_line["name"],
+               "sample-id": sampledata_line["name"],
                 "absolute-filepath": sampledata_reads_file,
                 "direction": direction
             })
