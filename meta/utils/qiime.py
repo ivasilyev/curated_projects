@@ -93,6 +93,20 @@ def create_main_metadata_df(
     return pd.DataFrame([meta_data_dict] + sample_data_dicts)
 
 
+def annotate_df_with_qiime_row(df: pd.DataFrame):
+    ld = [{
+            i: "#q2:types"
+            if i == "#SampleID"
+            else _Q2_CAT_TYPE
+            for i in df.columns
+    }]
+    return pd.concat(
+        [pd.DataFrame(ld), df],
+        axis=0,
+        sort=False,
+    )
+
+
 def convert_sampledata(
     sample_data_dict: dict,
     barcode_sequence: str = "",
