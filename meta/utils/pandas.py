@@ -41,10 +41,18 @@ def dump_tsv(
 
 
 def df_to_7z(
-    df: pd.DataFrame, archive: Union[BinaryIO, str, Path],
+    df: pd.DataFrame,
+    archive: Union[BinaryIO, str, Path],
     table_basename: str = "",
     **kwargs
 ):
+    """
+    :param df: pandas DataFrame with reset index
+    :param archive: target archive path
+    :param table_basename: filename only, with no path or extension
+    :param kwargs: arguments to pass into the `df.to_csv()` method
+    :return:
+    """
     from io import BytesIO
     from py7zr import SevenZipFile, FILTER_LZMA2
     from meta.utils.date_time import get_timestamp

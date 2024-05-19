@@ -1,6 +1,7 @@
 
 import re
-from meta.utils.primitive import remove_empty_values, safe_findall
+from typing import List, AnyStr
+from meta.utils.primitive import remove_empty_values, safe_findall, sorted_set
 
 
 def parse_taxa(taxa):
@@ -54,7 +55,7 @@ def regex_based_tokenization(regex_dict: dict, string: str, include_source: bool
 def get_most_similar_pair_for_word(word: str, words: list):
     from difflib import SequenceMatcher
     # For more complicated matching, use stemming algorithms
-    _words = [i for i in sorted(set(words)) if i != word]
+    _words = [i for i in sorted_set(words) if i != word]
     sorted_ratios = sorted(
         {i: SequenceMatcher(a=word, b=i).ratio() for i in _words}.items(),
         key=lambda x: x[1],
@@ -70,7 +71,7 @@ def get_most_similar_pair_for_word(word: str, words: list):
 
 def get_most_similar_word_pairs(words: list):
     import joblib as jb
-    _words = sorted(set(words))
+    _words = sorted_set(words)
     out = []
     word_pairs = jb.Parallel()(
         jb.delayed(get_most_similar_pair_for_word)(i, _words) for i in _words
@@ -105,3 +106,15 @@ def tokenize_reads_file_name(s: str):
     else:
         print(f"Cannot parse read direction direction from the file '{s}'")
     return d
+
+
+def translate_words(
+        x: List[AnyStr],
+        source_language: str = "auto",
+        target_language: str = "en",
+):
+    from deep_translator import GoogleTranslator
+    values = sorted_set(x)
+    translator = GoogleTranslator(source="auto", target="en")
+    translation_dict = {i: translator.translate(i) for i in values}
+    return translation_dict
