@@ -1,20 +1,25 @@
 #%%
 
+import os
 import pandas as pd
 from numpy import nan
 from re import sub
 from meta.utils.qiime import create_main_metadata_df
-from meta.utils.pandas import dfs_dict_to_excel, excel_to_dfs_dict, split_df
+from meta.utils.pandas import dfs_dict_to_excel, dump_tsv, excel_to_dfs_dict, split_df
 from meta.utils.language import translate_words
 
 #%%
 
 experimental_design_dfs_dict = excel_to_dfs_dict("/data03/bio/projects/ashestopalov/nutrition/mouse_obesity/sample_data/experimental_design.xlsx")
-experimental_design_dfs_dict.keys()
+experimental_design_dfs_dict
 
 #%%
 
-group_df = experimental_design_dfs_dict["groups"].set_index("group_code")
+group_df = experimental_design_dfs_dict["groups"]
+group_df["group_code"] = group_df["group_code"].replace(
+    "\-14$", "", regex=True
+)
+group_df.set_index("group_code", inplace=True)
 
 ration_column_name = "ration"
 en_rations = translate_words(group_df[ration_column_name].values.tolist())
@@ -25,24 +30,21 @@ group_df = group_df.rename(
     columns={i: i.strip() for i in group_df.columns}
 ).rename(
     columns={
-        "experiental_subgroup": "Subgroup",
+        "experiental_subgroup": "Group",
         "mouse_count": "SubjectsPerGroupCount",
         "experimental_code": "ExperimentCode",
         "ration": "FeedRation",
-        "days_on_ration": "FeedDurationsDays",
     }
 )
 
 group_df["Compound"] = group_df["is_solvent"].map(
     lambda x: "solvent" if x == "+" else "pentylresorcinol"
 )
-
 group_df.drop(
-    ["is_pentylresorcinol", "is_solvent"],
+    ["is_pentylresorcinol", "is_solvent", "days_on_ration"],
     axis=1,
     inplace=True
 )
-
 group_df
 
 #%%
@@ -57,9 +59,11 @@ main_metadata_df = create_main_metadata_df(
     directory="/data03/bio/rogachev_mice/raw/",
     barcode_sequence="CTCTCTACTATCCTCT",
     linker_primer_sequence="TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG",
-    sample_source_extraction_function= lambda x: "stool",
-    group_extraction_function=lambda x: "066-" + sub("\-[^\-]+$", "", x),
-    subject_id_extraction_function=lambda x: x,
+    sample_source_extraction_function=lambda x: "stool",
+    subgroup_extraction_function=(
+        lambda x: "066-" + sub("\-[^\-]+\-[^\-]+$", "", x)
+    ),
+    subject_id_extraction_function=lambda x: "066-" + x,
 )
 
 qiime_types, metadata_df = split_df(main_metadata_df, 1, 0)
@@ -70,27 +74,28 @@ metadata_df
 
 #%%
 
-def validate_sample_name(sample_name: str):
-    if sample_name.count("-") != 2:
+def validate_subject_id(subject_id: str):
+    # Ex.: 066-050-14-10
+    if subject_id.count("-") != 3:
         return nan
-    group_number, elapsed_days_number, sample_number = sample_name.split("-")
-    full_group_id = f"066-{group_number}-{elapsed_days_number}"
+    prefix, group_number, elapsed_days_number, sample_number = subject_id.split("-")
+    full_group_id = f"{prefix}-{group_number}"
     if full_group_id not in group_ids:
         return nan
-    return f"066-{sample_name}"
+    return subject_id
 
 
-metadata_df["#SampleID"] = metadata_df["#SampleID"].map(validate_sample_name)
-metadata_df = metadata_df.dropna(axis=0, how="any").drop(["Subgroup"], axis=1)
+metadata_df["ValidSubjectID"] = metadata_df.loc[:, "SubjectID"].map(validate_subject_id)
+metadata_df = metadata_df.dropna(axis=0, how="any").drop(["ValidSubjectID", "Group"], axis=1)
+metadata_df["FeedDurationsDays"] = metadata_df.loc[:, "SubjectID"].str.extract("\-([^\-]+)\-[^\-]+$").loc[:, 0]
 metadata_df
 
 #%%
 
-
 merged_metadata_df = metadata_df.merge(
     group_df.reset_index(),
     how="left",
-    left_on="Group",
+    left_on="Subgroup",
     right_on=group_df.index.name
 ).drop(
     [group_df.index.name,],
@@ -123,5 +128,6 @@ annotated_merged_metadata_df
 #%%
 
 excel_dict.update({"Samplesheet": annotated_merged_metadata_df})
-
-dfs_dict_to_excel(excel_dict, "/data03/bio/projects/ashestopalov/nutrition/mouse_obesity/sample_data/samplesheet.xlsx")
+sampledata_dir = "/data03/bio/projects/ashestopalov/nutrition/mice_fatty_pentylresorcinol/sample_data/"
+dfs_dict_to_excel(excel_dict, os.path.join(sampledata_dir, "samplesheet.xlsx"))
+dump_tsv(annotated_merged_metadata_df, os.path.join(sampledata_dir, "main_sampledata.tsv"))
