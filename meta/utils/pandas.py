@@ -317,14 +317,15 @@ def dfs_dict_to_excel(d: dict, file: str, **kwargs):
     :return:
     """
     import xlsxwriter
-    w = pd.ExcelWriter(file, engine="xlsxwriter")
+    os.makedirs(os.path.dirname(file), exist_ok=True)
+    excel_writer = pd.ExcelWriter(file, engine="xlsxwriter")
     for sheet, df in d.items():
         try:
-            df.to_excel(w, index=False, sheet_name=sheet, **kwargs)
+            df.to_excel(excel_writer, index=False, sheet_name=sheet, **kwargs)
         except Exception:
             traceback.print_exc()
             print(f"Cannot save sheet '{sheet}' to file '{file}'")
-    w.save()
+    excel_writer.close()
 
 
 def remove_longest_columns(df: pd.DataFrame, size: int = 32767):  # M$ Excel cell size limit
