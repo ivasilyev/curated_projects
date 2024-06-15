@@ -95,15 +95,18 @@ def create_main_metadata_df(
     return pd.DataFrame([meta_data_dict] + sample_data_dicts)
 
 
-def annotate_df_with_qiime_row(df: pd.DataFrame):
-    ld = [{
-            i: "#q2:types"
-            if i == "#SampleID"
-            else _Q2_CAT_TYPE
-            for i in df.columns
-    }]
+def annotate_df_with_q2_types_row(df: pd.DataFrame):
+    from numpy import issubdtype, number
+    annotation_dict = dict()
+    for column_name in df.columns:
+        if column_name == "#SampleID":
+            annotation_dict[column_name] = "#q2:types"
+        elif issubdtype(df[column_name], number):
+            annotation_dict[column_name] = NUMERIC_TYPE
+        else:
+            annotation_dict[column_name] = CATEGORICAL_TYPE
     return pd.concat(
-        [pd.DataFrame(ld), df],
+        [pd.DataFrame([annotation_dict]), df],
         axis=0,
         sort=False,
     )
