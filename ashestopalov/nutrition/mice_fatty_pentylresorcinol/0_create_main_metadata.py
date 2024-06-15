@@ -1,10 +1,9 @@
 #%%
 
 import os
-import pandas as pd
 from numpy import nan
 from re import sub
-from meta.utils.qiime import create_main_metadata_df
+from meta.utils.qiime import create_main_metadata_df, dump_sampledata, split_main_metadata_df
 from meta.utils.pandas import dfs_dict_to_excel, dump_tsv, excel_to_dfs_dict, split_df
 from meta.utils.language import translate_words
 
@@ -31,7 +30,6 @@ group_df = group_df.rename(
 ).rename(
     columns={
         "experiental_subgroup": "Group",
-        "mouse_count": "SubjectsPerGroupCount",
         "experimental_code": "ExperimentCode",
         "ration": "FeedRation",
     }
@@ -41,7 +39,12 @@ group_df["Compound"] = group_df["is_solvent"].map(
     lambda x: "solvent" if x == "+" else "pentylresorcinol"
 )
 group_df.drop(
-    ["is_pentylresorcinol", "is_solvent", "days_on_ration"],
+    [
+        "days_on_ration",
+        "is_pentylresorcinol",
+        "is_solvent",
+        "mouse_count",
+    ],
     axis=1,
     inplace=True
 )
@@ -101,33 +104,20 @@ merged_metadata_df = metadata_df.merge(
     [group_df.index.name,],
     axis=1
 )
+merged_metadata_df["FeedDurationsDays"] = merged_metadata_df.loc[:, "FeedDurationsDays"].astype(int)
 merged_metadata_df
 
 #%%
 
-_Q2_CAT_TYPE = "categorical"
-
-
-def annotate_df_with_qiime_row(df: pd.DataFrame):
-    dd = [{
-            i: "#q2:types"
-            if i == "#SampleID"
-            else _Q2_CAT_TYPE
-            for i in df.columns
-    }]
-    return pd.concat(
-        [pd.DataFrame(dd), df],
-        axis=0,
-        sort=False,
-    )
-
-
-annotated_merged_metadata_df = annotate_df_with_qiime_row(merged_metadata_df)
-annotated_merged_metadata_df
+excel_dict.update({"Samplesheet": merged_metadata_df})
+sampledata_dir = "/data03/bio/projects/ashestopalov/nutrition/mice_fatty_pentylresorcinol/sample_data/"
+dfs_dict_to_excel(excel_dict, os.path.join(sampledata_dir, "samplesheet.xlsx"))
+dump_tsv(merged_metadata_df, os.path.join(sampledata_dir, "main_sampledata.tsv"))
 
 #%%
 
-excel_dict.update({"Samplesheet": annotated_merged_metadata_df})
-sampledata_dir = "/data03/bio/projects/ashestopalov/nutrition/mice_fatty_pentylresorcinol/sample_data/"
-dfs_dict_to_excel(excel_dict, os.path.join(sampledata_dir, "samplesheet.xlsx"))
-dump_tsv(annotated_merged_metadata_df, os.path.join(sampledata_dir, "main_sampledata.tsv"))
+split_sampledata_dict = split_main_metadata_df(merged_metadata_df)
+
+#%%
+
+dump_sampledata(split_sampledata_dict, sampledata_dir)
