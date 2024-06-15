@@ -21,7 +21,7 @@ chmod -R a+rw "${ROOT_DIR}"
 
 # cd "${SAMPLEDATA_DIR}" || exit 1
 
-# curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/stool_to_blood_2/sampledata/qiime2_meta_data.tsv"
+# curl -fsSLO "https://gitlab.com/ivasilyev/biological_projects/-/raw/main/ashestopalov/nutrition/mice_fatty_pentylresorcinol/sample_data/main_sampledata.tsv"
 
 cd "${PIPELINE_DIR}" || exit 1
 
