@@ -202,24 +202,6 @@ def dump_sampledata(sample_meta_data_dict: dict, directory: str):
 
 
 def convert_and_dump_sampledata(directory: str, *args, **kwargs):
-    import os
     dfs = convert_sampledata(*args, **kwargs)
-    os.makedirs(directory, exist_ok=True)
-    out = dict()
-    for key, df in dfs.items():
-        if key == "sample":
-            sep = ","
-            ext = "csv"
-        else:
-            sep = "\t"
-            ext = "tsv"
-        file = os.path.join(directory, f"qiime2_{key}_data.{ext}")
-        df.to_csv(
-            file,
-            sep=sep,
-            header=True,
-            index=False
-        )
-        out[key] = file
-    print(f"Sampledata created in: '{directory}'")
-    return out
+    files_dict = dump_sampledata(dfs, directory)
+    return files_dict
