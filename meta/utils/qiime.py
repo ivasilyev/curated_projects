@@ -150,6 +150,57 @@ def convert_sampledata(
     }
 
 
+def split_main_metadata_df(df: pd.DataFrame):
+    main_metadata_sampledata_columns_mapper_dict = {
+        SAMPLE_ID_NAME: "sample-id",
+        "SamplePath": "absolute-filepath",
+        "ReadsStrand": "direction",
+    }
+    sampledata_df = df.rename(
+        main_metadata_sampledata_columns_mapper_dict,
+        axis=1
+    ).loc[
+        :,
+        main_metadata_sampledata_columns_mapper_dict.values()
+    ].sort_values(
+        main_metadata_sampledata_columns_mapper_dict[SAMPLE_ID_NAME]
+    )
+    _ = main_metadata_sampledata_columns_mapper_dict.pop(SAMPLE_ID_NAME)
+    raw_metadata_df = df.drop(
+        main_metadata_sampledata_columns_mapper_dict.keys(),
+        axis=1
+    ).drop_duplicates().sort_values(SAMPLE_ID_NAME)
+    metadata_df = annotate_df_with_q2_types_row(raw_metadata_df)
+    return dict(
+        sample=sampledata_df,
+        meta=metadata_df
+    )
+
+
+def dump_sampledata(sample_meta_data_dict: dict, directory: str):
+    import os
+    os.makedirs(directory, exist_ok=True)
+    files_dict = dict()
+    for key, df in sample_meta_data_dict.items():
+        if key == "sample":
+            sep = ","
+            ext = "csv"
+        else:
+            sep = "\t"
+            ext = "tsv"
+        file = os.path.join(directory, f"qiime2_{key}_data.{ext}")
+        df.to_csv(
+            file,
+            sep=sep,
+            header=True,
+            index=False
+        )
+        files_dict[key] = file
+        print(f"Created {key} data: '{file}'")
+    print(f"Sampledata created in: '{directory}'")
+    return files_dict
+
+
 def convert_and_dump_sampledata(directory: str, *args, **kwargs):
     import os
     dfs = convert_sampledata(*args, **kwargs)
