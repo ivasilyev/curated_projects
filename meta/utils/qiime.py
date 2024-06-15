@@ -4,9 +4,11 @@ from typing import Callable, List
 from meta.sample_data.sample_data import create_sampledata_dict_from_dir
 
 
+CATEGORICAL_TYPE = "categorical"
+NUMERIC_TYPE = "numeric"
 OTU_COLUMN_NAME = "#OTU ID"
+SAMPLE_ID_NAME="#SampleID"
 SAMPLE_ID_REGEX="[^A-Za-z0-9]+"
-_Q2_CAT_TYPE = "categorical"
 
 
 def fix_sample_ids(df: pd.DataFrame):
