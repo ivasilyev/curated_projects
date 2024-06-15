@@ -3,16 +3,17 @@
 export ROOT_DIR="/data03/bio/projects/ashestopalov/nutrition/mice_fatty_pentylresorcinol/"
 export RAW_DIR="/data03/bio/rogachev_mice/raw/"
 
-export ROOT_DIR="$(realpath "${ROOT_DIR}")/qiime2-picrust2-pipeline/"
+export PIPELINE_DIR="$(realpath "${ROOT_DIR}")/qiime2-picrust2-pipeline/"
 export RAW_DIR="$(realpath "${RAW_DIR}")/"
-export LOG_DIR="${ROOT_DIR}logs/"
+export LOG_DIR="${PIPELINE_DIR}logs/"
 export SAMPLEDATA_DIR="${ROOT_DIR}sample_data/"
-export SCRIPT_DIR="${ROOT_DIR}scripts/"
+export SCRIPT_DIR="${PIPELINE_DIR}scripts/"
 export PIPELINE_SCRIPT="${SCRIPT_DIR}1_run_pipeline"
 
 # sudo rm -rf "${ROOT_DIR}"
 mkdir -p \
     "${ROOT_DIR}" \
+    "${PIPELINE_DIR}" \
     "${LOG_DIR}" \
     "${SCRIPT_DIR}" \
     "${SAMPLEDATA_DIR}"
@@ -22,12 +23,12 @@ chmod -R a+rw "${ROOT_DIR}"
 
 # curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/master/ashestopalov/nutrition/stool_to_blood_2/sampledata/qiime2_meta_data.tsv"
 
-cd "${ROOT_DIR}" || exit 1
+cd "${PIPELINE_DIR}" || exit 1
 
 curl -fsSL "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/qiime2_picrust2/shell/1_run_pipeline.sh" \
     -o "${PIPELINE_SCRIPT}"
 
-ROOT_DIR="${ROOT_DIR}" \
+ROOT_DIR="${PIPELINE_DIR}" \
 RAW_DIR="${RAW_DIR}" \
 SAMPLEDATA_DIR="${SAMPLEDATA_DIR}" \
 bash "${PIPELINE_SCRIPT}" \
