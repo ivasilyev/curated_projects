@@ -89,7 +89,7 @@ def create_main_metadata_df(
     meta_data_dict = {
         i: "#q2:types"
         if i == "#SampleID"
-        else _Q2_CAT_TYPE
+        else CATEGORICAL_TYPE
         for i in sample_data_dicts[0].keys()
     }
     return pd.DataFrame([meta_data_dict] + sample_data_dicts)
@@ -129,11 +129,11 @@ def convert_sampledata(
             })
     meta_data_dicts = [{
         "#SampleID": "#q2:types",
-        "BarcodeSequence": _Q2_CAT_TYPE,
-        "LinkerPrimerSequence": _Q2_CAT_TYPE,
-        "Description": _Q2_CAT_TYPE,
-        "SampleSource": _Q2_CAT_TYPE,
-        "SubjectID": _Q2_CAT_TYPE
+        "BarcodeSequence": CATEGORICAL_TYPE,
+        "LinkerPrimerSequence": CATEGORICAL_TYPE,
+        "Description": CATEGORICAL_TYPE,
+        "SampleSource": CATEGORICAL_TYPE,
+        "SubjectID": CATEGORICAL_TYPE
     }, ]
     for sample_name in sorted(sample_data_dict.keys()):
         meta_data_dicts.extend([{
