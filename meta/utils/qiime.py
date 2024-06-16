@@ -62,7 +62,7 @@ def create_main_metadata_df(
             ["forward", "reverse"]
         ):
             sample_data_dict = {
-                "#SampleID": sample_name,
+                SAMPLE_ID_NAME: sample_name,
                 "BarcodeSequence": barcode_sequence,
                 "LinkerPrimerSequence": linker_primer_sequence,
                 "SampleSource": "",
@@ -92,7 +92,8 @@ def create_main_metadata_df(
         else CATEGORICAL_TYPE
         for i in sample_data_dicts[0].keys()
     }
-    return pd.DataFrame([meta_data_dict] + sample_data_dicts)
+    main_metadata_df = pd.DataFrame([meta_data_dict] + sample_data_dicts).sort_values(SAMPLE_ID_NAME)
+    return main_metadata_df
 
 
 def annotate_df_with_q2_types_row(df: pd.DataFrame):
