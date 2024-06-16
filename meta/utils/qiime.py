@@ -44,6 +44,22 @@ def fix_metadata(df: pd.DataFrame, sorting_column_name: str):
     return fixed_df
 
 
+def annotate_df_with_q2_types_row(df: pd.DataFrame):
+    from numpy import issubdtype, number
+    annotation_dict = dict()
+    for column_name in df.columns:
+        if column_name == "#SampleID":
+            annotation_dict[column_name] = "#q2:types"
+        elif issubdtype(df[column_name], number):
+            annotation_dict[column_name] = NUMERIC_TYPE
+        else:
+            annotation_dict[column_name] = CATEGORICAL_TYPE
+    return pd.concat(
+        [pd.DataFrame([annotation_dict]), df],
+        axis=0,
+        sort=False,
+    )
+
 def create_main_metadata_df(
         directory: str,
         barcode_sequence: str = "",
@@ -86,31 +102,9 @@ def create_main_metadata_df(
                 if func is not None:
                     sample_data_dict[key] = func(sample_name)
             sample_data_dicts.append(sample_data_dict)
-    meta_data_dict = {
-        i: "#q2:types"
-        if i == "#SampleID"
-        else CATEGORICAL_TYPE
-        for i in sample_data_dicts[0].keys()
-    }
-    main_metadata_df = pd.DataFrame([meta_data_dict] + sample_data_dicts).sort_values(SAMPLE_ID_NAME)
+    raw_main_metadata_df = pd.DataFrame(sample_data_dicts).sort_values(SAMPLE_ID_NAME)
+    main_metadata_df = annotate_df_with_q2_types_row(raw_main_metadata_df)
     return main_metadata_df
-
-
-def annotate_df_with_q2_types_row(df: pd.DataFrame):
-    from numpy import issubdtype, number
-    annotation_dict = dict()
-    for column_name in df.columns:
-        if column_name == "#SampleID":
-            annotation_dict[column_name] = "#q2:types"
-        elif issubdtype(df[column_name], number):
-            annotation_dict[column_name] = NUMERIC_TYPE
-        else:
-            annotation_dict[column_name] = CATEGORICAL_TYPE
-    return pd.concat(
-        [pd.DataFrame([annotation_dict]), df],
-        axis=0,
-        sort=False,
-    )
 
 
 def convert_sampledata(
