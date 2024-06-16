@@ -102,3 +102,8 @@ def backup_file(file: str):
         backup_file = f"{backup_file}.bak"
     copy2(file, backup_file)
     return backup_file
+
+
+def symlink(source: str, destination: str):
+    if not os.path.exists(destination):
+        os.symlink(source, destination)
