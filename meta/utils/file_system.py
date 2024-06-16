@@ -61,6 +61,13 @@ def find_file_by_tail(dir_name: str, tail: str, multiple: bool = False):
     return files[0]
 
 
+def find_by_regex(regex: str, dir_name: str):
+    from meta.utils.primitive import safe_findall, remove_empty_values
+    nodes = scan_whole_dir(dir_name)
+    matches = remove_empty_values([safe_findall(regex, i) for i in nodes])
+    return matches
+
+
 def decompress_file(file: str, directory: str = "", remove: bool = True):
     from subprocess import getoutput
     _ARCHIVE_EXTENSIONS = ("tar", "gz", "bz2", "zip")
