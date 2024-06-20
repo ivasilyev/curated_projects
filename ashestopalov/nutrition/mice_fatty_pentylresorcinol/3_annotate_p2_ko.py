@@ -2,10 +2,14 @@
 
 import os
 from meta.utils.pandas import load_tsv, dump_tsv
-from meta.utils.file_system import filename_only, get_file_extension
+from meta.utils.file_system import filename_only, find_by_regex, get_file_extension
 
+
+pipeline_output_dir = "/data03/bio/projects/ashestopalov/nutrition/mice_fatty_pentylresorcinol/qiime2-picrust2-pipeline"
 kegg_reference_file = "/data/reference/KEGG/kegg_v2024-05-11/kegg_v2024-05-11_denormalized.tsv"
-ko_sample_file = "/data03/bio/projects/ashestopalov/nutrition/mice_fatty_pentylresorcinol/qiime2-picrust2-pipeline/picrust2/described_tables/KO_pred_metagenome_unstrat_described.tsv"
+ko_file_regex = ".+qiime2.+dada2.+ASV.tsv$"
+
+ko_sample_file = find_by_regex(".+picrust2.+KO_pred_metagenome_unstrat_described.tsv$", pipeline_output_dir)[0]
 
 kegg_reference_df = load_tsv(kegg_reference_file)
 kegg_reference_df
