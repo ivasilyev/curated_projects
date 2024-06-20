@@ -112,5 +112,6 @@ def backup_file(file: str):
 
 
 def symlink(source: str, destination: str):
+    os.makedirs(os.path.dirname(destination), exist_ok=True)
     if not os.path.exists(destination):
         os.symlink(source, destination)
