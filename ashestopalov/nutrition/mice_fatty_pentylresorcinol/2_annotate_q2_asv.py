@@ -23,9 +23,9 @@ otu_asv_mapper_df
 
 #%%
 
-asv_annotated_df = asv_df.merge(
-    otu_asv_mapper_df,
-    how="left",
+asv_annotated_df = otu_asv_mapper_df.merge(
+    asv_df,
+    how="right",
     on=index_column_name
 )
 # assert not asv_annotated_df[index_column_name].duplicated().any()
