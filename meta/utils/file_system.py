@@ -102,12 +102,26 @@ def decompress_file(file: str, directory: str = "", remove: bool = True):
         os.remove(file)
 
 
+def copy(source: str, destination: str, is_overwrite: str = True, is_recursive: bool = False):
+    from shutil import copy2, copytree
+    os.makedirs(os.path.dirname(destination), exist_ok=True)
+    if (
+        not os.path.exists(destination) or (
+            os.path.exists(destination) and is_overwrite
+        )
+    ):
+        print(f"'{source}' -> '{destination}'")
+        if is_recursive:
+            copytree(source, destination)
+        else:
+            copy2(source, destination)
+
+
 def backup_file(file: str):
-    from shutil import copy2
     backup_file = f"{file}.bak"
     while is_file_valid(backup_file):
         backup_file = f"{backup_file}.bak"
-    copy2(file, backup_file)
+    copy(file, backup_file)
     return backup_file
 
 
