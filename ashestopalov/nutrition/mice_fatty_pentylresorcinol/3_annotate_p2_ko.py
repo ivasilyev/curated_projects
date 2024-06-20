@@ -18,6 +18,6 @@ ko_sample_df
 #%%
 
 ko_merged_df = ko_sample_df.merge(kegg_reference_df, how="left", on="function")
-ko_merged_file_basename = f"{filename_only(ko_sample_file)}_annotated.{get_file_extension(ko_sample_file)}"
-ko_merged_file_name = os.path.join(os.path.dirname(ko_sample_file), ko_merged_file_basename)
-dump_tsv(ko_merged_df, ko_merged_file_name)
+ko_merged_file_basename = f"{filename_only(ko_sample_file)}_annotated{get_file_extension(ko_sample_file)}"
+ko_merged_file = os.path.join(os.path.dirname(ko_sample_file), ko_merged_file_basename)
+dump_tsv(ko_merged_df, ko_merged_file)
