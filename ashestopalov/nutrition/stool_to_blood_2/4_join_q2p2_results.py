@@ -1,10 +1,10 @@
+#%%
+
 import os
 from typing import Dict
-
 import pandas as pd
-
 from meta.utils.file_system import find_file_by_tail
-from meta.utils.pandas import df_to_7z, concat, load_tsv
+from meta.utils.pandas import annotate_and_aggregate_df, concat, df_to_7z, load_tsv
 from meta.utils.primitive import dicts_list_to_lists_dict
 from meta.utils.queue import multi_core_queue2
 
@@ -85,6 +85,16 @@ def join_q2p2_results(split_results_dir: str):
     joined_dfs_dict = dicts_list_to_lists_dict(joined_dfs, truncate=0)
     joined_dfs_dict.keys()
 
+    pathway_reference_table = "/data/reference/KEGG/kegg_v2024-05-11/kegg_v2024-05-11_denormalized.tsv"
+    pathway_reference_df = load_tsv(pathway_reference_table).set_index("ko").rename_axis(index="function")
+    sample_names = [i for i in pathway_reference_df.columns if i not in {"function", "description"}]
+
+    joined_dfs["picrust2_ko"], aggregated_pathway_dfs_dict = annotate_and_aggregate_df(
+        df=joined_dfs["picrust2_ko"].loc[:, sample_names],
+        annotation_df=pathway_reference_df,
+    )
+    joined_dfs_dict.update(aggregated_pathway_dfs_dict)
+
     pipeline_out_dir = os.path.join(
         split_results_dir,
         "qiime2-picrust2-pipeline",
@@ -108,5 +118,6 @@ def join_q2p2_results(split_results_dir: str):
 
     _ = multi_core_queue2(lambda x: df_to_7z(**x), queue)
 
+#%%
 
 join_q2p2_results("/data03/bio/projects/ashestopalov/nutrition/stool_to_blood_2")
