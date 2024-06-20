@@ -130,3 +130,15 @@ def symlink(source: str, destination: str):
     if not os.path.exists(destination):
         print(f"'{source}' <- '{destination}'")
         os.symlink(source, destination)
+
+
+def to_7z(source: str, destination: str):
+    from py7zr import SevenZipFile, FILTER_LZMA2
+    os.makedirs(os.path.dirname(destination), exist_ok=True)
+    filters = [{"id": FILTER_LZMA2, "preset": 9}]
+    print(f"'{source}' |=> '{destination}'")
+    with SevenZipFile(destination, mode="w", filters=filters) as f:
+        if os.path.isfile(source):
+            f.write(source, arcname=os.path.basename(source))
+        if os.path.isdir(source):
+            f.writeall(source, arcname=os.path.basename(source))
