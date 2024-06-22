@@ -55,6 +55,7 @@ compressing_dicts
 
 for picrust2_output_filename in (
     "EC_pred_metagenome_unstrat_described",
+    "KO_pred_metagenome_unstrat_described",
     "KO_pred_metagenome_unstrat_described_annotated",
     "pathways_abun_unstrat_described",
 ):
