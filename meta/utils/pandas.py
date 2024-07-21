@@ -328,6 +328,24 @@ def dfs_dict_to_excel(d: dict, file: str, **kwargs):
     excel_writer.close()
 
 
+def extract_zip_tables_into_excel(zip_file: str, excel_file: str):
+    from zipfile import ZipFile
+    df_dict = dict()
+    with ZipFile(zip_file) as zf:
+        for file_name in zf.namelist():
+            if not any(file_name.endswith(i) for i in [".csv", ".tsv"]):
+                continue
+            full_name = "/".join([os.path.basename(zip_file), file_name])
+            with zf.open(file_name) as f:
+                if file_name.endswith(".csv"):
+                    df = load_tsv(f, sep=",")
+                    df_dict[full_name] = df
+                elif file_name.endswith(".tsv"):
+                    df = load_tsv(f)
+                    df_dict[full_name] = df
+    dfs_dict_to_excel(df_dict, excel_file)
+
+
 def remove_longest_columns(df: pd.DataFrame, size: int = 32767):  # M$ Excel cell size limit
     max_lengths = count_column_sizes(df)
     return df.loc[:, max_lengths.loc[max_lengths < size].index]
