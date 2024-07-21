@@ -1,6 +1,6 @@
 
 from argparse import ArgumentParser
-from meta.sample_data.qiime import split_and_dump_main_metadata_table
+from meta.sample_data.qiime import split_and_dump_main_sample_data_table
 
 
 def parse_args():
@@ -19,4 +19,4 @@ def parse_args():
 
 if __name__ == '__main__':
     input_file, output_dir = parse_args()
-    split_and_dump_main_metadata_table(input_file, output_dir)
+    split_and_dump_main_sample_data_table(input_file, output_dir)
