@@ -204,3 +204,5 @@ dump_sampledata(split_sampledata_dict, sampledata_dir)
 
 # !head /data03/bio/projects/ashestopalov/nutrition/mice_fatty_pentylresorcinol/sample_data/qiime2_meta_data.tsv
 # !tail /data03/bio/projects/ashestopalov/nutrition/mice_fatty_pentylresorcinol/sample_data/qiime2_meta_data.tsv
+
+# Then upload the `main_sampledata.tsv`
