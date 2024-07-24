@@ -310,13 +310,15 @@ def excel_to_dfs_dict(file: str, **kwargs):
     return out
 
 
-def dfs_dict_to_excel(d: dict, file: str, **kwargs):
+def dfs_dict_to_excel(d: dict, file: str, is_sorted_sheets: bool = False, **kwargs):
     """
     :param d: {sheet_name <str>: sheet_dataframe <pandas.DataFrame>}
     :param file: table.xlx
     :return:
     """
     import xlsxwriter
+    if is_sorted_sheets:
+        d = {i: d.get(i) for i in sorted(d.keys())}
     os.makedirs(os.path.dirname(file), exist_ok=True)
     excel_writer = pd.ExcelWriter(file, engine="xlsxwriter")
     for sheet, df in d.items():
@@ -328,22 +330,31 @@ def dfs_dict_to_excel(d: dict, file: str, **kwargs):
     excel_writer.close()
 
 
-def extract_zip_tables_into_excel(zip_file: str, excel_file: str):
+def extract_tables_from_zip_into_excel(zip_file: str, excel_file: str):
     from zipfile import ZipFile
+    from meta.utils.file_system import filename_only
+    from meta.utils.primitive import deduplicate_list, process_excel_sheet_name
     df_dict = dict()
     with ZipFile(zip_file) as zf:
+        table_files = set()
         for file_name in zf.namelist():
             if not any(file_name.endswith(i) for i in [".csv", ".tsv"]):
                 continue
-            full_name = "/".join([os.path.basename(zip_file), file_name])
+            else:
+                table_files.add(file_name)
+        table_files = sorted(table_files)
+        deduplicated_table_file_names = deduplicate_list(table_files)
+        for raw_sheet_name, file_name in deduplicated_table_file_names.items():
+            sheet_name = process_excel_sheet_name(filename_only(raw_sheet_name), 2)
             with zf.open(file_name) as f:
                 if file_name.endswith(".csv"):
                     df = load_tsv(f, sep=",")
-                    df_dict[full_name] = df
+                    df_dict[sheet_name] = df
                 elif file_name.endswith(".tsv"):
                     df = load_tsv(f)
-                    df_dict[full_name] = df
-    dfs_dict_to_excel(df_dict, excel_file)
+                    df_dict[sheet_name] = df
+        zf.close()
+    dfs_dict_to_excel(df_dict, excel_file, is_sorted_sheets=True)
 
 
 def remove_longest_columns(df: pd.DataFrame, size: int = 32767):  # M$ Excel cell size limit

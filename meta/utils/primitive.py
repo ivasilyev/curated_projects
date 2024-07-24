@@ -108,3 +108,23 @@ def dicts_list_to_lists_dict(x: List[Dict], truncate: int = None):
 
 def sorted_set(x):
     return sorted(set(x))
+
+
+def process_excel_sheet_name(s: str, offset: int = 0):
+    # Excel worksheet name must have less than 32 chars
+    return s[:32 - offset]
+
+
+def deduplicate_list(x: list, is_suffix_counter: bool = True):
+    d = dict()
+    for raw_item in x:
+        counter = 1
+        processed_item = raw_item
+        while processed_item in d.keys():
+            if is_suffix_counter:
+                processed_item = f"""{raw_item}_{counter}"""
+            else:
+                processed_item = f"""{counter}_{raw_item}"""
+            counter += 1
+        d[processed_item] = raw_item
+    return d
