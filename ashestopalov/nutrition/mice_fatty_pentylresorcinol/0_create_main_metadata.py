@@ -1,11 +1,17 @@
 #%%
 
 import os
+import pandas as pd
 from numpy import nan
 from re import findall, sub
 from meta.utils.file_system import find_by_regex, symlink
 from meta.utils.language import translate_words
-from meta.utils.pandas import dfs_dict_to_excel, dump_tsv, excel_to_dfs_dict, split_df
+from meta.utils.pandas import (
+    dfs_dict_to_excel,
+    dump_tsv,
+    excel_to_dfs_dict,
+    split_df,
+    set_df_dtypes)
 from meta.utils.qiime import (
     create_main_metadata_df,
     dump_sampledata,
@@ -21,10 +27,10 @@ experimental_design_dfs_dict
 #%%
 
 group_df = experimental_design_dfs_dict["groups"]
-group_df["group_code"] = group_df["group_code"].replace(
+group_df["GroupCode"] = group_df["group_code"].replace(
     "\-14$", "", regex=True
 )
-group_df.set_index("group_code", inplace=True)
+group_df.set_index("GroupCode", inplace=True)
 
 ration_column_name = "ration"
 en_rations = translate_words(group_df[ration_column_name].values.tolist())
@@ -50,6 +56,7 @@ group_df.drop(
         "is_pentylresorcinol",
         "is_solvent",
         "mouse_count",
+        "group_code",
     ],
     axis=1,
     inplace=True
@@ -93,12 +100,13 @@ main_metadata_df = create_main_metadata_df(
     linker_primer_sequence="TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG",
     sample_source_extraction_function=lambda x: "stool",
     subgroup_extraction_function=(
-        lambda x: "066-" + sub("\-[^\-]+\-[^\-]+$", "", x)
+        lambda x: "066-" + sub("\-[^\-]+$", "", x)
     ),
     subject_id_extraction_function=lambda x: "066-" + x,
 )
 
 qiime_types, metadata_df = split_df(main_metadata_df, 1, 0)
+
 excel_dict = {"all_files": metadata_df}
 metadata_df
 
@@ -121,17 +129,18 @@ metadata_df["ValidSubjectID"] = metadata_df.loc[:, "SubjectID"].map(validate_sub
 metadata_df = metadata_df.dropna(axis=0, how="any").drop(["ValidSubjectID", "Group"], axis=1)
 feed_duration_column_name = "FeedDurationsDays"
 metadata_df[feed_duration_column_name] = metadata_df.loc[:, "SubjectID"].str.extract("\-([^\-]+)\-[^\-]+$").loc[:, 0]
+metadata_df["GroupCode"] = metadata_df["#SampleID"].map(
+    lambda x: "066-" + sub("\-[^\-]+\-[^\-]+$", "", x)
+)
+metadata_df
 
 #%%
 
 merged_metadata_df = metadata_df.merge(
     group_df.reset_index(),
     how="left",
-    left_on="Subgroup",
+    left_on="GroupCode",
     right_on=group_df.index.name
-).drop(
-    [group_df.index.name,],
-    axis=1
 ).sort_values(SAMPLE_ID_NAME)
 
 merged_metadata_df
@@ -139,7 +148,6 @@ merged_metadata_df
 #%%
 
 sample_control_metadata_mapper = merged_metadata_df["SamplePath"].isin(control_symlinks)
-
 control_metadata_df = merged_metadata_df.loc[
     sample_control_metadata_mapper,
     :
@@ -148,7 +156,6 @@ sample_metadata_df = merged_metadata_df.loc[
     ~sample_control_metadata_mapper,
     :
 ]
-
 control_value = "ControlNegative"
 for control_metadata_column_name in [
     "SampleSource",
@@ -156,6 +163,7 @@ for control_metadata_column_name in [
     "ExperimentCode",
     "Compound",
     "Subgroup",
+    "GroupCode",
 ]:
    control_metadata_df.loc[:, control_metadata_column_name] = control_value
 
@@ -166,16 +174,9 @@ for control_metadata_column_name in [
    control_metadata_df.loc[:, control_metadata_column_name] = 0
 
 control_metadata_df.loc[:, "SubjectID"] = control_metadata_df.loc[:, SAMPLE_ID_NAME]
-
 control_metadata_df
 
 #%%
-
-import pandas as pd
-
-def set_df_dtypes(df: pd.DataFrame, columns_dtypes: dict):
-    for column_name, column_dtype in columns_dtypes.items():
-        df[column_name] = df.loc[:, column_name].astype(column_dtype)
 
 sample_control_metadata_df = pd.concat(
     [sample_metadata_df, control_metadata_df,],
@@ -199,6 +200,7 @@ dump_tsv(sample_control_metadata_df, os.path.join(sampledata_dir, "main_sampleda
 
 split_sampledata_dict = split_main_metadata_df(sample_control_metadata_df)
 dump_sampledata(split_sampledata_dict, sampledata_dir)
+split_sampledata_dict
 
 #%%
 
