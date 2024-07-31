@@ -883,3 +883,8 @@ def reload_df(
     reloaded_df = pd.read_csv(buffer, **read_xargs)
     del buffer
     return reloaded_df
+
+
+def set_df_dtypes(df: pd.DataFrame, columns_dtypes: dict):
+    for column_name, column_dtype in columns_dtypes.items():
+        df[column_name] = df.loc[:, column_name].astype(column_dtype)
