@@ -12,7 +12,10 @@ export SCRIPT_DIR="${PIPELINE_DIR}scripts/"
 export PIPELINE_SCRIPT="${SCRIPT_DIR}1_run_pipeline"
 
 # sudo rm -rf "${ROOT_DIR}"
-mkdir -p \
+mkdir \
+    --mode 0777 \
+    --parents \
+    --verbose \
     "${ROOT_DIR}" \
     "${PIPELINE_DIR}" \
     "${LOG_DIR}" \
