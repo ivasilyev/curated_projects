@@ -90,7 +90,8 @@ def compose_qiime2_picrust2_results(pipeline_output_dir: str):
 
 def extract_tables_from_qzv_into_excel(pipeline_output_dir: str):
     qzv_files = find_by_regex(".*\.qzv$", pipeline_output_dir)
-    excel_files_dir = os.path.join(pipeline_output_dir, "xlsx")
+    excel_files_dir = os.path.join(os.path.dirname(pipeline_output_dir),
+                                   "qiime2-picrust2-pipeline-out", "xlsx")
     for qzv_file in qzv_files:
         qzv_filename = filename_only(qzv_file)
         excel_file = os.path.join(excel_files_dir, f"{qzv_filename}.xlsx")
