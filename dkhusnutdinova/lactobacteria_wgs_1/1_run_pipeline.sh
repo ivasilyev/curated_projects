@@ -26,9 +26,9 @@ for SRC_DIR in ${SRC_DIRS[@]}
             -type f \
             -print0 \
         | xargs \
-            -0 \
             --max-procs "$(nproc)" \
-            -I "{}" \
+            --null \
+            --replace="{}" \
                 bash -c '
                     FILE="{}";
                     BASENAME="$(basename "${FILE%.*}")";

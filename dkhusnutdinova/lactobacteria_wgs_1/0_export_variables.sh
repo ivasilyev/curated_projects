@@ -6,7 +6,7 @@ declare -ax SRC_DIRS=(
     "/data2/bio/Lactobacillus_Dilyara/raw/"
     "/data1/bio/220225_NB501097_0075_AHWH5YBGXF/Conversion_lactobacilli/Lactobacilli/"
     "/data1/bio/220514_M01969_0098_000000000-JWH22/Conversion/lacto/"
-    "/data1/bio/221025_M01969_0103_000000000-KFGYJ/Conversion1/Dilyara_lacto"
+    "/data1/bio/221025_M01969_0103_000000000-KFGYJ/Conversion1/Dilyara_lacto/"
 )
 
 mkdir -p "${ROOT_DIR}"
