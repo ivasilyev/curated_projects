@@ -58,12 +58,6 @@ docker run \
     --volume "${HOME}/.ssh:/home/docker/.ssh" \
     "${IMG}" bash -c '
         git pull --quiet && \
-        pip install \
-            --quiet \
-            --requirement "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/jupyter-deploy/requirements.txt" && \
-        pip install \
-            --quiet \
-            --requirement "https://raw.githubusercontent.com/ivasilyev/biopipelines-docker/master/jupyter-deploy/requirements-linux.txt"; \
         echo Web access: \"http://${IP_ADDRESS}:${PORT}/?token=${TOKEN}\";
         jupyter lab \
             --ip=0.0.0.0 \
