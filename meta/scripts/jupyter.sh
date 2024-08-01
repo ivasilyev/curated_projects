@@ -48,7 +48,6 @@ docker run \
     --env IP_ADDRESS="$(ip route | grep default | awk '{ print $9 }')" \
     --publish "${PORT}:${PORT}" \
     --interactive \
-    --net=host \
     --rm \
     --tty \
     --volume /data:/data \
