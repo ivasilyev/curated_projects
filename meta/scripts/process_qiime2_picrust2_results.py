@@ -99,10 +99,22 @@ def extract_tables_from_qzv_into_excel(pipeline_output_dir: str):
 
 
 def run(pipeline_output_dir: str, kegg_reference_file: str):
-    annotate_qiime2_asv_table(pipeline_output_dir)
-    annotate_picrust2_ko_table(pipeline_output_dir, kegg_reference_file)
-    compose_qiime2_picrust2_results(pipeline_output_dir)
-    extract_tables_from_qzv_into_excel(pipeline_output_dir)
+    try:
+        annotate_qiime2_asv_table(pipeline_output_dir)
+    except Exception:
+        pass
+    try:
+        annotate_picrust2_ko_table(pipeline_output_dir, kegg_reference_file)
+    except Exception:
+        pass
+    try:
+        compose_qiime2_picrust2_results(pipeline_output_dir)
+    except Exception:
+        pass
+    try:
+        extract_tables_from_qzv_into_excel(pipeline_output_dir)
+    except Exception:
+        pass
 
 
 def _parse_args():
