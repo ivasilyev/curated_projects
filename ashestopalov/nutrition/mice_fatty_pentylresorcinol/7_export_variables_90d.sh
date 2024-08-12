@@ -6,7 +6,7 @@ export RAW_DIR="/data03/bio/rogachev_mice/raw/"
 export PIPELINE_DIR="$(realpath "${ROOT_DIR}")/qiime2-picrust2-pipeline/"
 export RAW_DIR="$(realpath "${RAW_DIR}")/"
 export LOG_DIR="${PIPELINE_DIR}logs/"
-export MAIN_SAMPLEDATA_URL="https://gitlab.com/ivasilyev/biological_projects/-/raw/main/ashestopalov/nutrition/mice_fatty_pentylresorcinol/sample_data/main_sampledata.tsv"
+export MAIN_SAMPLEDATA_URL="https://gitlab.com/ivasilyev/biological_projects/-/raw/main/ashestopalov/nutrition/mice_fatty_pentylresorcinol/sample_data/main_sampledata_90.tsv"
 export SAMPLEDATA_DIR="${ROOT_DIR}sample_data/"
 export SCRIPT_DIR="${PIPELINE_DIR}scripts/"
 export PIPELINE_SCRIPT="${SCRIPT_DIR}1_run_pipeline"
@@ -25,19 +25,10 @@ mkdir \
 chmod -R a+rw "${ROOT_DIR}"
 
 
-curl -fsSL \
-    "${MAIN_SAMPLEDATA_URL}" \
-| grep \
-    --invert \
-    --perl-regexp \
-     '(\t14\t|\t60\t)' \
-| tee "${MAIN_SAMPLEDATA_FILE}"
-
-
 export IMG="ivasilyev/curated_projects:latest"
 docker pull "${IMG}"
 docker run \
-    --env MAIN_SAMPLEDATA_FILE="${MAIN_SAMPLEDATA_FILE}" \
+    --env MAIN_SAMPLEDATA_URL="${MAIN_SAMPLEDATA_URL}" \
     --env SAMPLEDATA_DIR="${SAMPLEDATA_DIR}" \
     --net host \
     --rm \
@@ -50,7 +41,7 @@ docker run \
         bash -c '
             git pull --quiet;
             python3 ./meta/sample_data/qiime/split_qiime2_main_sample_data.py \
-                --input "${MAIN_SAMPLEDATA_FILE}" \
+                --input "${MAIN_SAMPLEDATA_URL}" \
                 --output "${SAMPLEDATA_DIR}"
         '
 
