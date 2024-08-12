@@ -2,7 +2,7 @@ __name__ = "meta"
 
 LOGGING_FORMAT = "%(asctime)s.%(msecs)06d [%(filename)s %(name)s] %(levelname)s %(funcName)s(%(lineno)s) - %(message)s"
 DATE_FORMAT = "%Y.%m.%d %H:%M:%S"
-LOGGING_LEVELS = tuple([i * 10 for i in range(5)])
+LOGGING_LEVELS = tuple([i * 10 for i in range(6)])
 
 
 def get_logger(name: str, level: int):
