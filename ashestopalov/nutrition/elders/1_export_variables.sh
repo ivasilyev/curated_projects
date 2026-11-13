@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
-# curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/refs/heads/master/ashestopalov/nutrition/elders/1_export_variables.sh" && bash "1_export_variables.sh"
-
 export ROOT_DIR="/data01/bio/projects/ashestopalov/nutrition/elders/"
+# mkdir -pv "${ROOT_DIR}" && curl -fsSLO "https://raw.githubusercontent.com/ivasilyev/curated_projects/refs/heads/master/ashestopalov/nutrition/elders/1_export_variables.sh" && bash "1_export_variables.sh"
 export RAW_DIR="/data01/bio/projects/ashestopalov/nutrition/elders/raw"
 
 export SAMPLEDATA_DIR="${ROOT_DIR}sample_data/"
@@ -13,8 +12,8 @@ export GROUPING_COLUMN_NAME="SubjectID"
 export PREV_CONTROL_COLUMN="SubGroup"
 export PREV_CONTROL_INDICATOR="Sport"
 
-export PICRUST2_IMG="quay.io/biocontainers/picrust2:2.5.2--pyhdfd78af_0"
-export QIIME2_IMG="quay.io/qiime2/core:2023.9"
+export PICRUST2_IMG="quay.io/biocontainers/picrust2:2.6.4--pyhdfd78af_0"
+export QIIME2_IMG="quay.io/qiime2/qiime2-workshop:2026.10"
 
 export REFERENCE_NAME="SILVA"
 export REFERENCE_VERSION="138.1"
